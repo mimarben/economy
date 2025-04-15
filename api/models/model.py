@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, Integer, String,  Float, Date,  ForeignKey
+from sqlalchemy import create_engine, Column, Integer, String,  Float, Date, Boolean,  ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm import relationship, declarative_base
@@ -9,11 +9,12 @@ Base = declarative_base()
 class User(Base):  # Singular name for consistency
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True)
-    name = Column(String)
-    surname1 = Column(String)
+    name = Column(String,  nullable=False)
+    surname1 = Column(String,  nullable=False)
     surname2 = Column(String)
-    dni = Column(String)
+    dni = Column(String,  nullable=False)
     email = Column(String)
+    active = Column(Boolean, default=True)
     telephone = Column(Integer)  # New column added
 
     # Relationships
@@ -172,55 +173,55 @@ class Investment(Base):  # Singular name for consistency
     category = relationship('CategoryInvestment', back_populates='investments')
 
 
+def db_creation():
+    # Create a SQLite database in memory or on disk (ensure the directory exists for disk-based DBs)
+    # Ensure the 'db' directory exists
+    os.makedirs("../db", exist_ok=True)
 
-# Create a SQLite database in memory or on disk (ensure the directory exists for disk-based DBs)
-# Ensure the 'db' directory exists
-os.makedirs("../db", exist_ok=True)
+    # Database path
+    DATABASE_PATH = "../db/economy.db"
+    DATABASE_URL = f"sqlite:///{DATABASE_PATH}"
 
-# Database path
-DATABASE_PATH = "../db/economy.db"
-DATABASE_URL = f"sqlite:///{DATABASE_PATH}"
+    # Check if the database exists
+    database_exists = os.path.exists(DATABASE_PATH)
 
-# Check if the database exists
-database_exists = os.path.exists(DATABASE_PATH)
-
-# Create an engine
-engine = create_engine(DATABASE_URL, echo=True)
+    # Create an engine
+    engine = create_engine(DATABASE_URL, echo=True)
 
 
-# Create tables only if the database does not exist
-if not database_exists:
-    Base.metadata.create_all(engine)
-    # Create a session to interact with the database
-    Session = sessionmaker(bind=engine)
-    session = Session()
+    # Create tables only if the database does not exist
+    if not database_exists:
+        Base.metadata.create_all(engine)
+        # Create a session to interact with the database
+        Session = sessionmaker(bind=engine)
+        session = Session()
 
-    # Example: Adding a User to the Database
-    new_user = User(name='miguel', surname1='martin', email='mimarben@gamil.com')
-    session.add(new_user)
-    session.commit()
+        # Example: Adding a User to the Database
+        new_user = User(name='miguel', surname1='martin', email='mimarben@gamil.com')
+        session.add(new_user)
+        session.commit()
 
-    # Example: Querying Users from the Database
-    users_query_result = session.query(User).all()
-    for user in users_query_result:
-        print(f"ID: {user.id}, Name: {user.name}, Email: {user.email}")
+        # Example: Querying Users from the Database
+        users_query_result = session.query(User).all()
+        for user in users_query_result:
+            print(f"ID: {user.id}, Name: {user.name}, Email: {user.email}")
 
-    # Example: Adding an Account Linked to a User and Bank
-    new_bank = Bank(name="ING", description="Tu banco no banco")
-    new_account = Account(name="Cuenta Nómina", description="Cuenta para la nómina",
-                        iban="ES09 1465 0100 94 1703409446", balance=1234.71, user=new_user, bank=new_bank)
+        # Example: Adding an Account Linked to a User and Bank
+        new_bank = Bank(name="ING", description="Tu banco no banco")
+        new_account = Account(name="Cuenta Nómina", description="Cuenta para la nómina",
+                            iban="ES09 1465 0100 94 1703409446", balance=1234.71, user=new_user, bank=new_bank)
 
-    session.add(new_bank)
-    session.add(new_account)
-    session.commit()
+        session.add(new_bank)
+        session.add(new_account)
+        session.commit()
 
-    # Querying Accounts and Banks from the Database
-    accounts_query_result = session.query(Account).all()
-    for account in accounts_query_result:
-        print(f"Account Name: {account.name}, IBAN: {account.iban}, Balance: {account.balance}")
-    print("Database and tables created!")
-else:
-    print("Database already exists, skipping creation.")
+        # Querying Accounts and Banks from the Database
+        accounts_query_result = session.query(Account).all()
+        for account in accounts_query_result:
+            print(f"Account Name: {account.name}, IBAN: {account.iban}, Balance: {account.balance}")
+        print("Database and tables created!")
+    else:
+        print("Database already exists, skipping creation.")
 
 
     
