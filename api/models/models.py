@@ -27,7 +27,7 @@ class User(Base):  # Singular name for consistency
 class Place(Base):  # Singular name for consistency
     __tablename__ = 'places'
     id = Column(Integer, primary_key=True)
-    name = Column(String)
+    name = Column(String,nullable=False)
     address = Column(String)
     description = Column(String)
 
@@ -172,6 +172,3 @@ class Investment(Base):  # Singular name for consistency
     account = relationship('Account', back_populates='investments')
     category = relationship('CategoryInvestment', back_populates='investments')
 
-
-def db_creation():
-    pass

@@ -3,7 +3,9 @@ from flask import Flask, request
 from flask_babel import Babel, gettext
 
 from config import Config, DevelopmentConfig
-from routers.user_router import router
+from api.routers.user_router import router as user_router
+from api.routers.place_router import router as place_router
+
 
 app = Flask(__name__)
 app.config.from_object(DevelopmentConfig)
@@ -17,7 +19,8 @@ def get_locale():
 babel = Babel(app, locale_selector=get_locale)
 
 # Register route blueprint
-app.register_blueprint(router)
+app.register_blueprint(user_router)
+app.register_blueprint(place_router)
 
 # Run app (optional if using a separate runner)
 if __name__ == "__main__":
