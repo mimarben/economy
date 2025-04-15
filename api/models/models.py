@@ -197,19 +197,19 @@ def db_creation():
         session = Session()
 
         # Example: Adding a User to the Database
-        new_user = User(name='miguel', surname1='martin', email='mimarben@gamil.com')
+        new_user = User(name='name', surname1='surname1', dni="12345678A", surname2="surname2", telephone=123456789, email = "example@email.com", active = True)
         session.add(new_user)
         session.commit()
 
         # Example: Querying Users from the Database
         users_query_result = session.query(User).all()
         for user in users_query_result:
-            print(f"ID: {user.id}, Name: {user.name}, Email: {user.email}")
+            print(f"ID: {user.id}, Name: {user.name}, Email: {user.email}", "dni:", user.dni, "surname1:", user.surname1, "surname2:", user.surname2, "telephone:", user.telephone)
 
         # Example: Adding an Account Linked to a User and Bank
         new_bank = Bank(name="ING", description="Tu banco no banco")
         new_account = Account(name="Cuenta Nómina", description="Cuenta para la nómina",
-                            iban="ES09 1465 0100 94 1703409446", balance=1234.71, user=new_user, bank=new_bank)
+                            iban="ES09 8989 0250 32 9903400006", balance=1234.71, user=new_user, bank=new_bank)
 
         session.add(new_bank)
         session.add(new_account)
@@ -224,4 +224,4 @@ def db_creation():
         print("Database already exists, skipping creation.")
 
 
-    
+db_creation()

@@ -173,4 +173,4 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 api/db/economy.db
-api/db/economy.db
+
