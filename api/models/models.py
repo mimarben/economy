@@ -14,6 +14,7 @@ class User(Base):  # Singular name for consistency
     surname2 = Column(String)
     dni = Column(String)
     email = Column(String)
+    telephone = Column(Integer)  # New column added
 
     # Relationships
     expenses = relationship('Expense', back_populates='user')
