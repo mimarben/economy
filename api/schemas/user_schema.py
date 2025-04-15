@@ -3,12 +3,13 @@ from typing import Optional, List
 import re
 
 class UserBase(BaseModel):
-    name: str
-    surname1: str
+    name: Optional[str] = None
+    surname1: Optional[str] = None
     surname2: Optional[str] = None
-    dni: str
-    email: Optional[EmailStr] = None  # Email validation using Pydantic's `EmailStr`
-    telephone: Optional[int] = None  # Telephone is optional
+    dni: Optional[str] = None
+    email: Optional[EmailStr] = None
+    active: Optional[bool]= True
+    telephone: Optional[int] = None
     @field_validator('dni')
     def validate_dni(cls, value: str) -> str:
         # DNI format: 8 digits + 1 letter
@@ -40,6 +41,7 @@ class UserUpdate(BaseModel):
     surname2: Optional[str] = None
     dni: Optional[str] = None
     email: Optional[EmailStr] = None
+    active: Optional[bool]= True
     telephone: Optional[int] = None
     @field_validator('dni')
     def validate_dni(cls, value: str) -> str:

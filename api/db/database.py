@@ -2,11 +2,13 @@ import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from api.models.models import Base, User, Account, Bank
+from config import Config  # Double dot moves up two levels (api/db → api → root)
+
+DATABASE_PATH= Config.DATABASE_PATH
 
 
 
-
-DATABASE_PATH = "economy.db"
+print(f"Database path: {os.path.abspath(DATABASE_PATH)}")
 # Construct the database URL
 DATABASE_URL = f"sqlite:///{os.path.abspath(DATABASE_PATH)}"
 
@@ -53,7 +55,7 @@ def init_db():
         session = Session()
 
         # Example: Adding a User to the Database
-        new_user = User(name='name', surname1='surname1', dni="12345678A", surname2="surname2", telephone=123456789, email = "example@email.com", active = True)
+        new_user = User(name='name', surname1='surname1', dni="12345678Z", surname2="surname2", telephone=123456789, email = "example@email.com", active = True)
         session.add(new_user)
         session.commit()
 

@@ -14,7 +14,7 @@ class User(Base):  # Singular name for consistency
     surname2 = Column(String)
     dni = Column(String,  nullable=False)
     email = Column(String)
-    active = Column(Boolean, default=True)
+    active = Column(Boolean, default=True, nullable=False)
     telephone = Column(Integer)  # New column added
 
     # Relationships
