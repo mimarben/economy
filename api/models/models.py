@@ -190,35 +190,36 @@ engine = create_engine(DATABASE_URL, echo=True)
 # Create tables only if the database does not exist
 if not database_exists:
     Base.metadata.create_all(engine)
+    # Create a session to interact with the database
+    Session = sessionmaker(bind=engine)
+    session = Session()
+
+    # Example: Adding a User to the Database
+    new_user = User(name='miguel', surname1='martin', email='mimarben@gamil.com')
+    session.add(new_user)
+    session.commit()
+
+    # Example: Querying Users from the Database
+    users_query_result = session.query(User).all()
+    for user in users_query_result:
+        print(f"ID: {user.id}, Name: {user.name}, Email: {user.email}")
+
+    # Example: Adding an Account Linked to a User and Bank
+    new_bank = Bank(name="ING", description="Tu banco no banco")
+    new_account = Account(name="Cuenta Nómina", description="Cuenta para la nómina",
+                        iban="ES09 1465 0100 94 1703409446", balance=1234.71, user=new_user, bank=new_bank)
+
+    session.add(new_bank)
+    session.add(new_account)
+    session.commit()
+
+    # Querying Accounts and Banks from the Database
+    accounts_query_result = session.query(Account).all()
+    for account in accounts_query_result:
+        print(f"Account Name: {account.name}, IBAN: {account.iban}, Balance: {account.balance}")
     print("Database and tables created!")
 else:
     print("Database already exists, skipping creation.")
 
 
-# Create a session to interact with the database
-Session = sessionmaker(bind=engine)
-session = Session()
-
-# Example: Adding a User to the Database
-new_user = User(name='Alice', surname1='Smith', email='alice@example.com')
-session.add(new_user)
-session.commit()
-
-# Example: Querying Users from the Database
-users_query_result = session.query(User).all()
-for user in users_query_result:
-    print(f"ID: {user.id}, Name: {user.name}, Email: {user.email}")
-
-# Example: Adding an Account Linked to a User and Bank
-new_bank = Bank(name="Bank of America", description="Leading US bank")
-new_account = Account(name="Savings Account", description="Primary savings account",
-                      iban="US1234567890", balance=5000.0, user=new_user, bank=new_bank)
-
-session.add(new_bank)
-session.add(new_account)
-session.commit()
-
-# Querying Accounts and Banks from the Database
-accounts_query_result = session.query(Account).all()
-for account in accounts_query_result:
-    print(f"Account Name: {account.name}, IBAN: {account.iban}, Balance: {account.balance}")
+    
