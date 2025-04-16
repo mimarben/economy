@@ -8,7 +8,7 @@ Base = declarative_base()
 
 class User(Base):  # Singular name for consistency
     __tablename__ = 'users'
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
     name = Column(String,  nullable=False)
     surname1 = Column(String,  nullable=False)
     surname2 = Column(String)
@@ -26,7 +26,7 @@ class User(Base):  # Singular name for consistency
 
 class Place(Base):  # Singular name for consistency
     __tablename__ = 'places'
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer,  primary_key=True, nullable=False, autoincrement=True)
     name = Column(String,nullable=False)
     address = Column(String)
     description = Column(String)
@@ -37,7 +37,7 @@ class Place(Base):  # Singular name for consistency
 
 class ExpensesCategory(Base):  # Singular name for consistency
     __tablename__ = 'expenses_categories'
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer,  primary_key=True, nullable=False, autoincrement=True)
     name = Column(String, nullable=False)
     description = Column(String)
 
@@ -46,7 +46,7 @@ class ExpensesCategory(Base):  # Singular name for consistency
 
 class Expense(Base):  # Singular name for consistency
     __tablename__ = 'expenses'
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer,  primary_key=True, nullable=False, autoincrement=True)
     name = Column(String, nullable=False)
     description = Column(String)
     amount = Column(Float, nullable=False)  # Changed to Float for decimal amounts
@@ -64,7 +64,7 @@ class Expense(Base):  # Singular name for consistency
 
 class Source(Base):  # Singular name for consistency
     __tablename__ = 'sources'
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer,  primary_key=True, nullable=False, autoincrement=True)
     name = Column(String, nullable=False)
     description = Column(String)
 
@@ -72,9 +72,9 @@ class Source(Base):  # Singular name for consistency
     incomes = relationship('Income', back_populates='source')
 
 
-class CategoryIncome(Base):  # Singular name for consistency
-    __tablename__ = 'categories_incomes'
-    id = Column(Integer, primary_key=True)
+class IcomesCategory(Base):  # Singular name for consistency
+    __tablename__ = 'incomes_categories'
+    id = Column(Integer,  primary_key=True, nullable=False, autoincrement=True)
     name = Column(String, nullable=False)
     description = Column(String)
 
@@ -83,7 +83,7 @@ class CategoryIncome(Base):  # Singular name for consistency
 
 class Income(Base):  # Singular name for consistency
     __tablename__ = 'incomes'
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer,  primary_key=True, nullable=False, autoincrement=True)
     name = Column(String, nullable=False)
     description = Column(String)
     amount = Column(Float, nullable=False)  # Float for decimal amounts
@@ -92,17 +92,17 @@ class Income(Base):  # Singular name for consistency
     # Foreign Keys
     user_id = Column(Integer, ForeignKey('users.id'))
     source_id = Column(Integer, ForeignKey('sources.id'))
-    category_id = Column(Integer, ForeignKey('categories_incomes.id'))
+    category_id = Column(Integer, ForeignKey('incomes_categories.id'))
 
     # Relationships
     user = relationship('User', back_populates='incomes')
     source = relationship('Source', back_populates='incomes')
-    category = relationship('CategoryIncome', back_populates='incomes')
+    category = relationship('IcomesCategory', back_populates='incomes')
 
 
 class Saving(Base):  # Singular name for consistency
     __tablename__ = 'savings'
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer,  primary_key=True, nullable=False, autoincrement=True)
     name = Column(String, nullable=False)
     description = Column(String)
     amount = Column(Float, nullable=False)  # Float for decimal amounts
@@ -118,7 +118,7 @@ class Saving(Base):  # Singular name for consistency
 
 class Account(Base):  # Singular name for consistency
     __tablename__ = 'accounts'
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer,  primary_key=True, nullable=False, autoincrement=True)
     name = Column(String, nullable=False)
     description = Column(String)
     iban = Column(String, nullable=False)
@@ -136,16 +136,16 @@ class Account(Base):  # Singular name for consistency
 
 class Bank(Base):  # Singular name for consistency
     __tablename__ = 'banks'
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer,  primary_key=True, nullable=False, autoincrement=True)
     name = Column(String, nullable=False)
     description = Column(String)
 
     # Relationships
     accounts = relationship('Account', back_populates='bank')  # One-to-Many relationship with accounts
 
-class CategoryInvestment(Base):  # Singular name for consistency
-    __tablename__ = 'categories_investments'
-    id = Column(Integer, primary_key=True)
+class InvestmentsCategory(Base):  # Singular name for consistency
+    __tablename__ = 'investments_categories'
+    id = Column(Integer,  primary_key=True, nullable=False, autoincrement=True)
     name = Column(String, nullable=False)
     description = Column(String)
 
@@ -155,7 +155,7 @@ class CategoryInvestment(Base):  # Singular name for consistency
 
 class Investment(Base):  # Singular name for consistency
     __tablename__ = 'investments'
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer,  primary_key=True, nullable=False, autoincrement=True)
     name = Column(String)
     description = Column(String)
     amount = Column(Float, nullable=False)  # Float for decimal amounts
@@ -165,10 +165,10 @@ class Investment(Base):  # Singular name for consistency
     # Foreign Keys
     user_id = Column(Integer, ForeignKey('users.id'))
     account_id = Column(Integer, ForeignKey('accounts.id'))
-    category_id = Column(Integer, ForeignKey('categories_investments.id'))
+    category_id = Column(Integer, ForeignKey('investments_categories.id'))
 
     # Relationships
     user = relationship('User', back_populates='investments')
     account = relationship('Account', back_populates='investments')
-    category = relationship('CategoryInvestment', back_populates='investments')
+    category = relationship('InvestmentsCategory', back_populates='investments')
 

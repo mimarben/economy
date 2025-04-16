@@ -23,6 +23,7 @@ pybabel compile -d /home/miguel/src/economy/api/i18n
 ```
 
 for alembic
+
  ```
  alembic revision --autogenerate -m "Name nullable-false" 
 
