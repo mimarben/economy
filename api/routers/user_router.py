@@ -68,4 +68,6 @@ def list_users():
     users = db.query(User).all()
     # Convert SQLAlchemy models to Pydantic UserRead and serialize
     user_data = [UserRead.model_validate(u).model_dump() for u in users]
+    if not user_data:
+        return jsonify({"error": _("USER_NOT_FOUND"), "details": "None"}), 404
     return jsonify(user_data)

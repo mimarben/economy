@@ -61,4 +61,6 @@ def list_places():
     places = db.query(Place).all()
     # Convert SQLAlchemy models to Pydantic UserRead and serialize
     place_data = [PlaceRead.model_validate(u).model_dump() for u in places]
+    if not place_data:
+        return jsonify({"error": _("PLACE_NOT_FOUND"), "details": "None"}), 404
     return jsonify(place_data)

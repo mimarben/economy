@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr, ConfigDict, ValidationError, field_validator
+from pydantic import BaseModel, EmailStr, field_validator
 from typing import Optional, List
 import re
 def check_dni(value: str) -> str:
@@ -38,14 +38,7 @@ class UserRead(UserBase):
 class UserCreate(UserBase):
     pass
 
-class UserUpdate(BaseModel):
-    name: Optional[str] = None
-    surname1: Optional[str] = None
-    surname2: Optional[str] = None
-    dni: Optional[str] = None
-    email: Optional[EmailStr] = None
-    active: Optional[bool]= True
-    telephone: Optional[int] = None
+class UserUpdate(UserBase):
     @field_validator('dni')
     def validate_dni(value: str) -> str:
         return check_dni(value)

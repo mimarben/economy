@@ -61,4 +61,6 @@ def list_expenses():
     expenses = db.query(Expense).all()
     # Convert SQLAlchemy models to Pydantic UserRead and serialize
     expense_data = [ExpenseRead.model_validate(u).model_dump() for u in expenses]
+    if not expense_data:
+        return jsonify({"error": _("EXPENSE_NOT_FOUND"), "details": "None"}), 404
     return jsonify(expense_data)
