@@ -38,7 +38,7 @@ class Place(Base):  # Singular name for consistency
 class ExpensesCategory(Base):  # Singular name for consistency
     __tablename__ = 'expenses_categories'
     id = Column(Integer, primary_key=True)
-    name = Column(String)
+    name = Column(String, nullable=False)
     description = Column(String)
 
     # Relationships
@@ -47,7 +47,7 @@ class ExpensesCategory(Base):  # Singular name for consistency
 class Expense(Base):  # Singular name for consistency
     __tablename__ = 'expenses'
     id = Column(Integer, primary_key=True)
-    name = Column(String)
+    name = Column(String, nullable=False)
     description = Column(String)
     amount = Column(Float, nullable=False)  # Changed to Float for decimal amounts
     date = Column(Date, nullable=False)
@@ -65,7 +65,7 @@ class Expense(Base):  # Singular name for consistency
 class Source(Base):  # Singular name for consistency
     __tablename__ = 'sources'
     id = Column(Integer, primary_key=True)
-    name = Column(String)
+    name = Column(String, nullable=False)
     description = Column(String)
 
     # Relationships
@@ -75,7 +75,7 @@ class Source(Base):  # Singular name for consistency
 class CategoryIncome(Base):  # Singular name for consistency
     __tablename__ = 'categories_incomes'
     id = Column(Integer, primary_key=True)
-    name = Column(String)
+    name = Column(String, nullable=False)
     description = Column(String)
 
     # Relationships
@@ -84,7 +84,7 @@ class CategoryIncome(Base):  # Singular name for consistency
 class Income(Base):  # Singular name for consistency
     __tablename__ = 'incomes'
     id = Column(Integer, primary_key=True)
-    name = Column(String)
+    name = Column(String, nullable=False)
     description = Column(String)
     amount = Column(Float, nullable=False)  # Float for decimal amounts
     date = Column(Date , nullable=False)
@@ -103,7 +103,7 @@ class Income(Base):  # Singular name for consistency
 class Saving(Base):  # Singular name for consistency
     __tablename__ = 'savings'
     id = Column(Integer, primary_key=True)
-    name = Column(String)
+    name = Column(String, nullable=False)
     description = Column(String)
     amount = Column(Float, nullable=False)  # Float for decimal amounts
     date = Column(Date, nullable=False)  # Changed to Date for consistency
@@ -119,7 +119,7 @@ class Saving(Base):  # Singular name for consistency
 class Account(Base):  # Singular name for consistency
     __tablename__ = 'accounts'
     id = Column(Integer, primary_key=True)
-    name = Column(String)
+    name = Column(String, nullable=False)
     description = Column(String)
     iban = Column(String, nullable=False)
     balance = Column(Float, nullable=False)  # Float for decimal amounts

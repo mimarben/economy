@@ -21,3 +21,21 @@ pybabel init -i messages.pot -d /home/miguel/src/economy/api/i18n -l es
 pybabel compile -d /home/miguel/src/economy/api/i18n
 
 ```
+
+for alembic
+ ```
+ alembic revision --autogenerate -m "Name nullable-false" 
+
+ alembic upgrade head
+
+ # Upgrade to the latest revision
+alembic upgrade head
+
+# Upgrade to a specific revision
+alembic upgrade <revision_id>
+
+# Check current revision
+alembic current
+
+# Downgrade to a specific revision
+alembic downgrade <revision_id>

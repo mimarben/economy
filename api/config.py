@@ -1,5 +1,8 @@
 import os
-
+import sys
+from dotenv import load_dotenv
+load_dotenv()
+dbpath = os.getenv('DATABASE_PATH')
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'default_secret_key'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
@@ -12,7 +15,7 @@ class Config:
     BABEL_DEFAULT_LOCALE = 'en'  # Default language
     BABEL_TRANSLATION_DIRECTORIES = 'i18n'  # Path to translation files
     # DataBase
-    DATABASE_PATH = "db/economy.db"  # Path to translation files
+    DATABASE_PATH = dbpath  # Path to translation files
 
 class DevelopmentConfig(Config):
     DEBUG = True

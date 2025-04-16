@@ -1,10 +1,25 @@
 # app.py
 from flask import Flask, request
 from flask_babel import Babel, gettext
+import os
+from dotenv import load_dotenv
+import sys
 
+
+
+load_dotenv()
+pythonpath = os.getenv('PYTHONPATH')
+if pythonpath and pythonpath not in sys.path:
+    sys.path.insert(0,pythonpath)
+if pythonpath:
+    print(f"PYTHONPATH is set to: {pythonpath}")
+else:
+    print("PYTHONPATH is not set.")
+
+from routers.user_router import router as user_router
+from routers.place_router import router as place_router
 from config import Config, DevelopmentConfig
-from api.routers.user_router import router as user_router
-from api.routers.place_router import router as place_router
+
 
 
 app = Flask(__name__)

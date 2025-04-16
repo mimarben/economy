@@ -5,7 +5,7 @@ from pydantic import ValidationError
 from flask_babel import Babel, _
 
 from models.models import User
-from api.schemas.user_schema import UserCreate, UserRead, UserUpdate
+from schemas.user_schema import UserCreate, UserRead, UserUpdate
 from db.database import get_db
 from services.user_service import UserService
 
@@ -33,7 +33,7 @@ def get_user(user_id):
     db = next(get_db())
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
-        return jsonify({"error": "User not found"}), 404
+        return jsonify({"error": _("USER_NOT_FOUND"), "details": "None"}), 404
     return jsonify(UserRead.model_validate(user).model_dump())
 
 
@@ -42,15 +42,15 @@ def update_user(user_id):
     db = next(get_db())
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
-        return jsonify({"error": "User not found"}), 404
+        return jsonify({"error": _("USER_NOT_FOUND"), "details": "None"}), 404
 
     try:
         user_data = UserUpdate(**request.json)
     except ValidationError as e:
-        return jsonify(e.errors()), 400
+        return jsonify({"error": _("VALIDATION_ERROR"), "details": e.errors()}), 400
     
     if user_data.dni and UserService.user_exists(db, user_data.dni, exclude_user_id=user.id):
-        return jsonify({"error": "Another user already has this DNI"}), 409
+        return jsonify({"error": _("DNI_EXIST"), "details": "None"}), 409
     
     validated_data = user_data.model_dump(exclude_unset=True)
     for key, value in validated_data.items():

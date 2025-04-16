@@ -1,8 +1,8 @@
 import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from api.models.models import Base, User, Account, Bank
-from api.config import Config  # Double dot moves up two levels (api/db → api → root)
+from models.models import Base, User, Account, Bank
+from config import Config  # Double dot moves up two levels (api/db → api → root)
 
 DATABASE_PATH= Config.DATABASE_PATH
 

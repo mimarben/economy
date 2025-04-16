@@ -1,0 +1,127 @@
+"""Add the rest of the field deleted in last
+
+Revision ID: a55ef6ff8117
+Revises: f5e42e31e60a
+Create Date: 2025-04-16 08:57:27.367149
+
+"""
+from typing import Sequence, Union
+
+from alembic import op
+import sqlalchemy as sa
+
+
+# revision identifiers, used by Alembic.
+revision: str = 'a55ef6ff8117'
+down_revision: Union[str, None] = 'f5e42e31e60a'
+branch_labels: Union[str, Sequence[str], None] = None
+depends_on: Union[str, Sequence[str], None] = None
+
+
+def upgrade() -> None:
+       # --- ACCOUNTS TABLE ---
+    with op.batch_alter_table('accounts', recreate='always') as batch_op:
+        batch_op.add_column(sa.Column('description', sa.String(), nullable=True))
+        batch_op.add_column(sa.Column('iban', sa.String(), nullable=False, server_default=''))
+        batch_op.add_column(sa.Column('balance', sa.Float(), nullable=False, server_default='0'))
+        batch_op.add_column(sa.Column('user_id', sa.Integer(), nullable=True))
+        batch_op.add_column(sa.Column('bank_id', sa.Integer(), nullable=True))
+        batch_op.create_foreign_key('fk_accounts_bank_id', 'banks', ['bank_id'], ['id'])
+        batch_op.create_foreign_key('fk_accounts_user_id', 'users', ['user_id'], ['id'])
+
+    # --- EXPENSES TABLE ---
+    with op.batch_alter_table('expenses', recreate='always') as batch_op:
+        batch_op.add_column(sa.Column('description', sa.String(), nullable=True))
+        batch_op.add_column(sa.Column('amount', sa.Float(), nullable=False, server_default='0'))
+        batch_op.add_column(sa.Column('date', sa.Date(), nullable=False, server_default='2024-01-01'))
+        batch_op.add_column(sa.Column('user_id', sa.Integer(), nullable=True))
+        batch_op.add_column(sa.Column('place_id', sa.Integer(), nullable=True))
+        batch_op.add_column(sa.Column('category_id', sa.Integer(), nullable=True))
+        batch_op.create_foreign_key('fk_expenses_place_id', 'places', ['place_id'], ['id'])
+        batch_op.create_foreign_key('fk_expenses_user_id', 'users', ['user_id'], ['id'])
+        batch_op.create_foreign_key('fk_expenses_category_id', 'expenses_categories', ['category_id'], ['id'])
+
+    # --- INCOMES TABLE ---
+    with op.batch_alter_table('incomes', recreate='always') as batch_op:
+        batch_op.add_column(sa.Column('description', sa.String(), nullable=True))
+        batch_op.add_column(sa.Column('amount', sa.Float(), nullable=False, server_default='0'))
+        batch_op.add_column(sa.Column('date', sa.Date(), nullable=False, server_default='2024-01-01'))
+        batch_op.add_column(sa.Column('user_id', sa.Integer(), nullable=True))
+        batch_op.add_column(sa.Column('source_id', sa.Integer(), nullable=True))
+        batch_op.add_column(sa.Column('category_id', sa.Integer(), nullable=True))
+        batch_op.create_foreign_key('fk_incomes_category_id', 'categories_incomes', ['category_id'], ['id'])
+        batch_op.create_foreign_key('fk_incomes_source_id', 'sources', ['source_id'], ['id'])
+        batch_op.create_foreign_key('fk_incomes_user_id', 'users', ['user_id'], ['id'])
+
+    # --- SAVINGS TABLE ---
+    with op.batch_alter_table('savings', recreate='always') as batch_op:
+        batch_op.add_column(sa.Column('description', sa.String(), nullable=True))
+        batch_op.add_column(sa.Column('amount', sa.Float(), nullable=False, server_default='0'))
+        batch_op.add_column(sa.Column('date', sa.Date(), nullable=False, server_default='2024-01-01'))
+        batch_op.add_column(sa.Column('user_id', sa.Integer(), nullable=True))
+        batch_op.add_column(sa.Column('account_id', sa.Integer(), nullable=True))
+        batch_op.create_foreign_key('fk_savings_account_id', 'accounts', ['account_id'], ['id'])
+        batch_op.create_foreign_key('fk_savings_user_id', 'users', ['user_id'], ['id'])
+
+    # --- USERS TABLE ---
+    with op.batch_alter_table('users', recreate='always') as batch_op:
+        batch_op.add_column(sa.Column('name', sa.String(), nullable=False, server_default=''))
+        batch_op.add_column(sa.Column('surname1', sa.String(), nullable=False, server_default=''))
+        batch_op.add_column(sa.Column('surname2', sa.String(), nullable=True))
+        batch_op.add_column(sa.Column('dni', sa.String(), nullable=False, server_default='00000000T'))
+        batch_op.add_column(sa.Column('email', sa.String(), nullable=True))
+        batch_op.add_column(sa.Column('telephone', sa.Integer(), nullable=True))
+
+    # --- SIMPLE ADD COLUMN (SAFE FOR SQLITE) ---
+    op.add_column('places', sa.Column('address', sa.String(), nullable=True))
+    op.add_column('places', sa.Column('description', sa.String(), nullable=True))
+    op.add_column('sources', sa.Column('description', sa.String(), nullable=True))
+    op.add_column('categories_incomes', sa.Column('description', sa.String(), nullable=True))
+    op.add_column('expenses_categories', sa.Column('description', sa.String(), nullable=True))
+def downgrade() -> None:
+    """Downgrade schema."""
+    # ### commands auto generated by Alembic - please adjust! ###
+    op.drop_column('users', 'telephone')
+    op.drop_column('users', 'email')
+    op.drop_column('users', 'dni')
+    op.drop_column('users', 'surname2')
+    op.drop_column('users', 'surname1')
+    op.drop_column('users', 'name')
+    op.drop_column('sources', 'description')
+    op.drop_constraint(None, 'savings', type_='foreignkey')
+    op.drop_constraint(None, 'savings', type_='foreignkey')
+    op.drop_column('savings', 'account_id')
+    op.drop_column('savings', 'user_id')
+    op.drop_column('savings', 'date')
+    op.drop_column('savings', 'amount')
+    op.drop_column('savings', 'description')
+    op.drop_column('places', 'description')
+    op.drop_column('places', 'address')
+    op.drop_constraint(None, 'incomes', type_='foreignkey')
+    op.drop_constraint(None, 'incomes', type_='foreignkey')
+    op.drop_constraint(None, 'incomes', type_='foreignkey')
+    op.drop_column('incomes', 'category_id')
+    op.drop_column('incomes', 'source_id')
+    op.drop_column('incomes', 'user_id')
+    op.drop_column('incomes', 'date')
+    op.drop_column('incomes', 'amount')
+    op.drop_column('incomes', 'description')
+    op.drop_column('expenses_categories', 'description')
+    op.drop_constraint(None, 'expenses', type_='foreignkey')
+    op.drop_constraint(None, 'expenses', type_='foreignkey')
+    op.drop_constraint(None, 'expenses', type_='foreignkey')
+    op.drop_column('expenses', 'category_id')
+    op.drop_column('expenses', 'place_id')
+    op.drop_column('expenses', 'user_id')
+    op.drop_column('expenses', 'date')
+    op.drop_column('expenses', 'amount')
+    op.drop_column('expenses', 'description')
+    op.drop_column('categories_incomes', 'description')
+    op.drop_constraint(None, 'accounts', type_='foreignkey')
+    op.drop_constraint(None, 'accounts', type_='foreignkey')
+    op.drop_column('accounts', 'bank_id')
+    op.drop_column('accounts', 'user_id')
+    op.drop_column('accounts', 'balance')
+    op.drop_column('accounts', 'iban')
+    op.drop_column('accounts', 'description')
+    # ### end Alembic commands ###
