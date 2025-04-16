@@ -1,7 +1,7 @@
 from pydantic import BaseModel, EmailStr, ConfigDict, ValidationError, field_validator
 from typing import Optional, List
 import re
-def check_dni(cls, value: str) -> str:
+def check_dni(value: str) -> str:
         # DNI format: 8 digits + 1 letter
         pattern = r'^\d{8}[A-Z]$'
         if not re.match(pattern, value):
@@ -25,7 +25,7 @@ class UserBase(BaseModel):
     active: bool = True
     telephone: Optional[int] = None
     @field_validator('dni')    
-    def validate_dni(cls, value: str) -> str:
+    def validate_dni(value: str) -> str:
         return check_dni(value)
     
 class UserRead(UserBase):
@@ -47,6 +47,6 @@ class UserUpdate(BaseModel):
     active: Optional[bool]= True
     telephone: Optional[int] = None
     @field_validator('dni')
-    def validate_dni(cls, value: str) -> str:
+    def validate_dni(value: str) -> str:
         return check_dni(value)
 

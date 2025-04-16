@@ -18,6 +18,7 @@ else:
 
 from routers.user_router import router as user_router
 from routers.place_router import router as place_router
+from routers.expense_router import router as expense_router
 from config import Config, DevelopmentConfig
 
 
@@ -36,7 +37,7 @@ babel = Babel(app, locale_selector=get_locale)
 # Register route blueprint
 app.register_blueprint(user_router)
 app.register_blueprint(place_router)
-
+app.register_blueprint(expense_router)
 # Run app (optional if using a separate runner)
 if __name__ == "__main__":
     app.run(debug=app.config['DEBUG'], host=app.config['HOST'], port=app.config['PORT'])

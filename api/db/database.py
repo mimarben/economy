@@ -1,18 +1,22 @@
 import os
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, event
 from sqlalchemy.orm import sessionmaker
 from models.models import Base, User, Account, Bank
 from config import Config  # Double dot moves up two levels (api/db → api → root)
 
 DATABASE_PATH= Config.DATABASE_PATH
 
-
-
-print(f"Database path: {os.path.abspath(DATABASE_PATH)}")
 # Construct the database URL
 DATABASE_URL = f"sqlite:///{os.path.abspath(DATABASE_PATH)}"
 
 engine = create_engine(DATABASE_URL, echo=True)
+
+# ✅ Enable foreign key constraints
+@event.listens_for(engine, "connect")
+def set_sqlite_pragma(dbapi_connection, connection_record):
+    cursor = dbapi_connection.cursor()
+    cursor.execute("PRAGMA foreign_keys=ON")
+    cursor.close()
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
@@ -26,14 +30,9 @@ def get_db():
         print(f"Error connecting to the database: {e}")
     finally:
         db.close()
-    """ try:
-        connection = engine.connect()
-        print("Database connection successful!")
-    except Exception as e:
-        print(f"Error connecting to the database: {e}")
-    finally:
-        if 'connection' in locals():
-            connection.close() """
+
+
+
 def init_db():
     # Create a SQLite database in memory or on disk (ensure the directory exists for disk-based DBs)
     # Ensure the 'db' directory exists
