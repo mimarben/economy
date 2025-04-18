@@ -1,20 +1,20 @@
 from pydantic import BaseModel
 from typing import Optional
 
-class ExpenseCategoryBase(BaseModel):
+class SourceBase(BaseModel):
     name: str
     description: Optional[str] = None
     active: bool = True
-class ExpenseCategoryRead(ExpenseCategoryBase):
+class SourceRead(SourceBase):
     id: int
 
     class Config:
         from_attributes = True
 
-class ExpenseCategoryCreate(ExpenseCategoryBase):
+class SourceCreate(SourceBase):
     pass
 
-class ExpenseCategoryUpdate(BaseModel):
+class SourceUpdate(BaseModel):
     name: Optional[str]
     description: Optional[str]
     active: Optional[bool]

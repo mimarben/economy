@@ -2,10 +2,10 @@ from pydantic import BaseModel, Field, field_validator
 from pydantic_core import PydanticCustomError
 from typing import Optional
 from datetime import datetime
-from models.models import User, Place, ExpensesCategory
+from models.models import User, Account
 from flask_babel import _
 
-class ExpenseBase(BaseModel):
+class SavingBase(BaseModel):
     name: str
     description: Optional[str] = None
     amount: float
@@ -15,13 +15,13 @@ class ExpenseBase(BaseModel):
     user_id: int = Field(..., gt=0)
     currency: str
     
-class ExpenseRead(ExpenseBase):
+class SavingRead(SavingBase):
     id: int
 
     class Config:
         from_attributes = True
 
-class ExpenseCreate(ExpenseBase):
+class SavingCreate(SavingBase):
     @field_validator('category_id', 'place_id', 'user_id')
     @classmethod
     def validate_foreign_key(cls, v, info):
@@ -30,7 +30,7 @@ class ExpenseCreate(ExpenseBase):
             raise ValueError("DATABASE_NOT_AVAILABLE")
 
         model_map = {
-            'category_id': ExpensesCategory,
+            'category_id': SavingsCategory,
             'place_id': Place,
             'user_id': User
         }
@@ -41,7 +41,7 @@ class ExpenseCreate(ExpenseBase):
             raise PydanticCustomError("FK_ERROR", f"{info.field_name.upper()}_NOT_FOUND")
         return v
 
-class ExpenseUpdate(ExpenseBase):
+class SavingUpdate(SavingBase):
     name: Optional[str]
     description: Optional[str] = None
     amount: Optional[float]
@@ -52,6 +52,6 @@ class ExpenseUpdate(ExpenseBase):
     currency: Optional[str]  
     # Optional fields
 
-class ExpenseDelete(BaseModel):
+class SavingDelete(BaseModel):
     pass
 

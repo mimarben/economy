@@ -26,6 +26,12 @@ class CurrencyEnum(enum.Enum):
     solana = "SOL"
     shiba_inu = "SHIB"
     tron = "TRX"
+class RoleEnum(enum.Enum):
+    husband = "husband"
+    wife= "wife"
+    child = "child"
+    other = "other"
+
 class User(Base):  # Singular name for consistency
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
@@ -140,6 +146,21 @@ class Saving(Base):  # Singular name for consistency
     user = relationship('User', back_populates='savings')
     account = relationship('Account', back_populates='savings')
 
+class SavingLog(Base):
+    __tablename__ = "savings_logs"
+    id = Column(Integer,  primary_key=True, nullable=False, autoincrement=True)
+    date = Column(Date, nullable=False)  # Changed to Date for consistency
+    amount = Column(Float, nullable=False)  # Float for decimal amounts
+    total_amount = Column(Float)  # Float for decimal amounts
+    note= Column(String)
+
+    # Foreign Keys
+    saving_id = Column(Integer, ForeignKey('saving.id'))
+    
+    # Relationships
+    saving = relationship('Saving', back_populates='savings_logs')
+
+
 class Account(Base):  # Singular name for consistency
     __tablename__ = 'accounts'
     id = Column(Integer,  primary_key=True, nullable=False, autoincrement=True)
@@ -155,8 +176,8 @@ class Account(Base):  # Singular name for consistency
     # Relationships
     user = relationship('User', back_populates='accounts')
     bank = relationship('Bank', back_populates='accounts')
-    savings = relationship('Saving', back_populates='account')
-    investments = relationship('Investment', back_populates='account')
+    savings = relationship('Saving', back_populates='accounts')
+    investments = relationship('Investment', back_populates='accounts')
 
 class Bank(Base):  # Singular name for consistency
     __tablename__ = 'banks'
@@ -165,7 +186,7 @@ class Bank(Base):  # Singular name for consistency
     description = Column(String)
     active = Column(Boolean, default=True, nullable=False)
     # Relationships
-    accounts = relationship('Account', back_populates='bank')  # One-to-Many relationship with accounts
+    accounts = relationship('Account', back_populates='banks')  # One-to-Many relationship with accounts
 
 class InvestmentsCategory(Base):  # Singular name for consistency
     __tablename__ = 'investments_categories'
@@ -196,3 +217,35 @@ class Investment(Base):  # Singular name for consistency
     account = relationship('Account', back_populates='investments')
     category = relationship('InvestmentsCategory', back_populates='investments')
 
+class InvestmentLog(Base):
+    __tablename__ = "investments_logs"
+    id = Column(Integer,  primary_key=True, nullable=False, autoincrement=True)
+    date = Column(Date, nullable=False)  # Changed to Date for consistency
+    currentValue = Column(Float, nullable=False)  # Float for decimal amounts
+    amount = Column(Float)  # Float for decimal amounts
+    note= Column(String)
+
+    # Foreign Keys
+    investment_id = Column(Integer, ForeignKey('saving.id'))
+    
+    # Relationships
+    investment = relationship('Investment', back_populates='investments')
+
+class Household (Base):
+    __tablename__ = "households"
+    id = Column(Integer,  primary_key=True, nullable=False, autoincrement=True)
+    name = Column(String), nullable=False
+    address = Column(String, nullable=False)
+    description = Column(String)
+
+class HouseholdMember(Base):
+    __tablename__ = "households_members"
+    id = Column(Integer,  primary_key=True, nullable=False, autoincrement=True)
+    role = Column(SQLEnum(RoleEnum), nullable=False) 
+    # Foreign Keys
+    household_id = Column(Integer, ForeignKey('households.id'))
+    user_id = Column(Integer, ForeignKey('users.id'))
+    
+    # Relationships
+    user = relationship('User', back_populates='households_members')
+    household= relationship('Household', back_populates='households_members')
