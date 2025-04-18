@@ -25,6 +25,7 @@ pybabel compile -d /home/miguel/src/economy/api/i18n
 for alembic
 
  ```
+ alembic init alembic
  alembic revision --autogenerate -m "Name nullable-false" 
 
  alembic upgrade head
@@ -40,3 +41,7 @@ alembic current
 
 # Downgrade to a specific revision
 alembic downgrade <revision_id>
+
+# Pydantic
+
+https://stackoverflow.com/questions/67699451/make-every-field-as-optional-with-pydantic
