@@ -12,7 +12,7 @@ class SavingBase(BaseModel):
     date: datetime
     category_id: int = Field(..., gt=0)
     place_id: int = Field(..., gt=0)
-    user_id: int = Field(..., gt=0)
+    account_id: int = Field(..., gt=0)
     currency: str
     
 class SavingRead(SavingBase):
@@ -53,4 +53,3 @@ class SavingUpdate(SavingBase):
 
 class SavingDelete(BaseModel):
     pass
-

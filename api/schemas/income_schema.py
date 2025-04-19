@@ -2,10 +2,10 @@ from pydantic import BaseModel, Field, field_validator
 from pydantic_core import PydanticCustomError
 from typing import Optional
 from datetime import datetime
-from models.models import User, Account
+from models.models import User, Source, IncomesCategory
 from flask_babel import _
 
-class SavingBase(BaseModel):
+class IncomeBase(BaseModel):
     name: str
     description: Optional[str] = None
     amount: float
@@ -15,14 +15,14 @@ class SavingBase(BaseModel):
     user_id: int = Field(..., gt=0)
     currency: str
     
-class SavingRead(SavingBase):
+class IncomeRead(IncomeBase):
     id: int
 
     class Config:
         from_attributes = True
 
-class SavingCreate(SavingBase):
-    @field_validator('account_id', 'user_id')
+class IncomeCreate(IncomeBase):
+    @field_validator('source_id', 'category_id', 'user_id')
     @classmethod
     def validate_foreign_key(cls, v, info):
         db = info.context.get('db')
@@ -30,7 +30,8 @@ class SavingCreate(SavingBase):
             raise ValueError("DATABASE_NOT_AVAILABLE")
 
         model_map = {
-            'account_id': Account,
+            'category_id': IncomesCategory,
+            'source_id': Source,
             'user_id': User
         }
 
@@ -40,7 +41,7 @@ class SavingCreate(SavingBase):
             raise PydanticCustomError("FK_ERROR", f"{info.field_name.upper()}_NOT_FOUND")
         return v
 
-class SavingUpdate(SavingBase):
+class IncomeUpdate(IncomeBase):
     name: Optional[str]
     description: Optional[str] = None
     amount: Optional[float]
@@ -51,6 +52,6 @@ class SavingUpdate(SavingBase):
     currency: Optional[str]  
     # Optional fields
 
-class SavingDelete(BaseModel):
+class IncomeDelete(BaseModel):
     pass
 

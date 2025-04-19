@@ -31,6 +31,13 @@ class RoleEnum(enum.Enum):
     wife= "wife"
     child = "child"
     other = "other"
+class ActionEnum(enum.Enum):
+    buy = "buy"
+    sell = "sell"
+    transfer = "transfer"
+    deposit = "deposit"
+    withdraw = "withdraw"
+    hold= "hold"
 
 class User(Base):  # Singular name for consistency
     __tablename__ = 'users'
@@ -155,7 +162,7 @@ class SavingLog(Base):
     note= Column(String)
 
     # Foreign Keys
-    saving_id = Column(Integer, ForeignKey('saving.id'))
+    saving_id = Column(Integer, ForeignKey('savings.id'))
     
     # Relationships
     saving = relationship('Saving', back_populates='savings_logs')
@@ -202,7 +209,6 @@ class Investment(Base):  # Singular name for consistency
     __tablename__ = 'investments'
     id = Column(Integer,  primary_key=True, nullable=False, autoincrement=True)
     name = Column(String)
-    description = Column(String)
     amount = Column(Float, nullable=False)  # Float for decimal amounts
     value = Column(Float, nullable=False)  # Float for investment value
     date = Column(Date, nullable=False)
@@ -222,19 +228,37 @@ class InvestmentLog(Base):
     id = Column(Integer,  primary_key=True, nullable=False, autoincrement=True)
     date = Column(Date, nullable=False)  # Changed to Date for consistency
     currentValue = Column(Float, nullable=False)  # Float for decimal amounts
-    amount = Column(Float)  # Float for decimal amounts
+    pricePerUnit = Column(Float)
+    unitsBought  = Column(Float) # Float for decimal amounts
+    action = Column(SQLEnum(ActionEnum), nullable=False) 
     note= Column(String)
 
     # Foreign Keys
-    investment_id = Column(Integer, ForeignKey('saving.id'))
+    investment_id = Column(Integer, ForeignKey('investments.id'))
     
     # Relationships
     investment = relationship('Investment', back_populates='investments')
 
+class FinancialSummary(Base):
+    __tablename__ = "financials_summaries"
+    id = Column(Integer,  primary_key=True, nullable=False, autoincrement=True)
+    date = Column(Date, nullable=False)  # Changed to Date for consistency
+    total_income = Column(Float, nullable=False)  # Float for decimal amounts
+    total_expenses = Column(Float, nullable=False)  # Float for decimal amounts
+    total_savings = Column(Float, nullable=False)  # Float for decimal amounts
+    total_investments = Column(Float, nullable=False)  # Float for decimal amounts
+    net_worth = Column(Float, nullable=False)  # Float for decimal amounts
+    # Foreign Keys
+    user_id = Column(Integer, ForeignKey('users.id'))
+    household_id = Column(Integer, ForeignKey('households.id'))
+    # Relationships
+    user = relationship('User', back_populates='financials_summaries')
+    household = relationship('Household', back_populates='financials_summaries')
+
 class Household (Base):
     __tablename__ = "households"
     id = Column(Integer,  primary_key=True, nullable=False, autoincrement=True)
-    name = Column(String), nullable=False
+    name = Column(String, nullable=False)
     address = Column(String, nullable=False)
     description = Column(String)
 
@@ -249,3 +273,4 @@ class HouseholdMember(Base):
     # Relationships
     user = relationship('User', back_populates='households_members')
     household= relationship('Household', back_populates='households_members')
+
