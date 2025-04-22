@@ -4,6 +4,7 @@ from flask_babel import Babel, gettext
 import os
 from dotenv import load_dotenv
 import sys
+from werkzeug.exceptions import HTTPException
 
 
 
@@ -16,20 +17,13 @@ if pythonpath:
 else:
     print("PYTHONPATH is not set.")
 
-from routers.user_router import router as user_router
-from routers.place_router import router as place_router
-from routers.expense_router import router as expense_router
-from routers.expense_category_router import router as expense_category_router
-from routers.household_router import router as household_router
-from routers.household_member_router import router as household_member_router
-from routers.income_category_router import router as income_category_router
-from routers.income_router import router as income_router
-from routers.source_router import router as source_router
-from routers.saving_router import router as saving_router
-from routers.account_router import router as account_router
+from routers import register_blueprints
 
 from config import Config, DevelopmentConfig
 
+# Setup logging
+from services.logger_service import setup_logger
+logger = setup_logger("main")
 
 
 app = Flask(__name__)
@@ -44,17 +38,19 @@ def get_locale():
 babel = Babel(app, locale_selector=get_locale)
 
 # Register route blueprint
-app.register_blueprint(user_router)
-app.register_blueprint(place_router)
-app.register_blueprint(expense_router)
-app.register_blueprint(expense_category_router)
-app.register_blueprint(household_router)
-app.register_blueprint(household_member_router)
-app.register_blueprint(income_category_router)
-app.register_blueprint(income_router)
-app.register_blueprint(source_router)
-app.register_blueprint(saving_router)
-app.register_blueprint(account_router)
+register_blueprints(app)
+
+
+# Global error handler
+@app.errorhandler(Exception)
+def handle_exception(e):
+    logger.exception("Unhandled Exception: %s", str(e))
+    if isinstance(e, HTTPException):
+        return {"error": e.description}, e.code
+    return {"error": "An internal error occurred."}, 500
+
+
 # Run app (optional if using a separate runner)
 if __name__ == "__main__":
+    logger.info("Starting the Flask app...")
     app.run(debug=app.config['DEBUG'], host=app.config['HOST'], port=app.config['PORT'])

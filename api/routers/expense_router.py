@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify, abort
 from sqlalchemy.orm import Session
 from pydantic import ValidationError
 from flask_babel import _
-from services.response import Response
+from services.response_service import Response
 
 from models.models import Expense, User, Place, ExpensesCategory
 from schemas.expense_schema import ExpenseCreate, ExpenseRead, ExpenseUpdate
