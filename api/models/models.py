@@ -1,14 +1,9 @@
-from sqlalchemy import create_engine, Column, Integer, String,  Float, Date, Boolean,  ForeignKey, Enum as SQLEnum
+from sqlalchemy import create_engine, Column, Integer, String, Float, Date, Boolean, ForeignKey, Enum as SQLEnum
 import enum
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.orm import relationship, declarative_base
-import os
+from sqlalchemy.orm import relationship
+
 Base = declarative_base()
-
-from enum import Enum
-
-
 
 class CurrencyEnum(enum.Enum):
     euro = "€"
@@ -26,104 +21,109 @@ class CurrencyEnum(enum.Enum):
     solana = "SOL"
     shiba_inu = "SHIB"
     tron = "TRX"
+
 class RoleEnum(enum.Enum):
     husband = "husband"
-    wife= "wife"
+    wife = "wife"
     child = "child"
     other = "other"
+
 class ActionEnum(enum.Enum):
     buy = "buy"
     sell = "sell"
     transfer = "transfer"
     deposit = "deposit"
     withdraw = "withdraw"
-    hold= "hold"
+    hold = "hold"
 
-class User(Base):  # Singular name for consistency
+class User(Base):
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
-    name = Column(String,  nullable=False)
-    surname1 = Column(String,  nullable=False)
+    name = Column(String, nullable=False)
+    surname1 = Column(String, nullable=False)
     surname2 = Column(String)
-    dni = Column(String,  nullable=False)
+    dni = Column(String, nullable=False)
     email = Column(String)
     active = Column(Boolean, default=True, nullable=False)
     telephone = Column(Integer)
-    currency = Column(SQLEnum(CurrencyEnum), nullable=False) 
+    currency = Column(SQLEnum(CurrencyEnum), nullable=False)
 
     # Relationships
-    expenses = relationship('Expense', back_populates='user')
-    incomes = relationship('Income', back_populates='user')
-    savings = relationship('Saving', back_populates='user')
-    accounts = relationship('Account', back_populates='user')
-    investments = relationship('Investment', back_populates='user')
+    expenses = relationship('Expense', back_populates='users')
+    incomes = relationship('Income', back_populates='users')
+    savings = relationship('Saving', back_populates='users')
+    accounts = relationship('Account', back_populates='users')
+    investments = relationship('Investment', back_populates='users')
+    financials_summaries = relationship('FinancialSummary', back_populates='users')
+    households_members = relationship('HouseholdMember', back_populates='users')
 
-class Place(Base):  # Singular name for consistency
+class Place(Base):
     __tablename__ = 'places'
-    id = Column(Integer,  primary_key=True, nullable=False, autoincrement=True)
-    name = Column(String,nullable=False)
+    id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
+    name = Column(String, nullable=False)
     address = Column(String)
     description = Column(String)
     active = Column(Boolean, default=True, nullable=False)
 
     # Relationships
-    expenses = relationship('Expense', back_populates='place')
+    expenses = relationship('Expense', back_populates='places')
 
-
-class ExpensesCategory(Base):  # Singular name for consistency
+class ExpensesCategory(Base):
     __tablename__ = 'expenses_categories'
-    id = Column(Integer,  primary_key=True, nullable=False, autoincrement=True)
+    id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
     name = Column(String, nullable=False)
     description = Column(String)
     active = Column(Boolean, default=True, nullable=False)
-    # Relationships
-    expenses = relationship('Expense', back_populates='category')
 
-class Expense(Base):  # Singular name for consistency
+    # Relationships
+    expenses = relationship('Expense', back_populates='categories')
+
+class Expense(Base):
     __tablename__ = 'expenses'
-    id = Column(Integer,  primary_key=True, nullable=False, autoincrement=True)
+    id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
     name = Column(String, nullable=False)
     description = Column(String)
-    amount = Column(Float, nullable=False)  # Changed to Float for decimal amounts
+    amount = Column(Float, nullable=False)
     date = Column(Date, nullable=False)
-    currency = Column(SQLEnum(CurrencyEnum), nullable=False) 
+    currency = Column(SQLEnum(CurrencyEnum), nullable=False)
 
     # Foreign Keys
-    user_id = Column(Integer, ForeignKey('users.id'),nullable=False)
-    place_id = Column(Integer, ForeignKey('places.id'),nullable=False)
-    category_id = Column(Integer, ForeignKey('expenses_categories.id'),nullable=False)
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    place_id = Column(Integer, ForeignKey('places.id'), nullable=False)
+    category_id = Column(Integer, ForeignKey('expenses_categories.id'), nullable=False)
 
     # Relationships
-    user = relationship('User', back_populates='expenses')
-    place = relationship('Place', back_populates='expenses')
-    category = relationship('ExpensesCategory', back_populates='expenses')
+    users = relationship('User', back_populates='expenses')
+    places = relationship('Place', back_populates='expenses')
+    categories = relationship('ExpensesCategory', back_populates='expenses')
 
-class Source(Base):  # Singular name for consistency
+class Source(Base):
     __tablename__ = 'sources'
-    id = Column(Integer,  primary_key=True, nullable=False, autoincrement=True)
+    id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
     name = Column(String, nullable=False)
     description = Column(String)
     active = Column(Boolean, default=True, nullable=False)
+
     # Relationships
-    incomes = relationship('Income', back_populates='source')
+    incomes = relationship('Income', back_populates='sources')
 
-
-class IcomesCategory(Base):  # Singular name for consistency
+class IcomesCategory(Base):
     __tablename__ = 'incomes_categories'
-    id = Column(Integer,  primary_key=True, nullable=False, autoincrement=True)
+    id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
     name = Column(String, nullable=False)
     description = Column(String)
     active = Column(Boolean, default=True, nullable=False)
-    # Relationships
-    incomes = relationship('Income', back_populates='category')
 
-class Income(Base):  # Singular name for consistency
+    # Relationships
+    incomes = relationship('Income', back_populates='categories')
+
+class Income(Base):
     __tablename__ = 'incomes'
-    id = Column(Integer,  primary_key=True, nullable=False, autoincrement=True)
+    id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
     name = Column(String, nullable=False)
     description = Column(String)
-    amount = Column(Float, nullable=False)  # Float for decimal amounts
-    date = Column(Date , nullable=False)
+    amount = Column(Float, nullable=False)
+    date = Column(Date, nullable=False)
     currency = Column(SQLEnum(CurrencyEnum), nullable=False)
 
     # Foreign Keys
@@ -132,145 +132,156 @@ class Income(Base):  # Singular name for consistency
     category_id = Column(Integer, ForeignKey('incomes_categories.id'))
 
     # Relationships
-    user = relationship('User', back_populates='incomes')
-    source = relationship('Source', back_populates='incomes')
-    category = relationship('IcomesCategory', back_populates='incomes')
+    users = relationship('User', back_populates='incomes')
+    sources = relationship('Source', back_populates='incomes')
+    categories = relationship('IcomesCategory', back_populates='incomes')
 
-
-class Saving(Base):  # Singular name for consistency
+class Saving(Base):
     __tablename__ = 'savings'
-    id = Column(Integer,  primary_key=True, nullable=False, autoincrement=True)
+    id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
     name = Column(String, nullable=False)
     description = Column(String)
-    amount = Column(Float, nullable=False)  # Float for decimal amounts
-    date = Column(Date, nullable=False)  # Changed to Date for consistency
-    currency = Column(SQLEnum(CurrencyEnum), nullable=False) 
+    amount = Column(Float, nullable=False)
+    date = Column(Date, nullable=False)
+    currency = Column(SQLEnum(CurrencyEnum), nullable=False)
+
     # Foreign Keys
     user_id = Column(Integer, ForeignKey('users.id'))
     account_id = Column(Integer, ForeignKey('accounts.id'))
 
     # Relationships
-    user = relationship('User', back_populates='savings')
-    account = relationship('Account', back_populates='savings')
+    users = relationship('User', back_populates='savings')
+    accounts = relationship('Account', back_populates='savings')
+    savings_logs = relationship("SavingLog", back_populates="savings")
 
 class SavingLog(Base):
     __tablename__ = "savings_logs"
-    id = Column(Integer,  primary_key=True, nullable=False, autoincrement=True)
-    date = Column(Date, nullable=False)  # Changed to Date for consistency
-    amount = Column(Float, nullable=False)  # Float for decimal amounts
-    total_amount = Column(Float)  # Float for decimal amounts
-    note= Column(String)
+    id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
+    date = Column(Date, nullable=False)
+    amount = Column(Float, nullable=False)
+    total_amount = Column(Float)
+    note = Column(String)
 
     # Foreign Keys
     saving_id = Column(Integer, ForeignKey('savings.id'))
-    
+
     # Relationships
-    saving = relationship('Saving', back_populates='savings_logs')
+    savings = relationship('Saving', back_populates="savings_logs")
 
-
-class Account(Base):  # Singular name for consistency
+class Account(Base):
     __tablename__ = 'accounts'
-    id = Column(Integer,  primary_key=True, nullable=False, autoincrement=True)
+    id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
     name = Column(String, nullable=False)
     description = Column(String)
     iban = Column(String, nullable=False)
-    balance = Column(Float, nullable=False)  # Float for decimal amounts
+    balance = Column(Float, nullable=False)
 
     # Foreign Keys
     user_id = Column(Integer, ForeignKey('users.id'))
     bank_id = Column(Integer, ForeignKey('banks.id'))
 
     # Relationships
-    user = relationship('User', back_populates='accounts')
-    bank = relationship('Bank', back_populates='accounts')
+    users = relationship('User', back_populates='accounts')
+    banks = relationship('Bank', back_populates='accounts')
     savings = relationship('Saving', back_populates='accounts')
     investments = relationship('Investment', back_populates='accounts')
 
-class Bank(Base):  # Singular name for consistency
+class Bank(Base):
     __tablename__ = 'banks'
-    id = Column(Integer,  primary_key=True, nullable=False, autoincrement=True)
+    id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
     name = Column(String, nullable=False)
     description = Column(String)
     active = Column(Boolean, default=True, nullable=False)
-    # Relationships
-    accounts = relationship('Account', back_populates='banks')  # One-to-Many relationship with accounts
 
-class InvestmentsCategory(Base):  # Singular name for consistency
+    # Relationships
+    accounts = relationship('Account', back_populates='banks')
+
+class InvestmentsCategory(Base):
     __tablename__ = 'investments_categories'
-    id = Column(Integer,  primary_key=True, nullable=False, autoincrement=True)
+    id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
     name = Column(String, nullable=False)
     description = Column(String)
     active = Column(Boolean, default=True, nullable=False)
+
     # Relationships
-    investments = relationship('Investment', back_populates='category')
+    investments = relationship('Investment', back_populates='categories')
 
-
-class Investment(Base):  # Singular name for consistency
+class Investment(Base):
     __tablename__ = 'investments'
-    id = Column(Integer,  primary_key=True, nullable=False, autoincrement=True)
+    id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
     name = Column(String)
-    amount = Column(Float, nullable=False)  # Float for decimal amounts
-    value = Column(Float, nullable=False)  # Float for investment value
+    amount = Column(Float, nullable=False)
+    value = Column(Float, nullable=False)
     date = Column(Date, nullable=False)
-    currency = Column(SQLEnum(CurrencyEnum), nullable=False) 
+    currency = Column(SQLEnum(CurrencyEnum), nullable=False)
+
     # Foreign Keys
     user_id = Column(Integer, ForeignKey('users.id'))
     account_id = Column(Integer, ForeignKey('accounts.id'))
     category_id = Column(Integer, ForeignKey('investments_categories.id'))
-
+    
     # Relationships
-    user = relationship('User', back_populates='investments')
-    account = relationship('Account', back_populates='investments')
-    category = relationship('InvestmentsCategory', back_populates='investments')
+    users = relationship('User', back_populates='investments')
+    accounts = relationship('Account', back_populates='investments')
+    categories = relationship('InvestmentsCategory', back_populates='investments')
+    investment_logs = relationship('InvestmentLog', back_populates='investments')  # Add this line
 
 class InvestmentLog(Base):
     __tablename__ = "investments_logs"
-    id = Column(Integer,  primary_key=True, nullable=False, autoincrement=True)
-    date = Column(Date, nullable=False)  # Changed to Date for consistency
-    currentValue = Column(Float, nullable=False)  # Float for decimal amounts
+    id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
+    date = Column(Date, nullable=False)
+    currentValue = Column(Float, nullable=False)
     pricePerUnit = Column(Float)
-    unitsBought  = Column(Float) # Float for decimal amounts
-    action = Column(SQLEnum(ActionEnum), nullable=False) 
-    note= Column(String)
+    unitsBought = Column(Float)
+    action = Column(SQLEnum(ActionEnum), nullable=False)
+    note = Column(String)
 
     # Foreign Keys
     investment_id = Column(Integer, ForeignKey('investments.id'))
-    
+
     # Relationships
-    investment = relationship('Investment', back_populates='investments')
+    investments = relationship('Investment', back_populates='investment_logs')
 
 class FinancialSummary(Base):
     __tablename__ = "financials_summaries"
-    id = Column(Integer,  primary_key=True, nullable=False, autoincrement=True)
-    date = Column(Date, nullable=False)  # Changed to Date for consistency
-    total_income = Column(Float, nullable=False)  # Float for decimal amounts
-    total_expenses = Column(Float, nullable=False)  # Float for decimal amounts
-    total_savings = Column(Float, nullable=False)  # Float for decimal amounts
-    total_investments = Column(Float, nullable=False)  # Float for decimal amounts
-    net_worth = Column(Float, nullable=False)  # Float for decimal amounts
+    id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
+    date = Column(Date, nullable=False)
+    total_income = Column(Float, nullable=False)
+    total_expenses = Column(Float, nullable=False)
+    total_savings = Column(Float, nullable=False)
+    total_investments = Column(Float, nullable=False)
+    net_worth = Column(Float, nullable=False)
+
     # Foreign Keys
     user_id = Column(Integer, ForeignKey('users.id'))
     household_id = Column(Integer, ForeignKey('households.id'))
-    # Relationships
-    user = relationship('User', back_populates='financials_summaries')
-    household = relationship('Household', back_populates='financials_summaries')
 
-class Household (Base):
+    # Relationships
+    users = relationship('User', back_populates='financials_summaries')
+    households = relationship('Household', back_populates='financials_summaries')
+
+class Household(Base):
     __tablename__ = "households"
-    id = Column(Integer,  primary_key=True, nullable=False, autoincrement=True)
+    id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
     name = Column(String, nullable=False)
     address = Column(String, nullable=False)
     description = Column(String)
+    active = Column(Boolean, default=True, nullable=False)
+
+    # Relationships
+    financials_summaries = relationship('FinancialSummary', back_populates='households')
+    households_members = relationship('HouseholdMember', back_populates='households')
 
 class HouseholdMember(Base):
     __tablename__ = "households_members"
-    id = Column(Integer,  primary_key=True, nullable=False, autoincrement=True)
-    role = Column(SQLEnum(RoleEnum), nullable=False) 
+    id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
+    role = Column(SQLEnum(RoleEnum), nullable=False)
+
     # Foreign Keys
     household_id = Column(Integer, ForeignKey('households.id'))
     user_id = Column(Integer, ForeignKey('users.id'))
-    
-    # Relationships
-    user = relationship('User', back_populates='households_members')
-    household= relationship('Household', back_populates='households_members')
 
+    # Relationships
+    users = relationship('User', back_populates='households_members')
+    households = relationship('Household', back_populates='households_members')
+    actives = Column(Boolean, default=True, nullable=False)

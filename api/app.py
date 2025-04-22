@@ -20,6 +20,7 @@ from routers.user_router import router as user_router
 from routers.place_router import router as place_router
 from routers.expense_router import router as expense_router
 from routers.expense_category_router import router as expense_category_router
+from routers.household_router import router as household_router
 
 from config import Config, DevelopmentConfig
 
@@ -41,6 +42,8 @@ app.register_blueprint(user_router)
 app.register_blueprint(place_router)
 app.register_blueprint(expense_router)
 app.register_blueprint(expense_category_router)
+app.register_blueprint(household_router)
+
 # Run app (optional if using a separate runner)
 if __name__ == "__main__":
     app.run(debug=app.config['DEBUG'], host=app.config['HOST'], port=app.config['PORT'])
