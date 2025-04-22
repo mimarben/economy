@@ -4,14 +4,14 @@ from typing import Optional
 from datetime import datetime
 from models.models import User, Source, InvestmentsCategory
 from flask_babel import _
-
+from models.models import CurrencyEnum
 class InvestmentBase(BaseModel):
     name: str
     description: Optional[str] = None
     amount: float
     value: float
     date: datetime
-    currency: str
+    currency: CurrencyEnum
     user_id: int = Field(..., gt=0)
     account_id: int = Field(..., gt=0)
     category_id: int = Field(..., gt=0)
@@ -48,7 +48,7 @@ class InvestmentUpdate(InvestmentBase):
     amount: Optional [float]
     value: Optional [float]
     date: Optional [datetime]
-    currency: Optional [str]
+    currency: Optional [CurrencyEnum]
     user_id: Optional [int] = Field(..., gt=0)
     account_id: Optional [int] = Field(..., gt=0)
     category_id: Optional [int] = Field(..., gt=0)

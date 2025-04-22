@@ -26,18 +26,18 @@ def create_expense_category():
     db.refresh(new_expense_category)
     return jsonify(ExpenseCategoryRead.model_validate(new_expense_category).model_dump())
 
-@router.get("/expenses_categories/<int:expenses_categories_id>")
-def get_expense_category(expenses_categories_id):
+@router.get("/expenses_categories/<int:expense_category_id>")
+def get_expense_category(expense_category_id):
     db = next(get_db())
-    expense_category = db.query(ExpensesCategory).filter(ExpensesCategory.id == expenses_categories_id).first()
+    expense_category = db.query(ExpensesCategory).filter(ExpensesCategory.id == expense_category_id).first()
     if not expense_category:
         return jsonify({"error": _("EXPENSE_CATEGORY_NOT_FOUND"), "details": "None"}), 404
     return jsonify(ExpenseCategoryRead.model_validate(expense_category).model_dump())
 
-@router.patch("/expenses_categories/<int:expenses_categories_id>")
-def update_expense_category(expenses_categories_id):
+@router.patch("/expenses_categories/<int:expense_category_id>")
+def update_expense_category(expense_category_id):
     db = next(get_db())
-    expense_category = db.query(ExpensesCategory).filter(ExpensesCategory.id == expenses_categories_id).first()
+    expense_category = db.query(ExpensesCategory).filter(ExpensesCategory.id == expense_category_id).first()
     if not expense_category:
         return jsonify({"error": _("EXPENSE_CATEGORY_NOT_FOUND"), "details": "None"}), 404
 

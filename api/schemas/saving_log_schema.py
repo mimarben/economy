@@ -4,6 +4,7 @@ from typing import Optional
 from datetime import datetime
 from models.models import User, Account
 from flask_babel import _
+from models.models import CurrencyEnum
 
 class SavingBase(BaseModel):
     name: str
@@ -13,7 +14,7 @@ class SavingBase(BaseModel):
     category_id: int = Field(..., gt=0)
     place_id: int = Field(..., gt=0)
     account_id: int = Field(..., gt=0)
-    currency: str
+    currency: CurrencyEnum
     
 class SavingRead(SavingBase):
     id: int
@@ -48,7 +49,7 @@ class SavingUpdate(SavingBase):
     category_id: Optional[int]
     place_id: Optional[int]
     user_id: Optional[int]
-    currency: Optional[str]  
+    currency: Optional[CurrencyEnum]  
     # Optional fields
 
 class SavingDelete(BaseModel):

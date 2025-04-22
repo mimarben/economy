@@ -5,7 +5,7 @@ from sqlalchemy.orm import relationship
 
 Base = declarative_base()
 
-class CurrencyEnum(enum.Enum):
+class CurrencyEnum(str, enum.Enum):
     euro = "€"
     dolar = "$"
     yuan = "¥"
@@ -22,13 +22,13 @@ class CurrencyEnum(enum.Enum):
     shiba_inu = "SHIB"
     tron = "TRX"
 
-class RoleEnum(enum.Enum):
+class RoleEnum(str, enum.Enum):
     husband = "husband"
     wife = "wife"
     child = "child"
     other = "other"
 
-class ActionEnum(enum.Enum):
+class ActionEnum(str, enum.Enum):
     buy = "buy"
     sell = "sell"
     transfer = "transfer"
@@ -258,7 +258,6 @@ class FinancialSummary(Base):
 
     # Relationships
     users = relationship('User', back_populates='financials_summaries')
-    households = relationship('Household', back_populates='financials_summaries')
 
 class Household(Base):
     __tablename__ = "households"
@@ -269,13 +268,13 @@ class Household(Base):
     active = Column(Boolean, default=True, nullable=False)
 
     # Relationships
-    financials_summaries = relationship('FinancialSummary', back_populates='households')
     households_members = relationship('HouseholdMember', back_populates='households')
 
 class HouseholdMember(Base):
     __tablename__ = "households_members"
     id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
     role = Column(SQLEnum(RoleEnum), nullable=False)
+    active = Column(Boolean, default=True, nullable=False)
 
     # Foreign Keys
     household_id = Column(Integer, ForeignKey('households.id'))
@@ -284,4 +283,3 @@ class HouseholdMember(Base):
     # Relationships
     users = relationship('User', back_populates='households_members')
     households = relationship('Household', back_populates='households_members')
-    actives = Column(Boolean, default=True, nullable=False)

@@ -5,6 +5,7 @@ class PlaceBase(BaseModel):
     name: str
     address: Optional[str] = None
     description: Optional[str] = None
+    active: bool = True
 class PlaceRead(PlaceBase):
     id: int
 
