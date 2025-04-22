@@ -1,22 +1,22 @@
 from pydantic import BaseModel
 from typing import Optional
 
-class BankBase(BaseModel):
+class AccountBase(BaseModel):
     name: str
     description: Optional[str] = None
-    iban= str
+    iban: str
     balance: float
     active: bool = True
-class BankRead(BankBase):
+class AccountRead(AccountBase):
     id: int
 
     class Config:
         from_attributes = True
 
-class BankCreate(BankBase):
+class AccountCreate(AccountBase):
     pass
 
-class BankUpdate(BaseModel):
+class AccountUpdate(BaseModel):
     name: Optional[str]
     description: Optional[str]
     iban: Optional[str]

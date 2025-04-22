@@ -107,7 +107,7 @@ class Source(Base):
     # Relationships
     incomes = relationship('Income', back_populates='sources')
 
-class IcomesCategory(Base):
+class IncomesCategory(Base):
     __tablename__ = 'incomes_categories'
     id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
     name = Column(String, nullable=False)
@@ -134,7 +134,7 @@ class Income(Base):
     # Relationships
     users = relationship('User', back_populates='incomes')
     sources = relationship('Source', back_populates='incomes')
-    categories = relationship('IcomesCategory', back_populates='incomes')
+    categories = relationship('IncomesCategory', back_populates='incomes')
 
 class Saving(Base):
     __tablename__ = 'savings'
@@ -175,7 +175,7 @@ class Account(Base):
     description = Column(String)
     iban = Column(String, nullable=False)
     balance = Column(Float, nullable=False)
-
+    active = Column(Boolean, default=True, nullable=False)
     # Foreign Keys
     user_id = Column(Integer, ForeignKey('users.id'))
     bank_id = Column(Integer, ForeignKey('banks.id'))

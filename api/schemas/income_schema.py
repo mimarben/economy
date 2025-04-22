@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field, field_validator
 from pydantic_core import PydanticCustomError
 from typing import Optional
 from datetime import datetime
-from models.models import User, Source, IncomesCategory
+from models.models import IncomesCategory, Source, User
 from flask_babel import _
 from models.models import CurrencyEnum
 
@@ -11,10 +11,10 @@ class IncomeBase(BaseModel):
     description: Optional[str] = None
     amount: float
     date: datetime
-    category_id: int = Field(..., gt=0)
-    place_id: int = Field(..., gt=0)
-    user_id: int = Field(..., gt=0)
     currency: CurrencyEnum
+    user_id: int = Field(..., gt=0)
+    source_id: int = Field(..., gt=0)
+    category_id: int = Field(..., gt=0)
     
 class IncomeRead(IncomeBase):
     id: int
@@ -47,10 +47,10 @@ class IncomeUpdate(IncomeBase):
     description: Optional[str] = None
     amount: Optional[float]
     date: Optional[datetime]  # Use str for date representation (ISO format)
-    category_id: Optional[int]
-    place_id: Optional[int]
-    user_id: Optional[int]
     currency: Optional[CurrencyEnum]  
+    user_id: Optional[int]
+    source_id: Optional[int]
+    category_id: Optional[int]
     # Optional fields
 
 class IncomeDelete(BaseModel):

@@ -3,6 +3,7 @@ from pydantic_core import PydanticCustomError
 from typing import Optional
 from datetime import datetime
 from models.models import User, Account
+from sqlalchemy.orm import Session
 from flask_babel import _
 from models.models import CurrencyEnum
 class SavingBase(BaseModel):
@@ -10,10 +11,9 @@ class SavingBase(BaseModel):
     description: Optional[str] = None
     amount: float
     date: datetime
-    category_id: int = Field(..., gt=0)
-    place_id: int = Field(..., gt=0)
-    user_id: int = Field(..., gt=0)
     currency: CurrencyEnum
+    user_id: int = Field(..., gt=0)
+    account_id: int = Field(..., gt=0)
     
 class SavingRead(SavingBase):
     id: int
@@ -28,12 +28,10 @@ class SavingCreate(SavingBase):
         db = info.context.get('db')
         if not db:
             raise ValueError("DATABASE_NOT_AVAILABLE")
-
         model_map = {
             'account_id': Account,
             'user_id': User
         }
-
         model = model_map[info.field_name]
         if not db.query(model).filter(model.id == v).first():
             #raise ValueError(f"{info.field_name.upper()}_NOT_FOUND")
@@ -44,11 +42,10 @@ class SavingUpdate(SavingBase):
     name: Optional[str]
     description: Optional[str] = None
     amount: Optional[float]
-    date: Optional[datetime]  # Use str for date representation (ISO format)
-    category_id: Optional[int]
-    place_id: Optional[int]
-    user_id: Optional[int]
-    currency: Optional[CurrencyEnum]  
+    date: Optional[datetime]
+    currency: Optional[CurrencyEnum]
+    user_id: Optional[int] = Field(..., gt=0)
+    account_id: Optional[int] = Field(..., gt=0)
     # Optional fields
 
 class SavingDelete(BaseModel):
