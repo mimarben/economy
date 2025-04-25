@@ -17,7 +17,6 @@ class SavingBase(BaseModel):
     
 class SavingRead(SavingBase):
     id: int
-
     class Config:
         from_attributes = True
 

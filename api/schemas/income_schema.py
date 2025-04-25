@@ -29,13 +29,11 @@ class IncomeCreate(IncomeBase):
         db = info.context.get('db')
         if not db:
             raise ValueError("DATABASE_NOT_AVAILABLE")
-
         model_map = {
             'category_id': IncomesCategory,
             'source_id': Source,
             'user_id': User
         }
-
         model = model_map[info.field_name]
         if not db.query(model).filter(model.id == v).first():
             #raise ValueError(f"{info.field_name.upper()}_NOT_FOUND")

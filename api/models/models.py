@@ -127,9 +127,9 @@ class Income(Base):
     currency = Column(SQLEnum(CurrencyEnum), nullable=False)
 
     # Foreign Keys
-    user_id = Column(Integer, ForeignKey('users.id'))
-    source_id = Column(Integer, ForeignKey('sources.id'))
-    category_id = Column(Integer, ForeignKey('incomes_categories.id'))
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    source_id = Column(Integer, ForeignKey('sources.id'), nullable=False)
+    category_id = Column(Integer, ForeignKey('incomes_categories.id'), nullable=False)
 
     # Relationships
     users = relationship('User', back_populates='incomes')
@@ -146,8 +146,8 @@ class Saving(Base):
     currency = Column(SQLEnum(CurrencyEnum), nullable=False)
 
     # Foreign Keys
-    user_id = Column(Integer, ForeignKey('users.id'))
-    account_id = Column(Integer, ForeignKey('accounts.id'))
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    account_id = Column(Integer, ForeignKey('accounts.id'), nullable=False)
 
     # Relationships
     users = relationship('User', back_populates='savings')
@@ -163,7 +163,7 @@ class SavingLog(Base):
     note = Column(String)
 
     # Foreign Keys
-    saving_id = Column(Integer, ForeignKey('savings.id'))
+    saving_id = Column(Integer, ForeignKey('savings.id'), nullable=False)
 
     # Relationships
     savings = relationship('Saving', back_populates="savings_logs")
@@ -177,8 +177,8 @@ class Account(Base):
     balance = Column(Float, nullable=False)
     active = Column(Boolean, default=True, nullable=False)
     # Foreign Keys
-    user_id = Column(Integer, ForeignKey('users.id'))
-    bank_id = Column(Integer, ForeignKey('banks.id'))
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    bank_id = Column(Integer, ForeignKey('banks.id'), nullable=False)
 
     # Relationships
     users = relationship('User', back_populates='accounts')
@@ -216,9 +216,9 @@ class Investment(Base):
     currency = Column(SQLEnum(CurrencyEnum), nullable=False)
 
     # Foreign Keys
-    user_id = Column(Integer, ForeignKey('users.id'))
-    account_id = Column(Integer, ForeignKey('accounts.id'))
-    category_id = Column(Integer, ForeignKey('investments_categories.id'))
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    account_id = Column(Integer, ForeignKey('accounts.id'), nullable=False)
+    category_id = Column(Integer, ForeignKey('investments_categories.id'), nullable=False)
     
     # Relationships
     users = relationship('User', back_populates='investments')
@@ -237,7 +237,7 @@ class InvestmentLog(Base):
     note = Column(String)
 
     # Foreign Keys
-    investment_id = Column(Integer, ForeignKey('investments.id'))
+    investment_id = Column(Integer, ForeignKey('investments.id'), nullable=False)
 
     # Relationships
     investments = relationship('Investment', back_populates='investment_logs')
@@ -253,8 +253,8 @@ class FinancialSummary(Base):
     net_worth = Column(Float, nullable=False)
 
     # Foreign Keys
-    user_id = Column(Integer, ForeignKey('users.id'))
-    household_id = Column(Integer, ForeignKey('households.id'))
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    household_id = Column(Integer, ForeignKey('households.id'), nullable=False)
 
     # Relationships
     users = relationship('User', back_populates='financials_summaries')
@@ -277,8 +277,8 @@ class HouseholdMember(Base):
     active = Column(Boolean, default=True, nullable=False)
 
     # Foreign Keys
-    household_id = Column(Integer, ForeignKey('households.id'))
-    user_id = Column(Integer, ForeignKey('users.id'))
+    household_id = Column(Integer, ForeignKey('households.id'), nullable=False)
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
 
     # Relationships
     users = relationship('User', back_populates='households_members')

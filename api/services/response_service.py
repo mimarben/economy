@@ -6,7 +6,13 @@ class Response:
             "error": _(error),
             "details": details
         }), status_code
-    def _ok(response: str, status_code: int):
+    def _ok(response, details: list, status_code: int):
         return jsonify({
-            "response": _(response)
+            "response": _(response),
+            "details": details
         }), status_code
+    def _ok_data(response, details, status_code: int):
+        return jsonify({
+            "response": response,
+            "details": details
+            }), status_code

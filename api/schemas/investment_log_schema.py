@@ -2,44 +2,48 @@ from pydantic import BaseModel, Field, field_validator
 from pydantic_core import PydanticCustomError
 from typing import Optional
 from datetime import datetime
-from models.models import Saving
+from models.models import Investment
 from flask_babel import _
+from models.models import ActionEnum
 
-
-class SavingLogBase(BaseModel):
+class InvestmentLogBase(BaseModel):
     date: datetime
-    amount: float
-    total_amount: float
+    currentValue: float
+    pricePerUnit: float
+    unitsBought: float
+    action: ActionEnum
     note: str
-    saving_id: int = Field(..., gt=0)
+    investment_id: int = Field(..., gt=0)
     
-class SavingLogRead(SavingLogBase):
+class InvestmentLogRead(InvestmentLogBase):
     id: int
     class Config:
         from_attributes = True
 
-class SavingLogCreate(SavingLogBase):
-    @field_validator('saving_id')
+class InvestmentLogCreate(InvestmentLogBase):
+    @field_validator('investment_id')
     @classmethod
     def validate_foreign_key(cls, v, info):
         db = info.context.get('db')
         if not db:
             raise ValueError("DATABASE_NOT_AVAILABLE")
         model_map = {
-            'saving_id': Saving
+            'investment_id': Investment
         }
         model = model_map[info.field_name]
         if not db.query(model).filter(model.id == v).first():
             raise PydanticCustomError("FK_ERROR", f"{info.field_name.upper()}_NOT_FOUND")
         return v
 
-class SavingLogUpdate(SavingLogBase):
+class InvestmentLogUpdate(InvestmentLogBase):
     date: Optional[datetime]
-    amount: Optional[float]
-    total_amount: Optional[float]
+    currentValue: Optional[float]
+    pricePerUnit: Optional[float]
+    unitsBought: Optional[float]
+    action: Optional[ActionEnum]
     note: Optional[str]
-    saving_id: Optional[int]
+    investment_id: Optional[int] = Field(..., gt=0)
     # Optional fields
 
-class SavingLogDelete(BaseModel):
+class InvestmentLogDelete(BaseModel):
     pass

@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Optional
 
 class AccountBase(BaseModel):
@@ -7,6 +7,8 @@ class AccountBase(BaseModel):
     iban: str
     balance: float
     active: bool = True
+    bank_id: int = Field(..., gt=0)
+    user_id: int = Field(..., gt=0)
 class AccountRead(AccountBase):
     id: int
 

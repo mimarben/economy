@@ -2,12 +2,11 @@ from pydantic import BaseModel, Field, field_validator
 from pydantic_core import PydanticCustomError
 from typing import Optional
 from datetime import datetime
-from models.models import User, Source, InvestmentsCategory
+from models.models import User, Account, InvestmentsCategory
 from flask_babel import _
 from models.models import CurrencyEnum
 class InvestmentBase(BaseModel):
     name: str
-    description: Optional[str] = None
     amount: float
     value: float
     date: datetime
@@ -18,7 +17,6 @@ class InvestmentBase(BaseModel):
     
 class InvestmentRead(InvestmentBase):
     id: int
-
     class Config:
         from_attributes = True
 
@@ -32,7 +30,7 @@ class InvestmentCreate(InvestmentBase):
 
         model_map = {
             'category_id': InvestmentsCategory,
-            'source_id': Source,
+            'account_id': Account,
             'user_id': User
         }
 

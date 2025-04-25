@@ -4,7 +4,7 @@ from typing import Optional
 from datetime import datetime
 from models.models import User, Place, ExpensesCategory
 from flask_babel import _
-
+from models.models import CurrencyEnum
 class ExpenseBase(BaseModel):
     name: str
     description: Optional[str] = None
@@ -13,7 +13,7 @@ class ExpenseBase(BaseModel):
     category_id: int = Field(..., gt=0)
     place_id: int = Field(..., gt=0)
     user_id: int = Field(..., gt=0)
-    currency: str
+    currency: CurrencyEnum
     
 class ExpenseRead(ExpenseBase):
     id: int
@@ -49,7 +49,7 @@ class ExpenseUpdate(ExpenseBase):
     category_id: Optional[int]
     place_id: Optional[int]
     user_id: Optional[int]
-    currency: Optional[str]  
+    currency: Optional[CurrencyEnum]  
     # Optional fields
 
 class ExpenseDelete(BaseModel):
