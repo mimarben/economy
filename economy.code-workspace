@@ -24,6 +24,15 @@
 			"titleBar.inactiveBackground": "#9afdb699",
 			"titleBar.inactiveForeground": "#15202b99"
 		},
-		"peacock.color": "#9afdb6"
+		"peacock.color": "#9afdb6",
+		"sqltools.connections": [
+			{
+				"previewLimit": 50,
+				"driver": "SQLite",
+				"name": "economy",
+				"group": "economy",
+				"database": "${workspaceFolder:economy}/api/db/economy.db"
+			}
+		]
 	}
 }
