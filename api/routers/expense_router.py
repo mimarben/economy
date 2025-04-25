@@ -2,15 +2,16 @@ from flask import Blueprint, request, jsonify, abort
 from sqlalchemy.orm import Session
 from pydantic import ValidationError
 from flask_babel import _
-from services.response_service import Response
 
 from models.models import Expense, User, Place, ExpensesCategory
 from schemas.expense_schema import ExpenseCreate, ExpenseRead, ExpenseUpdate
 from db.database import get_db
+from services.response_service import Response
+
 
 
 router = Blueprint('expenses', __name__)
-
+name="expenses"
 @router.post("/expenses")
 def create_expense():
     db: Session = next(get_db())
@@ -22,27 +23,28 @@ def create_expense():
     db.add(new_expense)
     db.commit()
     db.refresh(new_expense)
-    return jsonify(ExpenseRead.model_validate(new_expense).model_dump(), 201)
+    return Response._ok_data(ExpenseRead.model_validate(new_expense).model_dump(), _("EXPENSE_CREATED"), 201)
 
 @router.get("/expenses/<int:expense_id>")
 def get_expense(expense_id):
     db: Session = next(get_db())
     expense = db.query(Expense).filter(Expense.id == expense_id).first()
     if not expense:
-        return jsonify({"error": _("EXPENSE_NOT_FOUND"), "details": _("None")}), 404
-    return jsonify(ExpenseRead.model_validate(expense).model_dump())
+        return Response._error(_("EXPENSE_NOT_FOUND"), _("NONE"), 404, name)
+    return Response._ok_data(ExpenseRead.model_validate(expense).model_dump(), _("EXPENSE_FOUND"), 200, name)
+    
 
 @router.patch("/expenses/<int:expense_id>")
 def update_expense(expense_id):
     db: Session = next(get_db())
     expense = db.query(Expense).filter(Expense.id == expense_id).first()
     if not expense:
-        return Response._error(_("EXPENSE_NOT_FOUND"),_("None"), 404)
+        return Response._error(_("EXPENSE_NOT_FOUND"),_("NONE"), 404, name)
 
     try:
         expense_data = ExpenseUpdate(**request.json)
     except ValidationError as e:
-        return Response._error(_("VALIDATION_ERROR"), e.errors(),400)
+        return Response._error(_("VALIDATION_ERROR"), e.errors(),400, name)
 
     validated_data = expense_data.model_dump(exclude_unset=True)
     for key, value in validated_data.items():
@@ -50,17 +52,17 @@ def update_expense(expense_id):
 
     db.commit()
     db.refresh(expense)
-    return jsonify(ExpenseRead.model_validate(expense).model_dump())
+    return Response._ok_data(ExpenseRead.model_validate(expense).model_dump(), _("EXPENSE_UPDATED"), 200, name)
 
 @router.delete("/expenses/<int:expense_id>")
 def delete_expense(expense_id):
     db: Session = next(get_db())
     expense = db.query(Expense).filter(Expense.id == expense_id).first()
     if not expense:
-        return Response._error(("EXPENSE_NOT_FOUND"),_("None"), 404)
+        return Response._error(("EXPENSE_NOT_FOUND"),_("NONE"), 404, name)
     db.delete(expense)
     db.commit()
-    return Response._error(_("EXPENSE_DELETED"),_("NONE"), 204)
+    return Response._error(_("EXPENSE_DELETED"),_("NONE"), 204, name)
 
 @router.get("/expenses")
 def list_expenses():
@@ -68,5 +70,5 @@ def list_expenses():
     expenses = db.query(Expense).all()
     expense_data = [ExpenseRead.model_validate(u).model_dump() for u in expenses]
     if not expense_data:
-        return Response._error(_("EXPENSE_NOT_FOUND"),_("None"), 404)
-    return jsonify(expense_data)
+        return Response._error(_("EXPENSE_NOT_FOUND"),_("NONE"), 404, name)
+    return Response._ok_data(expense_data, _("EXPENSES_FOUND"), 200, name)

@@ -14,12 +14,14 @@ from .investment_category_router import router as investment_category_router
 from .bank_router import router as bank_router
 from .saving_log_router import router as saving_log_router
 from .investment_log_router import router as investment_log_router
+from .financial_summary_router import router as financial_summary_router
 def register_blueprints(app):
     blueprints = [
         user_router, place_router, expense_router, expense_category_router,
         household_router, household_member_router, income_category_router,
         income_router, source_router, saving_router, account_router, investment_router, 
-        investment_category_router, bank_router, saving_log_router, investment_log_router
+        investment_category_router, bank_router, saving_log_router, investment_log_router,
+        financial_summary_router
     ]
     for bp in blueprints:
         app.register_blueprint(bp)

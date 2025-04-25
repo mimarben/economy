@@ -36,7 +36,7 @@ def update_new_investment(investment_log_id):
     db: Session = next(get_db())
     investment_log = db.query(InvestmentLog).filter(InvestmentLog.id == investment_log_id).first()
     if not investment_log:
-        return Response._error(_("SAVING_NOT_FOUND"),_("None"), 404)
+        return Response._error(_("SAVING_NOT_FOUND"),_("NONE"), 404)
     try:
         new_investment_data = InvestmentLogUpdate(**request.json)
     except ValidationError as e:
@@ -54,7 +54,7 @@ def delete_new_investment(investment_log_id):
     db: Session = next(get_db())
     investment_log = db.query(InvestmentLog).filter(InvestmentLog.id == investment_log_id).first()
     if not investment_log:
-        return Response._error(("SAVING_NOT_FOUND"),_("None"), 404)
+        return Response._error(("SAVING_NOT_FOUND"),_("NONE"), 404)
     db.delete(investment_log)
     db.commit()
     return Response._error(_("SAVING_DELETED"),_("NONE"), 204)
@@ -65,5 +65,5 @@ def list_investments_logs():
     investments_logs = db.query(InvestmentLog).all()
     new_investment_data = [InvestmentLogRead.model_validate(u).model_dump() for u in investments_logs]
     if not new_investment_data:
-        return Response._error(_("SAVING_NOT_FOUND"),_("None"), 404)
+        return Response._error(_("SAVING_NOT_FOUND"),_("NONE"), 404)
     return Response._ok_data(new_investment_data, _("QUERY_OK"), 200)

@@ -10,7 +10,7 @@ from db.database import get_db
 
 
 router = Blueprint('investments', __name__)
-
+name ="investments"
 @router.post("/investments")
 def create_investment():
     db: Session = next(get_db())
@@ -22,14 +22,14 @@ def create_investment():
     db.add(new_investment)
     db.commit()
     db.refresh(new_investment)
-    return jsonify(InvestmentRead.model_validate(new_investment).model_dump(), 201)
+    return Response._ok_data(InvestmentRead.model_validate(new_investment).model_dump(),_("INVESTMENT_CREATED"), 201, name)
 
 @router.get("/investments/<int:investment_id>")
 def get_investment(investment_id):
     db: Session = next(get_db())
     investment = db.query(Investment).filter(Investment.id == investment_id).first()
     if not investment:
-        return jsonify({"error": _("INVESTMENT_NOT_FOUND"), "details": _("None")}), 404
+        return Response._error(_("INVESTMENT_NOT_FOUND"), _("NONE"), 404, name)
     return jsonify(InvestmentRead.model_validate(investment).model_dump())
 
 @router.patch("/investments/<int:investment_id>")
@@ -37,7 +37,7 @@ def update_investment(investment_id):
     db: Session = next(get_db())
     investment = db.query(Investment).filter(Investment.id == investment_id).first()
     if not investment:
-        return Response._error(_("INVESTMENT_NOT_FOUND"),_("None"), 404)
+        return Response._error(_("INVESTMENT_NOT_FOUND"),_("NONE"), 404)
 
     try:
         investment_data = InvestmentUpdate(**request.json)
@@ -57,7 +57,7 @@ def delete_investment(investment_id):
     db: Session = next(get_db())
     investment = db.query(Investment).filter(Investment.id == investment_id).first()
     if not investment:
-        return Response._error(("INVESTMENT_NOT_FOUND"),_("None"), 404)
+        return Response._error(("INVESTMENT_NOT_FOUND"),_("NONE"), 404)
     db.delete(investment)
     db.commit()
     return Response._error(_("INVESTMENT_DELETED"),_("NONE"), 204)
@@ -68,5 +68,5 @@ def list_investments():
     investments = db.query(Investment).all()
     investment_data = [InvestmentRead.model_validate(u).model_dump() for u in investments]
     if not investment_data:
-        return Response._error(_("INVESTMENT_NOT_FOUND"),_("None"), 404)
+        return Response._error(_("INVESTMENT_NOT_FOUND"),_("NONE"), 404)
     return jsonify(investment_data)

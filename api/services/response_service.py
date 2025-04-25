@@ -1,18 +1,32 @@
 from flask import jsonify
 from flask_babel import _
+# Setup logging
+from services.logger_service import setup_logger
+
 class Response:
-    def _error(error: str, details: list, status_code: int):
+    @staticmethod
+    def _error(error: str, details: list, status_code: int, name: str = None):
+        logger = setup_logger(name or "default_error_source")  # Use a default if name is None
+        logger.error(f"Error: {_(error)}, Details: {details}")
         return jsonify({
             "error": _(error),
             "details": details
         }), status_code
-    def _ok(response, details: list, status_code: int):
+
+    @staticmethod
+    def _ok(response, details: list, status_code: int, name: str = None):
+        logger = setup_logger(name or "default_ok_source")  # Use a default if name is None
+        logger.info(f"Response: {_(details)}")
         return jsonify({
             "response": _(response),
             "details": details
         }), status_code
-    def _ok_data(response, details, status_code: int):
+
+    @staticmethod
+    def _ok_data(response, details, status_code: int, name: str = None):
+        logger = setup_logger(name or "default_data_source")  # Use a default if name is None
+        logger.info(f"Response: {_(details)}")
         return jsonify({
             "response": response,
             "details": details
-            }), status_code
+        }), status_code
