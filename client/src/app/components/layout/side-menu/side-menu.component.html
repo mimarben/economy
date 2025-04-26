@@ -1,1 +1,149 @@
-<p>side-menu works!</p>
+<nav class="side-menu" [class.hidden]="isHidden">
+  <mat-list>
+    <a mat-list-item class="menu-item"  routerLink="/" routerLinkActive="active-link">
+      <mat-icon matListItemIcon>home</mat-icon> <!-- Left side -->
+      <span matListItemTitle>Home</span>
+    </a>
+    <mat-list-item (click)="usersSubmenu()" class="menu-item">
+      <mat-icon matListItemIcon>person</mat-icon> <!-- Left side -->
+      <span matListItemTitle>Users</span>
+      <span class="spacer"></span> <!-- Push the next icon to the right -->
+        <mat-icon [fontIcon]="usersMenuOpen ? 'arrow_drop_up' : 'arrow_drop_down'"></mat-icon>
+    </mat-list-item>
+    <div *ngIf="usersMenuOpen" class="submenu">
+      <mat-divider></mat-divider>
+      <a mat-list-item class="submenu-item" routerLink="/users" routerLinkActive="active-link">
+        <span>List</span>
+      </a>
+      <mat-list-item class="submenu-item">
+        <span>Create</span>
+      </mat-list-item>
+      <mat-list-item class="submenu-item">
+        <span>Modify</span>
+      </mat-list-item>
+      <mat-list-item class="submenu-item">
+        <span>Delete</span>
+      </mat-list-item>
+    </div>
+
+    <mat-list-item (click)="expensesSubmenu()" class="menu-item">
+      <mat-icon matListItemIcon>credit_card</mat-icon> <!-- Left side -->
+      <span matListItemTitle>Expenses</span>
+      <span class="spacer"></span> <!-- Push the next icon to the right -->
+        <mat-icon [fontIcon]="expensesMenuOpen ? 'arrow_drop_up' : 'arrow_drop_down'"></mat-icon>
+    </mat-list-item>
+    <div *ngIf="expensesMenuOpen" class="submenu">
+      <mat-divider></mat-divider>
+      <a mat-list-item class="submenu-item" routerLink="/users" routerLinkActive="active-link">
+        <span>Expenses</span>
+      </a>
+      <mat-list-item class="submenu-item">
+        <span>Expenses Category</span>
+      </mat-list-item>
+      <mat-list-item class="submenu-item">
+        <span>Places</span>
+      </mat-list-item>
+    </div>
+
+    <mat-list-item (click)="incomesSubmenu()" class="menu-item">
+      <mat-icon matListItemIcon>attach_money</mat-icon> <!-- Left side -->
+      <span matListItemTitle>Incomes</span>
+      <span class="spacer"></span> <!-- Push the next icon to the right -->
+        <mat-icon [fontIcon]="incomesMenuOpen ? 'arrow_drop_up' : 'arrow_drop_down'"></mat-icon>
+    </mat-list-item>
+    <div *ngIf="incomesMenuOpen" class="submenu">
+      <mat-divider></mat-divider>
+      <a mat-list-item class="submenu-item" routerLink="/users" routerLinkActive="active-link">
+        <span>Incomes</span>
+      </a>
+      <mat-list-item class="submenu-item">
+        <span>Incomes Category</span>
+      </mat-list-item>
+    </div>
+
+    <mat-list-item (click)="investmentsSubmenu()" class="menu-item">
+      <mat-icon matListItemIcon>
+        <span class="material-symbols-outlined">finance_mode</span>
+      </mat-icon> <!-- Left side -->
+      <span matListItemTitle>Investments</span>
+      <span class="spacer"></span> <!-- Push the next icon to the right -->
+        <mat-icon [fontIcon]="investmentsMenuOpen ? 'arrow_drop_up' : 'arrow_drop_down'"></mat-icon>
+    </mat-list-item>
+    <div *ngIf="investmentsMenuOpen" class="submenu">
+      <mat-divider></mat-divider>
+      <a mat-list-item class="submenu-item" routerLink="/users" routerLinkActive="active-link">
+        <span>Investments</span>
+      </a>
+      <mat-list-item class="submenu-item">
+        <span>Investments Category</span>
+      </mat-list-item>
+      <mat-list-item class="submenu-item">
+        <span>Investments Log</span>
+      </mat-list-item>
+    </div>
+
+    <mat-list-item (click)="savingsSubmenu()" class="menu-item">
+      <mat-icon matListItemIcon>
+        <span class="material-symbols-outlined">savings</span>
+      </mat-icon> <!-- Left side -->
+      <span matListItemTitle>Savings</span>
+      <span class="spacer"></span> <!-- Push the next icon to the right -->
+        <mat-icon [fontIcon]="savingsMenuOpen ? 'arrow_drop_up' : 'arrow_drop_down'"></mat-icon>
+    </mat-list-item>
+    <div *ngIf="savingsMenuOpen" class="submenu">
+      <mat-divider></mat-divider>
+      <mat-list-item class="submenu-item">
+        <span>Savings</span>
+      </mat-list-item>
+      <mat-list-item class="submenu-item">
+        <span>Savings Log</span>
+      </mat-list-item>
+      <mat-list-item class="submenu-item">
+        <span>Source</span>
+      </mat-list-item>
+    </div>
+
+    <mat-list-item (click)="householdsSubmenu()" class="menu-item">
+      <mat-icon matListItemIcon>
+        <span class="material-symbols-outlined">location_away</span>
+      </mat-icon> <!-- Left side -->
+      <span matListItemTitle>House Hold</span>
+      <span class="spacer"></span> <!-- Push the next icon to the right -->
+        <mat-icon [fontIcon]="householdsMenuOpen ? 'arrow_drop_up' : 'arrow_drop_down'"></mat-icon>
+    </mat-list-item>
+    <div *ngIf="householdsMenuOpen" class="submenu">
+      <mat-divider></mat-divider>
+      <mat-list-item class="submenu-item">
+        <span>House Hold</span>
+      </mat-list-item>
+      <mat-list-item class="submenu-item">
+        <span>HouseHold Members</span>
+      </mat-list-item>
+    </div>
+
+    <mat-list-item (click)="banksSubmenu()" class="menu-item">
+      <mat-icon matListItemIcon>
+        <span class="material-symbols-outlined">account_balance</span>
+      </mat-icon> <!-- Left side -->
+      <span matListItemTitle>Banks</span>
+      <span class="spacer"></span> <!-- Push the next icon to the right -->
+        <mat-icon [fontIcon]="banksMenuOpen ? 'arrow_drop_up' : 'arrow_drop_down'"></mat-icon>
+    </mat-list-item>
+    <div *ngIf="banksMenuOpen" class="submenu">
+      <mat-divider></mat-divider>
+      <mat-list-item class="submenu-item">
+        <span>Banks</span>
+      </mat-list-item>
+      <mat-list-item class="submenu-item">
+        <span>Accounts</span>
+      </mat-list-item>
+    </div>
+    <a mat-list-item class="menu-item" routerLink="/products" routerLinkActive="active-link">
+      <mat-icon matListItemIcon>assignment</mat-icon> <!-- Left side -->
+      <span matListItemTitle>Financial Summary</span>
+    </a>
+
+
+
+  </mat-list>
+</nav>

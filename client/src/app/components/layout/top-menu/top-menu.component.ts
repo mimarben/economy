@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Output, EventEmitter } from '@angular/core';
 import { MaterialModule } from '../../../material.module';
 @Component({
   selector: 'app-top-menu',
@@ -9,5 +9,5 @@ import { MaterialModule } from '../../../material.module';
   styleUrl: './top-menu.component.css'
 })
 export class TopMenuComponent {
-
+  @Output() toggleSidenav = new EventEmitter<void>()
 }

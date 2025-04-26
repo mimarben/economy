@@ -18,11 +18,10 @@ import { FooterComponent } from '../footer/footer.component';
   styleUrl: './layout.component.css'
 })
 export class LayoutComponent {
-  ngOnInit() {
-    console.log('LayoutComponent initialized');
+  isSideMenuHidden = false;
+  handleToggleSideMenu() {
+    this.isSideMenuHidden = !this.isSideMenuHidden;
   }
 
-  ngAfterViewInit() {
-    console.log('LayoutComponent view initialized');
-  }
+
 }

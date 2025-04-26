@@ -1,8 +1,10 @@
-<app-top-menu></app-top-menu>
-<div class="d-flex">
-  <app-side-menu></app-side-menu>
-  <main class="flex-fill p-3">
+<app-top-menu (toggleSidenav)="handleToggleSideMenu()"></app-top-menu>
+
+<div class="canvas" [class.menu-hidden]="isSideMenuHidden">
+  <app-side-menu [isHidden]="isSideMenuHidden"></app-side-menu>
+  <main class="main">
     <router-outlet></router-outlet>
   </main>
 </div>
+
 <app-footer></app-footer>

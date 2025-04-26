@@ -1,0 +1,22 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+/* Space under fixed header */
+.canvas {
+  flex: 1;
+  display: flex;
+  margin-top: 64px;  /* height of <app-top-menu> toolbar */
+  margin-bottom: 56px; /* height of <app-footer> toolbar */
+}
+
+/* Main content */
+.main {
+  flex: 1;
+  overflow: auto;
+  padding: 16px;
+}
+
+/* Side menu is fixed in its own component */

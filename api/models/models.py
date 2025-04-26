@@ -219,7 +219,7 @@ class Investment(Base):
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
     account_id = Column(Integer, ForeignKey('accounts.id'), nullable=False)
     category_id = Column(Integer, ForeignKey('investments_categories.id'), nullable=False)
-    
+
     # Relationships
     users = relationship('User', back_populates='investments')
     accounts = relationship('Account', back_populates='investments')
