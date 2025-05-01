@@ -24,7 +24,7 @@ def export_schema(model: Type[BaseModel]):
     with open(json_path, "w", encoding="utf-8") as f:
         json.dump(schema, f, indent=2, ensure_ascii=False)
 
-    print(f"✔ Esquema exportado: {json_path}")
+    #print(f"✔ Esquema exportado: {json_path}")
 
     # Ejecutar json2ts
     result = subprocess.run([
@@ -38,4 +38,4 @@ def export_schema(model: Type[BaseModel]):
         print("STDERR:", result.stderr)
         raise RuntimeError("json2ts falló")
 
-    print(f"✔ Modelo TypeScript generado: {ts_path}")
+    #print(f"✔ Modelo TypeScript generado: {ts_path}")
