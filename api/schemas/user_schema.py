@@ -27,6 +27,7 @@ class UserBase(BaseModel):
     email: Optional[EmailStr] = None
     active: bool = True
     telephone: Optional[int] = None
+    currency:str= "€"
     @field_validator('dni')
     def validate_dni(value: str) -> str:
         return check_dni(value)

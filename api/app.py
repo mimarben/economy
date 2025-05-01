@@ -5,6 +5,7 @@ import os
 from dotenv import load_dotenv
 import sys
 from werkzeug.exceptions import HTTPException
+from flask_cors import CORS
 
 
 
@@ -12,10 +13,7 @@ load_dotenv()
 pythonpath = os.getenv('PYTHONPATH')
 if pythonpath and pythonpath not in sys.path:
     sys.path.insert(0,pythonpath)
-if pythonpath:
-    print(f"PYTHONPATH is set to: {pythonpath}")
-else:
-    print("PYTHONPATH is not set.")
+
 
 from routers import register_blueprints
 
@@ -28,6 +26,11 @@ logger = setup_logger("main")
 
 app = Flask(__name__)
 app.config.from_object(DevelopmentConfig)
+CORS(app,
+    origins=app.config['CORS']['origins'],
+    methods=app.config['CORS']['methods'],
+    allow_headers=app.config['CORS']['allow_headers'])
+
 
 # Define the locale selector function
 def get_locale():

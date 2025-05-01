@@ -22,7 +22,11 @@ class DevelopmentConfig(Config):
     PORT=5001
     HOST="0.0.0.0"
     PREFIX="/api"
-
+    CORS = {
+        "origins": ["http://localhost:4200"],
+        "methods": ["GET", "POST", "PUT", "PATCH", "DELETE"],
+        "allow_headers": ["Content-Type", "Authorization"]
+    }
 class TestingConfig(Config):
     TESTING = True
     DATABASE_PATH = "db/economy_test.db"  # Path to translation files
