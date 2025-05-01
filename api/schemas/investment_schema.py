@@ -5,6 +5,7 @@ from datetime import datetime
 from models.models import User, Account, InvestmentsCategory
 from flask_babel import _
 from models.models import CurrencyEnum
+from utils.schema_exporter import export_schema  # si guardas la función en otro archivo
 class InvestmentBase(BaseModel):
     name: str
     amount: float
@@ -14,7 +15,7 @@ class InvestmentBase(BaseModel):
     user_id: int = Field(..., gt=0)
     account_id: int = Field(..., gt=0)
     category_id: int = Field(..., gt=0)
-    
+
 class InvestmentRead(InvestmentBase):
     id: int
     class Config:
@@ -55,3 +56,4 @@ class InvestmentUpdate(InvestmentBase):
 class InvestmentDelete(BaseModel):
     pass
 
+export_schema(InvestmentBase)

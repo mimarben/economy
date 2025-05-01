@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, Integer, String, Float, Date, Boolean, ForeignKey, Enum as SQLEnum
+from sqlalchemy import Column, Integer, String, Float, Date, Boolean, ForeignKey, Enum as SQLEnum
 import enum
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship

@@ -174,3 +174,5 @@ cython_debug/
 .pypirc
 api/db/economy.db
 
+# Folders
+api/utils/api

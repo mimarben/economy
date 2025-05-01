@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field
 from typing import Optional
 from datetime import datetime
+from utils.schema_exporter import export_schema  # si guardas la función en otro archivo
 class FinancialSummaryBase(BaseModel):
     name: str
     date: datetime
@@ -30,3 +31,5 @@ class FinancialSummaryUpdate(BaseModel):
     net_worth: Optional[float]
     user_id: Optional[int]
     household_id: Optional[int]
+
+export_schema(FinancialSummaryBase)

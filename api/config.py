@@ -21,11 +21,15 @@ class DevelopmentConfig(Config):
     DEBUG = True
     PORT=5001
     HOST="0.0.0.0"
-    
+    PREFIX="/api"
+
 class TestingConfig(Config):
     TESTING = True
     DATABASE_PATH = "db/economy_test.db"  # Path to translation files
-    
+
 
 class ProductionConfig(Config):
     DEBUG = False
+    PORT=5000
+    HOST=""
+    PREFIX="/api"

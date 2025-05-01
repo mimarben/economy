@@ -4,7 +4,7 @@ from typing import Optional
 from datetime import datetime
 from models.models import Saving
 from flask_babel import _
-
+from utils.schema_exporter import export_schema  # si guardas la función en otro archivo
 
 class SavingLogBase(BaseModel):
     date: datetime
@@ -12,7 +12,7 @@ class SavingLogBase(BaseModel):
     total_amount: float
     note: str
     saving_id: int = Field(..., gt=0)
-    
+
 class SavingLogRead(SavingLogBase):
     id: int
     class Config:
@@ -43,3 +43,4 @@ class SavingLogUpdate(SavingLogBase):
 
 class SavingLogDelete(BaseModel):
     pass
+export_schema(SavingLogBase)

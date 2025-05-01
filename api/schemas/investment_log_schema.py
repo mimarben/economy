@@ -5,6 +5,7 @@ from datetime import datetime
 from models.models import Investment
 from flask_babel import _
 from models.models import ActionEnum
+from utils.schema_exporter import export_schema  # si guardas la función en otro archivo
 
 class InvestmentLogBase(BaseModel):
     date: datetime
@@ -14,7 +15,7 @@ class InvestmentLogBase(BaseModel):
     action: ActionEnum
     note: str
     investment_id: int = Field(..., gt=0)
-    
+
 class InvestmentLogRead(InvestmentLogBase):
     id: int
     class Config:
@@ -47,3 +48,5 @@ class InvestmentLogUpdate(InvestmentLogBase):
 
 class InvestmentLogDelete(BaseModel):
     pass
+
+export_schema(InvestmentLogBase)

@@ -6,6 +6,7 @@ from models.models import User, Account
 from sqlalchemy.orm import Session
 from flask_babel import _
 from models.models import CurrencyEnum
+from utils.schema_exporter import export_schema  # si guardas la función en otro archivo
 class SavingBase(BaseModel):
     name: str
     description: Optional[str] = None
@@ -14,7 +15,7 @@ class SavingBase(BaseModel):
     currency: CurrencyEnum
     user_id: int = Field(..., gt=0)
     account_id: int = Field(..., gt=0)
-    
+
 class SavingRead(SavingBase):
     id: int
     class Config:
@@ -50,3 +51,4 @@ class SavingUpdate(SavingBase):
 class SavingDelete(BaseModel):
     pass
 
+export_schema(SavingBase)

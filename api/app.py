@@ -38,7 +38,7 @@ def get_locale():
 babel = Babel(app, locale_selector=get_locale)
 
 # Register route blueprint
-register_blueprints(app)
+register_blueprints(app, url_prefix=app.config['PREFIX'])
 
 
 # Global error handler

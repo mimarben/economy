@@ -1,1 +1,9 @@
-<p>users works!</p>
+<!-- src/app/components/user-list/user-list.component.html -->
+<div *ngIf="isLoading">Cargando usuarios...</div>
+<div *ngIf="errorMessage">{{ errorMessage }}</div>
+
+<ul *ngIf="!isLoading && !errorMessage">
+  <li *ngFor="let user of users">
+    <p>{{ user.name }} - {{ user.email }}</p>
+  </li>
+</ul>

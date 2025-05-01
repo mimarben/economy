@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
 from typing import Optional
-
+from utils.schema_exporter import export_schema  # si guardas la función en otro archivo
 class AccountBase(BaseModel):
     name: str
     description: Optional[str] = None
@@ -24,3 +24,5 @@ class AccountUpdate(BaseModel):
     iban: Optional[str]
     balance:  Optional[float]
     active: Optional[bool]
+
+export_schema(AccountBase)

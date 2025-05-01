@@ -5,7 +5,7 @@ from datetime import datetime
 from models.models import IncomesCategory, Source, User
 from flask_babel import _
 from models.models import CurrencyEnum
-
+from utils.schema_exporter import export_schema  # si guardas la función en otro archivo
 class IncomeBase(BaseModel):
     name: str
     description: Optional[str] = None
@@ -15,7 +15,7 @@ class IncomeBase(BaseModel):
     user_id: int = Field(..., gt=0)
     source_id: int = Field(..., gt=0)
     category_id: int = Field(..., gt=0)
-    
+
 class IncomeRead(IncomeBase):
     id: int
 
@@ -45,7 +45,7 @@ class IncomeUpdate(IncomeBase):
     description: Optional[str] = None
     amount: Optional[float]
     date: Optional[datetime]  # Use str for date representation (ISO format)
-    currency: Optional[CurrencyEnum]  
+    currency: Optional[CurrencyEnum]
     user_id: Optional[int]
     source_id: Optional[int]
     category_id: Optional[int]
@@ -53,4 +53,6 @@ class IncomeUpdate(IncomeBase):
 
 class IncomeDelete(BaseModel):
     pass
+
+export_schema(IncomeBase)
 
