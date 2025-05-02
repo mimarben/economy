@@ -10,3 +10,36 @@ table {
 td, th {
   width: 25%;
 }
+.action-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Center buttons */
+  gap: 18px;
+}
+.action-icons mat-icon {
+  cursor: pointer;
+  transition: color 0.2s;
+  margin-right: 16px; /* Add margin to the right of each icon */
+}
+
+.action-icons mat-icon:last-child {
+  margin-right: 0; /* Remove margin from the last icon */
+}
+
+.user-table th.mdc-data-table__header-cell {
+  height: 64px;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.user-table tr.mdc-data-table__row {
+  height: 72px;
+}
+
+.demo-button-container {
+  padding-bottom: 16px;
+}
+
+.demo-button + .demo-button {
+  margin-left: 8px;
+}

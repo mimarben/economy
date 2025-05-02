@@ -2,3 +2,112 @@
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+
+/* Enhanced toast styles for @ngxpert/hot-toast */
+
+/* Enhanced toast styles for @ngxpert/hot-toast with custom icons, hiding default icons */
+/* Enhanced toast styles for @ngxpert/hot-toast with custom icons, hiding default icons */
+
+.toast-success {
+  background: linear-gradient(135deg, #4caf50, #388e3c) !important;
+  color: #e8f5e9 !important;
+  border: 1px solid #2e7d32 !important;
+  box-shadow: 0 2px 8px rgba(46, 125, 50, 0.4) !important;
+  border-radius: 6px !important;
+  position: relative;
+  padding-left: 40px !important;
+}
+
+.toast-success::before {
+  content: "✔️";
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 18px;
+  color: #a5d6a7;
+}
+
+.toast-error {
+  background: linear-gradient(135deg, rgba(244, 67, 54, 0.85), rgba(211, 47, 47, 0.85)) !important;
+  color: #ffebee !important;
+  border: 1px solid #b71c1c !important;
+  box-shadow: 0 2px 8px rgba(183, 28, 28, 0.5) !important;
+  border-radius: 6px !important;
+  position: relative;
+  padding-left: 40px !important;
+}
+
+.toast-error::before {
+  content: "❌";
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 18px;
+  color: #ef9a9a;
+}
+
+.toast-info {
+  background: linear-gradient(135deg, #2196f3, #1565c0) !important;
+  color: #e3f2fd !important;
+  border: 1px solid #0d47a1 !important;
+  box-shadow: 0 2px 8px rgba(13, 71, 161, 0.5) !important;
+  border-radius: 6px !important;
+  position: relative;
+  padding-left: 40px !important;
+}
+
+.toast-info::before {
+  content: "ℹ️";
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 18px;
+  color: #90caf9;
+}
+
+.toast-warning {
+  background: linear-gradient(135deg, #ff9800, #ef6c00) !important;
+  color: #fff3e0 !important;
+  border: 1px solid #e65100 !important;
+  box-shadow: 0 2px 8px rgba(230, 81, 0, 0.5) !important;
+  border-radius: 6px !important;
+  position: relative;
+  padding-left: 40px !important;
+}
+
+.toast-warning::before {
+  content: "⚠️";
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 18px;
+  color: #ffcc80;
+}
+
+/* Hide default icons provided by @ngxpert/hot-toast (assumed class or element) */
+.hot-toast-icon,
+.hot-toast-icon svg,
+.hot-toast-icon img {
+  display: none !important;
+}
+
+/* Action button style for all toasts */
+
+.toast-action {
+  margin-left: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  color: inherit;
+  transition: color 0.15s ease-in-out;
+}
+
+.toast-action:hover {
+  color: #fff;
+  text-decoration: none;
+}

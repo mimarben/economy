@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -8,7 +7,11 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { MatGridList, MatGridTile } from '@angular/material/grid-list';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+
 
 
 @NgModule({
@@ -22,7 +25,10 @@ import { MatGridList, MatGridTile } from '@angular/material/grid-list';
     MatCardModule,
     MatFormFieldModule,
     MatGridList,
-    MatGridTile
+    MatGridTile,
+    MatDialogModule,
+    MatInputModule,
+    MatCheckboxModule
   ],
   exports: [
     MatButtonModule,
@@ -34,7 +40,10 @@ import { MatGridList, MatGridTile } from '@angular/material/grid-list';
     MatCardModule,
     MatFormFieldModule,
     MatGridList,
-    MatGridTile
+    MatGridTile,
+    MatDialogModule,
+    MatInputModule,
+    MatCheckboxModule
   ]
 })
 

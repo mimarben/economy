@@ -4,28 +4,10 @@
       <mat-icon matListItemIcon>home</mat-icon> <!-- Left side -->
       <span matListItemTitle>Home</span>
     </a>
-    <mat-list-item (click)="usersSubmenu()" class="menu-item">
+    <mat-list-item class="menu-item" routerLink="/users" routerLinkActive="active-link">
       <mat-icon matListItemIcon>person</mat-icon> <!-- Left side -->
       <span matListItemTitle>Users</span>
-      <span class="spacer"></span> <!-- Push the next icon to the right -->
-        <mat-icon [fontIcon]="usersMenuOpen ? 'arrow_drop_up' : 'arrow_drop_down'"></mat-icon>
     </mat-list-item>
-    <div *ngIf="usersMenuOpen" class="submenu">
-      <mat-divider></mat-divider>
-      <a mat-list-item class="submenu-item" routerLink="/users" routerLinkActive="active-link">
-        <span>List</span>
-      </a>
-      <mat-list-item class="submenu-item">
-        <span>Create</span>
-      </mat-list-item>
-      <mat-list-item class="submenu-item">
-        <span>Modify</span>
-      </mat-list-item>
-      <mat-list-item class="submenu-item">
-        <span>Delete</span>
-      </mat-list-item>
-    </div>
-
     <mat-list-item (click)="expensesSubmenu()" class="menu-item">
       <mat-icon matListItemIcon>credit_card</mat-icon> <!-- Left side -->
       <span matListItemTitle>Expenses</span>

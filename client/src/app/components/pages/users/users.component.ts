@@ -1,15 +1,18 @@
-import { AfterViewInit, Component, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MaterialModule } from '../../../material.module';
+import { MatDialog } from '@angular/material/dialog';
+
 
 import { UserService } from '../../../services/user.service';
 import { UserBase as User } from '../../../models/UserBase';
 import { ApiResponse } from '../../../models/apiResponse';
-
+import { EditUserDialogComponent } from './user-form-dialog/user-form-dialog.component';
 @Component({
   selector: 'app-users',
   standalone: true, // Add this if using Angular Standalone Components
@@ -19,7 +22,8 @@ import { ApiResponse } from '../../../models/apiResponse';
     MatInputModule,
     MatTableModule,
     MatSortModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MaterialModule
   ],
   templateUrl: './users.component.html',
   styleUrl: './users.component.css'
@@ -31,18 +35,29 @@ export class UsersComponent implements AfterViewInit {
   details = '';
   dataSource = new MatTableDataSource<User>();
   displayedColumns: string[] = [
-    'id', 'name', 'Surname1', 'Surname2', 'Dni', 'Email', 'Active', 'telephone'
+    'id', 'name', 'Surname1', 'Surname2', 'Dni', 'Email', 'Active', 'telephone','actions'
   ];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private userService: UserService) {}
+  constructor(
+    private userService: UserService,
+    private dialog: MatDialog,
+    private cdRef: ChangeDetectorRef) {}
 
   ngAfterViewInit() {
     this.userService.getUsers().subscribe({
       next: (data: ApiResponse<User[]>) => {
-        this.users = data.response;
+        if (Array.isArray(data.response)) {
+          this.users = data.response;
+          this.dataSource.data = this.users;
+        } else {
+          // Si response es un string, puedes manejarlo como error o mensaje informativo
+          this.errorMessage = data.response;
+          this.users = []; // O manejarlo como prefieras
+          this.dataSource.data = [];
+        }
         this.details = data.details;
         this.dataSource.data = this.users;
         this.dataSource.paginator = this.paginator;
@@ -59,5 +74,56 @@ export class UsersComponent implements AfterViewInit {
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
+  editUser(user: User): void {
+    const userData = { ...user }; // Crea una copia del usuario
+    const dialogRef = this.dialog.open(EditUserDialogComponent, {
+      width: 'auto',
+      height: 'auto',
+      disableClose: true,
+      data: userData
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        const index = this.dataSource.data.findIndex(u => u.id === result.id);
+        if (index !== -1) {
+          const updatedData = [...this.dataSource.data];
+          updatedData[index] = result;
+          this.dataSource.data = updatedData;
+          this.dataSource._updateChangeSubscription();
+        }
+      }
+    });
+  }
+
+  addUser(): void {
+    const userData = {
+      id: null, // o null si tu backend lo maneja así
+      name: '',
+      Surname1: '',
+      Surname2: '',
+      Dni: '',
+      Email: '',
+      Active: true,
+      telephone: ''
+    };
+
+    const dialogRef = this.dialog.open(EditUserDialogComponent, {
+      width: 'auto',
+      height: 'auto',
+      disableClose: true,
+      data: userData // Pasa el nuevo usuario vacío
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        console.log('Nuevo usuario creado:', result);
+        // Añade el nuevo usuario a la tabla
+        this.dataSource.data = [result, ...this.dataSource.data];
+        this.cdRef.detectChanges(); // Notifica cambios
+      }
+    });
   }
 }

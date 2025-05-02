@@ -46,7 +46,7 @@ class User(Base):
     email = Column(String)
     active = Column(Boolean, default=True, nullable=False)
     telephone = Column(Integer)
-    currency = Column(SQLEnum(CurrencyEnum), nullable=False)
+
 
     # Relationships
     expenses = relationship('Expense', back_populates='users')

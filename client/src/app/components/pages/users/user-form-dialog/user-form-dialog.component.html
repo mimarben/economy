@@ -1,0 +1,77 @@
+<h1 mat-dialog-title>{{isEditMode? 'Edit': 'Add'}} User {{ isEditMode ? `(${data.id})` : '' }}</h1>
+<div *ngIf="isLoading" class="loading">Saving...</div>
+<div *ngIf="errorMessage && !isLoading" class="error-message">
+  {{ errorMessage }}
+</div>
+
+<form [formGroup]="userForm"> <!-- Aquí se usa formGroup -->
+  <div mat-dialog-content class="edit-user-form">
+    <!-- Name, Surname1 y Surname2 en una línea -->
+    <div class="row-3">
+      <mat-form-field appearance="fill">
+        <mat-label>Name</mat-label>
+        <input matInput formControlName="name">
+        <mat-error *ngIf="formControls['name'].hasError('required')">
+          Name is required
+        </mat-error>
+        <mat-error *ngIf="formControls['name'].hasError('minlength')">
+          Name must be at least 2 characters
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Surname1</mat-label>
+        <input matInput formControlName="surname1">
+        <mat-error *ngIf="formControls['surname1'].hasError('required')">
+          First surname is required
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Surname2</mat-label>
+        <input matInput formControlName="surname2">
+      </mat-form-field>
+    </div>
+
+    <!-- Email y Telephone en una línea -->
+    <div class="row-2">
+      <mat-form-field appearance="fill">
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="email">
+        <mat-error *ngIf="formControls['email'].hasError('required')">
+          Email is required
+        </mat-error>
+        <mat-error *ngIf="formControls['email'].hasError('email')">
+          Please enter a valid email address
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Telephone</mat-label>
+        <input matInput formControlName="telephone">
+         <mat-error *ngIf="formControls['telephone'].hasError('pattern')">
+          Please enter a valid 9-digit phone number
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <!-- DNI y Active en una línea -->
+    <div class="row-2">
+      <mat-form-field appearance="fill">
+        <mat-label>ID</mat-label>
+        <input matInput formControlName="dni">
+        <mat-error *ngIf="formControls['dni'].hasError('required')">
+          DNI is required
+        </mat-error>
+        <mat-error *ngIf="formControls['dni'].hasError('invalidDNI')">
+          {{ formControls['dni'].getError('message') }}
+        </mat-error>
+      </mat-form-field>
+      <div class="checkbox-row">
+        <mat-checkbox formControlName="active">Active</mat-checkbox>
+      </div>
+    </div>
+  </div>
+
+  <div mat-dialog-actions>
+    <button mat-flat-button (click)="updateUser()" [disabled]="userForm.invalid">Save</button>
+    <button mat-stroked-button (click)="onCancel()">Cancel</button>
+  </div>
+</form>

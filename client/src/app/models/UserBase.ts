@@ -4,7 +4,7 @@
  * DO NOT MODIFY IT BY HAND. Instead, modify the source JSONSchema file,
  * and run json-schema-to-typescript to regenerate this file.
  */
-
+export type Id = number;
 export type Name = string;
 export type Surname1 = string;
 export type Surname2 = string | null;
@@ -14,6 +14,7 @@ export type Active = boolean;
 export type Telephone = number | null;
 
 export interface UserBase {
+  id: Id;
   name: Name;
   surname1: Surname1;
   surname2?: Surname2;
