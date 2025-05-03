@@ -4,7 +4,7 @@
  * DO NOT MODIFY IT BY HAND. Instead, modify the source JSONSchema file,
  * and run json-schema-to-typescript to regenerate this file.
  */
-import { CurrencyEnum } from "./currency";
+import { CurrencyEnum } from "./CurrencyBase";
 export type Name = string;
 export type Description = string | null;
 export type Amount = number;

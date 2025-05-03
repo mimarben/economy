@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 import sys
 from werkzeug.exceptions import HTTPException
 from flask_cors import CORS
-
+from sqlalchemy.exc import TimeoutError as SQLAlchemyTimeoutError
 
 
 load_dotenv()
@@ -48,6 +48,8 @@ register_blueprints(app, url_prefix=app.config['PREFIX'])
 @app.errorhandler(Exception)
 def handle_exception(e):
     logger.exception("Unhandled Exception: %s", str(e))
+    if isinstance(e, SQLAlchemyTimeoutError):
+        return {"error": "Database connection timed out."}, 500
     if isinstance(e, HTTPException):
         return {"error": e.description}, e.code
     return {"error": "An internal error occurred."}, 500

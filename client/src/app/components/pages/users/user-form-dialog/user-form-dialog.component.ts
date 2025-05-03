@@ -18,19 +18,20 @@ import { environment } from '../../../../../environments/environment';
   templateUrl: './user-form-dialog.component.html',
   styleUrl: './user-form-dialog.component.css'
 })
-export class EditUserDialogComponent {
+export class UserFromDialogComponent {
   errorMessage: string | null = null; // Add errorMessage property
   isLoading = false;
   userForm: FormGroup;
   isEditMode = false;
   constructor(
     private fb: FormBuilder,
-    public dialogRef: MatDialogRef<EditUserDialogComponent>,
+    public dialogRef: MatDialogRef<UserFromDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: User,
     private userService: UserService,
     private toastService: ToastService) {
       this.isEditMode = !!data?.id;
       this.userForm = this.fb.group({
+        id: [this.isEditMode ? data.id : null], // ID solo en modo edición
         name: [this.isEditMode ? data.name : '', [Validators.required, Validators.minLength(2)]],
         surname1: [this.isEditMode ? data.surname1 : '', [Validators.required]],
         surname2: [this.isEditMode ? data.surname2 : ''], // Opcional

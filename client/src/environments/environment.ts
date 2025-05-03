@@ -16,5 +16,9 @@ export const environment = {
     Error: ToastType.Error,
     Warning: ToastType.Warning,
     Info: ToastType.Info
+  },
+  i18n: {
+    defaultLanguage: 'en',
+    availableLanguages: ['en', 'es',]
   }
 };

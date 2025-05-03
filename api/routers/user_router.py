@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from pydantic import ValidationError
 from flask_babel import Babel, _
 
+
 from models.models import User
 from schemas.user_schema import UserCreate, UserRead, UserUpdate
 from db.database import get_db
@@ -13,6 +14,9 @@ from services.response_service import Response
 
 router = Blueprint("users", __name__)
 name = "user router"
+# Create a session factory
+
+
 @router.post("/users")
 def create_user():
     db = next(get_db())

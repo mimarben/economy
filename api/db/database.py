@@ -9,7 +9,12 @@ DATABASE_PATH= Config.DATABASE_PATH
 # Construct the database URL
 DATABASE_URL = f"sqlite:///{os.path.abspath(DATABASE_PATH)}"
 
-engine = create_engine(DATABASE_URL, echo=True)
+engine = create_engine(DATABASE_URL,
+                      echo=True,
+                      pool_size=20,
+                      max_overflow=10,
+                      pool_timeout=60
+                      )
 
 # ✅ Enable foreign key constraints
 @event.listens_for(engine, "connect")
@@ -26,11 +31,11 @@ def get_db():
         yield db
         print("Database connection successful!")
     except Exception as e:
-        init_db()
+        #init_db()
         print(f"Error connecting to the database: {e}")
     finally:
         db.close()
-
+        print("Database session closed!")
 
 
 def init_db():
@@ -38,7 +43,7 @@ def init_db():
     # Ensure the 'db' directory exists
     os.makedirs("db", exist_ok=True)
 
-    
+
     # Check if the database exists
     database_exists = os.path.exists(DATABASE_PATH)
 

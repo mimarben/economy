@@ -1,0 +1,33 @@
+{
+  "app": {
+    "title": "My Banking App",
+    "footer": "© 2025 MyBank. All rights reserved."
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "view": "View"
+  },
+  "banks": {
+    "title": "Banks List",
+    "refresh": "Refresh list",
+    "no_data": "No banks available",
+    "add": "Add Bank"
+  },
+  "users": {
+    "title": "Users List",
+    "refresh": "Refresh list",
+    "no_data": "No users available",
+    "add": "Add User"
+  },
+  "error": {
+    "fetching": {
+      "banks": "Error fetching banks. Please try again later."
+    }
+  }
+}

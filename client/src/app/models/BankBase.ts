@@ -9,7 +9,7 @@ export type Name = string;
 export type Description = string | null;
 export type Active = boolean;
 
-export interface BankBase {ç
+export interface BankBase {
   id: Id
   name: Name;
   description?: Description;

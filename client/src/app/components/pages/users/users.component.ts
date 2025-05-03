@@ -7,12 +7,12 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MaterialModule } from '../../../material.module';
 import { MatDialog } from '@angular/material/dialog';
-
+import { TranslateModule } from '@ngx-translate/core';
 
 import { UserService } from '../../../services/user.service';
 import { UserBase as User } from '../../../models/UserBase';
 import { ApiResponse } from '../../../models/apiResponse';
-import { EditUserDialogComponent } from './user-form-dialog/user-form-dialog.component';
+import { UserFromDialogComponent } from './user-form-dialog/user-form-dialog.component';
 @Component({
   selector: 'app-users',
   standalone: true, // Add this if using Angular Standalone Components
@@ -23,7 +23,8 @@ import { EditUserDialogComponent } from './user-form-dialog/user-form-dialog.com
     MatTableModule,
     MatSortModule,
     MatPaginatorModule,
-    MaterialModule
+    MaterialModule,
+    TranslateModule
   ],
   templateUrl: './users.component.html',
   styleUrl: './users.component.css'
@@ -78,7 +79,7 @@ export class UsersComponent implements AfterViewInit {
 
   editUser(user: User): void {
     const userData = { ...user }; // Crea una copia del usuario
-    const dialogRef = this.dialog.open(EditUserDialogComponent, {
+    const dialogRef = this.dialog.open(UserFromDialogComponent, {
       width: 'auto',
       height: 'auto',
       disableClose: true,
@@ -110,7 +111,7 @@ export class UsersComponent implements AfterViewInit {
       telephone: ''
     };
 
-    const dialogRef = this.dialog.open(EditUserDialogComponent, {
+    const dialogRef = this.dialog.open(UserFromDialogComponent, {
       width: 'auto',
       height: 'auto',
       disableClose: true,

@@ -1,0 +1,26 @@
+{
+  "app": {
+    "title": "Mi App Bancaria",
+    "footer": "© 2025 MiBanco. Todos los derechos reservados."
+  },
+  "common": {
+    "loading": "Cargando...",
+    "error": "Error",
+    "success": "Éxito",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "view": "Ver"
+  },
+  "banks": {
+    "title": "Lista de Bancos",
+    "refresh": "Actualizar lista",
+    "no_data": "No hay bancos disponibles"
+  },
+  "error": {
+    "fetching": {
+      "banks": "Error al cargar los bancos. Por favor, inténtelo más tarde."
+    }
+  }
+}
