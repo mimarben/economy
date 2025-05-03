@@ -1,0 +1,34 @@
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
+import { AccountBase as Account  } from '../models/AccountBase';
+import { ApiResponse } from '../models/apiResponse';
+
+@Injectable({
+  providedIn: 'root'
+})
+
+
+export class AccountService {
+  private apiUrl = environment.apiUrl;
+  constructor(private http: HttpClient) {
+  }
+
+  private getHeaders(): HttpHeaders {
+    return new HttpHeaders(environment.headers);
+  }
+getAccounts(): Observable<ApiResponse<Account[]>> {
+  return this.http.get<ApiResponse<Account[]>>(`${this.apiUrl}/accounts`);
+}
+getAccountById(id: number): Observable<ApiResponse<Account>> {
+  return this.http.get<ApiResponse<Account>>(`${this.apiUrl}/accounts/${id}`);
+}
+createAccount(user: Account): Observable<ApiResponse<Account>> {
+  return this.http.post<ApiResponse<Account>>(`${this.apiUrl}/accounts`, user, { headers: this.getHeaders() } );
+}
+updateAccount(id: number, user: Account): Observable<ApiResponse<Account>> {
+  return this.http.patch<ApiResponse<Account>>(`${this.apiUrl}/accounts/${id}`, user, { headers: this.getHeaders() });
+}
+
+}

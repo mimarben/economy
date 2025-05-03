@@ -1,0 +1,39 @@
+<!-- 404.component.html -->
+<div class="not-found-container">
+  <div class="stars-background">
+    <!-- Stars will be added via the component code -->
+  </div>
+
+  <mat-card class="not-found-card mat-elevation-z8">
+    <div class="decorations">
+      <div class="decoration decoration-1"></div>
+      <div class="decoration decoration-2"></div>
+    </div>
+
+    <div class="error-icon-container">
+      <div class="error-icon-circle">
+        <mat-icon class="error-icon">error</mat-icon>
+      </div>
+    </div>
+
+    <mat-card-header>
+      <mat-card-title class="mat-headline-4">404 - Page Not Found</mat-card-title>
+      <mat-card-subtitle class="mat-headline-6">Oops! The page you are looking for has drifted into space.</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <div class="space-elements">
+        <img class="astronaut" src="../../../../assets/astrounat.svg" alt="Lost astronaut">
+        <!-- If you don't have an astronaut image, you can use this placeholder -->
+        <!-- <div class="astronaut-placeholder"></div> -->
+      </div>
+    </mat-card-content>
+
+    <mat-card-actions>
+      <button mat-raised-button color="primary" routerLink="/" class="home-button">
+        <mat-icon>home</mat-icon>
+        Return Home
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>

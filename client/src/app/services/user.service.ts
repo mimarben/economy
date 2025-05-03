@@ -23,7 +23,7 @@ getUsers(): Observable<ApiResponse<User[]>> {
   return this.http.get<ApiResponse<User[]>>(`${this.apiUrl}/users`);
 }
 getUserById(id: number): Observable<ApiResponse<User>> {
-  return this.http.get<ApiResponse<User>>(`${this.apiUrl}/${id}`);
+  return this.http.get<ApiResponse<User>>(`${this.apiUrl}/users/${id}`);
 }
 createUser(user: User): Observable<ApiResponse<User>> {
   return this.http.post<ApiResponse<User>>(`${this.apiUrl}/users`, user, { headers: this.getHeaders() } );

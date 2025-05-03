@@ -4,12 +4,13 @@
  * DO NOT MODIFY IT BY HAND. Instead, modify the source JSONSchema file,
  * and run json-schema-to-typescript to regenerate this file.
  */
-
+export type Id = number;
 export type Name = string;
 export type Description = string | null;
 export type Active = boolean;
 
-export interface BankBase {
+export interface BankBase {ç
+  id: Id
   name: Name;
   description?: Description;
   active?: Active;
