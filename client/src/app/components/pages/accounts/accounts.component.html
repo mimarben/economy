@@ -1,1 +1,8 @@
-<p>accounts works!</p>
+<app-generic-table
+  [data]="accounts"
+  [columns]="columns"
+  [isLoading]="isLoading"
+  [errorMessage]="errorMessage"
+  (edit)="editAccount($event)"
+  (add)="addAccount()"
+></app-generic-table>
