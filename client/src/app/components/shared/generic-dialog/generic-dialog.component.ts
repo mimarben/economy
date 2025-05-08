@@ -1,20 +1,13 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { FormFieldConfig } from '../form-config';
+import { MatDialogModule } from '@angular/material/dialog';
 
+import { FormFieldConfig } from '../generic-form/form-config';
+import { GenericFormComponent } from '../generic-form/generic-form.component';
 @Component({
   selector: 'app-generic-dialog',
-  template: `
-    <h2 mat-dialog-title>{{ data.title }}</h2>
-    <app-generic-form
-      [fields]="data.fields"
-      [initialData]="data.initialData"
-    ></app-generic-form>
-    <mat-dialog-actions>
-      <button mat-button (click)="onCancel()">Cancel</button>
-      <button mat-raised-button color="primary" (click)="onSave()">Save</button>
-    </mat-dialog-actions>
-  `
+  templateUrl: './generic-dialog.component.html',
+  imports: [GenericFormComponent, MatDialogModule]
 })
 export class GenericDialogComponent {
   constructor(

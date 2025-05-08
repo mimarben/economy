@@ -1,14 +1,14 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { AccountBase as Account } from '../../../models/AccountBase';
 import { GenericTableComponent, TableColumn } from '../../shared/generic-table/generic-table.component'; // Ajusta la ruta según tu estructura
 import { AccountService } from '../../../services/account.service';
 import { ApiResponse } from '../../../models/apiResponse';
-import { FormFactoryService } from '../../shared/forms/form-factory.service';
-import { GenericDialogComponent } from '../../shared/forms/generic-dialog/generic-dialog.component';
+import { GenericDialogComponent } from '../../shared/generic-dialog/generic-dialog.component';
+import { FormFactoryService } from '../../../factories/forms/form-factory.service';
 @Component({
   selector: 'app-accounts',
-  imports: [GenericTableComponent],
+  imports: [GenericTableComponent, MatDialogModule],
   templateUrl: './accounts.component.html',
   styleUrls: ['./accounts.component.css']
 })
@@ -30,7 +30,9 @@ export class AccountsComponent implements OnInit {
   ];
 
   constructor(private accountService: AccountService,
-              private cdr: ChangeDetectorRef){}
+              private cdr: ChangeDetectorRef,
+              private dialog: MatDialog,
+              private formFactory:FormFactoryService){}
 
   ngOnInit() {
     this.loadAccounts();

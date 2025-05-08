@@ -1,6 +1,6 @@
 // form-factory.service.ts
 import { Injectable } from '@angular/core';
-import { FormFieldConfig } from './form-config';
+import { FormFieldConfig } from '../../components/shared/generic-form/form-config';
 
 @Injectable({ providedIn: 'root' })
 export class FormFactoryService {
