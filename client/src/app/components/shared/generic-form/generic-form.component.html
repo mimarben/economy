@@ -1,0 +1,23 @@
+<form [formGroup]="form">
+  <div *ngFor="let field of fields">
+    <mat-form-field appearance="outline" *ngIf="field.type !== 'checkbox'">
+      <mat-label>{{ field.label }}</mat-label>
+
+      <!-- Campos de texto/número/email -->
+      <input *ngIf="field.type === 'text' || field.type === 'number' || field.type === 'email'"
+             matInput [type]="field.type" [formControlName]="field.key">
+
+      <!-- Select -->
+      <mat-select *ngIf="field.type === 'select'" [formControlName]="field.key">
+        <mat-option *ngFor="let opt of field.options" [value]="opt.value">
+          {{ opt.label }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- Checkbox -->
+    <mat-checkbox *ngIf="field.type === 'checkbox'" [formControlName]="field.key">
+      {{ field.label }}
+    </mat-checkbox>
+  </div>
+</form>

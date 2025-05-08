@@ -35,7 +35,7 @@ export class GenericTableComponent<T> implements AfterViewInit {
   @Input() columns: TableColumn<T>[] = [];
   @Input() isLoading = false;
   @Input() errorMessage = '';
-
+  @Input() filter = '';
   @Output() edit = new EventEmitter<T>();
   @Output() add = new EventEmitter<void>();
 

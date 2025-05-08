@@ -1,8 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+
 import { AccountBase as Account } from '../../../models/AccountBase';
 import { GenericTableComponent, TableColumn } from '../../shared/generic-table/generic-table.component'; // Ajusta la ruta según tu estructura
-
-
+import { AccountService } from '../../../services/account.service';
+import { ApiResponse } from '../../../models/apiResponse';
+import { FormFactoryService } from '../../shared/forms/form-factory.service';
+import { GenericDialogComponent } from '../../shared/forms/generic-dialog/generic-dialog.component';
 @Component({
   selector: 'app-accounts',
   imports: [GenericTableComponent],
@@ -11,6 +14,7 @@ import { GenericTableComponent, TableColumn } from '../../shared/generic-table/g
 })
 export class AccountsComponent implements OnInit {
   accounts: Account[] = [];
+  filterValue = '';
   isLoading = false;
   errorMessage = '';
 
@@ -25,7 +29,8 @@ export class AccountsComponent implements OnInit {
     { key: 'user_id', label: 'User ID', sortable: true },
   ];
 
-  constructor() {}
+  constructor(private accountService: AccountService,
+              private cdr: ChangeDetectorRef){}
 
   ngOnInit() {
     this.loadAccounts();
@@ -33,37 +38,44 @@ export class AccountsComponent implements OnInit {
 
   loadAccounts() {
     this.isLoading = true;
-    // Ejemplo de cómo cargar las cuentas desde un servicio:
-    // this.accountService.getAccounts().subscribe({
-    //   next: (data) => {
-    //     this.accounts = data;
-    //     this.isLoading = false;
-    //   },
-    //   error: (err) => {
-    //     this.errorMessage = 'Error loading accounts';
-    //     this.isLoading = false;
-    //   }
-    // });
-
-    // Ejemplo con datos mock (elimina esto cuando uses el servicio)
-    this.accounts = [
-      { id: 1, name: 'Main Account', description: 'Primary account', iban: 'ES1234567890', balance: 1000, active: true, bank_id: 1, user_id: 1 },
-      { id: 2, name: 'Savings', description: 'For savings', iban: 'ES0987654321', balance: 5000, active: true, bank_id: 1, user_id: 1 },
-    ];
-    this.isLoading = false;
+    this.accountService.getAccounts().subscribe({
+      next: (data: ApiResponse<Account[]>) => {
+        this.accounts = data.response;
+        this.isLoading = false;
+      },
+      error: (err) => {
+        this.errorMessage = 'Error loading accounts';
+        this.isLoading = false;
+      },
+    });
+  }
+  editAccount(account: Account): void {
+    this.openDialog(account);
   }
 
-  editAccount(account: Account) {
-    // Lógica para editar (abre un diálogo, por ejemplo)
-    console.log('Edit account:', account);
-    // const dialogRef = this.dialog.open(AccountFormDialogComponent, { data: account });
-    // dialogRef.afterClosed().subscribe(result => { ... });
+  addAccount(): void {
+    this.openDialog();
   }
 
-  addAccount() {
-    // Lógica para añadir una cuenta
-    console.log('Add new account');
-    // const dialogRef = this.dialog.open(AccountFormDialogComponent, { data: { id: null, name: '', ... } });
-    // dialogRef.afterClosed().subscribe(result => { ... });
+  openDialog(data?: Account): void {
+    const dialogRef = this.dialog.open(GenericDialogComponent, {
+      data: {
+        title: data ? 'Edit Account' : 'New Account',
+        fields: this.formFactory.getFormConfig('account'),
+        initialData: data || {}
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        // Guardar en el backend y actualizar la tabla
+      }
+    });
   }
+
+  applyFilter(event: Event) {
+    this.filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
+    this.cdr.detectChanges(); // Trigger change detection if needed
+  }
+
 }
