@@ -1,23 +1,55 @@
-<form [formGroup]="form">
-  <div *ngFor="let field of fields">
-    <mat-form-field appearance="outline" *ngIf="field.type !== 'checkbox'">
+<form [formGroup]="form" (ngSubmit)="submitForm()" novalidate>
+  <div *ngFor="let field of fields" class="field-container">
+    <!-- Non-checkbox fields -->
+    <mat-form-field appearance="outline" *ngIf="field.type !== 'checkbox'" class="full-width">
       <mat-label>{{ field.label }}</mat-label>
 
-      <!-- Campos de texto/número/email -->
-      <input *ngIf="field.type === 'text' || field.type === 'number' || field.type === 'email'"
-             matInput [type]="field.type" [formControlName]="field.key">
+      <!-- Text, Number, Email Inputs -->
+      <input
+        *ngIf="field.type === 'text' || field.type === 'number' || field.type === 'email'"
+        matInput
+        [type]="field.type"
+        [formControlName]="field.key"
+        [id]="field.key"
+        [attr.aria-describedby]="field.key + '-error'"
+        [placeholder]="field.label">
 
       <!-- Select -->
-      <mat-select *ngIf="field.type === 'select'" [formControlName]="field.key">
+      <mat-select
+        *ngIf="field.type === 'select'"
+        [formControlName]="field.key"
+        [id]="field.key"
+        [attr.aria-describedby]="field.key + '-error'">
         <mat-option *ngFor="let opt of field.options" [value]="opt.value">
           {{ opt.label }}
         </mat-option>
       </mat-select>
+
+      <!-- Error Messages -->
+      <mat-error *ngIf="form.get(field.key)?.touched && form.get(field.key)?.invalid" [id]="field.key + '-error'">
+        {{ getErrorMessage(field) }}
+      </mat-error>
     </mat-form-field>
 
     <!-- Checkbox -->
-    <mat-checkbox *ngIf="field.type === 'checkbox'" [formControlName]="field.key">
+    <mat-checkbox
+      *ngIf="field.type === 'checkbox'"
+      [formControlName]="field.key"
+      [id]="field.key"
+      class="checkbox">
       {{ field.label }}
     </mat-checkbox>
+  </div>
+
+  <!-- Form Actions -->
+  <div class="form-actions">
+    <button
+      mat-raised-button
+      color="primary"
+      type="submit"
+      [disabled]="form.invalid"
+      aria-label="Submit form">
+      Submit
+    </button>
   </div>
 </form>

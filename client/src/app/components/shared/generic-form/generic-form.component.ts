@@ -1,38 +1,190 @@
-import { Component, Input } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { FormFieldConfig } from './form-config';
+import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
+import { FormGroup, FormBuilder, Validators, ValidatorFn } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
-
-
 import { MaterialModule } from '../../../material.module';
+
+// Define the FormFieldConfig interface
+export interface FormFieldConfig {
+  key: string;
+  label: string;
+  type: 'text' | 'number' | 'email' | 'select' | 'checkbox';
+  required?: boolean;
+  validators?: ValidatorFn[];
+  options?: { value: string | number; label: string }[]; // For select fields
+  minLength?: number; // For text/email fields
+  maxLength?: number; // For text/email fields
+  pattern?: string; // For text/email fields
+  min?: number; // For number fields
+  max?: number; // For number fields
+}
 
 @Component({
   selector: 'app-generic-form',
   templateUrl: './generic-form.component.html',
-  imports: [MaterialModule, CommonModule,ReactiveFormsModule, MatSelectModule]
+  styleUrl: './generic-form.component.css',
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MaterialModule,
+    MatSelectModule
+  ]
 })
-export class GenericFormComponent {
+export class GenericFormComponent implements OnChanges {
   @Input() fields: FormFieldConfig[] = [];
-  @Input() initialData: any = {};
+  @Input() initialData: Record<string, any> = {};
+  @Output() formSubmit = new EventEmitter<Record<string, any>>();
+
   form: FormGroup;
 
   constructor(private fb: FormBuilder) {
     this.form = this.fb.group({});
   }
 
-  ngOnChanges() {
-    this.buildForm();
+  /**
+   * Handles changes to inputs and rebuilds the form if necessary.
+   * @param changes - The changes object from Angular.
+   */
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['fields']?.currentValue !== changes['fields']?.previousValue ||
+        changes['initialData']?.currentValue !== changes['initialData']?.previousValue) {
+      this.buildForm();
+    }
   }
 
-  buildForm() {
-    const controls: any = {};
-    this.fields.forEach(field => {
-      const validators = field.validators || [];
-      if (field.required) validators.push(Validators.required);
-      controls[field.key] = [this.initialData[field.key] || '', validators];
-    });
+  /**
+   * Builds the form based on the provided fields and initial data.
+   */
+  private buildForm(): void {
+    const controls: Record<string, any> = {};
+    this.fields
+      .filter(field => this.isValidField(field))
+      .forEach(field => {
+        controls[field.key] = this.createControl(field);
+      });
+
     this.form = this.fb.group(controls);
+  }
+
+  /**
+   * Validates a FormFieldConfig to ensure it has required properties.
+   * @param field - The field configuration to validate.
+   * @returns True if the field is valid, false otherwise.
+   */
+  private isValidField(field: FormFieldConfig): boolean {
+    if (!field?.key || !field?.label || !field?.type) {
+      console.warn(`Invalid field configuration: ${JSON.stringify(field)}`);
+      return false;
+    }
+    if (field.type === 'select' && (!field.options || !Array.isArray(field.options))) {
+      console.warn(`Select field ${field.key} requires valid options array`);
+      return false;
+    }
+    return true;
+  }
+
+  /**
+   * Creates a form control for a field with its validators and initial value.
+   * @param field - The field configuration.
+   * @returns The form control configuration.
+   */
+  private createControl(field: FormFieldConfig): any[] {
+    const validators = this.getValidators(field);
+    const initialValue = this.getInitialValue(field);
+    return [initialValue, validators];
+  }
+
+  /**
+   * Retrieves the initial value for a field.
+   * @param field - The field configuration.
+   * @returns The initial value for the field.
+   */
+  private getInitialValue(field: FormFieldConfig): any {
+    if (field.type === 'checkbox') {
+      return this.initialData[field.key] ?? false;
+    }
+    return this.initialData[field.key] ?? '';
+  }
+
+  /**
+   * Builds the list of validators for a field based on its configuration.
+   * @param field - The field configuration.
+   * @returns An array of ValidatorFn.
+   */
+  private getValidators(field: FormFieldConfig): ValidatorFn[] {
+    const validators: ValidatorFn[] = field.validators ? [...field.validators] : [];
+
+    if (field.required) {
+      validators.push(Validators.required);
+    }
+
+    if (field.type === 'text' || field.type === 'email') {
+      if (field.minLength) validators.push(Validators.minLength(field.minLength));
+      if (field.maxLength) validators.push(Validators.maxLength(field.maxLength));
+      if (field.pattern) validators.push(Validators.pattern(field.pattern));
+      if (field.type === 'email') validators.push(Validators.email);
+    } else if (field.type === 'number') {
+      if (field.min !== undefined) validators.push(Validators.min(field.min));
+      if (field.max !== undefined) validators.push(Validators.max(field.max));
+    }
+
+    return validators;
+  }
+
+  /**
+   * Handles form submission, emitting valid data or marking fields as touched.
+   */
+  submitForm(): void {
+    if (this.form.valid) {
+      this.formSubmit.emit(this.form.value);
+    } else {
+      this.form.markAllAsTouched();
+    }
+  }
+
+  /**
+   * Generates an error message for a field based on its validation state.
+   * @param field - The field configuration.
+   * @returns The error message or an empty string.
+   */
+  getErrorMessage(field: FormFieldConfig): string {
+    const control = this.form.get(field.key);
+    if (!control || !control.errors || !control.touched) return '';
+
+    const errors = control.errors;
+    if (errors['required']) return `${field.label} is required`;
+    if (errors['email']) return 'Invalid email format';
+    if (errors['minlength']) return `Minimum length is ${field.minLength}`;
+    if (errors['maxlength']) return `Maximum length is ${field.maxLength}`;
+    if (errors['pattern']) return 'Invalid format';
+    if (errors['min']) return `Minimum value is ${field.min}`;
+    if (errors['max']) return `Maximum value is ${field.max}`;
+
+    return 'Invalid input';
+  }
+
+  /**
+   * Returns the list of fields with their applied validators for debugging or external use.
+   * @returns An array of field configurations with validator details.
+   */
+  getFieldsAndValidators(): Array<{ key: string; label: string; type: string; required?: boolean; validators: string[] }> {
+    return this.fields.map(field => ({
+      key: field.key,
+      label: field.label,
+      type: field.type,
+      required: field.required,
+      validators: [
+        ...(field.required ? ['required'] : []),
+        ...(field.type === 'email' ? ['email'] : []),
+        ...(field.minLength ? [`minLength(${field.minLength})`] : []),
+        ...(field.maxLength ? [`maxLength(${field.maxLength})`] : []),
+        ...(field.pattern ? [`pattern(${field.pattern})`] : []),
+        ...(field.min !== undefined ? [`min(${field.min})`] : []),
+        ...(field.max !== undefined ? [`max(${field.max})`] : []),
+        ...(field.validators ? field.validators.map(v => v.name || 'custom') : [])
+      ]
+    }));
   }
 }
