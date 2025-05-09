@@ -1,14 +1,23 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
+
 import { AccountBase as Account } from '../../../models/AccountBase';
-import { GenericTableComponent, TableColumn } from '../../shared/generic-table/generic-table.component'; // Ajusta la ruta según tu estructura
+import { BankBase as Bank } from '../../../models/BankBase';
+import { UserBase as User } from '../../../models/UserBase';
+import { GenericTableComponent, TableColumn } from '../../shared/generic-table/generic-table.component';
 import { AccountService } from '../../../services/account.service';
 import { ApiResponse } from '../../../models/apiResponse';
 import { GenericDialogComponent } from '../../shared/generic-dialog/generic-dialog.component';
 import { FormFactoryService } from '../../../factories/forms/form-factory.service';
+import { BankService } from '../../../services/bank.service';
+import { UserService } from '../../../services/user.service';
+import { FormFieldConfig } from '../../shared/generic-form/form-config';
+import { ToastService } from '../../../services/toast.service';
+import { environment } from '../../../../environments/environment';
+
 @Component({
   selector: 'app-accounts',
-  imports: [GenericTableComponent, MatDialogModule],
+  imports: [GenericTableComponent],
   templateUrl: './accounts.component.html',
   styleUrls: ['./accounts.component.css']
 })
@@ -17,6 +26,8 @@ export class AccountsComponent implements OnInit {
   filterValue = '';
   isLoading = false;
   errorMessage = '';
+  formFields: FormFieldConfig[] = [];
+  isFormValid = false;
 
   columns: TableColumn<Account>[] = [
     { key: 'id', label: 'ID', sortable: true },
@@ -29,13 +40,19 @@ export class AccountsComponent implements OnInit {
     { key: 'user_id', label: 'User ID', sortable: true },
   ];
 
-  constructor(private accountService: AccountService,
-              private cdr: ChangeDetectorRef,
-              private dialog: MatDialog,
-              private formFactory:FormFactoryService){}
+  constructor(
+    private accountService: AccountService,
+    private bankService: BankService,
+    private userService: UserService,
+    private cdr: ChangeDetectorRef,
+    private dialog: MatDialog,
+    private toastService: ToastService,
+    private formFactory: FormFactoryService
+  ) {}
 
   ngOnInit() {
     this.loadAccounts();
+    this.loadFormFields();
   }
 
   loadAccounts() {
@@ -51,6 +68,45 @@ export class AccountsComponent implements OnInit {
       },
     });
   }
+
+  private loadFormFields(): void {
+    this.formFields = this.formFactory.getFormConfig('account');
+    this.loadBanks();
+    this.loadUsers();
+  }
+
+  private loadBanks(): void {
+    this.bankService.getBanks().subscribe({
+      next: (res: ApiResponse<Bank[]>) => {
+        const field = this.formFields.find(f => f.key === 'bank_id');
+        if (field) {
+          field.type = 'select';
+          field.options = res.response.map(b => ({ label: b.name, value: b.id }));
+        }
+      },
+      error: () => {
+        this.errorMessage = 'Error loading banks';
+        this.isLoading = false;
+      }
+    });
+  }
+
+  private loadUsers(): void {
+    this.userService.getUsers().subscribe({
+      next: (res: ApiResponse<User[]>) => {
+        const field = this.formFields.find(f => f.key === 'user_id');
+        if (field) {
+          field.type = 'select';
+          field.options = res.response.map(u => ({ label: `${u.name} ${u.surname1} ${u.surname2}`, value: u.id }));
+        }
+      },
+      error: () => {
+        this.errorMessage = 'Error loading users';
+        this.isLoading = false;
+      }
+    });
+  }
+
   editAccount(account: Account): void {
     this.openDialog(account);
   }
@@ -70,14 +126,52 @@ export class AccountsComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        // Guardar en el backend y actualizar la tabla
+        result.id ? this.updateAccount(result) : this.createAccount(result);
+      }
+    });
+  }
+
+  updateAccount(account: Account): void {
+    this.accountService.updateAccount(account.id, account).subscribe({
+      next: (response: ApiResponse<Account>) => {
+        this.isLoading = false;
+        this.toastService.showToast(response, environment.toastType.Success, {});
+        const updatedAccount = response.response;
+        const index = this.accounts.findIndex(acc => acc.id === updatedAccount.id);
+        if (index !== -1) {
+          this.accounts[index] = updatedAccount;
+          this.accounts = [...this.accounts]; // Reassign to trigger change detection
+        }
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('Error updating account:', error.error);
+        this.isLoading = false;
+        this.toastService.showToast(error.error as ApiResponse<string>, environment.toastType.Error, {});
+      }
+    });
+  }
+
+  createAccount(account: Account): void {
+    this.accountService.createAccount(account).subscribe({
+      next: (response: ApiResponse<Account>) => {
+        this.isLoading = false;
+        this.toastService.showToast(response, environment.toastType.Success, {});
+        const newAccount = response.response;
+        this.accounts.push(newAccount); // Add the new account to the array
+        this.accounts = [...this.accounts]; // Reassign to trigger change detection
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('Error creating account:', error.error);
+        this.isLoading = false;
+        this.errorMessage = 'Failed to create account.';
+        this.toastService.showToast(error.error as ApiResponse<string>, environment.toastType.Error, {});
       }
     });
   }
 
   applyFilter(event: Event) {
     this.filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
-    this.cdr.detectChanges(); // Trigger change detection if needed
   }
-
 }

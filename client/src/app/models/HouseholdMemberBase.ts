@@ -4,13 +4,14 @@
  * DO NOT MODIFY IT BY HAND. Instead, modify the source JSONSchema file,
  * and run json-schema-to-typescript to regenerate this file.
  */
-
+export type Id = number;
 export type RoleEnum = "husband" | "wife" | "child" | "other";
 export type HouseholdId = number;
 export type UserId = number;
 export type Active = boolean;
 
 export interface HouseholdMemberBase {
+  id: Id
   role: RoleEnum;
   household_id: HouseholdId;
   user_id: UserId;

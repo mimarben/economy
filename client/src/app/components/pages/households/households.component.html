@@ -1,1 +1,9 @@
-<p>households works!</p>
+<app-generic-table
+  [filter]="filterValue"
+  [data]="houseHolds"
+  [columns]="columns"
+  [isLoading]="isLoading"
+  [errorMessage]="errorMessage"
+  (edit)="editHouseHold($event)"
+  (add)="addHouseHold()"
+></app-generic-table>

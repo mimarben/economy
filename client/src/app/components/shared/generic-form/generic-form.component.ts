@@ -3,22 +3,9 @@ import { FormGroup, FormBuilder, Validators, ValidatorFn } from '@angular/forms'
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
-import { MaterialModule } from '../../../material.module';
 
-// Define the FormFieldConfig interface
-export interface FormFieldConfig {
-  key: string;
-  label: string;
-  type: 'text' | 'number' | 'email' | 'select' | 'checkbox';
-  required?: boolean;
-  validators?: ValidatorFn[];
-  options?: { value: string | number; label: string }[]; // For select fields
-  minLength?: number; // For text/email fields
-  maxLength?: number; // For text/email fields
-  pattern?: string; // For text/email fields
-  min?: number; // For number fields
-  max?: number; // For number fields
-}
+import { MaterialModule } from '../../../material.module';
+import { FormFieldConfig } from './form-config';
 
 @Component({
   selector: 'app-generic-form',
@@ -36,17 +23,20 @@ export class GenericFormComponent implements OnChanges {
   @Input() fields: FormFieldConfig[] = [];
   @Input() initialData: Record<string, any> = {};
   @Output() formSubmit = new EventEmitter<Record<string, any>>();
-
+  @Output() formValidity = new EventEmitter<boolean>();
+  @Output() formDirty = new EventEmitter<boolean>();
   form: FormGroup;
 
   constructor(private fb: FormBuilder) {
     this.form = this.fb.group({});
   }
+  private emitFormValidity(): void {
+  this.form.statusChanges.subscribe(() => {
+    this.formValidity.emit(this.form.valid);
+    this.formDirty.emit(this.form.dirty)
+    });
+  }
 
-  /**
-   * Handles changes to inputs and rebuilds the form if necessary.
-   * @param changes - The changes object from Angular.
-   */
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['fields']?.currentValue !== changes['fields']?.previousValue ||
         changes['initialData']?.currentValue !== changes['initialData']?.previousValue) {
@@ -62,10 +52,18 @@ export class GenericFormComponent implements OnChanges {
     this.fields
       .filter(field => this.isValidField(field))
       .forEach(field => {
+      // Si es el campo ID y no hay id => no lo agregues
+      if (field.key === 'id') {
+        controls[field.key] = this.fb.control(
+          { value: this.initialData['id'], disabled: true }
+        );
+      } else {
         controls[field.key] = this.createControl(field);
+      }
       });
 
     this.form = this.fb.group(controls);
+    this.emitFormValidity();
   }
 
   /**
@@ -142,6 +140,7 @@ export class GenericFormComponent implements OnChanges {
     } else {
       this.form.markAllAsTouched();
     }
+    this.emitFormValidity();
   }
 
   /**
