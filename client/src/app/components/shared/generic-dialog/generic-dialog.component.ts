@@ -28,7 +28,6 @@ export class GenericDialogComponent {
       this.genericFormComponent.formValidity.subscribe(valid => {
         this.isFormValid = valid;
       });
-
       this.genericFormComponent.formDirty.subscribe(dirty => {
         this.isFormDirty = dirty;
       });

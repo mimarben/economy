@@ -2,8 +2,8 @@
 import { Injectable } from '@angular/core';
 import { FormFieldConfig } from '../../components/shared/generic-form/form-config';
 import { TableColumn } from '../../components/shared/generic-table/generic-table.component';
-
-type ModelType = 'account' | 'bank' | 'user' | "houseHold";
+import { RoleEnum } from '../../models/HouseholdMemberBase';
+type ModelType = 'account' | 'bank' | "houseHold" | "houseHoldMember";
 
 @Injectable({ providedIn: 'root' })
 export class FormFactoryService {
@@ -24,21 +24,24 @@ export class FormFactoryService {
       { key: 'description', label: 'Description', type: 'text' },
       { key: 'active', label: 'Active', type: 'checkbox' },
     ],
-    user: [
-      { key: 'name', label: 'Name', type: 'text', required: true },
-      { key: 'email', label: 'Email', type: 'email', required: true }
-    ],
     houseHold: [
       { key: 'id', label: 'Id', type: 'number' },
       { key: 'name', label: 'HouseHold Name', type: 'text', required: true },
       { key: 'address', label: 'Address', type: 'text', required: true },
       { key: 'description', label: 'Description', type: 'text' },
       { key: 'active', label: 'Active', type: 'checkbox' },
+    ],
+    houseHoldMember: [
+      { key: 'id', label: 'Id', type: 'number' },
+      { key: 'role', label: 'Role', type: 'select', required: true, options: this.getRoleOptions() },
+      { key: 'household_id', label: 'HouseHold', type: 'select', required: true },
+      { key: 'user_id', label: 'User', type: 'select',required: true},
+      { key: 'active', label: 'Active', type: 'checkbox' },
     ]
   };
 
   // Generate table columns based on existing form config
-  getTableColumns<T>(modelType: ModelType): TableColumn<T>[] {
+  getTableColumns<T>(modelType: ModelType, externalFormatters?: Record<string, (value: any) => string>): TableColumn<T>[] {
     const formFields = this.getFormConfig(modelType);
     return formFields
       .filter(field => this.shouldIncludeInTable(field, modelType))
@@ -47,7 +50,9 @@ export class FormFactoryService {
           key: field.key,
           label: field.label,
           sortable: this.isSortable(field.key, modelType),
-          formatter: this.getFormatter(field.key, field.type, modelType)
+          formatter:
+            externalFormatters?.[field.key] ??
+            this.getFormatter(field.key, field.type, modelType)
         } as TableColumn<T>;
       });
   }
@@ -57,8 +62,8 @@ export class FormFactoryService {
     const excludedFields: Record<ModelType, string[]> = {
       account: ['bank_id', 'user_id'], // You might want to show referenced entity names instead
       bank: [],
-      user: [],
-      houseHold: []
+      houseHold: [],
+      houseHoldMember: []
     };
 
     return !excludedFields[modelType].includes(field.key);
@@ -69,8 +74,8 @@ export class FormFactoryService {
     const nonSortableFields: Record<ModelType, string[]> = {
       account: ['description'],
       bank: ['description'],
-      user: [],
-      houseHold: ['description']
+      houseHold: ['description'],
+      houseHoldMember: []
     };
 
     return !nonSortableFields[modelType].includes(key);
@@ -90,4 +95,14 @@ export class FormFactoryService {
   getFormConfig(modelType: ModelType): FormFieldConfig[] {
     return this.formConfigMap[modelType] ?? [];
   }
+
+   // Method to generate Role options
+  getRoleOptions() {
+    const roles: RoleEnum[] = ['husband', 'wife', 'child', 'other'];
+    return roles.map(role => ({
+      value: role,
+      label: role.charAt(0).toUpperCase() + role.slice(1),  // Capitalizing first letter for display
+    }));
+  }
+
 }

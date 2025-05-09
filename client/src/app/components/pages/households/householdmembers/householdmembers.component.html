@@ -1,1 +1,10 @@
-<p>householdmembers works!</p>
+<app-generic-table
+  [filter]="filterValue"
+  [data]="houseHoldsMembers"
+  [columns]="columns"
+  [isLoading]="isLoading"
+  [errorMessage]="errorMessage"
+  (edit)="editHouseHoldMember($event)"
+  (add)="addHouseHoldMember()"
+></app-generic-table>
+

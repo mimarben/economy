@@ -45,7 +45,6 @@ export class BanksComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    console.log(this.columns);
     this.loadBanks();
     this.loadFormFields();
   }
