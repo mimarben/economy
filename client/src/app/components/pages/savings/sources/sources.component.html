@@ -1,0 +1,9 @@
+<app-generic-table
+  [filter]="filterValue"
+  [data]="sources"
+  [columns]="columns"
+  [isLoading]="isLoading"
+  [errorMessage]="errorMessage"
+  (edit)="editSource($event)"
+  (add)="addSource()"
+></app-generic-table>

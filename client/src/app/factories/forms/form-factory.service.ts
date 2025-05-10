@@ -1,9 +1,9 @@
-// form-factory.service.ts
 import { Injectable } from '@angular/core';
 import { FormFieldConfig } from '../../components/shared/generic-form/form-config';
 import { TableColumn } from '../../components/shared/generic-table/generic-table.component';
 import { RoleEnum } from '../../models/HouseholdMemberBase';
-type ModelType = 'account' | 'bank' | "houseHold" | "houseHoldMember";
+import { CurrencyEnum } from '../../models/SavingBase';
+type ModelType = 'account' | 'bank' | "houseHold" | "houseHoldMember" | "source" |"saving_log" | "saving";
 
 @Injectable({ providedIn: 'root' })
 export class FormFactoryService {
@@ -37,6 +37,26 @@ export class FormFactoryService {
       { key: 'household_id', label: 'HouseHold', type: 'select', required: true },
       { key: 'user_id', label: 'User', type: 'select',required: true},
       { key: 'active', label: 'Active', type: 'checkbox' },
+    ],
+    source:[
+      { key: 'id', label: 'Id', type: 'number' },
+      { key: 'name', label: 'Source Name', type: 'text', required: true },
+      { key: 'active', label: 'Active', type: 'checkbox' }
+    ],
+    saving_log:[
+      { key: 'id', label: 'Id', type: 'number' },
+      { key: 'amount', label: 'Amount', type: 'number', required: true, min: 0 },
+      { key: 'total_amount', label: 'TotalAmount', type: 'number', required: true, min: 0 },
+      { key: 'note', label: 'Note', type: 'text' },
+      { key: 'saving_id', label: 'SavingId', type: 'select',required: true},
+    ],
+    saving:[
+      { key: 'id', label: 'Id', type: 'number' },
+      { key: 'description', label: 'Description', type: 'text' },
+      { key: 'amount', label: 'Amount', type: 'number', required: true, min: 0 },
+      { key: 'date', label: 'Date', type: 'date', required: true, min: 0 },
+      { key: 'currency', label: 'CurrencyEnum', type: 'select', required: true, options: this.getCurrencyOptions() },
+      { key: 'user_id', label: 'User', type: 'select',required: true}
     ]
   };
 
@@ -63,7 +83,10 @@ export class FormFactoryService {
       account: ['bank_id', 'user_id'], // You might want to show referenced entity names instead
       bank: [],
       houseHold: [],
-      houseHoldMember: []
+      houseHoldMember: [],
+      source:[],
+      saving_log: [],
+      saving:[]
     };
 
     return !excludedFields[modelType].includes(field.key);
@@ -75,7 +98,10 @@ export class FormFactoryService {
       account: ['description'],
       bank: ['description'],
       houseHold: ['description'],
-      houseHoldMember: []
+      houseHoldMember: [],
+      source:[],
+      saving_log: [],
+      saving:[]
     };
 
     return !nonSortableFields[modelType].includes(key);
@@ -104,5 +130,11 @@ export class FormFactoryService {
       label: role.charAt(0).toUpperCase() + role.slice(1),  // Capitalizing first letter for display
     }));
   }
-
+  getCurrencyOptions(){
+    const currencies: CurrencyEnum[] = ["€","$","¥","₿","Ξ","USDC","DOGE","LTC","XRP","XLM","ADA","DOT","SOL","SHIB","TRX"];
+    return currencies.map(currencies => ({
+      value: currencies,
+      label: currencies.charAt(0).toUpperCase() + currencies.slice(1),  // Capitalizing first letter for display
+    }));
+  }
 }

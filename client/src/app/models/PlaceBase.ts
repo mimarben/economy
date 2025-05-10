@@ -4,13 +4,14 @@
  * DO NOT MODIFY IT BY HAND. Instead, modify the source JSONSchema file,
  * and run json-schema-to-typescript to regenerate this file.
  */
-
+export type Id = number;
 export type Name = string;
 export type Address = string | null;
 export type Description = string | null;
 export type Active = boolean;
 
 export interface PlaceBase {
+  id:Id;
   name: Name;
   address?: Address;
   description?: Description;

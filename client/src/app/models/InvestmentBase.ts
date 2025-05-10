@@ -4,7 +4,7 @@
  * DO NOT MODIFY IT BY HAND. Instead, modify the source JSONSchema file,
  * and run json-schema-to-typescript to regenerate this file.
  */
-
+export type Id = number;
 export type Name = string;
 export type Amount = number;
 export type Value = number;
@@ -30,6 +30,7 @@ export type AccountId = number;
 export type CategoryId = number;
 
 export interface InvestmentBase {
+  id: Id;
   name: Name;
   amount: Amount;
   value: Value;

@@ -4,7 +4,7 @@
  * DO NOT MODIFY IT BY HAND. Instead, modify the source JSONSchema file,
  * and run json-schema-to-typescript to regenerate this file.
  */
-
+export type Id = number;
 export type Date = string;
 export type Currentvalue = number;
 export type Priceperunit = number;
@@ -14,6 +14,7 @@ export type Note = string;
 export type InvestmentId = number;
 
 export interface InvestmentLogBase {
+  id: Id;
   date: Date;
   currentValue: Currentvalue;
   pricePerUnit: Priceperunit;

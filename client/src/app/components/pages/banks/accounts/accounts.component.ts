@@ -1,19 +1,19 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
-import { AccountBase as Account } from '../../../models/AccountBase';
-import { BankBase as Bank } from '../../../models/BankBase';
-import { UserBase as User } from '../../../models/UserBase';
-import { GenericTableComponent, TableColumn } from '../../shared/generic-table/generic-table.component';
-import { AccountService } from '../../../services/account.service';
-import { ApiResponse } from '../../../models/apiResponse';
-import { GenericDialogComponent } from '../../shared/generic-dialog/generic-dialog.component';
-import { FormFactoryService } from '../../../factories/forms/form-factory.service';
-import { BankService } from '../../../services/bank.service';
-import { UserService } from '../../../services/user.service';
-import { FormFieldConfig } from '../../shared/generic-form/form-config';
-import { ToastService } from '../../../services/toast.service';
-import { environment } from '../../../../environments/environment';
+import { AccountBase as Account } from '../../../../models/AccountBase';
+import { BankBase as Bank } from '../../../../models/BankBase';
+import { UserBase as User } from '../../../../models/UserBase';
+import { GenericTableComponent, TableColumn } from '../../../shared/generic-table/generic-table.component';
+import { AccountService } from '../../../../services/account.service';
+import { ApiResponse } from '../../../../models/apiResponse';
+import { GenericDialogComponent } from '../../../shared/generic-dialog/generic-dialog.component';
+import { FormFactoryService } from '../../../../factories/forms/form-factory.service';
+import { BankService } from '../../../../services/bank.service';
+import { UserService } from '../../../../services/user.service';
+import { FormFieldConfig } from '../../../shared/generic-form/form-config';
+import { ToastService } from '../../../../services/toast.service';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-accounts',
