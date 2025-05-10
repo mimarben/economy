@@ -13,7 +13,7 @@ export type SavingId = number;
 
 export interface SavingLogBase {
   id: Id;
-  date: Date;
+  date: string | Date;
   amount: Amount;
   total_amount: TotalAmount;
   note: Note;

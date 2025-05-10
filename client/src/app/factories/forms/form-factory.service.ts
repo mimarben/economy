@@ -41,10 +41,12 @@ export class FormFactoryService {
     source:[
       { key: 'id', label: 'Id', type: 'number' },
       { key: 'name', label: 'Source Name', type: 'text', required: true },
+      { key: 'description', label: 'Description', type: 'text' },
       { key: 'active', label: 'Active', type: 'checkbox' }
     ],
     saving_log:[
       { key: 'id', label: 'Id', type: 'number' },
+      { key: 'date', label: 'Date', type: 'date', required: true},
       { key: 'amount', label: 'Amount', type: 'number', required: true, min: 0 },
       { key: 'total_amount', label: 'TotalAmount', type: 'number', required: true, min: 0 },
       { key: 'note', label: 'Note', type: 'text' },
@@ -54,8 +56,8 @@ export class FormFactoryService {
       { key: 'id', label: 'Id', type: 'number' },
       { key: 'description', label: 'Description', type: 'text' },
       { key: 'amount', label: 'Amount', type: 'number', required: true, min: 0 },
-      { key: 'date', label: 'Date', type: 'date', required: true, min: 0 },
-      { key: 'currency', label: 'CurrencyEnum', type: 'select', required: true, options: this.getCurrencyOptions() },
+      { key: 'date', label: 'Date', type: 'date', required: true},
+      { key: 'currency', label: 'Currency', type: 'select', required: true, options: this.getCurrencyOptions() },
       { key: 'user_id', label: 'User', type: 'select',required: true}
     ]
   };

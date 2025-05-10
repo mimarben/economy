@@ -4,9 +4,9 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 
-import { MaterialModule } from '../../../material.module';
+import { MaterialModule } from '../../../utils/utils/material.module';
 import { FormFieldConfig } from './form-config';
-
+import { UtilsService } from '../../../utils/utils/utils.service';
 @Component({
   selector: 'app-generic-form',
   templateUrl: './generic-form.component.html',
@@ -27,7 +27,7 @@ export class GenericFormComponent implements OnChanges {
   @Output() formDirty = new EventEmitter<boolean>();
   form: FormGroup;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder,  private utilsService: UtilsService) {
     this.form = this.fb.group({});
   }
   private emitFormValidity(): void {
@@ -100,10 +100,19 @@ export class GenericFormComponent implements OnChanges {
    * @returns The initial value for the field.
    */
   private getInitialValue(field: FormFieldConfig): any {
-    if (field.type === 'checkbox') {
-      return this.initialData[field.key] ?? false;
+    const value = this.initialData[field.key] ?? null;
+    
+  if (field.type === 'date') {
+      if (typeof value === 'string' && value) {
+        return this.utilsService.moment(value).toDate(); // Convert string to Date
+      } else if (value instanceof Date) {
+        return value; // Use Date as is
+      }
+      return null; // No valid date
+    } else if (field.type === 'checkbox') {
+      return value ?? false;
     }
-    return this.initialData[field.key] ?? '';
+    return value ?? '';
   }
 
   /**

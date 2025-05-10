@@ -1,1 +1,9 @@
-<p>savings works!</p>
+<app-generic-table
+  [filter]="filterValue"
+  [data]="savings"
+  [columns]="columns"
+  [isLoading]="isLoading"
+  [errorMessage]="errorMessage"
+  (edit)="editSaving($event)"
+  (add)="addSaving()"
+></app-generic-table>

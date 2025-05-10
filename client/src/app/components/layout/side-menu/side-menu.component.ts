@@ -1,5 +1,5 @@
 import { Component, Input, } from '@angular/core';
-import { MaterialModule } from '../../../material.module';
+import { MaterialModule } from '../../../utils/utils/material.module';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 @Component({

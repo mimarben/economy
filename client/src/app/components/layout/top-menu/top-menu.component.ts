@@ -1,5 +1,5 @@
 import { Component, Output, EventEmitter } from '@angular/core';
-import { MaterialModule } from '../../../material.module';
+import { MaterialModule } from '../../../utils/utils/material.module';
 @Component({
   selector: 'app-top-menu',
   imports: [

@@ -34,7 +34,6 @@ export abstract class BaseCrudService<T> {
   }
 
   update(id: number, item: T): Observable<ApiResponse<T>> {
-    console.log("this.getUrl(): ",this.getUrl());
     return this.http.patch<ApiResponse<T>>(`${this.getUrl()}/${id}`, item, { headers: this.getHeaders() });
   }
 

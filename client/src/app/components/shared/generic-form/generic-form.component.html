@@ -1,43 +1,47 @@
 <form [formGroup]="form" (ngSubmit)="submitForm()" novalidate>
   <div *ngFor="let field of fields" class="field-container">
-    <!-- Non-checkbox fields -->
-    <mat-form-field appearance="outline" *ngIf="field.type !== 'checkbox'" class="full-width">
+    
+    <!-- Text, Number, or Email Field -->
+    <mat-form-field appearance="outline" *ngIf="field.type === 'text' || field.type === 'number' || field.type === 'email'" class="full-width">
       <mat-label>{{ field.label }}</mat-label>
-
-      <!-- Text, Number, Email Inputs -->
-      <input
-        *ngIf="field.type === 'text' || field.type === 'number' || field.type === 'email'"
-        matInput
-        [type]="field.type"
-        [formControlName]="field.key"
-        [id]="field.key"
-        [attr.aria-describedby]="field.key + '-error'"
-        [placeholder]="field.label">
-
-      <!-- Select -->
-      <mat-select
-        *ngIf="field.type === 'select'"
-        [formControlName]="field.key"
-        [id]="field.key"
-        [attr.aria-describedby]="field.key + '-error'">
-        <mat-option *ngFor="let opt of field.options" [value]="opt.value">
-          {{ opt.label }}
-        </mat-option>
-      </mat-select>
-
-      <!-- Error Messages -->
+      <input matInput [type]="field.type" [formControlName]="field.key" [id]="field.key"
+        [attr.aria-describedby]="field.key + '-error'" [placeholder]="field.label">
       <mat-error *ngIf="form.get(field.key)?.touched && form.get(field.key)?.invalid" [id]="field.key + '-error'">
         {{ getErrorMessage(field) }}
       </mat-error>
     </mat-form-field>
 
-    <!-- Checkbox -->
-    <mat-checkbox
-      *ngIf="field.type === 'checkbox'"
-      [formControlName]="field.key"
-      [id]="field.key"
-      class="checkbox">
-      {{ field.label }}
-    </mat-checkbox>
+    <!-- Select Field -->
+    <mat-form-field appearance="outline" *ngIf="field.type === 'select'" class="full-width">
+      <mat-label>{{ field.label }}</mat-label>
+      <mat-select [formControlName]="field.key" [id]="field.key"
+        [attr.aria-describedby]="field.key + '-error'">
+        <mat-option *ngFor="let option of field.options" [value]="option.value">
+          {{ option.label }}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="form.get(field.key)?.touched && form.get(field.key)?.invalid" [id]="field.key + '-error'">
+        {{ getErrorMessage(field) }}
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Date Field -->
+    <mat-form-field appearance="outline" *ngIf="field.type === 'date'" class="full-width">
+      <mat-label>{{ field.label }}</mat-label>
+      <input matInput [matDatepicker]="datePicker" [formControlName]="field.key" [id]="field.key"
+        [attr.aria-describedby]="field.key + '-error'" [placeholder]="field.label">
+      <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
+      <mat-datepicker #datePicker></mat-datepicker>
+      <mat-error *ngIf="form.get(field.key)?.touched && form.get(field.key)?.invalid" [id]="field.key + '-error'">
+        {{ getErrorMessage(field) }}
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Checkbox Field -->
+    <div *ngIf="field.type === 'checkbox'">
+      <mat-checkbox [formControlName]="field.key" [id]="field.key" class="checkbox">
+        {{ field.label }}
+      </mat-checkbox>
+    </div>
   </div>
 </form>

@@ -63,8 +63,8 @@ openDialog(data?: Source): void {
         initialData: data || {},
       },
     });
-
     dialogRef.afterClosed().subscribe((result) => {
+      console.log(result);
       if (result) {
         result.id ? this.updateSource(result) : this.createSource(result);
       }

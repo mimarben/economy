@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { MaterialModule } from '../../../material.module';
+import { MaterialModule } from '../../../utils/utils/material.module';
 
 import { TranslateModule } from '@ngx-translate/core';
 @Component({
