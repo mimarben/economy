@@ -14,7 +14,7 @@ import { SavingBase as Saving } from '../../../models/SavingBase';
 import { UserBase as User } from '../../../models/UserBase';
 import { SavingService } from '../../../services/saving.service';
 import { UserService } from '../../../services/user.service';
-import { UtilsService } from '../../../utils/utils/utils.service';
+import { UtilsService } from '../../../utils/utils.service';
 
 @Component({
   selector: 'app-savings',

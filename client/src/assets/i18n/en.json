@@ -29,5 +29,8 @@
     "fetching": {
       "banks": "Error fetching banks. Please try again later."
     }
+  },
+  "home":{
+    "title": "Home of myBank"
   }
 }

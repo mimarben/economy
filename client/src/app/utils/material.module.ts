@@ -13,6 +13,9 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { MatMomentDateModule } from '@angular/material-moment-adapter';
+import { MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+import { environment } from '../../environments/environment';
 
 
 @NgModule({
@@ -31,7 +34,8 @@ import { MatNativeDateModule } from '@angular/material/core';
     MatInputModule,
     MatCheckboxModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    MatMomentDateModule
   ],
   exports: [
     MatButtonModule,
@@ -48,7 +52,12 @@ import { MatNativeDateModule } from '@angular/material/core';
     MatInputModule,
     MatCheckboxModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    MatMomentDateModule
+  ],
+  providers: [
+    { provide: MAT_DATE_LOCALE, useValue: environment.locations.defaultLocation }, // 'en-GB' uses DD-MM-YYYY by default
+    { provide: MAT_DATE_FORMATS, useValue: environment.date_formats }
   ]
 })
 

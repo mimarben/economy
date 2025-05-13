@@ -2,7 +2,7 @@ import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MaterialModule } from '../../../../utils/utils/material.module';
+import { MaterialModule } from '../../../../utils/material.module';
 
 
 import { UserBase as User } from '../../../../models/UserBase';

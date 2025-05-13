@@ -4,9 +4,9 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 
-import { MaterialModule } from '../../../utils/utils/material.module';
+import { MaterialModule } from '../../../utils/material.module';
 import { FormFieldConfig } from './form-config';
-import { UtilsService } from '../../../utils/utils/utils.service';
+import { UtilsService } from '../../../utils/utils.service';
 @Component({
   selector: 'app-generic-form',
   templateUrl: './generic-form.component.html',
@@ -101,10 +101,10 @@ export class GenericFormComponent implements OnChanges {
    */
   private getInitialValue(field: FormFieldConfig): any {
     const value = this.initialData[field.key] ?? null;
-    
+
   if (field.type === 'date') {
       if (typeof value === 'string' && value) {
-        return this.utilsService.moment(value).toDate(); // Convert string to Date
+        return this.utilsService.formatDateShortDate(value);
       } else if (value instanceof Date) {
         return value; // Use Date as is
       }

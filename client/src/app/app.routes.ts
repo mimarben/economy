@@ -9,9 +9,10 @@ import { SavingsComponent } from './components/pages/savings/savings.component';
 import { SavingsLogComponent } from './components/pages/savings/savings-log/savings-log/savings-log.component';
 import { SourcesComponent } from './components/pages/savings/sources/sources.component';
 import { NotFoundComponent } from './components/pages/not-found/not-found.component';
+
 export const routes: Routes =  [
-  { path: '', component: HomeComponent },
-  { path: 'users', component: UsersComponent},
+  { path: '', component: HomeComponent, data: { title: 'home.title' } },
+  { path: 'users', component: UsersComponent, data: { title: 'users.title' }},
   { path: 'banks', component: BanksComponent},
   { path: 'accounts', component: AccountsComponent},
   { path: 'households', component: HouseholdsComponent},

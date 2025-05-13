@@ -4,7 +4,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 
 import { FormFieldConfig } from '../generic-form/form-config';
 import { GenericFormComponent } from '../generic-form/generic-form.component';
-import { MaterialModule } from '../../../utils/utils/material.module';
+import { MaterialModule } from '../../../utils/material.module';
 @Component({
   selector: 'app-generic-dialog',
   styleUrl: './generic-dialog.component.css',

@@ -14,7 +14,7 @@ import { ToastService } from '../../../../../services/toast.service';
 import { environment } from '../../../../../../environments/environment';
 import { SavingLogService } from '../../../../../services/saving-log.service';
 import { SavingService } from '../../../../../services/saving.service';
-import { UtilsService } from '../../../../../utils/utils/utils.service';
+import { UtilsService } from '../../../../../utils/utils.service';
 @Component({
   selector: 'app-savings-log',
   imports: [GenericTableComponent],
@@ -43,7 +43,7 @@ export class SavingsLogComponent implements OnInit {
     this.formFields = this.formFactory.getFormConfig('saving_log');
     this.columns = this.formFactory.getTableColumns<SavingLog>('saving_log', {
       saving_id: (value: number) => this.savingMap[value] ?? value,
-      date: (value:string)=> this.utilsService.moment(value).format('YYYY-MM-DD')
+      date: (value:string)=> this.utilsService.formatDateShortStr(value)
     });
     this.loadSavingLogs();
     this.loadSavings();

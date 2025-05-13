@@ -1,6 +1,6 @@
 <form [formGroup]="form" (ngSubmit)="submitForm()" novalidate>
   <div *ngFor="let field of fields" class="field-container">
-    
+
     <!-- Text, Number, or Email Field -->
     <mat-form-field appearance="outline" *ngIf="field.type === 'text' || field.type === 'number' || field.type === 'email'" class="full-width">
       <mat-label>{{ field.label }}</mat-label>
@@ -28,8 +28,13 @@
     <!-- Date Field -->
     <mat-form-field appearance="outline" *ngIf="field.type === 'date'" class="full-width">
       <mat-label>{{ field.label }}</mat-label>
-      <input matInput [matDatepicker]="datePicker" [formControlName]="field.key" [id]="field.key"
-        [attr.aria-describedby]="field.key + '-error'" [placeholder]="field.label">
+      <input
+        matInput
+        [matDatepicker]="datePicker"
+        [formControlName]="field.key"
+        [id]="field.key"
+        [attr.aria-describedby]="field.key + '-error'"
+        [placeholder]="field.label">
       <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
       <mat-datepicker #datePicker></mat-datepicker>
       <mat-error *ngIf="form.get(field.key)?.touched && form.get(field.key)?.invalid" [id]="field.key + '-error'">

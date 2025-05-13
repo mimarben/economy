@@ -1,8 +1,8 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
-
-import { TopMenuComponent } from '../top-menu/top-menu.component';
+import { HeaderComponent } from '../header/header.component';
 import { SideMenuComponent } from '../side-menu/side-menu.component';
 import { FooterComponent } from '../footer/footer.component';
 
@@ -10,7 +10,7 @@ import { FooterComponent } from '../footer/footer.component';
   selector: 'app-layout',
   imports: [
     RouterOutlet,
-    TopMenuComponent,
+    HeaderComponent,
     SideMenuComponent,
     FooterComponent
   ],
@@ -19,6 +19,16 @@ import { FooterComponent } from '../footer/footer.component';
 })
 export class LayoutComponent {
   isSideMenuHidden = false;
+  pageTitle = '';
+  constructor(private router: Router, private activatedRoute: ActivatedRoute) {}
+  setHeaderTitle() {
+    let route = this.activatedRoute;
+    while (route.firstChild) {
+      route = route.firstChild;
+    }
+    this.pageTitle = route.snapshot.data['title'] || '';
+  }
+
   handleToggleSideMenu() {
     this.isSideMenuHidden = !this.isSideMenuHidden;
   }

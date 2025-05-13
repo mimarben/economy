@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable, firstValueFrom } from 'rxjs';
 import { environment } from '../../environments/environment';
-
 @Injectable({
   providedIn: 'root'
 })
@@ -78,6 +77,7 @@ export class AppTranslateService {
    * @returns Texto traducido
    */
   translateKey(key: string, params?: object): string {
+    if (!key){return 'error translation'}
     return this.translate.instant(key, params);
   }
 

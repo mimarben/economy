@@ -20,5 +20,18 @@ export const environment = {
   i18n: {
     defaultLanguage: 'en',
     availableLanguages: ['en', 'es',]
+  },
+  date_formats:{
+    parse: { dateInput: 'DD-MM-YYYY' },
+    display: {
+      dateInput: 'DD-MM-YYYY',
+      monthYearLabel: 'MMM YYYY',
+      dateA11yLabel: 'DD-MM-YYYY',
+      monthYearA11yLabel: 'MMMM YYYY',
+  }
+  },
+  locations:{
+    defaultLocation: "es-ES",
+    availableLocations: ["es-ES", "en-GB", "en-US"]
   }
 };

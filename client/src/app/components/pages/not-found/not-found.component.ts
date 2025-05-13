@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { MaterialModule } from '../../../utils/utils/material.module';
+import { MaterialModule } from '../../../utils/material.module';
 @Component({
   selector: 'app-not-found',
   imports: [
