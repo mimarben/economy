@@ -3,7 +3,8 @@ import { FormFieldConfig } from '../../components/shared/generic-form/form-confi
 import { TableColumn } from '../../components/shared/generic-table/generic-table.component';
 import { RoleEnum } from '../../models/HouseholdMemberBase';
 import { CurrencyEnum } from '../../models/SavingBase';
-type ModelType = 'account' | 'bank' | "houseHold" | "houseHoldMember" | "source" |"saving_log" | "saving";
+import { ActionEnum } from '../../models/InvestmentLogBase';
+type ModelType = 'account' | 'bank' | "houseHold" | 'houseHoldMember' | 'source' | 'saving_log' | "saving" | 'investment' | 'investment_category' | 'investment_log';
 
 @Injectable({ providedIn: 'root' })
 export class FormFactoryService {
@@ -59,6 +60,33 @@ export class FormFactoryService {
       { key: 'date', label: 'Date', type: 'date', required: true},
       { key: 'currency', label: 'Currency', type: 'select', required: true, options: this.getCurrencyOptions() },
       { key: 'user_id', label: 'User', type: 'select',required: true}
+    ],
+    investment:[
+      { key: 'id', label: 'Id', type: 'number' },
+      { key: 'name', label: 'Name', type: 'text', required: true },
+      { key: 'amount', label: 'Amount', type: 'number', required: true, min: 0 },
+      { key: 'value', label: 'Value', type: 'number', required: true, min: 0 },
+      { key: 'date', label: 'Date', type: 'date', required: true},
+      { key: 'currency', label: 'Currency', type: 'select', required: true, options: this.getCurrencyOptions() },
+      { key: 'user_id', label: 'User', type: 'select',required: true},
+      { key: 'account_id', label: 'Account Id', type: 'select',required: true},
+      { key: 'category_id', label: 'Category Id', type: 'select',required: true}
+    ],
+    investment_category:[
+      { key: 'id', label: 'Id', type: 'number' },
+      { key: 'name', label: 'Name', type: 'text', required: true },
+      { key: 'description', label: 'Description', type: 'text' },
+      { key: 'active', label: 'Active', type: 'checkbox' },
+    ],
+    investment_log:[
+      { key: 'id', label: 'Id', type: 'number' },
+      { key: 'date', label: 'Date', type: 'date', required: true},
+      { key: 'currentValue', label: 'Current Value', type: 'number', required: true, min: 0 },
+      { key: 'pricePerUnit', label: 'Price per Unit', type: 'number', required: true, min: 0 },
+      { key: 'unitsBought', label: 'Units bought', type: 'number', required: true, min: 0 },
+      { key: 'action', label: 'ACtion', type: 'select', required: true, options: this.getActionsOptions() },
+      { key: 'note', label: 'Note', type: 'text' },
+      { key: 'investment_id', label: 'Investment ID', type: 'select',required: true},
     ]
   };
 
@@ -88,7 +116,10 @@ export class FormFactoryService {
       houseHoldMember: [],
       source:[],
       saving_log: [],
-      saving:[]
+      saving:[],
+      investment:[],
+      investment_category:[],
+      investment_log:[]
     };
 
     return !excludedFields[modelType].includes(field.key);
@@ -103,7 +134,10 @@ export class FormFactoryService {
       houseHoldMember: [],
       source:[],
       saving_log: [],
-      saving:[]
+      saving:[],
+      investment:[],
+      investment_category:[],
+      investment_log:[]
     };
 
     return !nonSortableFields[modelType].includes(key);
@@ -137,6 +171,14 @@ export class FormFactoryService {
     return currencies.map(currencies => ({
       value: currencies,
       label: currencies.charAt(0).toUpperCase() + currencies.slice(1),  // Capitalizing first letter for display
+    }));
+  }
+
+  getActionsOptions(){
+    const actions: ActionEnum[] = ["buy", "sell", "transfer", "deposit", "withdraw", "hold"];
+    return actions.map(actions => ({
+      value: actions,
+      label: actions.charAt(0).toUpperCase() + actions.slice(1),
     }));
   }
 }

@@ -53,13 +53,13 @@
     </mat-list-item>
     <div *ngIf="investmentsMenuOpen" class="submenu">
       <mat-divider></mat-divider>
-      <a mat-list-item class="submenu-item" routerLink="/users" routerLinkActive="active-link">
+      <a mat-list-item class="submenu-item" routerLink="/investments" routerLinkActive="active-link">
         <span>Investments</span>
       </a>
-      <mat-list-item class="submenu-item">
+      <mat-list-item class="submenu-item" routerLink="/investments_categories" routerLinkActive="active-link">
         <span>Investments Category</span>
       </mat-list-item>
-      <mat-list-item class="submenu-item">
+      <mat-list-item class="submenu-item" routerLink="/investments_log" routerLinkActive="active-link">
         <span>Investments Log</span>
       </mat-list-item>
     </div>

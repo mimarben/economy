@@ -32,5 +32,23 @@
   },
   "home":{
     "title": "Home of myBank"
+  },
+  "investments_log":{
+    "title": "Investments Log"
+  },
+  "savings":{
+    "title": "Savings"
+  },
+  "sources":{
+    "title": "Sources"
+  },
+  "savings_log":{
+    "title": "Savings Logs"
+  },
+  "investments":{
+    "title": "Investments"
+  },
+  "investments_categories":{
+    "title": "Investments Categories"
   }
 }

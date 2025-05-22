@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { GenericDialogComponent } from '../../shared/generic-dialog/generic-dialog.component';
 import {
@@ -22,7 +22,7 @@ import { UtilsService } from '../../../utils/utils.service';
   templateUrl: './savings.component.html',
   styleUrl: './savings.component.css',
 })
-export class SavingsComponent {
+export class SavingsComponent implements OnInit{
   savings: Saving[] = [];
   filterValue = '';
   isLoading = false;
@@ -91,8 +91,8 @@ export class SavingsComponent {
       }
     });
   }
-  updateSaving(savinglog: Saving): void {
-    this.savingService.update(savinglog.id, savinglog).subscribe({
+  updateSaving(saving: Saving): void {
+    this.savingService.update(saving.id, saving).subscribe({
       next: (response: ApiResponse<Saving>) => {
         const updated = response.response;
         const index = this.savings.findIndex((h) => h.id === updated.id);
@@ -116,8 +116,8 @@ export class SavingsComponent {
       },
     });
   }
-  createSaving(savinglog: Saving): void {
-    this.savingService.create(savinglog).subscribe({
+  createSaving(saving: Saving): void {
+    this.savingService.create(saving).subscribe({
       next: (response: ApiResponse<Saving>) => {
         this.savings.push(response.response);
         this.savings = [...this.savings];

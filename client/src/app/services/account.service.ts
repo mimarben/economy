@@ -24,11 +24,11 @@ getAccounts(): Observable<ApiResponse<Account[]>> {
 getAccountById(id: number): Observable<ApiResponse<Account>> {
   return this.http.get<ApiResponse<Account>>(`${this.apiUrl}/accounts/${id}`);
 }
-createAccount(user: Account): Observable<ApiResponse<Account>> {
-  return this.http.post<ApiResponse<Account>>(`${this.apiUrl}/accounts`, user, { headers: this.getHeaders() } );
+createAccount(account: Account): Observable<ApiResponse<Account>> {
+  return this.http.post<ApiResponse<Account>>(`${this.apiUrl}/accounts`, account, { headers: this.getHeaders() } );
 }
-updateAccount(id: number, user: Account): Observable<ApiResponse<Account>> {
-  return this.http.patch<ApiResponse<Account>>(`${this.apiUrl}/accounts/${id}`, user, { headers: this.getHeaders() });
+updateAccount(id: number, account: Account): Observable<ApiResponse<Account>> {
+  return this.http.patch<ApiResponse<Account>>(`${this.apiUrl}/accounts/${id}`, account, { headers: this.getHeaders() });
 }
 
 }
