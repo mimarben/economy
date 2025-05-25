@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 import { HomeComponent } from './components/pages/home/home.component';
 import { UsersComponent } from './components/pages/users/users.component';
 import { BanksComponent } from './components/pages/banks/banks.component';
-import { AccountsComponent } from './components/pages/banks/accounts/accounts.component';
+import { BanksAccountsComponent } from './components/pages/banks/banks-accounts/banks-accounts.component';
 import { HouseholdsComponent } from './components/pages/households/households.component';
 import { HouseholdmembersComponent } from './components/pages/households/householdmembers/householdmembers.component';
 import { SavingsComponent } from './components/pages/savings/savings.component';
@@ -17,7 +17,7 @@ export const routes: Routes =  [
   { path: '', component: HomeComponent, data: { title: 'home.title' } },
   { path: 'users', component: UsersComponent, data: { title: 'users.title' }},
   { path: 'banks', component: BanksComponent, data: { title: 'banks.title' } },
-  { path: 'accounts', component: AccountsComponent, data: { title: 'accounts.title' } },
+  { path: 'accounts', component: BanksAccountsComponent, data: { title: 'accounts.title' } },
   { path: 'households', component: HouseholdsComponent, data: { title: 'households.title' } },
   { path: 'households_members', component: HouseholdmembersComponent, data: { title: 'households_members.title' } },
   { path: 'savings', component: SavingsComponent, data: { title: 'savings.title' } },

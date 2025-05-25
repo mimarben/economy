@@ -1,1 +1,9 @@
-<p>investments-categories works!</p>
+<app-generic-table
+  [filter]="filterValue"
+  [data]="investmentsCategories"
+  [columns]="columns"
+  [isLoading]="isLoading"
+  [errorMessage]="errorMessage"
+  (edit)="editInvestmentCategory($event)"
+  (add)="addInvestmentInvestmentCategory()"
+></app-generic-table>

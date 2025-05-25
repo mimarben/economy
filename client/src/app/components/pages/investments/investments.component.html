@@ -1,1 +1,9 @@
-<p>investments works!</p>
+<app-generic-table
+  [filter]="filterValue"
+  [data]="investments"
+  [columns]="columns"
+  [isLoading]="isLoading"
+  [errorMessage]="errorMessage"
+  (edit)="editInvestment($event)"
+  (add)="addInvestment()"
+></app-generic-table>

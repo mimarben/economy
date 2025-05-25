@@ -16,12 +16,12 @@ import { ToastService } from '../../../../services/toast.service';
 import { environment } from '../../../../../environments/environment';
 
 @Component({
-  selector: 'app-accounts',
+  selector: 'app-banks-accounts',
   imports: [GenericTableComponent],
-  templateUrl: './accounts.component.html',
-  styleUrls: ['./accounts.component.css']
+  templateUrl: './banks-accounts.component.html',
+  styleUrl: './banks-accounts.component.css'
 })
-export class AccountsComponent implements OnInit {
+export class BanksAccountsComponent implements OnInit {
   accounts: Account[] = [];
   filterValue = '';
   isLoading = false;
