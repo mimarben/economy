@@ -28,7 +28,8 @@ export class BanksAccountsComponent implements OnInit {
   errorMessage = '';
   formFields: FormFieldConfig[] = [];
   isFormValid = false;
-
+  banks: Bank[] = [];
+  users: User[] = [];
   columns: TableColumn<Account>[] = [
     { key: 'id', label: 'ID', sortable: true },
     { key: 'name', label: 'Name', sortable: true },
@@ -36,8 +37,8 @@ export class BanksAccountsComponent implements OnInit {
     { key: 'iban', label: 'IBAN', sortable: true },
     { key: 'balance', label: 'Balance', sortable: true },
     { key: 'active', label: 'Active', sortable: true, formatter: (v) => v ? 'Yes' : 'No' },
-    { key: 'bank_id', label: 'Bank ID', sortable: true },
-    { key: 'user_id', label: 'User ID', sortable: true },
+    { key: 'bank_id', label: 'Bank-ID', sortable: true, formatter: (v: number) => this.getBankName(v) },
+    { key: 'user_id', label: 'User-ID', sortable: true, formatter: (v: number) => this.getUserName(v) },
   ];
 
   constructor(
@@ -68,44 +69,41 @@ export class BanksAccountsComponent implements OnInit {
       },
     });
   }
-
+  getBankName(bankId: number): string {
+    const bank = this.banks.find(b => b.id === bankId);
+    return bank?.name || 'Unknown Bank';
+  }
+  getUserName(userId: number): string {
+  const user = this.users.find(u => u.id === userId);
+  return user ? `${user.name} ${user.surname1} ${user.surname2}` : 'Unknown User';
+  }
   private loadFormFields(): void {
     this.formFields = this.formFactory.getFormConfig('account');
     this.loadBanks();
     this.loadUsers();
   }
 
-  private loadBanks(): void {
-    this.bankService.getBanks().subscribe({
-      next: (res: ApiResponse<Bank[]>) => {
-        const field = this.formFields.find(f => f.key === 'bank_id');
-        if (field) {
-          field.type = 'select';
-          field.options = res.response.map(b => ({ label: b.name, value: b.id }));
-        }
-      },
-      error: () => {
-        this.errorMessage = 'Error loading banks';
-        this.isLoading = false;
-      }
-    });
-  }
+private loadBanks(): void {
+  this.bankService.getBanks().subscribe({
+    next: (res: ApiResponse<Bank[]>) => {
+      this.banks = res.response; // Store banks
+      // ... existing form field update code
+      this.accounts = [...this.accounts]; // Refresh table
+    },
+    // ... error handling
+  });
+}
 
-  private loadUsers(): void {
-    this.userService.getUsers().subscribe({
-      next: (res: ApiResponse<User[]>) => {
-        const field = this.formFields.find(f => f.key === 'user_id');
-        if (field) {
-          field.type = 'select';
-          field.options = res.response.map(u => ({ label: `${u.name} ${u.surname1} ${u.surname2}`, value: u.id }));
-        }
-      },
-      error: () => {
-        this.errorMessage = 'Error loading users';
-        this.isLoading = false;
-      }
-    });
-  }
+private loadUsers(): void {
+  this.userService.getUsers().subscribe({
+    next: (res: ApiResponse<User[]>) => {
+      this.users = res.response; // Store users
+      // ... existing form field update code
+      this.accounts = [...this.accounts]; // Refresh table
+    },
+    // ... error handling
+  });
+}
 
   editAccount(account: Account): void {
     this.openDialog(account);

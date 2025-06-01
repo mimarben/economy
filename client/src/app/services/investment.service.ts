@@ -8,6 +8,6 @@ import { InvestmentBase as Investment } from '../models/InvestmentBase';
 })
 export class InvestmentService extends BaseCrudService<Investment> {
   constructor(protected override http: HttpClient) {
-    super(http, 'investment');
+    super(http, 'investments');
   }
 }

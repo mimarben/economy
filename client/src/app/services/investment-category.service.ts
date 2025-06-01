@@ -8,6 +8,6 @@ import { InvestmentCategoryBase as InvestmentCategory } from '../models/Investme
 })
 export class InvestmentCategoryService extends BaseCrudService<InvestmentCategory> {
   constructor(protected override http: HttpClient) {
-    super(http, 'investment_category');
+    super(http, 'investments_categories');
   }
 }
