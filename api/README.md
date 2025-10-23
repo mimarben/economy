@@ -45,3 +45,22 @@ alembic downgrade <revision_id>
 # Pydantic
 
 https://stackoverflow.com/questions/67699451/make-every-field-as-optional-with-pydantic
+
+uv venv /home/miguel/venvs/economy-env --python 3.13.7
+
+source /home/miguel/venvs/economy-env/bin/activate
+
+uv sync --active
+
+python app.py tiene que tener la ruta de la base de datos en la variable de entrono.
+
+No funciona bien el uv en nfs ni samba o no lo he conseguido arreglar
+
+
+
+uv pip compile pyproject.toml --output-file requirements.txt  
+
+
+Con Docker
+docker build -t flask-dev .
+docker run -p 5001:5001 --env-file .env flask-dev
