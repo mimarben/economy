@@ -8,7 +8,8 @@ DATABASE_PATH= Config.DATABASE_PATH
 
 # Construct the database URL
 DATABASE_URL = f"sqlite:///{os.path.abspath(DATABASE_PATH)}"
-
+print(f"📁 Database absolute path: {os.path.abspath(DATABASE_PATH)}")
+print(f"📁 Database DATABASE_URL path: {DATABASE_URL}")
 engine = create_engine(DATABASE_URL,
                       echo=True,
                       pool_size=20,

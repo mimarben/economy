@@ -22,7 +22,7 @@ pybabel compile -d /home/miguel/src/economy/api/i18n
 
 ```
 
-for alembic
+for alembic cuando no hay base  de datos
 
  ```
  alembic init alembic
@@ -63,4 +63,5 @@ uv pip compile pyproject.toml --output-file requirements.txt
 
 Con Docker
 docker build -t flask-dev .
-docker run -p 5001:5001 --env-file .env flask-dev
+docker run --rm -p 5001:5001 --env-file .env flask-dev
+

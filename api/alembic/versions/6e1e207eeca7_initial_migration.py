@@ -1,8 +1,8 @@
-"""First migration
+"""Initial migration
 
-Revision ID: 5fd1b3a9ed85
+Revision ID: 6e1e207eeca7
 Revises: 
-Create Date: 2025-04-16 16:52:10.464730
+Create Date: 2025-10-24 08:01:23.670076
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '5fd1b3a9ed85'
+revision: str = '6e1e207eeca7'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -31,6 +31,14 @@ def upgrade() -> None:
     op.create_table('expenses_categories',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('name', sa.String(), nullable=False),
+    sa.Column('description', sa.String(), nullable=True),
+    sa.Column('active', sa.Boolean(), nullable=False),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_table('households',
+    sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
+    sa.Column('name', sa.String(), nullable=False),
+    sa.Column('address', sa.String(), nullable=False),
     sa.Column('description', sa.String(), nullable=True),
     sa.Column('active', sa.Boolean(), nullable=False),
     sa.PrimaryKeyConstraint('id')
@@ -81,8 +89,9 @@ def upgrade() -> None:
     sa.Column('description', sa.String(), nullable=True),
     sa.Column('iban', sa.String(), nullable=False),
     sa.Column('balance', sa.Float(), nullable=False),
-    sa.Column('user_id', sa.Integer(), nullable=True),
-    sa.Column('bank_id', sa.Integer(), nullable=True),
+    sa.Column('active', sa.Boolean(), nullable=False),
+    sa.Column('user_id', sa.Integer(), nullable=False),
+    sa.Column('bank_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['bank_id'], ['banks.id'], ),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
     sa.PrimaryKeyConstraint('id')
@@ -93,11 +102,36 @@ def upgrade() -> None:
     sa.Column('description', sa.String(), nullable=True),
     sa.Column('amount', sa.Float(), nullable=False),
     sa.Column('date', sa.Date(), nullable=False),
-    sa.Column('user_id', sa.Integer(), nullable=True),
-    sa.Column('place_id', sa.Integer(), nullable=True),
-    sa.Column('category_id', sa.Integer(), nullable=True),
+    sa.Column('currency', sa.Enum('euro', 'dolar', 'yuan', 'bitcoin', 'ethereum', 'usdc', 'dogecoin', 'litecoin', 'ripple', 'stellar', 'cardano', 'polkadot', 'solana', 'shiba_inu', 'tron', name='currencyenum'), nullable=False),
+    sa.Column('user_id', sa.Integer(), nullable=False),
+    sa.Column('place_id', sa.Integer(), nullable=False),
+    sa.Column('category_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['category_id'], ['expenses_categories.id'], ),
     sa.ForeignKeyConstraint(['place_id'], ['places.id'], ),
+    sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_table('financials_summaries',
+    sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
+    sa.Column('date', sa.Date(), nullable=False),
+    sa.Column('total_income', sa.Float(), nullable=False),
+    sa.Column('total_expenses', sa.Float(), nullable=False),
+    sa.Column('total_savings', sa.Float(), nullable=False),
+    sa.Column('total_investments', sa.Float(), nullable=False),
+    sa.Column('net_worth', sa.Float(), nullable=False),
+    sa.Column('user_id', sa.Integer(), nullable=False),
+    sa.Column('household_id', sa.Integer(), nullable=False),
+    sa.ForeignKeyConstraint(['household_id'], ['households.id'], ),
+    sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_table('households_members',
+    sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
+    sa.Column('role', sa.Enum('husband', 'wife', 'child', 'other', name='roleenum'), nullable=False),
+    sa.Column('active', sa.Boolean(), nullable=False),
+    sa.Column('household_id', sa.Integer(), nullable=False),
+    sa.Column('user_id', sa.Integer(), nullable=False),
+    sa.ForeignKeyConstraint(['household_id'], ['households.id'], ),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
@@ -107,9 +141,10 @@ def upgrade() -> None:
     sa.Column('description', sa.String(), nullable=True),
     sa.Column('amount', sa.Float(), nullable=False),
     sa.Column('date', sa.Date(), nullable=False),
-    sa.Column('user_id', sa.Integer(), nullable=True),
-    sa.Column('source_id', sa.Integer(), nullable=True),
-    sa.Column('category_id', sa.Integer(), nullable=True),
+    sa.Column('currency', sa.Enum('euro', 'dolar', 'yuan', 'bitcoin', 'ethereum', 'usdc', 'dogecoin', 'litecoin', 'ripple', 'stellar', 'cardano', 'polkadot', 'solana', 'shiba_inu', 'tron', name='currencyenum'), nullable=False),
+    sa.Column('user_id', sa.Integer(), nullable=False),
+    sa.Column('source_id', sa.Integer(), nullable=False),
+    sa.Column('category_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['category_id'], ['incomes_categories.id'], ),
     sa.ForeignKeyConstraint(['source_id'], ['sources.id'], ),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
@@ -118,13 +153,13 @@ def upgrade() -> None:
     op.create_table('investments',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('name', sa.String(), nullable=True),
-    sa.Column('description', sa.String(), nullable=True),
     sa.Column('amount', sa.Float(), nullable=False),
     sa.Column('value', sa.Float(), nullable=False),
     sa.Column('date', sa.Date(), nullable=False),
-    sa.Column('user_id', sa.Integer(), nullable=True),
-    sa.Column('account_id', sa.Integer(), nullable=True),
-    sa.Column('category_id', sa.Integer(), nullable=True),
+    sa.Column('currency', sa.Enum('euro', 'dolar', 'yuan', 'bitcoin', 'ethereum', 'usdc', 'dogecoin', 'litecoin', 'ripple', 'stellar', 'cardano', 'polkadot', 'solana', 'shiba_inu', 'tron', name='currencyenum'), nullable=False),
+    sa.Column('user_id', sa.Integer(), nullable=False),
+    sa.Column('account_id', sa.Integer(), nullable=False),
+    sa.Column('category_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['account_id'], ['accounts.id'], ),
     sa.ForeignKeyConstraint(['category_id'], ['investments_categories.id'], ),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
@@ -136,10 +171,33 @@ def upgrade() -> None:
     sa.Column('description', sa.String(), nullable=True),
     sa.Column('amount', sa.Float(), nullable=False),
     sa.Column('date', sa.Date(), nullable=False),
-    sa.Column('user_id', sa.Integer(), nullable=True),
-    sa.Column('account_id', sa.Integer(), nullable=True),
+    sa.Column('currency', sa.Enum('euro', 'dolar', 'yuan', 'bitcoin', 'ethereum', 'usdc', 'dogecoin', 'litecoin', 'ripple', 'stellar', 'cardano', 'polkadot', 'solana', 'shiba_inu', 'tron', name='currencyenum'), nullable=False),
+    sa.Column('user_id', sa.Integer(), nullable=False),
+    sa.Column('account_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['account_id'], ['accounts.id'], ),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_table('investments_logs',
+    sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
+    sa.Column('date', sa.Date(), nullable=False),
+    sa.Column('currentValue', sa.Float(), nullable=False),
+    sa.Column('pricePerUnit', sa.Float(), nullable=True),
+    sa.Column('unitsBought', sa.Float(), nullable=True),
+    sa.Column('action', sa.Enum('buy', 'sell', 'transfer', 'deposit', 'withdraw', 'hold', name='actionenum'), nullable=False),
+    sa.Column('note', sa.String(), nullable=True),
+    sa.Column('investment_id', sa.Integer(), nullable=False),
+    sa.ForeignKeyConstraint(['investment_id'], ['investments.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_table('savings_logs',
+    sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
+    sa.Column('date', sa.Date(), nullable=False),
+    sa.Column('amount', sa.Float(), nullable=False),
+    sa.Column('total_amount', sa.Float(), nullable=True),
+    sa.Column('note', sa.String(), nullable=True),
+    sa.Column('saving_id', sa.Integer(), nullable=False),
+    sa.ForeignKeyConstraint(['saving_id'], ['savings.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     # ### end Alembic commands ###
@@ -148,9 +206,13 @@ def upgrade() -> None:
 def downgrade() -> None:
     """Downgrade schema."""
     # ### commands auto generated by Alembic - please adjust! ###
+    op.drop_table('savings_logs')
+    op.drop_table('investments_logs')
     op.drop_table('savings')
     op.drop_table('investments')
     op.drop_table('incomes')
+    op.drop_table('households_members')
+    op.drop_table('financials_summaries')
     op.drop_table('expenses')
     op.drop_table('accounts')
     op.drop_table('users')
@@ -158,6 +220,7 @@ def downgrade() -> None:
     op.drop_table('places')
     op.drop_table('investments_categories')
     op.drop_table('incomes_categories')
+    op.drop_table('households')
     op.drop_table('expenses_categories')
     op.drop_table('banks')
     # ### end Alembic commands ###
