@@ -57,3 +57,12 @@ Angular CLI does not come with an end-to-end testing framework by default. You c
 ## Additional Resources
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+
+
+Si da fallos 
+
+# Borrar node_modules y lock file
+rm -rf node_modules package-lock.json
+
+# Reinstalar dependencias
+npm install

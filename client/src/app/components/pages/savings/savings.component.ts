@@ -45,7 +45,7 @@ export class SavingsComponent implements OnInit{
     this.formFields = this.formFactory.getFormConfig('saving');
     this.columns = this.formFactory.getTableColumns<Saving>('saving',
       {user_id:  (value: number) => this.usersMap[value] ?? value,
-      date: (value: string) => this.utilsService.moment(value).format('YYYY-MM-DD HH:MM')});
+      date: (value: string) => this.utilsService.formatDateLong(value)});
     this.loadSavings();
   }
   loadSavings() {

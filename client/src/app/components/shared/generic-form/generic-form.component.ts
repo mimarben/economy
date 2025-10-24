@@ -104,7 +104,7 @@ export class GenericFormComponent implements OnChanges {
 
   if (field.type === 'date') {
       if (typeof value === 'string' && value) {
-        return this.utilsService.formatDateShortDate(value);
+        return this.utilsService.formatDateShort(value);
       } else if (value instanceof Date) {
         return value; // Use Date as is
       }

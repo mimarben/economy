@@ -1,0 +1,38 @@
+version: '3.8'
+networks:
+  economy-net:
+    driver: bridge
+
+services:
+  backend:
+    build:
+      context: ./api
+    image: economy-api:${BACKEND_TAG}
+    ports:
+      - "5001:5001"
+    env_file:
+      - ./.env
+    volumes:
+      - ./api:/app:rw
+      - ./api/db:/app/db:rw  # Bind mount para SQLite
+    working_dir: /app
+    command: flask run --host=0.0.0.0 --port=5001
+    networks:
+      - economy-net
+
+  frontend:
+    build:
+      context: ./client
+    image: economy-client:${FRONTEND_TAG}
+    ports:
+      - "4200:4200"
+    env_file:
+      - ./.env
+    volumes:
+      - ./client:/app:rw
+    working_dir: /app
+    command: npx ng serve --host 0.0.0.0 --port 4200
+    depends_on:
+      - backend
+    networks:
+      - economy-net

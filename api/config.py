@@ -2,7 +2,7 @@ import os
 import sys
 from dotenv import load_dotenv
 load_dotenv()
-dbpath = os.getenv('DATABASE_PATH')
+dbpath = os.getenv('DATABASE_PATH').strip()
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'default_secret_key'
     SQLALCHEMY_TRACK_MODIFICATIONS = False

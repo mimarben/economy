@@ -45,7 +45,7 @@ constructor(
     this.formFields = this.formFactory.getFormConfig('investment');
     this.columns = this.formFactory.getTableColumns<Investment>('investment',
       {user_id:  (value: number) => this.usersMap[value] ?? value,
-      date: (value: string) => this.utilsService.moment(value).format('YYYY-MM-DD HH:MM')});
+      date: (value: string) => this.utilsService.formatDateLong(value)});
     this.loadInvestments();
   }
 
