@@ -2,10 +2,7 @@ from flask import Blueprint, request, jsonify, abort
 from sqlalchemy.orm import Session
 from pydantic import ValidationError
 from flask_babel import Babel, _
-
-
 from models.models import Account
-
 from schemas.account_schema import AccountCreate, AccountUpdate, AccountRead
 from db.database import get_db
 from services.response_service import Response
@@ -45,7 +42,7 @@ def update_account(account_id):
         account_data = AccountUpdate(**request.json)
     except ValidationError as e:
         return Response._error(_("VALIDATION_ERROR"),e.errors(), 400, name)
-        
+
     validated_data = account_data.model_dump(exclude_unset=True)
     for key, value in validated_data.items():
         setattr(place, key, value)

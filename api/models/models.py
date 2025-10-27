@@ -36,6 +36,13 @@ class ActionEnum(str, enum.Enum):
     withdraw = "withdraw"
     hold = "hold"
 
+#Define UserRoleEnum for user roles
+class UserRoleEnum(enum.Enum):
+    ADMIN = "admin"
+    EDITOR = "editor"
+    USER = "user"
+    GUEST = "guest"
+
 class User(Base):
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
@@ -46,6 +53,7 @@ class User(Base):
     email = Column(String)
     active = Column(Boolean, default=True, nullable=False)
     telephone = Column(Integer)
+    role= Column(SQLEnum(UserRoleEnum), default=UserRoleEnum.USER, nullable=False)
 
 
     # Relationships

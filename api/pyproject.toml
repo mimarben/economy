@@ -14,4 +14,5 @@ dependencies = [
     "gunicorn>=23.0.0",
     "pydantic[email]>=2.11.3",
     "sqlalchemy>=2.0.40",
+    "watchdog>=6.0.0",
 ]

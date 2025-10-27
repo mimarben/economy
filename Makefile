@@ -53,14 +53,15 @@ dev-down: stop-backend stop-frontend
 	@echo "🛑 Backend and frontend stopped"
 
 dev-restart: dev-down dev-up
-  @echo "🔄 Backend and frontend restarted
-  "
+	@echo "🔄 Backend and frontend restarted"
+
 dev-compose-up:
-  @echo "🧩 Starting services with docker-compose..."
-  docker-compose up -d
+	@echo "🧩 Starting services with docker-compose..."
+	docker compose up -d
+
 dev-compose-down:
-  @echo "🛑 Stopping services with docker-compose..."
-  docker-compose down
+	@echo "🛑 Stopping services with docker-compose..."
+	docker compose down
 
 # === LIMPIEZA ===
 clean:

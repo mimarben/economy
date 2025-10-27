@@ -16,7 +16,7 @@ services:
       - ./api:/app:rw
       - ./api/db:/app/db:rw  # Bind mount para SQLite
     working_dir: /app
-    command: flask run --host=0.0.0.0 --port=5001
+    command: flask run --host=0.0.0.0 --port=5001 --reload
     networks:
       - economy-net
 
