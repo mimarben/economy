@@ -44,7 +44,7 @@ this.isLoading = true;
         this.isLoading = false;
       },
       error: (err) => {
-        this.errorMessage = 'Error loading banks';
+        this.errorMessage = 'Error loading sources';
         this.isLoading = false;
       },
     });

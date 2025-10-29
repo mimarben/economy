@@ -1,5 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { forkJoin } from 'rxjs';
 import { GenericDialogComponent } from '../../../shared/generic-dialog/generic-dialog.component';
 import { HouseholdMemberBase as HouseHoldMember } from '../../../../models/HouseholdMemberBase';
 import { UserBase as User } from '../../../../models/UserBase';
@@ -40,13 +41,10 @@ export class HouseholdmembersComponent implements OnInit {
     private userService: UserService
   ) {}
   ngOnInit(): void {
-    this.formFields = this.formFactory.getFormConfig('houseHoldMember');
     this.columns =this.formFactory.getTableColumns<HouseHoldMember>(
                                                                     'houseHoldMember',
                                                                     {user_id:  (value: number) => this.usersMap[value] ?? value, household_id: (value: number) => this.householdsMap[value] ?? value });
     this.loadHouseHoldMembers();
-    this.loadUsers();
-    this.loadHouseHold();
   }
   loadHouseHoldMembers() {
     this.isLoading = true;
@@ -56,7 +54,7 @@ export class HouseholdmembersComponent implements OnInit {
         this.isLoading = false;
       },
       error: (err) => {
-        this.errorMessage = 'Error loading banks';
+        this.errorMessage = 'Error loading HouseHold Members';
         this.isLoading = false;
       },
     });
@@ -78,36 +76,6 @@ export class HouseholdmembersComponent implements OnInit {
       }
     });
   }
-  private loadUsers(): void {
-    this.userService.getUsers().subscribe({
-      next: (res: ApiResponse<User[]>) => {
-        const field = this.formFields.find(f => f.key === 'user_id');
-        if (field) {
-          field.type = 'select';
-          field.options = res.response.map(u => ({ label: `${u.name} ${u.surname1} ${u.surname2}`, value: u.id }));
-        }
-      },
-      error: () => {
-        this.errorMessage = 'Error loading users';
-        this.isLoading = false;
-      }
-    });
-  }
-  private loadHouseHold(): void {
-    this.householdService.getAll().subscribe({
-      next: (res: ApiResponse<Household[]>) => {
-        const field = this.formFields.find(f => f.key === 'household_id');
-        if (field) {
-          field.type = 'select';
-          field.options = res.response.map(u => ({ label: `${u.name}`, value: u.id }));
-        }
-      },
-      error: () => {
-        this.errorMessage = 'Error loading users';
-        this.isLoading = false;
-      }
-    });
-  }
   editHouseHoldMember(householdmember: HouseHoldMember) {
     this.openDialog(householdmember);
 
@@ -116,20 +84,61 @@ export class HouseholdmembersComponent implements OnInit {
     this.openDialog();
   }
 
-  openDialog(data?: HouseHoldMember): void{
-    const diaglogRef = this.dialog.open(GenericDialogComponent,{
-      data: {
-        title: data? 'Edit HouseHold Member' : 'New HoseHold Memeber',
-        fields: this.formFactory.getFormConfig('houseHoldMember'),
-        initialData: data || {},
-      }
-    });
-    diaglogRef.afterClosed().subscribe((result)=>{
-      if(result){
-        result.id ? this.updateHouseHoldMember(result): this.createHouseHoldMember(result);
-      }
-    });
-  }
+  openDialog(data?: HouseHoldMember): void {
+  // 1. Cargar TODO en paralelo antes de abrir el diálogo
+  forkJoin({
+    households: this.householdService.getAll(),
+    users: this.userService.getUsers()
+  }).subscribe({
+    next: (responses) => {
+      const baseConfig = this.formFactory.getFormConfig('houseHoldMember');
+
+      // 2. Enriquecer directamente los campos con las opciones
+      const enrichedConfig = baseConfig.map(field => {
+        if (field.key === 'household_id') {
+          return {
+            ...field,
+            options: responses.households.response.map(h => ({
+              value: h.id,
+              label: h.name
+            }))
+          };
+        }
+
+        if (field.key === 'user_id') {
+          return {
+            ...field,
+            options: responses.users.response.map(u => ({
+              value: u.id,
+              label: `${u.name} ${u.surname1} ${u.surname2}`
+            }))
+          };
+        }
+
+        return field;
+      });
+
+      // 3. Abrir el diálogo SOLO cuando los datos estén listos
+      const dialogRef = this.dialog.open(GenericDialogComponent, {
+        data: {
+          title: data ? 'Edit Household Member' : 'New Household Member',
+          fields: enrichedConfig,
+          initialData: data || {}
+        }
+      });
+
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          result.id ? this.updateHouseHoldMember(result) : this.createHouseHoldMember(result);
+        }
+      });
+    },
+    error: (error) => {
+      console.error('Error loading data:', error);
+    }
+  });
+}
+
   updateHouseHoldMember(householdMember: HouseHoldMember): void {
     this.householdmemberService.update(householdMember.id, householdMember).subscribe({
     next: (response: ApiResponse<HouseHoldMember>) => {

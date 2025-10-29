@@ -56,7 +56,7 @@ export class SavingsLogComponent implements OnInit {
         this.isLoading = false;
       },
       error: (err) => {
-        this.errorMessage = 'Error loading banks';
+        this.errorMessage = 'Error loading saving logs';
         this.isLoading = false;
       },
     });
