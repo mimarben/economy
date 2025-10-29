@@ -1,0 +1,16 @@
+//@use '@angular/material/prebuilt-themes/indigo-pink.css';
+@use './assets/styles/toast.css';
+@use './assets/styles/m3-theme.scss' as my-theme;
+
+@use '@angular/material' as mat;
+
+html {
+  @include mat.theme((
+    color: (
+      primary: my-theme.$primary-palette,
+      tertiary: my-theme.$tertiary-palette,
+    ),
+    typography: Roboto,
+    density: 0,
+  ));
+}

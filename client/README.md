@@ -15,9 +15,9 @@ mpn install
 Ya que instalaste Angular CLI como dependencia de desarrollo (--save-dev), puedes ejecutar comandos
  "@angular/material/prebuilt-themes/azure-blue.css",
 
-
-Descarga el Modernize Free Angular Template
-👉 https://github.com/adminmart/modernize-angular-free
+@angular/material:theme-color
+https://material-foundation.github.io/material-theme-builder/
+https://github.com/angular/components/blob/main/src/material/schematics/ng-generate/theme-color/README.md
 
 ## Development server
 
