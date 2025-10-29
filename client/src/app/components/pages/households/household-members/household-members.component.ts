@@ -17,8 +17,8 @@ import { HouseholdService } from '../../../../services/household.service';
 @Component({
   selector: 'app-householdmembers',
   imports: [GenericTableComponent],
-  templateUrl: './householdmembers.component.html',
-  styleUrl: './householdmembers.component.css',
+  templateUrl: './household-members.component.html',
+  styleUrl: './household-members.component.css',
 })
 export class HouseholdmembersComponent implements OnInit {
   houseHoldsMembers: HouseHoldMember[] = [];

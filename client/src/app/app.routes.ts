@@ -9,7 +9,7 @@ import { IncomesCategoriesComponent } from './components/pages/incomes/incomes-c
 import { BanksComponent } from './components/pages/banks/banks.component';
 import { BanksAccountsComponent } from './components/pages/banks/banks-accounts/banks-accounts.component';
 import { HouseholdsComponent } from './components/pages/households/households.component';
-import { HouseholdmembersComponent } from './components/pages/households/householdmembers/householdmembers.component';
+import { HouseholdmembersComponent } from './components/pages/households/household-members/household-members.component';
 import { SavingsComponent } from './components/pages/savings/savings.component';
 import { SavingsLogComponent } from './components/pages/savings/savings-log/savings-log/savings-log.component';
 import { SourcesComponent } from './components/pages/savings/sources/sources.component';
