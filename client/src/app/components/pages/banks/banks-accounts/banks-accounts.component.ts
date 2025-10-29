@@ -145,8 +145,6 @@ openDialog(data?: Account): void {
         }
         return field;
       });
-
-      // Abrir el diálogo con la configuración enriquecida
       const dialogRef = this.dialog.open(GenericDialogComponent, {
         data: {
           title: data ? 'Edit Account' : 'New Account',
