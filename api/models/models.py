@@ -53,6 +53,7 @@ class User(Base):
     email = Column(String)
     active = Column(Boolean, default=True, nullable=False)
     telephone = Column(Integer)
+    password = Column(String, nullable=False)
     role= Column(SQLEnum(UserRoleEnum), default=UserRoleEnum.USER, nullable=False)
 
 

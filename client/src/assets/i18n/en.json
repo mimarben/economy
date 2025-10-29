@@ -50,5 +50,14 @@
   },
   "investments_categories":{
     "title": "Investments Categories"
+  },
+  "expenses":{
+    "title": "Expenses"
+  },
+  "expenses_categories":{
+    "title": "Expenses Categories"
+  },
+  "places":{
+    "title": "Places"
   }
 }

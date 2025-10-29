@@ -13,14 +13,45 @@
     "edit": "Editar",
     "view": "Ver"
   },
-  "banks": {
-    "title": "Lista de Bancos",
-    "refresh": "Actualizar lista",
-    "no_data": "No hay bancos disponibles"
+   "users": {
+    "title": "Users List",
+    "refresh": "Refresh list",
+    "no_data": "No users available",
+    "add": "Add User"
   },
   "error": {
     "fetching": {
-      "banks": "Error al cargar los bancos. Por favor, inténtelo más tarde."
+      "banks": "Error fetching banks. Please try again later."
     }
+  },
+  "home":{
+    "title": "Home of myBank"
+  },
+  "investments_log":{
+    "title": "Investments Log"
+  },
+  "savings":{
+    "title": "Savings"
+  },
+  "sources":{
+    "title": "Sources"
+  },
+  "savings_log":{
+    "title": "Savings Logs"
+  },
+  "investments":{
+    "title": "Investments"
+  },
+  "investments_categories":{
+    "title": "Investments Categories"
+  },
+  "expenses":{
+    "title": "Expenses"
+  },
+  "expenses_categories":{
+    "title": "Expenses Categories"
+  },
+  "places":{
+    "title": "Places"
   }
 }
