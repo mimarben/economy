@@ -36,7 +36,7 @@ export class UsersComponent implements AfterViewInit {
   details = '';
   dataSource = new MatTableDataSource<User>();
   displayedColumns: string[] = [
-    'id', 'name', 'Surname1', 'Surname2', 'Dni', 'Email', 'Active', 'telephone','actions'
+    'id', 'name', 'Surname1', 'Surname2', 'Dni', 'Email', 'Active', 'telephone', 'Role', 'Password','actions'
   ];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -108,7 +108,9 @@ export class UsersComponent implements AfterViewInit {
       Dni: '',
       Email: '',
       Active: true,
-      telephone: ''
+      telephone: '',
+      Role: 'USER',
+      Password: ''
     };
 
     const dialogRef = this.dialog.open(UserFromDialogComponent, {

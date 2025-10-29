@@ -12,7 +12,25 @@ export type Dni = string | null;
 export type Email = string | null;
 export type Active = boolean;
 export type Telephone = number | null;
+export type UserRoleType = 'administrator' | 'editor' | 'user' | 'guest';
+export type Password = string;
 
+export interface RoleOption {
+    value: UserRoleType;
+    viewValue: string;
+}
+
+export const USER_ROLE_OPTIONS: RoleOption[] = [
+    { value: 'administrator', viewValue: 'Administrador' },
+    { value: 'editor', viewValue: 'Editor' },
+    { value: 'user', viewValue: 'Usuario' },
+    { value: 'guest', viewValue: 'Invitado' },
+];
+
+export interface SelectUserOption {
+  value: string | number;
+  label: string;
+}
 export interface UserBase {
   id: Id;
   name: Name;
@@ -22,5 +40,7 @@ export interface UserBase {
   email?: Email;
   active?: Active;
   telephone?: Telephone;
-  [k: string]: unknown;
+  role: UserRoleType;
+  password: Password;
+  //[k: string]: unknown;
 }

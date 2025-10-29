@@ -1,14 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { BankBase as Bank  } from '../models/BankBase';
+import { BankBase as Bank, SelectBankOption  } from '../models/BankBase';
 import { ApiResponse } from '../models/apiResponse';
 
 @Injectable({
   providedIn: 'root'
 })
-
 
 export class BankService {
   private apiUrl = environment.apiUrl;

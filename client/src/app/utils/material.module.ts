@@ -4,6 +4,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatOption } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatCardModule } from '@angular/material/card';
@@ -37,7 +39,9 @@ import { environment } from '../../environments/environment';
     MatDatepickerModule,
     MatNativeDateModule,
     MatExpansionModule,
-    MatBadgeModule
+    MatBadgeModule,
+    MatOption,
+    MatSelectModule
   ],
   exports: [
     MatButtonModule,
@@ -56,7 +60,9 @@ import { environment } from '../../environments/environment';
     MatDatepickerModule,
     MatNativeDateModule,
     MatExpansionModule,
-    MatBadgeModule
+    MatBadgeModule,
+    MatOption,
+    MatSelectModule
   ],
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: environment.locations.defaultLocation }, // 'en-GB' uses DD-MM-YYYY by default

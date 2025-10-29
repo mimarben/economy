@@ -51,7 +51,43 @@
         </mat-error>
       </mat-form-field>
     </div>
-
+    <!-- Role and password-->
+    <div class="row-2">
+      <mat-form-field appearance="fill">
+        <mat-label>Role</mat-label>
+        <mat-select formControlName="role">
+          @for (role of roles; track role.value) {
+            <mat-option [value]="role.value">
+                {{ role.viewValue }}
+                </mat-option>
+          }
+        </mat-select>
+          @if (formControls['role'].hasError('required')) {
+            <mat-error>
+              Role is required
+            </mat-error>
+          }
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Password</mat-label>
+        <input matInput formControlName="password" type="password">
+        @if (formControls['password'].hasError('required')) {
+          <mat-error>
+            password is required
+          </mat-error>
+        }
+        @if (formControls['password'].hasError('minlength')) {
+          <mat-error>
+            Password must be at least 8 characters
+          </mat-error>
+        }
+        @if (formControls['password'].hasError('strongPassword')) {
+        <mat-error>
+            Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character (@, $, !, %, *, ?, &).
+        </mat-error>
+        }
+      </mat-form-field>
+    </div>
     <!-- DNI y Active en una línea -->
     <div class="row-2">
       <mat-form-field appearance="fill">

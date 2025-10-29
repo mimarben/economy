@@ -8,7 +8,10 @@ export type Id = number;
 export type Name = string;
 export type Description = string | null;
 export type Active = boolean;
-
+export interface SelectBankOption {
+  value: string | number; // El valor que se enviará al backend (ej: el ID del banco)
+  label: string;         // El texto visible en el desplegable (ej: el nombre del banco)
+}
 export interface BankBase {
   id: Id
   name: Name;

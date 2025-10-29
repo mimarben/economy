@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-
+import { forkJoin } from 'rxjs';
 import { AccountBase as Account } from '../../../../models/AccountBase';
 import { BankBase as Bank } from '../../../../models/BankBase';
 import { UserBase as User } from '../../../../models/UserBase';
@@ -112,8 +112,62 @@ private loadUsers(): void {
   addAccount(): void {
     this.openDialog();
   }
+openDialog(data?: Account): void {
+  // Cargar bancos y usuarios en paralelo
+  forkJoin({
+    banks: this.bankService.getBanks(),
+    users: this.userService.getUsers()
+  }).subscribe({
+    next: (responses) => {
+      // Obtener configuración base del formulario
+      const baseConfig = this.formFactory.getFormConfig('account');
 
-  openDialog(data?: Account): void {
+      // Enriquecer los campos select con las opciones
+      const enrichedConfig = baseConfig.map(field => {
+        if (field.key === 'bank_id') {
+          return {
+            ...field,
+            options: responses.banks.response.map(bank => ({
+              value: bank.id,
+              label: bank.name
+            }))
+          };
+        }
+
+        if (field.key === 'user_id') {
+          return {
+            ...field,
+            options: responses.users.response.map(user => ({
+              value: user.id,
+              label: `${user.name} (${user.email})`
+            }))
+          };
+        }
+        return field;
+      });
+
+      // Abrir el diálogo con la configuración enriquecida
+      const dialogRef = this.dialog.open(GenericDialogComponent, {
+        data: {
+          title: data ? 'Edit Account' : 'New Account',
+          fields: enrichedConfig,
+          initialData: data || {}
+        }
+      });
+
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          result.id ? this.updateAccount(result) : this.createAccount(result);
+        }
+      });
+    },
+    error: (error) => {
+      console.error('Error loading banks and users:', error);
+      // Opcional: Mostrar un snackbar o mensaje de error
+    }
+  });
+}
+/*  openDialog(data?: Account): void {
     const dialogRef = this.dialog.open(GenericDialogComponent, {
       data: {
         title: data ? 'Edit Account' : 'New Account',
@@ -127,7 +181,7 @@ private loadUsers(): void {
         result.id ? this.updateAccount(result) : this.createAccount(result);
       }
     });
-  }
+  } */
 
   updateAccount(account: Account): void {
     this.accountService.updateAccount(account.id, account).subscribe({

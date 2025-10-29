@@ -37,8 +37,8 @@ class ActionEnum(str, enum.Enum):
     hold = "hold"
 
 #Define UserRoleEnum for user roles
-class UserRoleEnum(enum.Enum):
-    ADMIN = "admin"
+class UserRoleEnum(str,enum.Enum):
+    ADMIN = "administrator"
     EDITOR = "editor"
     USER = "user"
     GUEST = "guest"

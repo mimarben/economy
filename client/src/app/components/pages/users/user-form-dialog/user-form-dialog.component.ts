@@ -5,7 +5,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { MaterialModule } from '../../../../utils/material.module';
 
 
-import { UserBase as User } from '../../../../models/UserBase';
+import { UserBase as User, USER_ROLE_OPTIONS } from '../../../../models/UserBase';
 import { UserService } from '../../../../services/user.service';
 import { ApiResponse } from '../../../../models/apiResponse';
 import { ToastService } from '../../../../services/toast.service';
@@ -23,6 +23,7 @@ export class UserFromDialogComponent {
   isLoading = false;
   userForm: FormGroup;
   isEditMode = false;
+  public roles = USER_ROLE_OPTIONS;
   constructor(
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<UserFromDialogComponent>,
@@ -39,6 +40,8 @@ export class UserFromDialogComponent {
         telephone: [this.isEditMode ? data.telephone : null, [Validators.pattern(/^\d{9}$/)]],
         dni: [this.isEditMode ? data.dni : '', [Validators.required, this.validateDNI]],
         active: [this.isEditMode ? data.active : true],
+        role: [this.isEditMode ? data.role : 'user', [Validators.required]],
+        password: ['', this.isEditMode ? [] : [Validators.required, Validators.minLength(8), this.passwordValidator]], // Requerido solo en modo creación
       });
       // Detecta si es modo edición
     }
@@ -47,10 +50,6 @@ export class UserFromDialogComponent {
     validateDNI(control: any) {
       const value = control.value;
       const dniRegex = /^[0-9]{8}[A-Za-z]$/;
-
-      if (!value) {
-        return null; // Deja que Validators.required se encargue si es requerido
-      }
 
       if (!dniRegex.test(value)) {
         return { invalidDNI: true };
@@ -65,10 +64,22 @@ export class UserFromDialogComponent {
 
       return letter === expectedLetter ? null : {
         invalidDNI: true,
-        message: `DNI ${numbers} es '${expectedLetter}'.`
+        message: `ID ${numbers} is invalid.The expected letter is'${expectedLetter}'.`
       };
     }
 
+    passwordValidator(control: any) {
+    const value = control.value;
+
+    // Nueva expresión regular que requiere: minúscula, mayúscula, número y un carácter especial (@$!%*?&)
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+    if (!passwordRegex.test(value)) {
+        // Usamos 'strongPassword' como nombre de error para reflejar los requisitos
+        return { strongPassword: true };
+    }
+    return null;
+}
   // Getter para acceder fácilmente a los errores de los campos
   get formControls() {
     return this.userForm.controls;
