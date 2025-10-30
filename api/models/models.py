@@ -28,6 +28,14 @@ class RoleEnum(str, enum.Enum):
     child = "child"
     other = "other"
 
+class SourceTypeEnum(str, enum.Enum):
+    income = "income"
+    saving = "saving"
+    investment = "investment"
+    expense = "expense"
+    other = "other"
+
+
 class ActionEnum(str, enum.Enum):
     buy = "buy"
     sell = "sell"
@@ -66,16 +74,6 @@ class User(Base):
     financials_summaries = relationship('FinancialSummary', back_populates='users')
     households_members = relationship('HouseholdMember', back_populates='users')
 
-class Place(Base):
-    __tablename__ = 'places'
-    id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
-    name = Column(String, nullable=False)
-    address = Column(String)
-    description = Column(String)
-    active = Column(Boolean, default=True, nullable=False)
-
-    # Relationships
-    expenses = relationship('Expense', back_populates='places')
 
 class ExpensesCategory(Base):
     __tablename__ = 'expenses_categories'
@@ -98,13 +96,15 @@ class Expense(Base):
 
     # Foreign Keys
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
-    place_id = Column(Integer, ForeignKey('places.id'), nullable=False)
+    source_id = Column(Integer, ForeignKey('sources.id'), nullable=False)
     category_id = Column(Integer, ForeignKey('expenses_categories.id'), nullable=False)
+    account_id = Column(Integer, ForeignKey('accounts.id'), nullable=True)
 
     # Relationships
     users = relationship('User', back_populates='expenses')
-    places = relationship('Place', back_populates='expenses')
+    sources = relationship('Source', back_populates='expenses')
     categories = relationship('ExpensesCategory', back_populates='expenses')
+    accounts = relationship('Account', back_populates='expenses')
 
 class Source(Base):
     __tablename__ = 'sources'
@@ -112,9 +112,10 @@ class Source(Base):
     name = Column(String, nullable=False)
     description = Column(String)
     active = Column(Boolean, default=True, nullable=False)
-
+    type = Column(SQLEnum(SourceTypeEnum), default=SourceTypeEnum.income, nullable=False)
     # Relationships
     incomes = relationship('Income', back_populates='sources')
+    expenses = relationship('Expense', back_populates='sources')
     savings_logs = relationship("SavingLog", back_populates="sources")
 
 class IncomesCategory(Base):
@@ -140,11 +141,13 @@ class Income(Base):
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
     source_id = Column(Integer, ForeignKey('sources.id'), nullable=False)
     category_id = Column(Integer, ForeignKey('incomes_categories.id'), nullable=False)
+    account_id = Column(Integer, ForeignKey('accounts.id'), nullable=True)
 
     # Relationships
     users = relationship('User', back_populates='incomes')
     sources = relationship('Source', back_populates='incomes')
     categories = relationship('IncomesCategory', back_populates='incomes')
+    accounts = relationship('Account', back_populates='incomes')
 
 class Saving(Base):
     __tablename__ = 'savings'
@@ -195,6 +198,8 @@ class Account(Base):
     banks = relationship('Bank', back_populates='accounts')
     savings = relationship('Saving', back_populates='accounts')
     investments = relationship('Investment', back_populates='accounts')
+    expenses = relationship('Expense', back_populates='accounts')
+    incomes = relationship('Income', back_populates='accounts')
 
 class Bank(Base):
     __tablename__ = 'banks'

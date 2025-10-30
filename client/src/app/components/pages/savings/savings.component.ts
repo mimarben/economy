@@ -12,6 +12,7 @@ import { ToastService } from '../../../services/toast.service';
 import { environment } from '../../../../environments/environment';
 import { SavingBase as Saving } from '../../../models/SavingBase';
 import { UserBase as User } from '../../../models/UserBase';
+import { AccountBase as Account } from '@models/AccountBase';
 import { SavingService } from '../../../services/saving.service';
 import { UserService } from '../../../services/user.service';
 import { UtilsService } from '../../../utils/utils.service';
@@ -32,6 +33,8 @@ export class SavingsComponent implements OnInit {
   isFormValid = false;
   columns: TableColumn<Saving>[] = [];
   usersMap: Record<number, string> = {};
+  accountsMap: Record<number, string> = {};
+
   constructor(
     private savingService: SavingService,
     private userService: UserService,
@@ -47,37 +50,57 @@ export class SavingsComponent implements OnInit {
     this.formFields = this.formFactory.getFormConfig('saving');
     this.columns = this.formFactory.getTableColumns<Saving>('saving', {
       user_id: (value: number) => this.usersMap[value] ?? value,
+      account_id: (value: number) => this.accountsMap[value] ?? value,
       date: (value: string) => this.utilsService.formatDateLong(value),
     });
     this.loadSavings();
   }
-  loadSavings() {
+ // Dentro de tu componente
+loadSavings() {
     this.isLoading = true;
-    this.savingService.getAll().subscribe({
-      next: (data: ApiResponse<Saving[]>) => {
-        this.savings = data.response;
-        this.isLoading = false;
-      },
-      error: (err) => {
-        this.errorMessage = 'Error loading savings';
-        this.isLoading = false;
-      },
-    });
-    this.userService.getUsers().subscribe({
-      next: (res: ApiResponse<User[]>) => {
-        const userField = this.formFields.find((f) => f.key === 'user_id');
-        if (userField) {
-          this.usersMap = Object.fromEntries(
-            res.response.map((u) => [
-              u.id,
-              `${u.name} ${u.surname1} ${u.surname2}`,
-            ])
-          );
-        }
-      },
-    });
-  }
+    this.errorMessage = ''; // Limpiar el error anterior
 
+    const savings$ = this.savingService.getAll();
+    const users$ = this.userService.getUsers();
+    const accounts$ = this.accountService.getAll();
+
+    // 1. Usar forkJoin para esperar las tres llamadas simultáneamente
+    forkJoin([savings$, users$, accounts$]).subscribe({
+        next: ([savingsResponse, usersResponse, accountsResponse]) => {
+            // 2. Éxito: Los datos están disponibles en el orden del array
+
+            // a) Asignar Ahorros (Savings)
+            this.savings = savingsResponse.response || [];
+
+            // b) Mapear Usuarios
+            const users = usersResponse.response || [];
+            this.usersMap = Object.fromEntries(
+                users.map((u) => [
+                    u.id,
+                    `${u.name} ${u.surname1} ${u.surname2 || ''}`, // Asegurar que surname2 es opcional
+                ])
+            );
+
+            // c) Mapear Cuentas (Accounts)
+            const accounts = accountsResponse.response || [];
+            this.accountsMap = Object.fromEntries(
+                accounts.map((a) => [a.id, `${a.name}`])
+            );
+
+            // 3. Finalizar la carga y forzar la detección de cambios
+            this.isLoading = false;
+            // Si usas ChangeDetectionStrategy.OnPush, necesitarás esto:
+            // this.cdr.detectChanges();
+        },
+        error: (err) => {
+            // 4. Error: Manejar cualquier fallo de las tres llamadas
+            console.error('Error al cargar datos:', err);
+            this.errorMessage = 'Error loading savings, users, or accounts data.';
+            this.isLoading = false;
+            // this.cdr.detectChanges();
+        },
+    });
+}
   editSaving(savinglog: Saving): void {
     this.openDialog(savinglog);
   }

@@ -1,5 +1,4 @@
 from .user_router import router as user_router
-from .place_router import router as place_router
 from .expense_router import router as expense_router
 from .expense_category_router import router as expense_category_router
 from .household_router import router as household_router
@@ -19,7 +18,7 @@ from .financial_summary_router import router as financial_summary_router
 
 def register_blueprints(app, url_prefix=""):
     blueprints = [
-        user_router, place_router, expense_router, expense_category_router,
+        user_router,expense_router, expense_category_router,
         household_router, household_member_router, income_category_router,
         income_router, source_router, saving_router, account_router, investment_router,
         investment_category_router, bank_router, saving_log_router, investment_log_router,

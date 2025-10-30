@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from pydantic import ValidationError
 from flask_babel import _
 
-from models.models import Expense, User, Place, ExpensesCategory
+from models.models import Expense, User, ExpensesCategory
 from schemas.expense_schema import ExpenseCreate, ExpenseRead, ExpenseUpdate
 from db.database import get_db
 from services.response_service import Response
@@ -32,7 +32,7 @@ def get_expense(expense_id):
     if not expense:
         return Response._error(_("EXPENSE_NOT_FOUND"), _("NONE"), 404, name)
     return Response._ok_data(ExpenseRead.model_validate(expense).model_dump(), _("EXPENSE_FOUND"), 200, name)
-    
+
 
 @router.patch("/expenses/<int:expense_id>")
 def update_expense(expense_id):

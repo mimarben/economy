@@ -4,7 +4,7 @@ import { TableColumn } from '../../components/shared/generic-table/generic-table
 import { RoleEnum } from '../../models/HouseholdMemberBase';
 import { CurrencyEnum } from '../../models/SavingBase';
 import { ActionEnum } from '../../models/InvestmentLogBase';
-type ModelType = 'account' | 'bank' | "houseHold" | 'houseHoldMember' | 'source' | 'saving_log' | "saving" | 'investment' | 'investment_category' | 'investment_log';
+type ModelType = 'account' | 'bank' | "houseHold" | 'houseHoldMember' | 'source' | 'saving_log' | "saving" | 'investment' | 'investment_category' | 'investment_log' |'income' |'income_category' | 'expense' | 'expense_category';
 
 @Injectable({ providedIn: 'root' })
 export class FormFactoryService {
@@ -87,7 +87,44 @@ export class FormFactoryService {
       { key: 'action', label: 'Action', type: 'select', required: true, options: this.getActionsOptions() },
       { key: 'note', label: 'Note', type: 'text' },
       { key: 'investment_id', label: 'Investment ID', type: 'select',required: true},
-    ]
+    ],
+    income:[
+      { key: 'id', label: 'Id', type: 'number' },
+      { key: 'name', label: 'Name', type: 'text' },
+      { key: 'description', label: 'Description', type: 'text' },
+      { key: 'amount', label: 'Amount', type: 'number', required: true, min: 0 },
+      { key: 'date', label: 'Date', type: 'date', required: true},
+      { key: 'user_id', label: 'User', type: 'select',required: true},
+      { key: 'currency', label: 'Currency', type: 'select', required: true, options: this.getCurrencyOptions() },
+      { key: 'source_id', label: 'Source', type: 'select', required: true },
+      { key: 'category_id', label: 'Income Category', type: 'select', required: true },
+      { key: 'account_id', label: 'Account', type: 'select',required: true}
+    ],
+    income_category:[
+      { key: 'id', label: 'Id', type: 'number' },
+      { key: 'name', label: 'Name', type: 'text', required: true },
+      { key: 'description', label: 'Description', type: 'text' },
+      { key: 'active', label: 'Active', type: 'checkbox' },
+    ],
+    expense:[
+      { key: 'id', label: 'Id', type: 'number' },
+      { key: 'name', label: 'Name', type: 'text' },
+      { key: 'description', label: 'Description', type: 'text' },
+      { key: 'amount', label: 'Amount', type: 'number', required: true, min: 0 },
+      { key: 'date', label: 'Date', type: 'date', required: true},
+      { key: 'currency', label: 'Currency', type: 'select', required: true, options: this.getCurrencyOptions() },
+      { key: 'user_id', label: 'User', type: 'select',required: true},
+      { key: 'category_id', label: 'Expense Category', type: 'select', required: true },
+      { key: 'source_id', label: 'Source', type: 'select', required: true },
+      { key: 'account_id', label: 'Account', type: 'select',required: true}
+    ],
+    expense_category:[
+      { key: 'id', label: 'Id', type: 'number' },
+      { key: 'name', label: 'Name', type: 'text', required: true },
+      { key: 'description', label: 'Description', type: 'text' },
+      { key: 'active', label: 'Active', type: 'checkbox' },
+    ],
+
   };
 
   // Generate table columns based on existing form config
@@ -119,7 +156,11 @@ export class FormFactoryService {
       saving:[],
       investment:[],
       investment_category:[],
-      investment_log:[]
+      investment_log:[],
+      income_category:[],
+      income:[],
+      expense:[],
+      expense_category:[]
     };
 
     return !excludedFields[modelType].includes(field.key);
@@ -137,7 +178,11 @@ export class FormFactoryService {
       saving:[],
       investment:[],
       investment_category:[],
-      investment_log:[]
+      investment_log:[],
+      income_category:[],
+      income:[],
+      expense:[],
+      expense_category:[]
     };
 
     return !nonSortableFields[modelType].includes(key);
