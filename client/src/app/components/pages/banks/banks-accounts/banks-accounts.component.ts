@@ -58,7 +58,7 @@ export class BanksAccountsComponent implements OnInit {
 
   loadAccounts() {
     this.isLoading = true;
-    this.accountService.getAccounts().subscribe({
+    this.accountService.getAll().subscribe({
       next: (data: ApiResponse<Account[]>) => {
         this.accounts = data.response;
         this.isLoading = false;
@@ -182,7 +182,7 @@ openDialog(data?: Account): void {
   } */
 
   updateAccount(account: Account): void {
-    this.accountService.updateAccount(account.id, account).subscribe({
+    this.accountService.update(account.id, account).subscribe({
       next: (response: ApiResponse<Account>) => {
         this.isLoading = false;
         this.toastService.showToast(response, environment.toastType.Success, {});
@@ -203,7 +203,7 @@ openDialog(data?: Account): void {
   }
 
   createAccount(account: Account): void {
-    this.accountService.createAccount(account).subscribe({
+    this.accountService.create(account).subscribe({
       next: (response: ApiResponse<Account>) => {
         this.isLoading = false;
         this.toastService.showToast(response, environment.toastType.Success, {});

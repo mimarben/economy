@@ -66,13 +66,11 @@ export class FormFactoryService {
     investment:[
       { key: 'id', label: 'Id', type: 'number' },
       { key: 'name', label: 'Name', type: 'text', required: true },
-      { key: 'amount', label: 'Amount', type: 'number', required: true, min: 0 },
-      { key: 'value', label: 'Value', type: 'number', required: true, min: 0 },
       { key: 'date', label: 'Date', type: 'date', required: true},
       { key: 'currency', label: 'Currency', type: 'select', required: true, options: this.getCurrencyOptions() },
       { key: 'user_id', label: 'User', type: 'select',required: true},
-      { key: 'account_id', label: 'Account Id', type: 'select',required: true},
-      { key: 'category_id', label: 'Category Id', type: 'select',required: true}
+      { key: 'account_id', label: 'Account', type: 'select',required: true},
+      { key: 'category_id', label: 'Category Investment', type: 'select',required: true}
     ],
     investment_category:[
       { key: 'id', label: 'Id', type: 'number' },
@@ -86,7 +84,7 @@ export class FormFactoryService {
       { key: 'currentValue', label: 'Current Value', type: 'number', required: true, min: 0 },
       { key: 'pricePerUnit', label: 'Price per Unit', type: 'number', required: true, min: 0 },
       { key: 'unitsBought', label: 'Units bought', type: 'number', required: true, min: 0 },
-      { key: 'action', label: 'ACtion', type: 'select', required: true, options: this.getActionsOptions() },
+      { key: 'action', label: 'Action', type: 'select', required: true, options: this.getActionsOptions() },
       { key: 'note', label: 'Note', type: 'text' },
       { key: 'investment_id', label: 'Investment ID', type: 'select',required: true},
     ]

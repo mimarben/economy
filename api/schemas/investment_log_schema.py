@@ -15,7 +15,6 @@ class InvestmentLogBase(BaseModel):
     action: ActionEnum
     note: str
     investment_id: int = Field(..., gt=0)
-    source_id: int = Field(..., gt=0)
 
 class InvestmentLogRead(InvestmentLogBase):
     id: int

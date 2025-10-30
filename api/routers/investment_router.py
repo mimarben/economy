@@ -30,7 +30,11 @@ def get_investment(investment_id):
     investment = db.query(Investment).filter(Investment.id == investment_id).first()
     if not investment:
         return Response._error(_("INVESTMENT_NOT_FOUND"), _("NONE"), 404, name)
-    return jsonify(InvestmentRead.model_validate(investment).model_dump())
+    return Response._ok_data(
+        InvestmentRead.model_validate(investment).model_dump(),
+        _("QUERY_OK"),
+        200
+    )
 
 @router.patch("/investments/<int:investment_id>")
 def update_investment(investment_id):
@@ -69,4 +73,4 @@ def list_investments():
     investment_data = [InvestmentRead.model_validate(u).model_dump() for u in investments]
     if not investment_data:
         return Response._error(_("INVESTMENT_NOT_FOUND"),_("NONE"), 404)
-    return jsonify(investment_data)
+    return Response._ok_data(investment_data,_("QUERY_OK"),200)

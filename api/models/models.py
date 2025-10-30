@@ -220,8 +220,6 @@ class Investment(Base):
     __tablename__ = 'investments'
     id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
     name = Column(String)
-    amount = Column(Float, nullable=False)
-    value = Column(Float, nullable=False)
     date = Column(Date, nullable=False)
     currency = Column(SQLEnum(CurrencyEnum), nullable=False)
 

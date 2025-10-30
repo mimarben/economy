@@ -103,7 +103,7 @@ export class SavingsComponent implements OnInit {
     // Cargar bancos y usuarios en paralelo
     forkJoin({
       users: this.userService.getUsers(),
-      accounts: this.accountService.getAccounts(),
+      accounts: this.accountService.getAll(),
     }).subscribe({
       next: (responses) => {
         // Obtener configuración base del formulario

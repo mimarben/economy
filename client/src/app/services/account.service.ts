@@ -1,34 +1,17 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { environment } from '../../environments/environment';
+import { HttpClient } from '@angular/common/http';
 import { AccountBase as Account  } from '../models/AccountBase';
-import { ApiResponse } from '../models/apiResponse';
+import { BaseCrudService } from './base-crud.service';
 
 @Injectable({
   providedIn: 'root'
 })
 
 
-export class AccountService {
-  private apiUrl = environment.apiUrl;
-  constructor(private http: HttpClient) {
+export class AccountService extends BaseCrudService<Account>{
+  constructor(protected override http: HttpClient) {
+    super(http, 'accounts');
   }
 
-  private getHeaders(): HttpHeaders {
-    return new HttpHeaders(environment.headers);
-  }
-getAccounts(): Observable<ApiResponse<Account[]>> {
-  return this.http.get<ApiResponse<Account[]>>(`${this.apiUrl}/accounts`);
-}
-getAccountById(id: number): Observable<ApiResponse<Account>> {
-  return this.http.get<ApiResponse<Account>>(`${this.apiUrl}/accounts/${id}`);
-}
-createAccount(account: Account): Observable<ApiResponse<Account>> {
-  return this.http.post<ApiResponse<Account>>(`${this.apiUrl}/accounts`, account, { headers: this.getHeaders() } );
-}
-updateAccount(id: number, account: Account): Observable<ApiResponse<Account>> {
-  return this.http.patch<ApiResponse<Account>>(`${this.apiUrl}/accounts/${id}`, account, { headers: this.getHeaders() });
-}
 
 }

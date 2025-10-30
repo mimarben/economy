@@ -8,8 +8,6 @@ from models.models import CurrencyEnum
 from utils.schema_exporter import export_schema  # si guardas la función en otro archivo
 class InvestmentBase(BaseModel):
     name: str
-    amount: float
-    value: float
     date: datetime
     currency: CurrencyEnum
     user_id: int = Field(..., gt=0)
