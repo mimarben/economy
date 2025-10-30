@@ -1,5 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { forkJoin } from 'rxjs';
 import { GenericDialogComponent } from '../../../../shared/generic-dialog/generic-dialog.component';
 import { SavingLogBase as SavingLog } from '../../../../../models/SavingLogBase';
 import { SavingBase as Saving } from '../../../../../models/SavingBase';
@@ -15,6 +16,8 @@ import { environment } from '../../../../../../environments/environment';
 import { SavingLogService } from '../../../../../services/saving-log.service';
 import { SavingService } from '../../../../../services/saving.service';
 import { UtilsService } from '../../../../../utils/utils.service';
+import { SourceService } from '../../../../../services/source.service';
+
 @Component({
   selector: 'app-savings-log',
   imports: [GenericTableComponent],
@@ -37,7 +40,8 @@ export class SavingsLogComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private dialog: MatDialog,
     private toastService: ToastService,
-    private formFactory: FormFactoryService
+    private formFactory: FormFactoryService,
+    private sourceService: SourceService
   ) {}
   ngOnInit(): void {
     this.formFields = this.formFactory.getFormConfig('saving_log');
@@ -84,7 +88,7 @@ export class SavingsLogComponent implements OnInit {
         }
       },
       error: () => {
-        this.errorMessage = 'Error loading users';
+        this.errorMessage = 'Error loading saving logs';
         this.isLoading = false;
       },
     });
@@ -96,7 +100,62 @@ export class SavingsLogComponent implements OnInit {
   addSavingLog(): void {
     this.openDialog();
   }
+
   openDialog(data?: SavingLog): void {
+    // 1. Cargar TODO en paralelo antes de abrir el diálogo
+    forkJoin({
+      savings: this.savingService.getAll(),
+      sources: this.sourceService.getAll()
+    }).subscribe({
+      next: (responses) => {
+        const baseConfig = this.formFactory.getFormConfig('saving_log');
+
+        // 2. Enriquecer directamente los campos con las opciones
+        const enrichedConfig = baseConfig.map(field => {
+          if (field.key === 'saving_id') {
+            return {
+              ...field,
+              options: responses.savings.response.map(r => ({
+                value: r.id,
+                label: r.description
+              }))
+            };
+          }
+
+          if (field.key === 'source_id') {
+            return {
+              ...field,
+              options: responses.sources.response.map(r => ({
+                value: r.id,
+                label: `${r.name}`
+              }))
+            };
+          }
+
+          return field;
+        });
+
+        // 3. Abrir el diálogo SOLO cuando los datos estén listos
+        const dialogRef = this.dialog.open(GenericDialogComponent, {
+          data: {
+            title: data ? 'Edit Household Member' : 'New Household Member',
+            fields: enrichedConfig,
+            initialData: data || {}
+          }
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+          if (result) {
+            result.id ? this.updateSavingLog(result) : this.createSavingLog(result);
+          }
+        });
+      },
+      error: (error) => {
+        console.error('Error loading data:', error);
+      }
+    });
+  }
+/*  openDialog(data?: SavingLog): void {
     const dialogRef = this.dialog.open(GenericDialogComponent, {
       data: {
         title: data ? 'Edit SavingLog' : 'New SavingLog',
@@ -110,7 +169,8 @@ export class SavingsLogComponent implements OnInit {
         result.id ? this.updateSavingLog(result) : this.createSavingLog(result);
       }
     });
-  }
+  } */
+
   updateSavingLog(savinglog: SavingLog): void {
     this.savinglogService.update(savinglog.id, savinglog).subscribe({
       next: (response: ApiResponse<SavingLog>) => {

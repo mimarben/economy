@@ -15,6 +15,7 @@ class InvestmentLogBase(BaseModel):
     action: ActionEnum
     note: str
     investment_id: int = Field(..., gt=0)
+    source_id: int = Field(..., gt=0)
 
 class InvestmentLogRead(InvestmentLogBase):
     id: int
@@ -44,6 +45,7 @@ class InvestmentLogUpdate(InvestmentLogBase):
     action: Optional[ActionEnum]
     note: Optional[str]
     investment_id: Optional[int] = Field(..., gt=0)
+    source_id: Optional[int] = Field(..., gt=0)
     # Optional fields
 
 class InvestmentLogDelete(BaseModel):

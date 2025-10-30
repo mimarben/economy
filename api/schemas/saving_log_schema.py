@@ -12,7 +12,7 @@ class SavingLogBase(BaseModel):
     total_amount: float
     note: str
     saving_id: int = Field(..., gt=0)
-
+    source_id: int = Field(..., gt=0)
 class SavingLogRead(SavingLogBase):
     id: int
     class Config:
@@ -39,6 +39,7 @@ class SavingLogUpdate(SavingLogBase):
     total_amount: Optional[float]
     note: Optional[str]
     saving_id: Optional[int]
+    source_id: Optional[int] = Field(..., gt=0)
     # Optional fields
 
 class SavingLogDelete(BaseModel):

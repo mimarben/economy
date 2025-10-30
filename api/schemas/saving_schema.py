@@ -8,7 +8,6 @@ from flask_babel import _
 from models.models import CurrencyEnum
 from utils.schema_exporter import export_schema  # si guardas la función en otro archivo
 class SavingBase(BaseModel):
-    name: str
     description: Optional[str] = None
     amount: float
     date: datetime
@@ -39,7 +38,6 @@ class SavingCreate(SavingBase):
         return v
 
 class SavingUpdate(SavingBase):
-    name: Optional[str]
     description: Optional[str] = None
     amount: Optional[float]
     date: Optional[datetime]

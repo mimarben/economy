@@ -51,15 +51,17 @@ export class FormFactoryService {
       { key: 'amount', label: 'Amount', type: 'number', required: true, min: 0 },
       { key: 'total_amount', label: 'TotalAmount', type: 'number', required: true, min: 0 },
       { key: 'note', label: 'Note', type: 'text' },
-      { key: 'saving_id', label: 'SavingId', type: 'select',required: true},
+      { key: 'saving_id', label: 'Saving-Id', type: 'select',required: true},
+      { key: 'source_id', label: 'Soruce-Id', type: 'select',required: true},
     ],
     saving:[
       { key: 'id', label: 'Id', type: 'number' },
       { key: 'description', label: 'Description', type: 'text' },
-      { key: 'amount', label: 'Amount', type: 'number', required: true, min: 0 },
+      { key: 'amount', label: 'Goal Amount', type: 'number', required: true, min: 0 },
       { key: 'date', label: 'Date', type: 'date', required: true},
       { key: 'currency', label: 'Currency', type: 'select', required: true, options: this.getCurrencyOptions() },
-      { key: 'user_id', label: 'User', type: 'select',required: true}
+      { key: 'user_id', label: 'User', type: 'select',required: true},
+      { key: 'account_id', label: 'Account-Id', type: 'select',required: true}
     ],
     investment:[
       { key: 'id', label: 'Id', type: 'number' },

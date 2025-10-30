@@ -12,7 +12,7 @@ import { HouseholdsComponent } from './components/pages/households/households.co
 import { HouseholdmembersComponent } from './components/pages/households/household-members/household-members.component';
 import { SavingsComponent } from './components/pages/savings/savings.component';
 import { SavingsLogComponent } from './components/pages/savings/savings-log/savings-log/savings-log.component';
-import { SourcesComponent } from './components/pages/savings/sources/sources.component';
+import { SourcesComponent } from './components/pages/sources/sources.component';
 import { InvestmentsComponent } from './components/pages/investments/investments.component';
 import { InvestmentsLogComponent } from './components/pages/investments/investments-log/investments-log.component';
 import { InvestmentsCategoriesComponent } from './components/pages/investments/investments-categories/investments-categories.component';
@@ -27,13 +27,13 @@ export const routes: Routes =  [
   { path: 'households', component: HouseholdsComponent, data: { title: 'households.title' } },
   { path: 'households_members', component: HouseholdmembersComponent, data: { title: 'households_members.title' } },
   { path: 'savings', component: SavingsComponent, data: { title: 'savings.title' } },
+  { path: 'savings_log', component: SavingsLogComponent, data: { title: 'savings_log.title' } },
+  { path: 'sources', component: SourcesComponent, data: { title: 'sources.title' } },
   { path: 'expenses', component: ExpensesComponent, data: { title: 'expenses.title' } },
   { path: 'expenses_categories', component: ExepensesCategoriesComponent, data: { title: 'expenses_categories.title' } },
   { path: 'places', component: PlacesCategoriesComponent, data: { title: 'palces.title' } },
   { path: 'incomes', component: IncomesComponent, data: { title: 'incomes.title' } },
   { path: 'incomes_categories', component: IncomesCategoriesComponent, data: { title: 'incomes_categories.title' } },
-  { path: 'sources', component: SourcesComponent, data: { title: 'sources.title' } },
-  { path: 'savings_log', component: SavingsLogComponent, data: { title: 'savings_log.title' } },
   { path: 'investments', component: InvestmentsComponent, data: { title: 'investments.title' } },
   { path: 'investments_categories', component: InvestmentsCategoriesComponent, data: { title: 'investments_categories.title' } },
   { path: 'investments_log', component: InvestmentsLogComponent, data: { title: 'investments_log.title' } },

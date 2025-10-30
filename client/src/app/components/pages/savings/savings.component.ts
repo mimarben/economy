@@ -15,14 +15,15 @@ import { UserBase as User } from '../../../models/UserBase';
 import { SavingService } from '../../../services/saving.service';
 import { UserService } from '../../../services/user.service';
 import { UtilsService } from '../../../utils/utils.service';
-
+import { AccountService } from '../../../services/account.service';
+import { forkJoin } from 'rxjs';
 @Component({
   selector: 'app-savings',
   imports: [GenericTableComponent],
   templateUrl: './savings.component.html',
   styleUrl: './savings.component.css',
 })
-export class SavingsComponent implements OnInit{
+export class SavingsComponent implements OnInit {
   savings: Saving[] = [];
   filterValue = '';
   isLoading = false;
@@ -34,18 +35,20 @@ export class SavingsComponent implements OnInit{
   constructor(
     private savingService: SavingService,
     private userService: UserService,
-    private utilsService:UtilsService,
+    private utilsService: UtilsService,
     private cdr: ChangeDetectorRef,
     private dialog: MatDialog,
     private toastService: ToastService,
-    private formFactory: FormFactoryService
+    private formFactory: FormFactoryService,
+    private accountService: AccountService
   ) {}
 
   ngOnInit(): void {
     this.formFields = this.formFactory.getFormConfig('saving');
-    this.columns = this.formFactory.getTableColumns<Saving>('saving',
-      {user_id:  (value: number) => this.usersMap[value] ?? value,
-      date: (value: string) => this.utilsService.formatDateLong(value)});
+    this.columns = this.formFactory.getTableColumns<Saving>('saving', {
+      user_id: (value: number) => this.usersMap[value] ?? value,
+      date: (value: string) => this.utilsService.formatDateLong(value),
+    });
     this.loadSavings();
   }
   loadSavings() {
@@ -56,17 +59,22 @@ export class SavingsComponent implements OnInit{
         this.isLoading = false;
       },
       error: (err) => {
-        this.errorMessage = 'Error loading banks';
+        this.errorMessage = 'Error loading savings';
         this.isLoading = false;
       },
     });
     this.userService.getUsers().subscribe({
       next: (res: ApiResponse<User[]>) => {
-        const userField = this.formFields.find(f => f.key === 'user_id');
+        const userField = this.formFields.find((f) => f.key === 'user_id');
         if (userField) {
-          this.usersMap = Object.fromEntries(res.response.map(u=>[u.id, (`${u.name} ${u.surname1} ${u.surname2}`)]))
+          this.usersMap = Object.fromEntries(
+            res.response.map((u) => [
+              u.id,
+              `${u.name} ${u.surname1} ${u.surname2}`,
+            ])
+          );
         }
-      }
+      },
     });
   }
 
@@ -76,11 +84,11 @@ export class SavingsComponent implements OnInit{
   addSaving(): void {
     this.openDialog();
   }
-  openDialog(data?: Saving): void {
+  /*   openDialog(data?: Saving): void {
     const dialogRef = this.dialog.open(GenericDialogComponent, {
       data: {
         title: data ? 'Edit Saving' : 'New Saving',
-        fields: this.formFactory.getFormConfig('saving_log'),
+        fields: this.formFactory.getFormConfig('saving'),
         initialData: data || {},
       },
     });
@@ -89,6 +97,59 @@ export class SavingsComponent implements OnInit{
       if (result) {
         result.id ? this.updateSaving(result) : this.createSaving(result);
       }
+    });
+  } */
+  openDialog(data?: Saving): void {
+    // Cargar bancos y usuarios en paralelo
+    forkJoin({
+      users: this.userService.getUsers(),
+      accounts: this.accountService.getAccounts(),
+    }).subscribe({
+      next: (responses) => {
+        // Obtener configuración base del formulario
+        const baseConfig = this.formFactory.getFormConfig('saving');
+
+        // Enriquecer los campos select con las opciones
+        const enrichedConfig = baseConfig.map((field) => {
+          if (field.key === 'user_id') {
+            return {
+              ...field,
+              options: responses.users.response.map((user) => ({
+                value: user.id,
+                label: user.name,
+              })),
+            };
+          }
+
+          if (field.key === 'account_id') {
+            return {
+              ...field,
+              options: responses.accounts.response.map((account) => ({
+                value: account.id,
+                label: `${account.name}`,
+              })),
+            };
+          }
+          return field;
+        });
+        const dialogRef = this.dialog.open(GenericDialogComponent, {
+          data: {
+            title: data ? 'Edit Saving' : 'New Saving',
+            fields: enrichedConfig,
+            initialData: data || {},
+          },
+        });
+
+        dialogRef.afterClosed().subscribe((result) => {
+          if (result) {
+            result.id ? this.updateSaving(result) : this.createSaving(result);
+          }
+        });
+      },
+      error: (error) => {
+        console.error('Error loading accounts and users:', error);
+        // Opcional: Mostrar un snackbar o mensaje de error
+      },
     });
   }
   updateSaving(saving: Saving): void {

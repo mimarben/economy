@@ -10,7 +10,7 @@ export type Amount = number;
 export type TotalAmount = number;
 export type Note = string;
 export type SavingId = number;
-
+export type SourceId = number;
 export interface SavingLogBase {
   id: Id;
   date: string | Date;
@@ -18,5 +18,6 @@ export interface SavingLogBase {
   total_amount: TotalAmount;
   note: Note;
   saving_id: SavingId;
+  source_id: SourceId;
   [k: string]: unknown;
 }

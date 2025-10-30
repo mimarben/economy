@@ -1,14 +1,14 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { GenericDialogComponent } from '../../../shared/generic-dialog/generic-dialog.component';
-import { SourceBase as Source } from '../../../../models/SourceBase';
-import { GenericTableComponent, TableColumn } from "../../../shared/generic-table/generic-table.component";
-import { ApiResponse } from '../../../../models/apiResponse';
-import { FormFactoryService } from '../../../../factories/forms/form-factory.service';
-import { FormFieldConfig } from '../../../shared/generic-form/form-config';
-import { ToastService } from '../../../../services/toast.service';
-import { environment } from '../../../../../environments/environment';
-import { SourceService } from '../../../../services/source.service';
+import { GenericDialogComponent } from '../../shared/generic-dialog/generic-dialog.component';
+import { SourceBase as Source } from '../../../models/SourceBase';
+import { GenericTableComponent, TableColumn } from "../../shared/generic-table/generic-table.component";
+import { ApiResponse } from '../../../models/apiResponse';
+import { FormFactoryService } from '../../../factories/forms/form-factory.service';
+import { FormFieldConfig } from '../../shared/generic-form/form-config';
+import { ToastService } from '../../../services/toast.service';
+import { environment } from '../../../../environments/environment';
+import { SourceService } from '../../../services/source.service';
 @Component({
   selector: 'app-sources',
   imports: [GenericTableComponent],
@@ -44,7 +44,7 @@ this.isLoading = true;
         this.isLoading = false;
       },
       error: (err) => {
-        this.errorMessage = 'Error loading sources';
+        this.errorMessage = 'Error loading savings sources';
         this.isLoading = false;
       },
     });
