@@ -15,7 +15,7 @@ RUN npm install
 COPY . .
 
 # Construir la app para producción
-RUN npm run build
+#RUN npm run build
 
 # Servir con un servidor estático, por ejemplo serve
 RUN npm install -g serve

@@ -16,7 +16,8 @@ services:
       - ./api:/app:rw
       - ./api/db:/app/db:rw  # Bind mount para SQLite
     working_dir: /app
-    command: flask run --host=0.0.0.0 --port=5001 --reload
+    #command: flask run --host=0.0.0.0 --port=5001 --reload
+    command: flask run --host=0.0.0.0 --port=5001 --reload --extra-files /app/app.py
     networks:
       - economy-net
 
@@ -31,6 +32,7 @@ services:
     volumes:
       - ./client:/app:rw
     working_dir: /app
+    #command: npx ng serve --host 0.0.0.0 --port 4200
     command: npx ng serve --host 0.0.0.0 --port 4200
     depends_on:
       - backend

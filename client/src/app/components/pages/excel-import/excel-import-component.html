@@ -2,18 +2,31 @@
   <h2>📂 Importar movimientos bancarios</h2>
 
   <div class="upload-section">
-    <label class="file-label">
-      <input type="file" accept=".xlsx, .xls" (change)="onFileSelected($event)" hidden />
-      <button class="btn btn-primary">Seleccionar Excel</button>
-    </label>
-    <span *ngIf="fileName">{{ fileName }}</span>
+    <input
+      type="file"
+      accept=".xlsx, .xls"
+      (change)="onFileSelected($event)"
+      #fileInput
+      style="display: none;"
+    />
+
+    <button
+      class="btn btn-primary"
+      (click)="fileInput.click()"
+      [disabled]="loading"
+    >
+      <span *ngIf="!loading">Seleccionar Excel</span>
+      <span *ngIf="loading">Procesando...</span>
+    </button>
+
+    <span class="file-name-display" *ngIf="fileName">{{ fileName }}</span>
   </div>
 
   <div *ngIf="loading" class="loading">
     <p>Cargando y procesando archivo...</p>
   </div>
 
-  <div *ngIf="!loading && (incomes.length || expenses.length)">
+  <div *ngIf="!loading && (incomes.length || expenses.length)" class="results-section">
     <h3>💰 Ingresos detectados: {{ incomes.length }}</h3>
     <table>
       <thead>
@@ -26,7 +39,7 @@
       </thead>
       <tbody>
         <tr *ngFor="let inc of incomes">
-          <td>{{ inc.date }}</td>
+          <td>{{ inc.date | date: 'dd/MM/yyyy' }}</td>
           <td>{{ inc.name }}</td>
           <td class="income">+{{ inc.amount | number:'1.2-2' }} €</td>
           <td>{{ inc.category_id }}</td>
@@ -46,7 +59,7 @@
       </thead>
       <tbody>
         <tr *ngFor="let exp of expenses">
-          <td>{{ exp.date }}</td>
+          <td>{{ exp.date | date: 'dd/MM/yyyy' }}</td>
           <td>{{ exp.name }}</td>
           <td class="expense">-{{ exp.amount | number:'1.2-2' }} €</td>
           <td>{{ exp.category_id }}</td>
@@ -54,9 +67,8 @@
       </tbody>
     </table>
 
-    <button class="btn btn-success" (click)="saveToDatabase()">
-      Guardar en Base de Datos
+    <button class="btn btn-success save-button" (click)="saveToDatabase()">
+      Guardar en Base de Datos ({{ incomes.length + expenses.length }} transacciones)
     </button>
   </div>
 </div>
-
