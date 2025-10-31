@@ -98,19 +98,13 @@ export class IncomesComponent implements OnInit {
               );
 
               const accounts = accountsResponse.response || [];
-              console.log('Accounts loaded:', accounts);
               this.accountsMap = Object.fromEntries(
                   accounts.map((a) => [a.id, `${a.name}`])
               );
-              console.log('Accounts Map:', this.accountsMap);
-              console.log('Incomes loaded:', this.incomes);
               this.isLoading = false;
               this.cdr.detectChanges();
           },
           error: (err) => {
-              // 4. Error: Manejar cualquier fallo
-              console.error('Error al cargar datos:', err);
-              // Mensaje de error ajustado para reflejar las entidades cargadas
               this.errorMessage = 'Error loading income data or related entities (Users, Categories, Sources, Accounts).';
               this.isLoading = false;
           },
@@ -203,16 +197,16 @@ export class IncomesComponent implements OnInit {
 }
 
 
-  edit(investmentlog: Income): void {
-    this.openDialog(investmentlog);
+  edit(income: Income): void {
+    this.openDialog(income);
   }
 
   add(): void {
     this.openDialog();
   }
 
-  update(investmentlog: Income): void {
-    this.incomeService.update(investmentlog.id, investmentlog).subscribe({
+  update(income: Income): void {
+    this.incomeService.update(income.id, income).subscribe({
       next: (response: ApiResponse<Income>) => {
         const updated = response.response;
         const index = this.incomes.findIndex((h) => h.id === updated.id);
@@ -237,8 +231,8 @@ export class IncomesComponent implements OnInit {
     });
   }
 
-  create(investmentlog: Income): void {
-    this.incomeService.create(investmentlog).subscribe({
+  create(income: Income): void {
+    this.incomeService.create(income).subscribe({
       next: (response: ApiResponse<Income>) => {
         this.incomes.push(response.response);
         this.incomes = [...this.incomes];

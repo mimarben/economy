@@ -8,6 +8,6 @@ import { ExpenseCategoryBase as ExpenseCategory } from '@models/ExpenseCategoryB
 })
 export class ExpenseCategoryService extends BaseCrudService<ExpenseCategory> {
   constructor(protected override http: HttpClient) {
-    super(http, 'expense_categories');
+    super(http, 'expenses_categories');
   }
 }

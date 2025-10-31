@@ -59,7 +59,7 @@ export class ExpensesCategoriesComponent implements OnInit {
             this.isLoading = false;
           },
         });
-        console.log("CAtegories: ", this.expensesCategories);
+        console.log("Categories: ", this.expensesCategories);
   }
 
   // ... el resto de tus métodos (edit, add, openDialog, update, create, applyFilter) ...
@@ -92,9 +92,33 @@ export class ExpensesCategoriesComponent implements OnInit {
     // ... (Los métodos update, create, applyFilter se mantienen sin cambios) ...
 
     update(expensecategory: ExpenseCategory): void {
-
-    }
-
+          this.expenseCategoryService.update(expensecategory.id, expensecategory).subscribe({
+            next: (response: ApiResponse<ExpenseCategory>) => {
+              this.isLoading = false;
+              this.toastService.showToast(
+                response,
+                environment.toastType.Success,
+                {}
+              );
+              const updateIExpenseCategory = response.response;
+              const index = this.expensesCategories.findIndex((r) => r.id === updateIExpenseCategory.id);
+              if (index !== -1) {
+                this.expensesCategories[index] = updateIExpenseCategory;
+                this.expensesCategories = [...this.expensesCategories]; // Reassign to trigger change detection
+              }
+              this.cdr.detectChanges();
+            },
+            error: (error) => {
+              console.error('Error updating expense categories:', error.error);
+              this.isLoading = false;
+              this.toastService.showToast(
+                error.error as ApiResponse<string>,
+                environment.toastType.Error,
+                {}
+              );
+            },
+          });
+        }
     create(expensecategory: ExpenseCategory): void {
       this.expenseCategoryService.create(expensecategory).subscribe({
         next: (response: ApiResponse<ExpenseCategory>) => {

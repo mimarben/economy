@@ -1,1 +1,9 @@
-<p>expeneses works!</p>
+<app-generic-table
+  [filter]="filterValue"
+  [data]="expenses"
+  [columns]="columns"
+  [isLoading]="isLoading"
+  [errorMessage]="errorMessage"
+  (edit)="edit($event)"
+  (add)="add()"
+></app-generic-table>

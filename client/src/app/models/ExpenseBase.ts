@@ -5,6 +5,7 @@
  * and run json-schema-to-typescript to regenerate this file.
  */
 import { CurrencyEnum } from "./CurrencyBase";
+export type Id = number;
 export type Name = string;
 export type Description = string | null;
 export type Amount = number;
@@ -15,6 +16,7 @@ export type UserId = number;
 
 
 export interface ExpenseBase {
+  id:Id;
   name: Name;
   description?: Description;
   amount: Amount;
