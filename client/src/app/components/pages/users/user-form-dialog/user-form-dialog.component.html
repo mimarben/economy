@@ -70,7 +70,13 @@
       </mat-form-field>
       <mat-form-field appearance="fill">
         <mat-label>Password</mat-label>
-        <input matInput formControlName="password" type="password">
+
+        <input matInput formControlName="password" [type]="hide ? 'password' : 'text'">
+
+        <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+            <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+        </button>
+
         @if (formControls['password'].hasError('required')) {
           <mat-error>
             password is required
@@ -86,7 +92,7 @@
             Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character (@, $, !, %, *, ?, &).
         </mat-error>
         }
-      </mat-form-field>
+    </mat-form-field>
     </div>
     <!-- DNI y Active en una línea -->
     <div class="row-2">

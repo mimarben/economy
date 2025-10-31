@@ -1,14 +1,13 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { forkJoin } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
-import { GenericTableComponent, TableColumn } from '@components/shared/generic-table/generic-table.component';
-import { GenericDialogComponent } from '@components/shared/generic-dialog/generic-dialog.component';
+import { GenericTableComponent, TableColumn } from '@shared/generic-table/generic-table.component';
+import { GenericDialogComponent } from '@shared/generic-dialog/generic-dialog.component';
 import { ToastService } from '@services/toast.service';
 import { environment } from '@environments/environment';
 import { ApiResponse } from '@models/apiResponse';
 import { IncomeBase as Income } from '@models/IncomeBase';
-import { IncomeCategoryBase as IncomeCategory } from '@app/models/IncomeCategoryBase';
-import { FormFieldConfig } from '@components/shared/generic-form/form-config';
+import { FormFieldConfig } from '@shared/generic-form/form-config';
 import { IncomeService } from '@services/income.service';
 import { FormFactoryService } from '@factories/forms/form-factory.service';
 import { UtilsService } from '@utils/utils.service';

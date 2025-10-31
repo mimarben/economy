@@ -13,7 +13,7 @@ export type Date = string;
 export type CategoryId = number;
 export type PlaceId = number;
 export type UserId = number;
-
+export type AccountId = number
 
 export interface ExpenseBase {
   id:Id;
@@ -25,5 +25,6 @@ export interface ExpenseBase {
   place_id: PlaceId;
   user_id: UserId;
   currency: CurrencyEnum;
-  [k: string]: unknown;
+  account_id: AccountId;
+  //[k: string]: unknown;
 }

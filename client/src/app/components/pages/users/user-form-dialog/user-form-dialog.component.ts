@@ -23,6 +23,7 @@ export class UserFromDialogComponent {
   isLoading = false;
   userForm: FormGroup;
   isEditMode = false;
+  hide: boolean = true;
   public roles = USER_ROLE_OPTIONS;
   constructor(
     private fb: FormBuilder,
@@ -41,7 +42,7 @@ export class UserFromDialogComponent {
         dni: [this.isEditMode ? data.dni : '', [Validators.required, this.validateDNI]],
         active: [this.isEditMode ? data.active : true],
         role: [this.isEditMode ? data.role : 'user', [Validators.required]],
-        password: ['', this.isEditMode ? [] : [Validators.required, Validators.minLength(8), this.passwordValidator]], // Requerido solo en modo creación
+        password: ['', this.isEditMode ? [] : [Validators.required, this.passwordValidator]], // Requerido solo en modo creación
       });
       // Detecta si es modo edición
     }
@@ -69,17 +70,19 @@ export class UserFromDialogComponent {
     }
 
     passwordValidator(control: any) {
-    const value = control.value;
+      const value = control.value;
+      if (!value || value.length < 8) {
+        return null;
+      }
+      // Nueva expresión regular que requiere: minúscula, mayúscula, número y un carácter especial (@$!%*?&)
+      const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*¿?&_!¡€#|/(){}-])[A-Za-z\d@$!%*?&]{8,}$/;
 
-    // Nueva expresión regular que requiere: minúscula, mayúscula, número y un carácter especial (@$!%*?&)
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-
-    if (!passwordRegex.test(value)) {
-        // Usamos 'strongPassword' como nombre de error para reflejar los requisitos
-        return { strongPassword: true };
-    }
-    return null;
-}
+      if (!passwordRegex.test(value)) {
+          // Usamos 'strongPassword' como nombre de error para reflejar los requisitos
+          return { strongPassword: true };
+      }
+      return null;
+  }
   // Getter para acceder fácilmente a los errores de los campos
   get formControls() {
     return this.userForm.controls;

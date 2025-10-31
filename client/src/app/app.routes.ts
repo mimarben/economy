@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 import { HomeComponent } from './components/pages/home/home.component';
 import { UsersComponent } from './components/pages/users/users.component';
 import { ExpensesComponent } from './components/pages/expenses/expeneses.component';
-import { IncomesComponent } from '@components/pages/incomes/incomes-component';
+import { IncomesComponent } from  './components/pages/incomes/incomes-component'
 import { IncomesCategoriesComponent } from './components/pages/incomes/incomes-categories/incomes-categories.component';
 import { ExpensesCategoriesComponent } from './components/pages/expenses/expenses-categories/expenses-categories.component';
 import { BanksComponent } from './components/pages/banks/banks.component';
@@ -17,6 +17,7 @@ import { InvestmentsLogComponent } from './components/pages/investments/investme
 import { InvestmentsCategoriesComponent } from './components/pages/investments/investments-categories/investments-categories.component';
 import { NotFoundComponent } from './components/pages/not-found/not-found.component';
 import { SummaryComponent} from './components/pages/financial/summary-component/summary-component';
+import { ExcelImportComponent } from './components/pages/excel-import/excel-import-component';
 
 export const routes: Routes =  [
   { path: '', component: HomeComponent, data: { title: 'home.title' } },
@@ -36,6 +37,7 @@ export const routes: Routes =  [
   { path: 'investments_categories', component: InvestmentsCategoriesComponent, data: { title: 'investments_categories.title' } },
   { path: 'investments_log', component: InvestmentsLogComponent, data: { title: 'investments_log.title' } },
   { path: 'financial_summary', component: SummaryComponent, data: { title: 'summary.title' } },
+  { path: 'excel_import', component: ExcelImportComponent, data: { title: 'excel_import.title' } },
   { path: 'not_found', component: NotFoundComponent, data: { title: 'not_found.title' }  },
   // Add other routes here
   { path: '**', redirectTo: '/not-found', pathMatch: 'full' } // Redirect to not-found route

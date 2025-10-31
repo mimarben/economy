@@ -4,30 +4,16 @@
  * DO NOT MODIFY IT BY HAND. Instead, modify the source JSONSchema file,
  * and run json-schema-to-typescript to regenerate this file.
  */
+import { CurrencyEnum } from "./CurrencyBase";
 export type Id = number;
 export type Name = string;
 export type Description = string | null;
 export type Amount = number;
 export type Date = string;
-export type CurrencyEnum =
-  | "€"
-  | "$"
-  | "¥"
-  | "₿"
-  | "Ξ"
-  | "USDC"
-  | "DOGE"
-  | "LTC"
-  | "XRP"
-  | "XLM"
-  | "ADA"
-  | "DOT"
-  | "SOL"
-  | "SHIB"
-  | "TRX";
 export type UserId = number;
 export type SourceId = number;
 export type CategoryId = number;
+export type AccountId = number
 
 export interface IncomeBase {
   id:Id;
@@ -39,5 +25,6 @@ export interface IncomeBase {
   user_id: UserId;
   source_id: SourceId;
   category_id: CategoryId;
-  [k: string]: unknown;
+  account_id: AccountId;
+  //[k: string]: unknown;
 }

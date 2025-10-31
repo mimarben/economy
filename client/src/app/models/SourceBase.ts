@@ -14,5 +14,5 @@ export interface SourceBase {
   name: Name;
   description?: Description;
   active?: Active;
-  [k: string]: unknown;
+  //[k: string]: unknown;
 }
