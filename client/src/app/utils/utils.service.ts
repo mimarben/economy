@@ -5,7 +5,6 @@ import {
   parse,
   isValid,
   startOfDay,
-  toDate,
   isDate
 } from 'date-fns';
 import {
@@ -30,7 +29,7 @@ export class UtilsService {
   //readonly moment = moment;
   // Internal helper to convert MomentInput (Date, string, number) to a Date object,
   // since date-fns works primarily with native Date objects.
-  private getDate(date: Date | string | number | null | undefined): Date | null {
+  public getDate(date: Date | string | number | null | undefined): Date | null {
       if (!date) return null;
       if (isDate(date)) return date as Date;
       // Handle string or number input by creating a Date object
@@ -66,31 +65,18 @@ export class UtilsService {
 
     return isValid(d) ? d : null;
   }
-  /*  formatDateShortStr(date: moment.MomentInput): string {
-      return moment(date).format('DD-MM-YYYY');
+  public parseToSafeDate(value: unknown): Date | null {
+    if (!value) return null;
+
+    // Si ya es Date
+    if (isDate(value)) return value as Date;
+
+    // Si es string o number
+    if (typeof value === 'string' || typeof value === 'number') {
+      const d = new Date(value);
+      return isValid(d) ? d : null;
     }
 
-    formatDateShortDate(date: moment.MomentInput): Date | null {
-      if (!date) return null;
-      const m = moment(date).startOf('day');
-      return m.isValid() ? m.toDate() : null;
-    }
-
-    formatDateLong(date: moment.MomentInput): string {
-      return moment(date).format('DD-MM-YYYY HH:mm:ss');
-    }
-    // Parse a string in 'DD-MM-YYYY' format to a Moment object
-    parseToMoment(dateString: string): moment.Moment | null {
-      if (!dateString) return null;
-      const m = moment(dateString, 'DD-MM-YYYY', true);
-      return m.isValid() ? m : null;
-    }
-
-    // Parse a string in 'DD-MM-YYYY' format to a native Date object
-    parseToDate(dateString: string): Date | null {
-      if (!dateString) return null;
-      const [day, month, year] = dateString.split('-').map(Number);
-      const d = new Date(year, month - 1, day);
-      return isNaN(d.getTime()) ? null : d;
-    } */
+    return null; // cualquier otro tipo no válido
+  }
   }
