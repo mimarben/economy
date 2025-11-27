@@ -1,11 +1,18 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import * as ExcelJS from 'exceljs';
 import { Worksheet, Row } from 'exceljs';
 import { CurrencyEnum } from 'src/app/models/CurrencyBase';
 import { ExpenseBase } from 'src/app/models/ExpenseBase';
 import { IncomeBase } from 'src/app/models/IncomeBase';
 import { UtilsService } from '@utils/utils.service';
+import { ExpenseCategoryService } from 'src/app/services/expense-category.service';
+import { IncomeCategoryService } from 'src/app/services/income-category.service';
+import { ExpenseService } from 'src/app/services/expense.service';
+import { IncomeService } from 'src/app/services/income.service';
+import { ExpenseCategoryBase } from 'src/app/models/ExpenseCategoryBase';
+import { IncomeCategoryBase } from 'src/app/models/IncomeCategoryBase';
 
 interface ColumnMap {
   [key: string]: number;
@@ -46,18 +53,27 @@ const COLUMN_MAPS = {
 @Component({
   selector: 'app-excel-import',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './excel-import-component.html',
   styleUrls: ['./excel-import-component.scss'],
 })
 export class ExcelImportComponent {
   incomes: IncomeBase[] = [];
   expenses: ExpenseBase[] = [];
+
+  // Listas de referencia cargadas de BD
+  expenseCategories: ExpenseCategoryBase[] = [];
+  incomeCategories: IncomeCategoryBase[] = [];
+
+  // Transacciones pendientes de revisión
+  pendingTransactions: any[] = [];
+
   loading = false;
   fileName = '';
 
   private currentFormat: keyof typeof COLUMN_MAPS | null = null;
 
+  // Mantenemos las keywords para la pre-clasificación
   private readonly keywordCategories = [
     { keyword: 'mercadona', category_id: 1 },
     { keyword: 'carrefour', category_id: 1 },
@@ -89,7 +105,26 @@ export class ExcelImportComponent {
     { keyword: 'salario', source_id: 1 },
   ];
 
-  constructor(private utils: UtilsService) {}
+  constructor(
+    private utils: UtilsService,
+    private expenseCategoryService: ExpenseCategoryService,
+    private incomeCategoryService: IncomeCategoryService,
+    private expenseService: ExpenseService,
+    private incomeService: IncomeService
+  ) {}
+
+  ngOnInit() {
+    this.loadCategories();
+  }
+
+  loadCategories() {
+    this.expenseCategoryService.getAll().subscribe(res => {
+      if (res.response) this.expenseCategories = res.response;
+    });
+    this.incomeCategoryService.getAll().subscribe(res => {
+      if (res.response) this.incomeCategories = res.response;
+    });
+  }
 
   /** Evento al seleccionar un archivo Excel */
   async onFileSelected(event: Event): Promise<void> {
@@ -99,6 +134,7 @@ export class ExcelImportComponent {
 
     this.fileName = file.name;
     this.loading = true;
+    this.pendingTransactions = []; // Reset
 
     try {
       const workbook = await this.loadWorkbook(file);
@@ -114,9 +150,6 @@ export class ExcelImportComponent {
       this.currentFormat = detection.format;
       this.parseSheet(sheet, detection.headerIndices, detection.headerRowNumber);
 
-      alert(
-        `✅ Archivo (${detection.format}) procesado:\n${this.incomes.length} ingresos y ${this.expenses.length} gastos detectados.`
-      );
     } catch (err) {
       console.error('❌ Error procesando el archivo:', err);
       alert('Error al procesar el archivo Excel.');
@@ -171,9 +204,6 @@ export class ExcelImportComponent {
 
       if (normalized.filter(n => n !== '').length === 0) continue;
 
-      console.log(`Fila ${rowIndex} valores raw:`, values);
-      console.log(`Fila ${rowIndex} normalizada:`, normalized);
-
       // Comprobar cada formato
       for (const formatName in COLUMN_MAPS) {
         const format = COLUMN_MAPS[formatName as keyof typeof COLUMN_MAPS];
@@ -188,8 +218,6 @@ export class ExcelImportComponent {
           headerRow = row;
           headers = normalized;
           headerRowNumber = rowIndex;
-          console.log(`✅ Cabeceras detectadas fila ${rowIndex}: formato ${formatName}`);
-          console.log('Headers encontrados:', headers);
           break;
         }
       }
@@ -197,7 +225,6 @@ export class ExcelImportComponent {
     }
 
     if (!headerRow) {
-      console.error('❌ No se encontraron cabeceras válidas');
       return { format: null, headerIndices: null, headerRowNumber: 0 };
     }
 
@@ -227,11 +254,9 @@ export class ExcelImportComponent {
           if (arrayIndex > -1) {
             // Convertir índice de array a índice de columna ExcelJS (1-based)
             headerIndices[key] = arrayIndex + 1;
-            console.log(`Columna "${key}" (${headerName}) → array index ${arrayIndex} → excel col ${arrayIndex + 1}`);
           }
         }
 
-        console.log('Índices de columnas finales:', headerIndices);
         return {
           format: formatName as keyof typeof COLUMN_MAPS,
           headerIndices,
@@ -249,28 +274,15 @@ export class ExcelImportComponent {
     headerIndices: ColumnMap,
     headerRowNumber: number
   ): void {
-    this.incomes = [];
-    this.expenses = [];
-
-    let processedRows = 0;
-    let skippedRows = 0;
+    this.pendingTransactions = [];
 
     sheet.eachRow((row: Row, rowIndex: number) => {
       // Saltar filas hasta después de la cabecera
       if (rowIndex <= headerRowNumber) return;
 
-      // LOG: Ver toda la fila para debug
-      if (rowIndex <= headerRowNumber + 3) {
-        console.log(`\n=== FILA ${rowIndex} ===`);
-        console.log('Valores de la fila:', row.values);
-        console.log('Header indices:', headerIndices);
-      }
-
       // --- Extraer fecha ---
       const dateCell = row.getCell(headerIndices['date']);
       let rawDate = dateCell?.value;
-
-      console.log(`Fila ${rowIndex} - Celda fecha (col ${headerIndices['date']}):`, rawDate, typeof rawDate);
 
       // Manejar fórmulas
       if (rawDate && typeof rawDate === 'object' && 'result' in rawDate) {
@@ -287,17 +299,11 @@ export class ExcelImportComponent {
         rawDateValue = null;
       }
 
-      console.log(`Fila ${rowIndex} - Raw Date Value:`, rawDateValue);
-
       const dateValue = this.utils.parseToSafeDate(rawDateValue);
-
-      console.log(`Fila ${rowIndex} - Parsed Date:`, dateValue);
 
       // --- Extraer monto ---
       const amountCell = row.getCell(headerIndices['amount']);
       let rawAmount = amountCell?.value;
-
-      console.log(`Fila ${rowIndex} - Celda amount (col ${headerIndices['amount']}):`, rawAmount, typeof rawAmount);
 
       // Manejar fórmulas
       if (rawAmount && typeof rawAmount === 'object' && 'result' in rawAmount) {
@@ -307,8 +313,6 @@ export class ExcelImportComponent {
       const amountNum = this.toNumber(rawAmount);
 
       if (amountNum === null) {
-        console.warn(`Fila ${rowIndex}: Monto inválido, saltando`);
-        skippedRows++;
         return;
       }
 
@@ -333,35 +337,26 @@ export class ExcelImportComponent {
         comment = String(commentValue || '').trim();
       }
 
-      // --- Construir registro base ---
-      const recordData = {
-        id: Date.now() + rowIndex,
-        name: description || (amountNum > 0 ? 'Ingreso' : 'Gasto'),
-        description,
-        comment,
-        amount: Math.abs(amountNum),
-        date: dateValue ? dateValue.toISOString() : new Date().toISOString(),
-        currency: CurrencyEnum.Euro,
-        user_id: 1,
-        account_id: 1,
-      };
-
-      // --- Categoría, fuente y lugar ---
+      // --- Pre-categorización ---
+      const type = amountNum > 0 ? 'income' : 'expense';
       const category_id = this.findCategory(description);
       const source_id = this.findSource(description);
       const place_id = this.findPlace(description);
 
-      // --- Separar ingresos y gastos ---
-      if (amountNum > 0) {
-        this.incomes.push({ ...recordData, category_id, source_id });
-      } else {
-        this.expenses.push({ ...recordData, category_id, place_id: place_id || 1 });
-      }
-
-      processedRows++;
+      // --- Construir objeto pendiente ---
+      this.pendingTransactions.push({
+        id: Date.now() + rowIndex, // ID temporal
+        date: dateValue ? dateValue.toISOString() : new Date().toISOString(),
+        description,
+        comment,
+        amount: Math.abs(amountNum),
+        type,
+        category_id, // Pre-filled or 0
+        source_id: source_id || 1, // Default source
+        place_id: place_id || 1, // Default place
+        selected: true // Checkbox para importar
+      });
     });
-
-    console.log(`✅ Procesadas ${processedRows} filas, saltadas ${skippedRows}`);
   }
 
   /** Conversión segura de número */
@@ -416,11 +411,97 @@ export class ExcelImportComponent {
     return found?.source_id ?? 0;
   }
 
-  /** Simula guardado en base de datos */
-  saveToDatabase(): void {
-    console.log(`💾 Guardando ingresos (${this.incomes.length}) y gastos (${this.expenses.length})`);
-    console.log('Ingresos:', this.incomes);
-    console.log('Gastos:', this.expenses);
-    alert(`Guardadas ${this.incomes.length + this.expenses.length} transacciones.`);
+  // --- Métodos de UI ---
+
+  getCategoryName(id: number, type: 'income' | 'expense'): string {
+    const list = type === 'income' ? this.incomeCategories : this.expenseCategories;
+    return list.find(c => c.id === id)?.name || 'Sin Categoría';
+  }
+
+  onCategoryChange(transaction: any, event: any) {
+    const value = event.target.value;
+    if (value === 'NEW') {
+      this.openCreateCategoryModal(transaction);
+      // Reset select to previous value until created
+      event.target.value = transaction.category_id;
+    } else {
+      transaction.category_id = Number(value);
+    }
+  }
+
+  openCreateCategoryModal(transaction: any) {
+    const name = prompt('Nombre de la nueva categoría para: ' + transaction.type);
+    if (!name) return;
+
+    const service = transaction.type === 'income' ? this.incomeCategoryService : this.expenseCategoryService;
+
+    const newCategory = {
+      name: name,
+      description: 'Creada desde importación',
+      active: true,
+      id: 0 // ID dummy, backend assigns
+    };
+
+    service.create(newCategory).subscribe({
+      next: (res) => {
+        if (res.response) {
+          // Recargar listas
+          this.loadCategories();
+          // Asignar a la transacción actual
+          transaction.category_id = res.response.id;
+          alert(`Categoría "${name}" creada y asignada.`);
+        }
+      },
+      error: (err) => alert('Error al crear categoría')
+    });
+  }
+
+  async saveAll() {
+    const toSave = this.pendingTransactions.filter(t => t.selected);
+    if (toSave.length === 0) {
+      alert('No hay transacciones seleccionadas.');
+      return;
+    }
+
+    if (!confirm(`¿Guardar ${toSave.length} transacciones?`)) return;
+
+    this.loading = true;
+    let savedCount = 0;
+    let errors = 0;
+
+    // Guardado secuencial para no saturar (o paralelo limitado)
+    // Aquí lo hacemos simple: Promise.all
+    const promises = toSave.map(t => {
+      const payload = {
+        id: 0,
+        name: t.description || (t.type === 'income' ? 'Ingreso' : 'Gasto'),
+        description: t.description,
+        amount: t.amount,
+        date: t.date,
+        currency: CurrencyEnum.Euro,
+        user_id: 1, // TODO: Get from auth
+        account_id: 1, // TODO: Selectable account
+        category_id: t.category_id || 1, // Default fallback
+        // Specific fields
+        ...(t.type === 'income' ? { source_id: t.source_id } : { place_id: t.place_id })
+      };
+
+      const service = t.type === 'income' ? this.incomeService : this.expenseService;
+      // @ts-ignore
+      return service.create(payload).toPromise()
+        .then(() => { savedCount++; })
+        .catch(() => { errors++; });
+    });
+
+    await Promise.all(promises);
+
+    this.loading = false;
+    alert(`Proceso finalizado.\nGuardados: ${savedCount}\nErrores: ${errors}`);
+
+    // Limpiar lista si todo ok
+    if (errors === 0) {
+      this.pendingTransactions = [];
+      this.fileName = '';
+    }
   }
 }
