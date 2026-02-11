@@ -49,6 +49,7 @@ stop-frontend:
 
 dev-up: run-backend run-frontend
 	@echo "🧩 Backend and frontend running together"
+
 dev-down: stop-backend stop-frontend
 	@echo "🛑 Backend and frontend stopped"
 

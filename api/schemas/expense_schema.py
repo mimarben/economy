@@ -1,60 +1,63 @@
 from pydantic import BaseModel, Field, field_validator
-from pydantic_core import PydanticCustomError
 from typing import Optional
 from datetime import datetime
-from models.models import User, Source,ExpensesCategory, Account
-from flask_babel import _
 from models.models import CurrencyEnum
-from utils.schema_exporter import export_schema  # si guardas la función en otro archivo
+from flask_babel import _
+from utils.schema_exporter import export_schema
+
+
 class ExpenseBase(BaseModel):
-    name: str
-    description: Optional[str] = None
-    amount: float
+    """Base schema for Expense - format validation only."""
+
+    name: str = Field(..., min_length=1, max_length=255)
+    description: Optional[str] = Field(None, max_length=500)
+    amount: float = Field(..., gt=0)  # Must be positive
     date: datetime
     currency: CurrencyEnum
     user_id: int = Field(..., gt=0)
     source_id: int = Field(..., gt=0)
     category_id: int = Field(..., gt=0)
-    account_id: int = Field(..., gt=0)
+    account_id: Optional[int] = Field(None, gt=0)  # Account is optional
+
+    @field_validator('amount')
+    @classmethod
+    def amount_must_be_positive(cls, v):
+        """Format validation only - no DB queries."""
+        if v <= 0:
+            raise ValueError('amount must be greater than 0')
+        return v
+
 
 class ExpenseRead(ExpenseBase):
+    """Response schema for Expense."""
+
     id: int
 
     class Config:
         from_attributes = True
 
+
 class ExpenseCreate(ExpenseBase):
-    @field_validator('category_id', 'source_id', 'user_id')
-    @classmethod
-    def validate_foreign_key(cls, v, info):
-        db = info.context.get('db')
-        if not db:
-            raise ValueError("DATABASE_NOT_AVAILABLE")
+    """Schema for creating Expense - only format validation."""
 
-        model_map = {
-            'category_id': ExpensesCategory,
-            'source_id': Source,
-            'user_id': User,
-            'account_id': Account
-        }
+    pass
+    # ✅ NO FK validation here - moved to service layer
+    # ✅ NO DB queries in validators
 
-        model = model_map[info.field_name]
-        if not db.query(model).filter(model.id == v).first():
-            #raise ValueError(f"{info.field_name.upper()}_NOT_FOUND")
-            raise PydanticCustomError("FK_ERROR", f"{info.field_name.upper()}_NOT_FOUND")
-        return v
 
-class ExpenseUpdate(ExpenseBase):
-    name: Optional[str]
-    description: Optional[str] = None
-    amount: Optional[float]
-    date: Optional[datetime]  # Use str for date representation (ISO format)
-    currency: Optional[CurrencyEnum]
-    user_id: Optional[int]
-    source_id: Optional[int]
-    category_id: Optional[int]
-    account_id: Optional[int]
-    # Optional fields
+class ExpenseUpdate(BaseModel):
+    """Schema for updating Expense - all fields optional."""
+
+    name: Optional[str] = Field(None, min_length=1, max_length=255)
+    description: Optional[str] = Field(None, max_length=500)
+    amount: Optional[float] = Field(None, gt=0)
+    date: Optional[datetime] = None
+    currency: Optional[CurrencyEnum] = None
+    user_id: Optional[int] = Field(None, gt=0)
+    source_id: Optional[int] = Field(None, gt=0)
+    category_id: Optional[int] = Field(None, gt=0)
+    account_id: Optional[int] = Field(None, gt=0)
+
 
 class ExpenseDelete(BaseModel):
     pass
