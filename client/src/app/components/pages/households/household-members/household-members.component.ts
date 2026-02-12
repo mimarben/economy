@@ -71,7 +71,7 @@ export class HouseholdmembersComponent implements OnInit {
       next: (res: ApiResponse<User[]>) => {
         const userField = this.formFields.find(f => f.key === 'user_id');
         if (userField) {
-          this.usersMap = Object.fromEntries(res.response.map(u=>[u.id, (`${u.name} ${u.surname1} ${u.surname2}`)]))
+          this.usersMap = Object.fromEntries(res.response.map((u: User)=>[u.id, (`${u.name} ${u.surname1} ${u.surname2}`)]))
         }
       }
     });
@@ -94,11 +94,11 @@ export class HouseholdmembersComponent implements OnInit {
       const baseConfig = this.formFactory.getFormConfig('houseHoldMember');
 
       // 2. Enriquecer directamente los campos con las opciones
-      const enrichedConfig = baseConfig.map(field => {
+      const enrichedConfig = baseConfig.map((field: FormFieldConfig) => {
         if (field.key === 'household_id') {
           return {
             ...field,
-            options: responses.households.response.map(h => ({
+            options: responses.households.response.map((h: Household) => ({
               value: h.id,
               label: h.name
             }))
@@ -108,7 +108,7 @@ export class HouseholdmembersComponent implements OnInit {
         if (field.key === 'user_id') {
           return {
             ...field,
-            options: responses.users.response.map(u => ({
+            options: responses.users.response.map((u: User) => ({
               value: u.id,
               label: `${u.name} ${u.surname1} ${u.surname2}`
             }))

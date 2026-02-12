@@ -76,13 +76,13 @@ constructor(
       //this.investments = investments?.response ?? investments ?? [];
       this.investments = investments.response;
       this.usersMap = Object.fromEntries(
-        (users?.response ?? users ?? []).map(u => [u.id, `${u.name} ${u.surname1} ${u.surname2}`])
+        (users?.response ?? users ?? []).map((u: User) => [u.id, `${u.name} ${u.surname1} ${u.surname2}`])
       );
       this.accountMap = Object.fromEntries(
-        (accounts?.response ?? accounts ?? []).map(a => [a.id, `${a.name} ${a.description}`])
+        (accounts?.response ?? accounts ?? []).map((a: Account) => [a.id, `${a.name} ${a.description}`])
       );
       this.categoryMap = Object.fromEntries(
-        (categories?.response ?? categories ?? []).map(c => [c.id, c.name])
+        (categories?.response ?? categories ?? []).map((c: InvestmentCategory) => [c.id, c.name])
       );
 
       this.isLoading = false;
@@ -117,11 +117,11 @@ constructor(
         const baseConfig = this.formFactory.getFormConfig('investment');
 
         // Enriquecer los campos select con las opciones
-        const enrichedConfig = baseConfig.map(field => {
+        const enrichedConfig = baseConfig.map((field: FormFieldConfig) => {
           if (field.key === 'user_id') {
             return {
               ...field,
-              options: responses.users.response.map(r => ({
+              options: responses.users.response.map((r: User) => ({
                 value: r.id,
                 label: `${r.name} ${r.surname1} ${r.surname2}`
               }))
@@ -130,7 +130,7 @@ constructor(
           if (field.key === 'account_id') {
             return {
               ...field,
-              options: responses.accounts.response.map(r => ({
+              options: responses.accounts.response.map((r: Account) => ({
                 value: r.id,
                 label: `${r.name}`
               }))

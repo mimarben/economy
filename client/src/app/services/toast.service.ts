@@ -43,6 +43,62 @@ export class ToastService {
     }
   }
 
+  /**
+   * Convenience method to show error toast with a simple string message
+   */
+  error(message: string, options?: ToastOptions<string>): void {
+    const className = this.getClassName('error');
+    const baseOptions: ToastOptions<string> = {
+      duration: 4000,
+      dismissible: true,
+      className,
+      ...options,
+    };
+    this.toast.error(message, baseOptions);
+  }
+
+  /**
+   * Convenience method to show success toast with a simple string message
+   */
+  success(message: string, options?: ToastOptions<string>): void {
+    const className = this.getClassName('success');
+    const baseOptions: ToastOptions<string> = {
+      duration: 4000,
+      dismissible: true,
+      className,
+      ...options,
+    };
+    this.toast.success(message, baseOptions);
+  }
+
+  /**
+   * Convenience method to show info toast with a simple string message
+   */
+  info(message: string, options?: ToastOptions<string>): void {
+    const className = this.getClassName('info');
+    const baseOptions: ToastOptions<string> = {
+      duration: 4000,
+      dismissible: true,
+      className,
+      ...options,
+    };
+    this.toast.info(message, baseOptions);
+  }
+
+  /**
+   * Convenience method to show warning toast with a simple string message
+   */
+  warning(message: string, options?: ToastOptions<string>): void {
+    const className = this.getClassName('warning');
+    const baseOptions: ToastOptions<string> = {
+      duration: 4000,
+      dismissible: true,
+      className,
+      ...options,
+    };
+    this.toast.warning(message, baseOptions);
+  }
+
   // Transformar ApiResponse<T> a { response?: string; details?: string }
   private createToastMessage<T>(
     message: ApiResponse<T>,

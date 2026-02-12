@@ -56,7 +56,7 @@ constructor(
           this.investmentsCategories = data.response;
           this.isLoading = false;
         },
-        error: (err) => {
+        error: (err: any) => {
           this.errorMessage = 'Error loading investments Categories';
           this.isLoading = false;
         },
@@ -65,7 +65,7 @@ constructor(
         next: (res: ApiResponse<User[]>) => {
           const userField = this.formFields.find(f => f.key === 'user_id');
           if (userField) {
-            this.usersMap = Object.fromEntries(res.response.map(u=>[u.id, (`${u.name} ${u.surname1} ${u.surname2}`)]))
+            this.usersMap = Object.fromEntries(res.response.map((u: User)=>[u.id, (`${u.name} ${u.surname1} ${u.surname2}`)]))
           }
         }
       });

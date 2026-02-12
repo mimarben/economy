@@ -65,7 +65,7 @@ export class UsersComponent implements AfterViewInit {
         this.dataSource.sort = this.sort;
         this.isLoading = false;
       },
-      error: (error) => {
+      error: (error: any) => {
         this.errorMessage = 'Error al cargar los usuarios';
         this.isLoading = false;
       },

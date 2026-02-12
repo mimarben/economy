@@ -75,7 +75,7 @@ loadSavings() {
             // b) Mapear Usuarios
             const users = usersResponse.response || [];
             this.usersMap = Object.fromEntries(
-                users.map((u) => [
+                users.map((u: User) => [
                     u.id,
                     `${u.name} ${u.surname1} ${u.surname2 || ''}`, // Asegurar que surname2 es opcional
                 ])
@@ -84,7 +84,7 @@ loadSavings() {
             // c) Mapear Cuentas (Accounts)
             const accounts = accountsResponse.response || [];
             this.accountsMap = Object.fromEntries(
-                accounts.map((a) => [a.id, `${a.name}`])
+                accounts.map((a: Account) => [a.id, `${a.name}`])
             );
 
             // 3. Finalizar la carga y forzar la detección de cambios
@@ -92,7 +92,7 @@ loadSavings() {
             // Si usas ChangeDetectionStrategy.OnPush, necesitarás esto:
             // this.cdr.detectChanges();
         },
-        error: (err) => {
+        error: (err: any) => {
             // 4. Error: Manejar cualquier fallo de las tres llamadas
             console.error('Error al cargar datos:', err);
             this.errorMessage = 'Error loading savings, users, or accounts data.';
@@ -133,11 +133,11 @@ loadSavings() {
         const baseConfig = this.formFactory.getFormConfig('saving');
 
         // Enriquecer los campos select con las opciones
-        const enrichedConfig = baseConfig.map((field) => {
+        const enrichedConfig = baseConfig.map((field: FormFieldConfig) => {
           if (field.key === 'user_id') {
             return {
               ...field,
-              options: responses.users.response.map((user) => ({
+              options: responses.users.response.map((user: User) => ({
                 value: user.id,
                 label: user.name,
               })),
@@ -147,7 +147,7 @@ loadSavings() {
           if (field.key === 'account_id') {
             return {
               ...field,
-              options: responses.accounts.response.map((account) => ({
+              options: responses.accounts.response.map((account: Account) => ({
                 value: account.id,
                 label: `${account.name}`,
               })),

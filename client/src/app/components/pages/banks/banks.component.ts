@@ -61,7 +61,7 @@ export class BanksComponent implements OnInit {
         this.banks = data.response;
         this.isLoading = false;
       },
-      error: (err) => {
+      error: (err: any) => {
         this.errorMessage = 'Error loading banks';
         this.isLoading = false;
       },
@@ -109,7 +109,7 @@ export class BanksComponent implements OnInit {
         }
         this.cdr.detectChanges();
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Error updating account:', error.error);
         this.isLoading = false;
         this.toastService.showToast(
@@ -135,7 +135,7 @@ export class BanksComponent implements OnInit {
         this.banks = [...this.banks]; // Reassign to trigger change detection
         this.cdr.detectChanges();
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Error creating bank:', error.error);
         this.isLoading = false;
         this.errorMessage = 'Failed to create bank.';

@@ -100,7 +100,7 @@ export class UserFromDialogComponent {
             this.isLoading = false;
             this.toastService.showToast(response,environment.toastType.Success, {});
           },
-          error: (error) => {
+          error: (error: any) => {
             console.error('Error updating user:', error.error);
             this.isLoading = false;
             this.toastService.showToast(error.error as ApiResponse<string>,environment.toastType.Error, {});
@@ -116,7 +116,7 @@ export class UserFromDialogComponent {
             this.toastService.showToast(response, environment.toastType.Success, {});
             this.dialogRef.close(response.response); // Devuelve el usuario creado
           },
-          error: (error) => {
+          error: (error: any) => {
             console.error('Error creating user:', error.error);
             this.isLoading = false;
             this.errorMessage = 'Failed to create user.';

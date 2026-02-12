@@ -6,6 +6,7 @@
 import { Injectable, ErrorHandler, Injector } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ToastService } from './toast.service';
+import { environment } from '../../environments/environment';
 
 export interface ApiError {
   code: string;
@@ -126,6 +127,3 @@ export class ErrorHandlerService implements ErrorHandler {
     }`;
   }
 }
-
-// Import environment at the end to avoid circular dependency
-import { environment } from '../../environments/environment';

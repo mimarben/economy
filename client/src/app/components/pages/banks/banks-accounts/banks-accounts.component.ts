@@ -63,7 +63,7 @@ export class BanksAccountsComponent implements OnInit {
         this.accounts = data.response;
         this.isLoading = false;
       },
-      error: (err) => {
+      error: (err: any) => {
         this.errorMessage = 'Error loading accounts';
         this.isLoading = false;
       },
@@ -112,59 +112,59 @@ private loadUsers(): void {
   addAccount(): void {
     this.openDialog();
   }
-openDialog(data?: Account): void {
-  // Cargar bancos y usuarios en paralelo
-  forkJoin({
-    banks: this.bankService.getBanks(),
-    users: this.userService.getUsers()
-  }).subscribe({
-    next: (responses) => {
-      // Obtener configuración base del formulario
-      const baseConfig = this.formFactory.getFormConfig('account');
+  openDialog(data?: Account): void {
+    // Cargar bancos y usuarios en paralelo
+    forkJoin({
+      banks: this.bankService.getBanks(),
+      users: this.userService.getUsers()
+    }).subscribe({
+      next: (responses) => {
+        // Obtener configuración base del formulario
+        const baseConfig = this.formFactory.getFormConfig('account');
 
-      // Enriquecer los campos select con las opciones
-      const enrichedConfig = baseConfig.map(field => {
-        if (field.key === 'bank_id') {
-          return {
-            ...field,
-            options: responses.banks.response.map(bank => ({
-              value: bank.id,
-              label: bank.name
-            }))
-          };
-        }
+        // Enriquecer los campos select con las opciones
+        const enrichedConfig = baseConfig.map((field: FormFieldConfig) => {
+          if (field.key === 'bank_id') {
+            return {
+              ...field,
+              options: responses.banks.response.map((bank: Bank) => ({
+                value: bank.id,
+                label: bank.name
+              }))
+            };
+          }
 
-        if (field.key === 'user_id') {
-          return {
-            ...field,
-            options: responses.users.response.map(user => ({
-              value: user.id,
-              label: `${user.name} (${user.email})`
-            }))
-          };
-        }
-        return field;
-      });
-      const dialogRef = this.dialog.open(GenericDialogComponent, {
-        data: {
-          title: data ? 'Edit Account' : 'New Account',
-          fields: enrichedConfig,
-          initialData: data || {}
-        }
-      });
+          if (field.key === 'user_id') {
+            return {
+              ...field,
+              options: responses.users.response.map((user: User) => ({
+                value: user.id,
+                label: `${user.name} (${user.email})`
+              }))
+            };
+          }
+          return field;
+        });
+        const dialogRef = this.dialog.open(GenericDialogComponent, {
+          data: {
+            title: data ? 'Edit Account' : 'New Account',
+            fields: enrichedConfig,
+            initialData: data || {}
+          }
+        });
 
-      dialogRef.afterClosed().subscribe(result => {
-        if (result) {
-          result.id ? this.updateAccount(result) : this.createAccount(result);
-        }
-      });
-    },
-    error: (error) => {
-      console.error('Error loading banks and users:', error);
-      // Opcional: Mostrar un snackbar o mensaje de error
-    }
-  });
-}
+        dialogRef.afterClosed().subscribe(result => {
+          if (result) {
+            result.id ? this.updateAccount(result) : this.createAccount(result);
+          }
+        });
+      },
+      error: (error: any) => {
+        console.error('Error loading banks and users:', error);
+        // Opcional: Mostrar un snackbar o mensaje de error
+      }
+    });
+  }
 /*  openDialog(data?: Account): void {
     const dialogRef = this.dialog.open(GenericDialogComponent, {
       data: {

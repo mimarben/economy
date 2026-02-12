@@ -7,6 +7,10 @@ import { ToastService } from '@services/toast.service';
 import { environment } from '@environments/environment';
 import { ApiResponse } from '@models/apiResponse';
 import { ExpenseBase as Expense } from '@models/ExpenseBase';
+import { UserBase as User } from '@models/UserBase';
+import { ExpenseCategoryBase as ExpenseCategory } from '@models/ExpenseCategoryBase';
+import { SourceBase as Source } from '@models/SourceBase';
+import { AccountBase as Account } from '@models/AccountBase';
 import { FormFieldConfig } from '@shared/generic-form/form-config';
 import { ExpenseService } from '@services/expense.service';
 import { FormFactoryService } from '@factories/forms/form-factory.service';
@@ -79,7 +83,7 @@ export class ExpensesComponent implements OnInit {
 
               const users = usersResponse.response || [];
               this.usersMap = Object.fromEntries(
-                  users.map((u) => [
+                  users.map((u: User) => [
                       u.id,
                       `${u.name} ${u.surname1} ${u.surname2 || ''}`,
                   ])
@@ -89,26 +93,26 @@ export class ExpensesComponent implements OnInit {
               const categories = categoriesResponse.response || [];
               console.log('Categories loaded:', categories);
               this.expensesCategoriesMap = Object.fromEntries(
-                categories.map((c) => [c.id, c.name])
+                categories.map((c: ExpenseCategory) => [c.id, c.name])
               );
 
 
               const sources = sourcesResponse.response || [];
               this.sourcesMap = Object.fromEntries(
-                  sources.map((s) => [s.id, s.name])
+                  sources.map((s: Source) => [s.id, s.name])
               );
 
               const accounts = accountsResponse.response || [];
               console.log('Accounts loaded:', accounts);
               this.accountsMap = Object.fromEntries(
-                  accounts.map((a) => [a.id, `${a.name}`])
+                  accounts.map((a: Account) => [a.id, `${a.name}`])
               );
               console.log('Accounts Map:', this.accountsMap);
               console.log('Expenses loaded:', this.expenses);
               this.isLoading = false;
               this.cdr.detectChanges();
           },
-          error: (err) => {
+          error: (err: any) => {
               // 4. Error: Manejar cualquier fallo
               console.error('Error al cargar datos:', err);
               // Mensaje de error ajustado para reflejar las entidades cargadas
@@ -140,12 +144,12 @@ export class ExpensesComponent implements OnInit {
       const baseConfig = this.formFactory.getFormConfig('expense');
 
       // Enriquecemos los campos select con los datos cargados
-      const enrichedConfig = baseConfig.map((field) => {
+      const enrichedConfig = baseConfig.map((field: FormFieldConfig) => {
         switch (field.key) {
           case 'user_id':
             return {
               ...field,
-              options: users.map((u) => ({
+              options: users.map((u: User) => ({
                 value: u.id,
                 label: `${u.name} ${u.surname1} ${u.surname2 || ''}`,
               })),
@@ -153,7 +157,7 @@ export class ExpensesComponent implements OnInit {
           case 'category_id':
             return {
               ...field,
-              options: categories.map((c) => ({
+              options: categories.map((c: ExpenseCategory) => ({
                 value: c.id,
                 label: c.name,
               })),
@@ -161,7 +165,7 @@ export class ExpensesComponent implements OnInit {
           case 'source_id':
             return {
               ...field,
-              options: sources.map((s) => ({
+              options: sources.map((s: Source) => ({
                 value: s.id,
                 label: s.name,
               })),
@@ -169,7 +173,7 @@ export class ExpensesComponent implements OnInit {
           case 'account_id':
             return {
               ...field,
-              options: accounts.map((a) => ({
+              options: accounts.map((a: Account) => ({
                 value: a.id,
                 label: a.name,
               })),

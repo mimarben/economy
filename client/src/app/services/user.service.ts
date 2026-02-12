@@ -1,12 +1,9 @@
-/**
- * User Service - Extends BaseCrudService following ISP pattern
- * Provides CRUD operations for User entities
- */
-
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BaseCrudService } from './base-crud.service';
 import { UserBase as User } from '../models/UserBase';
+import { Observable } from 'rxjs';
+import { ApiResponse } from '../models/apiResponse';
 
 @Injectable({
   providedIn: 'root',
@@ -17,27 +14,23 @@ export class UserService extends BaseCrudService<User> {
   }
 
   /**
-   * Get all users
-   * Inherited from IReadService via BaseCrudService
+   * Alias for getAll() - Get all users
    */
+  getUsers(): Observable<ApiResponse<User[]>> {
+    return this.getAll();
+  }
 
   /**
-   * Get user by ID
-   * Inherited from IReadService via BaseCrudService
+   * Alias for create() - Create a new user
    */
+  createUser(user: User): Observable<ApiResponse<User>> {
+    return this.create(user);
+  }
 
   /**
-   * Create new user
-   * Inherited from ICreateService via BaseCrudService
+   * Alias for update() - Update an existing user
    */
-
-  /**
-   * Update user
-   * Inherited from IUpdateService via BaseCrudService
-   */
-
-  /**
-   * Delete user
-   * Inherited from IDeleteService via BaseCrudService
-   */
+  updateUser(id: number, user: User): Observable<ApiResponse<User>> {
+    return this.update(id, user);
+  }
 }

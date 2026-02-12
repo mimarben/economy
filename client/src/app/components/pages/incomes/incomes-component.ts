@@ -7,6 +7,10 @@ import { ToastService } from '@services/toast.service';
 import { environment } from '@environments/environment';
 import { ApiResponse } from '@models/apiResponse';
 import { IncomeBase as Income } from '@models/IncomeBase';
+import { UserBase as User } from '@models/UserBase';
+import { IncomeCategoryBase as IncomeCategory } from '@models/IncomeCategoryBase';
+import { SourceBase as Source } from '@models/SourceBase';
+import { AccountBase as Account } from '@models/AccountBase';
 import { FormFieldConfig } from '@shared/generic-form/form-config';
 import { IncomeService } from '@services/income.service';
 import { FormFactoryService } from '@factories/forms/form-factory.service';
@@ -78,7 +82,7 @@ export class IncomesComponent implements OnInit {
 
               const users = usersResponse.response || [];
               this.usersMap = Object.fromEntries(
-                  users.map((u) => [
+                  users.map((u: User) => [
                       u.id,
                       `${u.name} ${u.surname1} ${u.surname2 || ''}`,
                   ])
@@ -87,23 +91,23 @@ export class IncomesComponent implements OnInit {
 
               const categories = categoriesResponse.response || [];
               this.incomesCategoriesMap = Object.fromEntries(
-                  categories.map((c) => [c.id, c.name])
+                  categories.map((c: IncomeCategory) => [c.id, c.name])
               );
 
 
               const sources = sourcesResponse.response || [];
               this.sourcesMap = Object.fromEntries(
-                  sources.map((s) => [s.id, s.name])
+                  sources.map((s: Source) => [s.id, s.name])
               );
 
               const accounts = accountsResponse.response || [];
               this.accountsMap = Object.fromEntries(
-                  accounts.map((a) => [a.id, `${a.name}`])
+                  accounts.map((a: Account) => [a.id, `${a.name}`])
               );
               this.isLoading = false;
               this.cdr.detectChanges();
           },
-          error: (err) => {
+          error: (err: any) => {
               this.errorMessage = 'Error loading income data or related entities (Users, Categories, Sources, Accounts).';
               this.isLoading = false;
           },
@@ -132,12 +136,12 @@ export class IncomesComponent implements OnInit {
       const baseConfig = this.formFactory.getFormConfig('income');
 
       // Enriquecemos los campos select con los datos cargados
-      const enrichedConfig = baseConfig.map((field) => {
+      const enrichedConfig = baseConfig.map((field: FormFieldConfig) => {
         switch (field.key) {
           case 'user_id':
             return {
               ...field,
-              options: users.map((u) => ({
+              options: users.map((u: User) => ({
                 value: u.id,
                 label: `${u.name} ${u.surname1} ${u.surname2 || ''}`,
               })),
@@ -145,7 +149,7 @@ export class IncomesComponent implements OnInit {
           case 'category_id':
             return {
               ...field,
-              options: categories.map((c) => ({
+              options: categories.map((c: IncomeCategory) => ({
                 value: c.id,
                 label: c.name,
               })),
@@ -153,7 +157,7 @@ export class IncomesComponent implements OnInit {
           case 'source_id':
             return {
               ...field,
-              options: sources.map((s) => ({
+              options: sources.map((s: Source) => ({
                 value: s.id,
                 label: s.name,
               })),
@@ -161,7 +165,7 @@ export class IncomesComponent implements OnInit {
           case 'account_id':
             return {
               ...field,
-              options: accounts.map((a) => ({
+              options: accounts.map((a: Account) => ({
                 value: a.id,
                 label: a.name,
               })),

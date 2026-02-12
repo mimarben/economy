@@ -11,7 +11,10 @@ nvm use 22.19.0
 ````bash
 mpn install 
 ````
-
+````bash
+npx ng serve 
+````
+      
 Ya que instalaste Angular CLI como dependencia de desarrollo (--save-dev), puedes ejecutar comandos
  "@angular/material/prebuilt-themes/azure-blue.css",
 
