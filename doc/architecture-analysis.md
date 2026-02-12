@@ -82,3 +82,111 @@ Potential violations:
 5. Add contract tests between frontend API clients and backend endpoints.
 6. Centralize error taxonomy and HTTP mapping so routers stop duplicating error handling.
 
+
+Router (HTTP)
+   ↓
+Service (lógica de negocio)
+   ↓
+Repository (acceso a datos)
+   ↓
+SQLAlchemy
+
+
+# 🧱 1️⃣ Router = Solo HTTP
+
+Archivo: expense_router.py
+
+Ahora el router:
+
+✅ Valida formato (Pydantic)
+
+✅ Maneja códigos HTTP
+
+✅ Traduce errores a respuestas JSON
+
+❌ No hace lógica de negocio
+
+❌ No accede directamente a la DB
+
+```python
+service = ExpenseService(db)
+result = service.create_expense(expense_data)
+``` 
+
+# 🧠 2️⃣ Service = Lógica de negocio
+
+Archivo: expense_service.py
+
+Aquí vive ahora:
+
+Validación de reglas de negocio
+
+Orquestación
+
+Transformación entre modelos y schemas
+
+Casos de uso reales
+
+```python
+is_valid, error = self.repository.validate_foreign_keys(...)
+``` 
+
+# 3️⃣ Repository = Acceso a datos
+
+Archivo: expense_repository.py
+
+Este solo:
+
+Ejecuta queries
+
+Hace filtros
+
+Accede a tablas
+
+NO sabe nada de HTTP
+
+NO sabe nada de schemas
+
+```python
+return self.db.query(Expense).filter(Expense.user_id == user_id).all()
+```
+
+# 🎯 El cambio más importante
+
+Antes probablemente tenías algo así en un schema:
+
+@validator("user_id")
+def validate_user_exists(...)
+
+
+Eso está mal arquitectónicamente porque:
+
+Un schema no debería necesitar una Session
+
+Pydantic no debería depender de SQLAlchemy
+
+Mezcla validación estructural con persistencia
+
+Ahora:
+
+Schema → solo valida formato
+Service → valida reglas
+Repository → valida existencia en DB
+
+Esto es mucho más limpio.
+
+# 📐 Qué patrón te ha aplicado
+
+Lo que te ha montado es esto:
+
+Service Layer Pattern
+
+Centraliza la lógica de negocio en una capa intermedia.
+
+Repository Pattern
+
+Abstrae el acceso a datos detrás de una clase.
+
+SRP (Single Responsibility Principle)
+
+Cada clase tiene una única razón para cambiar.

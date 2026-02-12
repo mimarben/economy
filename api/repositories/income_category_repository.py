@@ -1,0 +1,10 @@
+"""Repository for IncomesCategory entity following segregated interfaces."""
+from repositories.base_repository import BaseRepository
+from models.models import IncomesCategory
+
+
+class IncomesCategoryRepository(BaseRepository[IncomesCategory]):
+    """Repository for IncomesCategory with custom queries."""
+
+    def __init__(self, db):
+        super().__init__(db, IncomesCategory)

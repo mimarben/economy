@@ -8,7 +8,7 @@ from utils.schema_exporter import export_schema
 
 class ExpenseBase(BaseModel):
     """Base schema for Expense - format validation only."""
-    
+
     name: str = Field(..., min_length=1, max_length=255)
     description: Optional[str] = Field(None, max_length=500)
     amount: float = Field(..., gt=0)  # Must be positive
@@ -18,7 +18,7 @@ class ExpenseBase(BaseModel):
     source_id: int = Field(..., gt=0)
     category_id: int = Field(..., gt=0)
     account_id: Optional[int] = Field(None, gt=0)  # Account is optional
-    
+
     @field_validator('amount')
     @classmethod
     def amount_must_be_positive(cls, v):
@@ -30,7 +30,7 @@ class ExpenseBase(BaseModel):
 
 class ExpenseRead(ExpenseBase):
     """Response schema for Expense."""
-    
+
     id: int
 
     class Config:
@@ -39,7 +39,7 @@ class ExpenseRead(ExpenseBase):
 
 class ExpenseCreate(ExpenseBase):
     """Schema for creating Expense - only format validation."""
-    
+
     pass
     # ✅ NO FK validation here - moved to service layer
     # ✅ NO DB queries in validators
@@ -47,7 +47,7 @@ class ExpenseCreate(ExpenseBase):
 
 class ExpenseUpdate(BaseModel):
     """Schema for updating Expense - all fields optional."""
-    
+
     name: Optional[str] = Field(None, min_length=1, max_length=255)
     description: Optional[str] = Field(None, max_length=500)
     amount: Optional[float] = Field(None, gt=0)

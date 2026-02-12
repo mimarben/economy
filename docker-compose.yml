@@ -13,11 +13,12 @@ services:
     env_file:
       - ./.env
     volumes:
-      - ./api:/app:rw
-      - ./api/db:/app/db:rw  # Bind mount para SQLite
+      - ./api:/app:Z #rw
+      - ./api/db:/app/db:Z #rw  # Bind mount para SQLite
     working_dir: /app
     #command: flask run --host=0.0.0.0 --port=5001 --reload
-    command: flask run --host=0.0.0.0 --port=5001 --reload --extra-files /app/app.py
+    #command: flask run --host=0.0.0.0 --port=5001 --reload #--extra-files /app/app.py
+    command: flask --app app.py run --debug --host=0.0.0.0 --port=5001
     networks:
       - economy-net
 

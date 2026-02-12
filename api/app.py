@@ -58,4 +58,5 @@ def handle_exception(e):
 # Run app (optional if using a separate runner)
 if __name__ == "__main__":
     logger.info("Starting the Flask app...")
+    logger.info(f"Configuration: {app.config}")
     app.run(debug=app.config['DEBUG'], host=app.config['HOST'], port=app.config['PORT'])
