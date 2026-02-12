@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-04-15 16:11+0200\n"
+"POT-Creation-Date: 2026-02-12 15:23+0100\n"
 "PO-Revision-Date: 2025-04-15 16:11+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: es\n"
@@ -18,11 +18,503 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.17.0\n"
 
-#: routers/user_router.py:21
+#: routers/account_router.py:47 routers/account_router.py:103
+#: routers/bank_router.py:47 routers/bank_router.py:103
+#: routers/expense_category_router.py:40 routers/expense_category_router.py:81
+#: routers/expense_router.py:51 routers/expense_router.py:109
+#: routers/financial_summary_router.py:40
+#: routers/financial_summary_router.py:73 routers/household_member_router.py:40
+#: routers/household_member_router.py:73 routers/household_router.py:40
+#: routers/household_router.py:73 routers/income_category_router.py:40
+#: routers/income_category_router.py:73 routers/income_router.py:40
+#: routers/income_router.py:73 routers/investment_category_router.py:40
+#: routers/investment_category_router.py:73 routers/investment_log_router.py:40
+#: routers/investment_log_router.py:73 routers/investment_router.py:40
+#: routers/investment_router.py:73 routers/saving_log_router.py:40
+#: routers/saving_log_router.py:73 routers/saving_router.py:40
+#: routers/saving_router.py:73 routers/source_router.py:40
+#: routers/source_router.py:73 routers/user_router.py:47
+#: routers/user_router.py:108
+msgid "VALIDATION_ERROR"
+msgstr ""
+
+#: routers/account_router.py:52
+msgid "ACCOUNT_CREATED"
+msgstr ""
+
+#: routers/account_router.py:54 routers/bank_router.py:54
+#: routers/expense_category_router.py:46 routers/user_router.py:59
+#: routers/user_router.py:119
 msgid "INVALID_DATA"
 msgstr "Datos invalidos en la consulta."
 
-#: routers/user_router.py:23
-msgid "DNI_EXIST"
-msgstr "El DNI ya está siendo utilizado por otro usuario."
+#: routers/account_router.py:56 routers/account_router.py:73
+#: routers/account_router.py:92 routers/account_router.py:114
+#: routers/account_router.py:131 routers/bank_router.py:56
+#: routers/bank_router.py:73 routers/bank_router.py:92
+#: routers/bank_router.py:114 routers/bank_router.py:131
+#: routers/expense_category_router.py:48 routers/expense_category_router.py:61
+#: routers/expense_category_router.py:72 routers/expense_category_router.py:89
+#: routers/expense_category_router.py:102 routers/expense_router.py:67
+#: routers/expense_router.py:121 routers/expense_router.py:139
+#: routers/expense_router.py:162 routers/financial_summary_router.py:46
+#: routers/financial_summary_router.py:81
+#: routers/financial_summary_router.py:94 routers/household_member_router.py:46
+#: routers/household_member_router.py:81 routers/household_member_router.py:94
+#: routers/household_router.py:46 routers/household_router.py:81
+#: routers/household_router.py:94 routers/income_category_router.py:46
+#: routers/income_category_router.py:81 routers/income_category_router.py:94
+#: routers/income_router.py:46 routers/income_router.py:81
+#: routers/income_router.py:94 routers/investment_category_router.py:46
+#: routers/investment_category_router.py:81
+#: routers/investment_category_router.py:94 routers/investment_log_router.py:46
+#: routers/investment_log_router.py:81 routers/investment_log_router.py:94
+#: routers/investment_router.py:46 routers/investment_router.py:81
+#: routers/investment_router.py:94 routers/saving_log_router.py:46
+#: routers/saving_log_router.py:81 routers/saving_log_router.py:94
+#: routers/saving_router.py:46 routers/saving_router.py:81
+#: routers/saving_router.py:94 routers/source_router.py:46
+#: routers/source_router.py:81 routers/source_router.py:94
+#: routers/user_router.py:61 routers/user_router.py:78
+#: routers/user_router.py:97 routers/user_router.py:121
+#: routers/user_router.py:138
+msgid "DATABASE_ERROR"
+msgstr ""
+
+#: routers/account_router.py:69 routers/account_router.py:110
+#: routers/account_router.py:127
+msgid "ACCOUNT_NOT_FOUND"
+msgstr ""
+
+#: routers/account_router.py:69 routers/account_router.py:110
+#: routers/account_router.py:127 routers/bank_router.py:69
+#: routers/bank_router.py:110 routers/bank_router.py:127
+#: routers/expense_category_router.py:58 routers/expense_category_router.py:86
+#: routers/expense_category_router.py:99 routers/expense_router.py:80
+#: routers/expense_router.py:117 routers/expense_router.py:135
+#: routers/expense_router.py:153 routers/financial_summary_router.py:55
+#: routers/financial_summary_router.py:78
+#: routers/financial_summary_router.py:91 routers/household_member_router.py:55
+#: routers/household_member_router.py:78 routers/household_member_router.py:91
+#: routers/household_router.py:55 routers/household_router.py:78
+#: routers/household_router.py:91 routers/income_category_router.py:55
+#: routers/income_category_router.py:78 routers/income_category_router.py:91
+#: routers/income_router.py:55 routers/income_router.py:78
+#: routers/income_router.py:91 routers/investment_category_router.py:55
+#: routers/investment_category_router.py:78
+#: routers/investment_category_router.py:91 routers/investment_log_router.py:55
+#: routers/investment_log_router.py:78 routers/investment_log_router.py:91
+#: routers/investment_router.py:55 routers/investment_router.py:78
+#: routers/investment_router.py:91 routers/saving_log_router.py:55
+#: routers/saving_log_router.py:78 routers/saving_log_router.py:91
+#: routers/saving_router.py:55 routers/saving_router.py:78
+#: routers/saving_router.py:91 routers/source_router.py:55
+#: routers/source_router.py:78 routers/source_router.py:91
+msgid "NONE"
+msgstr ""
+
+#: routers/account_router.py:71
+msgid "ACCOUNT_FOUND"
+msgstr ""
+
+#: routers/account_router.py:87
+msgid "ACCOUNT_LIST"
+msgstr ""
+
+#: routers/account_router.py:112
+msgid "ACCOUNT_UPDATED"
+msgstr ""
+
+#: routers/account_router.py:129
+msgid "ACCOUNT_DELETED"
+msgstr ""
+
+#: routers/bank_router.py:52
+msgid "BANK_CREATED"
+msgstr ""
+
+#: routers/bank_router.py:69 routers/bank_router.py:110
+#: routers/bank_router.py:127
+msgid "BANK_NOT_FOUND"
+msgstr ""
+
+#: routers/bank_router.py:71
+msgid "BANK_FOUND"
+msgstr ""
+
+#: routers/bank_router.py:87
+msgid "BANK_LIST"
+msgstr ""
+
+#: routers/bank_router.py:112
+msgid "BANK_UPDATED"
+msgstr ""
+
+#: routers/bank_router.py:129
+msgid "BANK_DELETED"
+msgstr ""
+
+#: routers/expense_category_router.py:44
+msgid "EXPENSE_CATEGORY_CREATED"
+msgstr ""
+
+#: routers/expense_category_router.py:58 routers/expense_category_router.py:86
+#: routers/expense_category_router.py:99
+msgid "EXPENSE_CATEGORY_NOT_FOUND"
+msgstr ""
+
+#: routers/expense_category_router.py:59
+msgid "EXPENSE_CATEGORY_FOUND"
+msgstr ""
+
+#: routers/expense_category_router.py:70
+msgid "EXPENSE_CATEGORY_LIST"
+msgstr ""
+
+#: routers/expense_category_router.py:87
+msgid "EXPENSE_CATEGORY_UPDATED"
+msgstr ""
+
+#: routers/expense_category_router.py:100
+msgid "EXPENSE_CATEGORY_DELETED"
+msgstr ""
+
+#: routers/expense_router.py:59
+msgid "EXPENSE_CREATED"
+msgstr ""
+
+#: routers/expense_router.py:65
+msgid "FK_ERROR"
+msgstr ""
+
+#: routers/expense_router.py:80 routers/expense_router.py:117
+#: routers/expense_router.py:135 routers/expense_router.py:153
+msgid "EXPENSE_NOT_FOUND"
+msgstr ""
+
+#: routers/expense_router.py:82 routers/expense_router.py:157
+msgid "EXPENSE_FOUND"
+msgstr ""
+
+#: routers/expense_router.py:95
+msgid "EXPENSE_LIST"
+msgstr ""
+
+#: routers/expense_router.py:119
+msgid "EXPENSE_UPDATED"
+msgstr ""
+
+#: routers/expense_router.py:137
+msgid "EXPENSE_DELETED"
+msgstr ""
+
+#: routers/financial_summary_router.py:44
+msgid "FINANCIAL_SUMMARY_CREATED"
+msgstr ""
+
+#: routers/financial_summary_router.py:55
+#: routers/financial_summary_router.py:78
+#: routers/financial_summary_router.py:91
+msgid "FINANCIAL_SUMMARY_NOT_FOUND"
+msgstr ""
+
+#: routers/financial_summary_router.py:56
+msgid "FINANCIAL_SUMMARY_FOUND"
+msgstr ""
+
+#: routers/financial_summary_router.py:64
+msgid "FINANCIAL_SUMMARY_LIST"
+msgstr ""
+
+#: routers/financial_summary_router.py:79
+msgid "FINANCIAL_SUMMARY_UPDATED"
+msgstr ""
+
+#: routers/financial_summary_router.py:92
+msgid "FINANCIAL_SUMMARY_DELETED"
+msgstr ""
+
+#: routers/household_member_router.py:44
+msgid "HOUSEHOLD_MEMBER_CREATED"
+msgstr ""
+
+#: routers/household_member_router.py:55 routers/household_member_router.py:78
+#: routers/household_member_router.py:91
+msgid "HOUSEHOLD_MEMBER_NOT_FOUND"
+msgstr ""
+
+#: routers/household_member_router.py:56
+msgid "HOUSEHOLD_MEMBER_FOUND"
+msgstr ""
+
+#: routers/household_member_router.py:64
+msgid "HOUSEHOLD_MEMBER_LIST"
+msgstr ""
+
+#: routers/household_member_router.py:79
+msgid "HOUSEHOLD_MEMBER_UPDATED"
+msgstr ""
+
+#: routers/household_member_router.py:92
+msgid "HOUSEHOLD_MEMBER_DELETED"
+msgstr ""
+
+#: routers/household_router.py:44
+msgid "HOUSEHOLD_CREATED"
+msgstr ""
+
+#: routers/household_router.py:55 routers/household_router.py:78
+#: routers/household_router.py:91
+msgid "HOUSEHOLD_NOT_FOUND"
+msgstr ""
+
+#: routers/household_router.py:56
+msgid "HOUSEHOLD_FOUND"
+msgstr ""
+
+#: routers/household_router.py:64
+msgid "HOUSEHOLD_LIST"
+msgstr ""
+
+#: routers/household_router.py:79
+msgid "HOUSEHOLD_UPDATED"
+msgstr ""
+
+#: routers/household_router.py:92
+msgid "HOUSEHOLD_DELETED"
+msgstr ""
+
+#: routers/income_category_router.py:44
+msgid "INCOME_CATEGORY_CREATED"
+msgstr ""
+
+#: routers/income_category_router.py:55 routers/income_category_router.py:78
+#: routers/income_category_router.py:91
+msgid "INCOME_CATEGORY_NOT_FOUND"
+msgstr ""
+
+#: routers/income_category_router.py:56
+msgid "INCOME_CATEGORY_FOUND"
+msgstr ""
+
+#: routers/income_category_router.py:64
+msgid "INCOME_CATEGORY_LIST"
+msgstr ""
+
+#: routers/income_category_router.py:79
+msgid "INCOME_CATEGORY_UPDATED"
+msgstr ""
+
+#: routers/income_category_router.py:92
+msgid "INCOME_CATEGORY_DELETED"
+msgstr ""
+
+#: routers/income_router.py:44
+msgid "INCOME_CREATED"
+msgstr ""
+
+#: routers/income_router.py:55 routers/income_router.py:78
+#: routers/income_router.py:91
+msgid "INCOME_NOT_FOUND"
+msgstr ""
+
+#: routers/income_router.py:56
+msgid "INCOME_FOUND"
+msgstr ""
+
+#: routers/income_router.py:64
+msgid "INCOME_LIST"
+msgstr ""
+
+#: routers/income_router.py:79
+msgid "INCOME_UPDATED"
+msgstr ""
+
+#: routers/income_router.py:92
+msgid "INCOME_DELETED"
+msgstr ""
+
+#: routers/investment_category_router.py:44
+msgid "INVESTMENT_CATEGORY_CREATED"
+msgstr ""
+
+#: routers/investment_category_router.py:55
+#: routers/investment_category_router.py:78
+#: routers/investment_category_router.py:91
+msgid "INVESTMENT_CATEGORY_NOT_FOUND"
+msgstr ""
+
+#: routers/investment_category_router.py:56
+msgid "INVESTMENT_CATEGORY_FOUND"
+msgstr ""
+
+#: routers/investment_category_router.py:64
+msgid "INVESTMENT_CATEGORY_LIST"
+msgstr ""
+
+#: routers/investment_category_router.py:79
+msgid "INVESTMENT_CATEGORY_UPDATED"
+msgstr ""
+
+#: routers/investment_category_router.py:92
+msgid "INVESTMENT_CATEGORY_DELETED"
+msgstr ""
+
+#: routers/investment_log_router.py:44
+msgid "INVESTMENT_LOG_CREATED"
+msgstr ""
+
+#: routers/investment_log_router.py:55 routers/investment_log_router.py:78
+#: routers/investment_log_router.py:91
+msgid "INVESTMENT_LOG_NOT_FOUND"
+msgstr ""
+
+#: routers/investment_log_router.py:56
+msgid "INVESTMENT_LOG_FOUND"
+msgstr ""
+
+#: routers/investment_log_router.py:64
+msgid "INVESTMENT_LOG_LIST"
+msgstr ""
+
+#: routers/investment_log_router.py:79
+msgid "INVESTMENT_LOG_UPDATED"
+msgstr ""
+
+#: routers/investment_log_router.py:92
+msgid "INVESTMENT_LOG_DELETED"
+msgstr ""
+
+#: routers/investment_router.py:44
+msgid "INVESTMENT_CREATED"
+msgstr ""
+
+#: routers/investment_router.py:55 routers/investment_router.py:78
+#: routers/investment_router.py:91
+msgid "INVESTMENT_NOT_FOUND"
+msgstr ""
+
+#: routers/investment_router.py:56
+msgid "INVESTMENT_FOUND"
+msgstr ""
+
+#: routers/investment_router.py:64
+msgid "INVESTMENT_LIST"
+msgstr ""
+
+#: routers/investment_router.py:79
+msgid "INVESTMENT_UPDATED"
+msgstr ""
+
+#: routers/investment_router.py:92
+msgid "INVESTMENT_DELETED"
+msgstr ""
+
+#: routers/saving_log_router.py:44
+msgid "SAVING_LOG_CREATED"
+msgstr ""
+
+#: routers/saving_log_router.py:55 routers/saving_log_router.py:78
+#: routers/saving_log_router.py:91
+msgid "SAVING_LOG_NOT_FOUND"
+msgstr ""
+
+#: routers/saving_log_router.py:56
+msgid "SAVING_LOG_FOUND"
+msgstr ""
+
+#: routers/saving_log_router.py:64
+msgid "SAVING_LOG_LIST"
+msgstr ""
+
+#: routers/saving_log_router.py:79
+msgid "SAVING_LOG_UPDATED"
+msgstr ""
+
+#: routers/saving_log_router.py:92
+msgid "SAVING_LOG_DELETED"
+msgstr ""
+
+#: routers/saving_router.py:44
+msgid "SAVING_CREATED"
+msgstr ""
+
+#: routers/saving_router.py:55 routers/saving_router.py:78
+#: routers/saving_router.py:91
+msgid "SAVING_NOT_FOUND"
+msgstr ""
+
+#: routers/saving_router.py:56
+msgid "SAVING_FOUND"
+msgstr ""
+
+#: routers/saving_router.py:64
+msgid "SAVING_LIST"
+msgstr ""
+
+#: routers/saving_router.py:79
+msgid "SAVING_UPDATED"
+msgstr ""
+
+#: routers/saving_router.py:92
+msgid "SAVING_DELETED"
+msgstr ""
+
+#: routers/source_router.py:44
+msgid "SOURCE_CREATED"
+msgstr ""
+
+#: routers/source_router.py:55 routers/source_router.py:78
+#: routers/source_router.py:91
+msgid "SOURCE_NOT_FOUND"
+msgstr ""
+
+#: routers/source_router.py:56
+msgid "SOURCE_FOUND"
+msgstr ""
+
+#: routers/source_router.py:64
+msgid "SOURCE_LIST"
+msgstr ""
+
+#: routers/source_router.py:79
+msgid "SOURCE_UPDATED"
+msgstr ""
+
+#: routers/source_router.py:92
+msgid "SOURCE_DELETED"
+msgstr ""
+
+#: routers/user_router.py:54
+msgid "USER_CREATED"
+msgstr ""
+
+#: routers/user_router.py:74 routers/user_router.py:115
+#: routers/user_router.py:134
+msgid "USER_NOT_FOUND"
+msgstr ""
+
+#: routers/user_router.py:74 routers/user_router.py:115
+#: routers/user_router.py:134
+msgid "USER_NOT_FOUND_DATABASE"
+msgstr ""
+
+#: routers/user_router.py:76
+msgid "USER_FOUND"
+msgstr ""
+
+#: routers/user_router.py:92
+msgid "USER_LIST"
+msgstr ""
+
+#: routers/user_router.py:117
+msgid "USER_UPDATED"
+msgstr ""
+
+#: routers/user_router.py:136
+msgid "USER_DELETED"
+msgstr ""
+
+#~ msgid "DNI_EXIST"
+#~ msgstr "El DNI ya está siendo utilizado por otro usuario."
 

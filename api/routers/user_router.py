@@ -73,7 +73,7 @@ def get_user(user_id):
         if not result:
             return Response._error(_("USER_NOT_FOUND"), _("USER_NOT_FOUND_DATABASE"), 404, name)
 
-        return Response._ok_data(result.model_dump(), _("USER_FOUND"), 200, name)
+        return Response._ok_data(result.model_dump(), _("USER_FOUND", id=user_id), 200, name)
     except Exception as e:
         return Response._error(_("DATABASE_ERROR"), str(e), 500, name)
 
