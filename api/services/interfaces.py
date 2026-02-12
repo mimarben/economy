@@ -2,29 +2,27 @@
 from abc import ABC, abstractmethod
 from typing import TypeVar, Generic, List, Optional
 
-T = abstractmethod  # Type for read operations
-U = abstractmethod  # Type for write operations (DTOs)
 
+TRead = TypeVar("TRead")
+TCreate = TypeVar("TCreate")
+TUpdate = TypeVar("TUpdate")
 
-class IReadService(ABC, Generic[T]):
-    """Interface for read-only service operations."""
+class IReadService(ABC, Generic[TRead]):
 
     @abstractmethod
-    def get_by_id(self, id: int) -> Optional[T]:
-        """Retrieve a single item by ID."""
+    def get_by_id(self, id: int) -> Optional[TRead]:
         pass
 
     @abstractmethod
-    def get_all(self) -> List[T]:
-        """Retrieve all items."""
+    def get_all(self) -> List[TRead]:
         pass
 
 
-class ISearchService(ABC, Generic[T]):
+class ISearchService(ABC, Generic[TRead]):
     """Interface for search/filter operations."""
 
     @abstractmethod
-    def search(self, **filters) -> List[T]:
+    def search(self, **filters) -> List[TRead]:
         """Search items by filters."""
         pass
 
@@ -34,20 +32,20 @@ class ISearchService(ABC, Generic[T]):
         pass
 
 
-class ICreateService(ABC, Generic[U, T]):
+class ICreateService(ABC, Generic[TCreate, TRead]):
     """Interface for create operations - clients depend only on what they create."""
 
     @abstractmethod
-    def create(self, data: U) -> T:
+    def create(self, data: TCreate) -> TRead:
         """Create a new item."""
         pass
 
 
-class IUpdateService(ABC, Generic[U, T]):
+class IUpdateService(ABC, Generic[TUpdate, TRead]):
     """Interface for update operations - clients depend only on what they update."""
 
     @abstractmethod
-    def update(self, id: int, data: U) -> Optional[T]:
+    def update(self, id: int, data: TUpdate) -> Optional[TRead]:
         """Update an existing item."""
         pass
 
@@ -62,10 +60,10 @@ class IDeleteService(ABC):
 
 
 class ICRUDService(
-    IReadService[T],
-    ISearchService[T],
-    ICreateService[U, T],
-    IUpdateService[U, T],
+    IReadService[TRead],
+    ISearchService[TRead],
+    ICreateService[TCreate, TRead],
+    IUpdateService[TUpdate, TRead],
     IDeleteService
 ):
     """Complete service interface for full CRUD operations."""

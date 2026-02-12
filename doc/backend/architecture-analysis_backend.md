@@ -190,3 +190,16 @@ Abstrae el acceso a datos detrás de una clase.
 SRP (Single Responsibility Principle)
 
 Cada clase tiene una única razón para cambiar.
+
+
+# 🎯 ¿Qué estamos intentando lograr?
+
+Que el router no conozca SQLAlchemy.
+
+Que el router no conozca reglas de negocio.
+
+Que el service no conozca HTTP.
+
+Que el repository no conozca Pydantic.
+
+Separación de responsabilidades clara.

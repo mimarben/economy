@@ -9,6 +9,7 @@ for babel
 
 ```
 pybabel extract -F babel.cfg -o messages.pot .
+pybabel update -i messages.pot -d i18n
 
 pybabel init -i messages.pot -d translations -l en
 pybabel init -i messages.pot -d translations -l es
@@ -19,6 +20,11 @@ pybabel init -i messages.pot -d /home/miguel/src/economy/api/i18n -l es
 
 # Compile to view the text modifications
 pybabel compile -d /home/miguel/src/economy/api/i18n
+
+
+
+
+
 
 ```
 
@@ -65,3 +71,14 @@ Con Docker
 docker build -t flask-dev .
 docker run --rm -p 5001:5001 --env-file .env flask-dev
 
+
+# Estructurra.
+
+- Definir contratos formales
+
+- Aplicar Interface Segregation Principle (ISP)
+
+- Aplicar Dependency Inversion Principle (DIP)
+
+
+# Router  →  Service  →  Repository  →  Database

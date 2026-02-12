@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from pydantic import ValidationError
 from flask_babel import _
 
-from schemas.investment_category_schema import InvestmentsCategoryCreate, InvestmentsCategoryUpdate
+from schemas.investment_category_schema import InvestmentCategoryCreate, InvestmentCategoryUpdate
 from services.investment_category_service import InvestmentsCategoryService
 from services.interfaces import IReadService, ICreateService, IUpdateService, IDeleteService
 from db.database import get_db
@@ -35,7 +35,7 @@ def _get_delete_service(db: Session) -> IDeleteService:
 def create():
     db: Session = next(get_db())
     try:
-        data = InvestmentsCategoryCreate.model_validate(request.json)
+        data = InvestmentCategoryCreate.model_validate(request.json)
     except ValidationError as e:
         return Response._error(_("VALIDATION_ERROR"), e.errors(), 400, name)
     try:
@@ -68,7 +68,7 @@ def list_all():
 def update(id):
     db: Session = next(get_db())
     try:
-        data = InvestmentsCategoryUpdate.model_validate(request.json)
+        data = InvestmentCategoryUpdate.model_validate(request.json)
     except ValidationError as e:
         return Response._error(_("VALIDATION_ERROR"), e.errors(), 400, name)
     try:

@@ -112,7 +112,7 @@ def update_user(user_id):
         result = service.update(user_id, user_data)
 
         if not result:
-            return Response._error(_("USER_NOT_FOUND"), _("USER_NOT_FOUND_DATABASE"), 404, name)
+            return Response._error(_("USER_NOT_FOUND", id=user_id), _("USER_NOT_FOUND_DATABASE", id=user_id), 404, name)
 
         return Response._ok_data(result.model_dump(), _("USER_UPDATED"), 200, name)
     except ValueError as e:
@@ -136,18 +136,3 @@ def delete_user(user_id):
         return Response._ok_message(_("USER_DELETED"), 204, name)
     except Exception as e:
         return Response._error(_("DATABASE_ERROR"), str(e), 500, name)
-
-
-@router.get("/users")
-def list_users():
-    db = next(get_db())
-    try:
-        users = db.query(User).all()
-        # Convertir modelos de SQLAlchemy a Pydantic UserRead y serializar
-        user_data = [UserRead.model_validate(u).model_dump() for u in users]
-        if not user_data:
-            return Response._error(_("USER_NOT_FOUND"), _("NONE"), 404, name)
-        return Response._ok_data(user_data, _("USERS_FOUND"), 200, name)
-    except Exception as e:
-        return Response._error(_("UNKNOWN_ERROR"), e.error(), 500, name)
-
