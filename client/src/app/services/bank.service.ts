@@ -1,33 +1,27 @@
+/**
+ * Bank Service - Extends BaseCrudService following ISP pattern
+ * Provides CRUD operations for Bank entities
+ */
+
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, map } from 'rxjs';
-import { environment } from '../../environments/environment';
-import { BankBase as Bank, SelectBankOption  } from '../models/BankBase';
-import { ApiResponse } from '../models/apiResponse';
+import { HttpClient } from '@angular/common/http';
+import { BaseCrudService } from './base-crud.service';
+import { BankBase as Bank } from '../models/BankBase';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-
-export class BankService {
-  private apiUrl = environment.apiUrl;
-  constructor(private http: HttpClient) {
+export class BankService extends BaseCrudService<Bank> {
+  constructor(protected override http: HttpClient) {
+    super(http, 'banks');
   }
 
-  private getHeaders(): HttpHeaders {
-    return new HttpHeaders(environment.headers);
-  }
-getBanks(): Observable<ApiResponse<Bank[]>> {
-  return this.http.get<ApiResponse<Bank[]>>(`${this.apiUrl}/banks`);
-}
-getBankById(id: number): Observable<ApiResponse<Bank>> {
-  return this.http.get<ApiResponse<Bank>>(`${this.apiUrl}/banks/${id}`);
-}
-createBank(user: Bank): Observable<ApiResponse<Bank>> {
-  return this.http.post<ApiResponse<Bank>>(`${this.apiUrl}/banks`, user, { headers: this.getHeaders() } );
-}
-updateBank(id: number, user: Bank): Observable<ApiResponse<Bank>> {
-  return this.http.patch<ApiResponse<Bank>>(`${this.apiUrl}/banks/${id}`, user, { headers: this.getHeaders() });
-}
-
+  /**
+   * All CRUD operations inherited from BaseCrudService:
+   * - getAll()
+   * - getById(id)
+   * - create(item)
+   * - update(id, item)
+   * - delete(id)
+   */
 }

@@ -1,3 +1,11 @@
+/**
+ * Investment Category Service - Extends BaseCrudService following ISP pattern
+ * Provides CRUD operations for InvestmentCategory entities
+ *
+ * Implements ICrudService<InvestmentCategory> through BaseCrudService inheritance
+ * @see BaseCrudService for available operations
+ */
+
 import { Injectable } from '@angular/core';
 import { BaseCrudService } from './base-crud.service';
 import { HttpClient } from '@angular/common/http';
@@ -7,6 +15,10 @@ import { InvestmentCategoryBase as InvestmentCategory } from '../models/Investme
   providedIn: 'root'
 })
 export class InvestmentCategoryService extends BaseCrudService<InvestmentCategory> {
+  /**
+   * Initialize the service with HTTP client and API endpoint
+   * @param http Angular HttpClient for making HTTP requests
+   */
   constructor(protected override http: HttpClient) {
     super(http, 'investments_categories');
   }
