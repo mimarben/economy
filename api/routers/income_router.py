@@ -1,72 +1,94 @@
-from flask import Blueprint, request, jsonify, abort
+"""Router for Income endpoints following ISP."""
+from flask import Blueprint, request
 from sqlalchemy.orm import Session
 from pydantic import ValidationError
 from flask_babel import _
 
-from models.models import Income
-from schemas.income_schema import IncomeCreate, IncomeRead, IncomeUpdate
+from schemas.income_schema import IncomeCreate, IncomeUpdate
+from services.income_service import IncomeService
+from services.interfaces import IReadService, ICreateService, IUpdateService, IDeleteService
 from db.database import get_db
 from services.response_service import Response
 
 
-router = Blueprint('incomes', __name__)
-name="incomes"
+router = Blueprint("incomes", __name__)
+name = "incomes"
+
+
+def _get_create_service(db: Session) -> ICreateService:
+    return IncomeService(db)
+
+
+def _get_read_service(db: Session) -> IReadService:
+    return IncomeService(db)
+
+
+def _get_update_service(db: Session) -> IUpdateService:
+    return IncomeService(db)
+
+
+def _get_delete_service(db: Session) -> IDeleteService:
+    return IncomeService(db)
+
+
 @router.post("/incomes")
-def create_income():
+def create():
     db: Session = next(get_db())
     try:
-        income_data = IncomeCreate.model_validate(request.json, context={"db": db})
+        data = IncomeCreate.model_validate(request.json)
     except ValidationError as e:
-        return Response._error(_("FK_ERROR_ADD_DATA"),e.errors(), 400, name)
-    new_income = Income(**income_data.model_dump())
-    db.add(new_income)
-    db.commit()
-    db.refresh(new_income)
-    return Response._ok_data(IncomeRead.model_validate(new_income).model_dump(),_("INCOME_CREATED") ,201, name)
+        return Response._error(_("VALIDATION_ERROR"), e.errors(), 400, name)
+    try:
+        service: ICreateService = _get_create_service(db)
+        result = service.create(data)
+        return Response._ok_data(result.model_dump(), _("INCOME_CREATED"), 201, name)
+    except Exception as e:
+        return Response._error(_("DATABASE_ERROR"), str(e), 500, name)
 
-@router.get("/incomes/<int:income_id>")
-def get_income(income_id):
+
+@router.get("/incomes/<int:id>")
+def get_by_id(id):
     db: Session = next(get_db())
-    income = db.query(Income).filter(Income.id == income_id).first()
-    if not income:
+    service: IReadService = _get_read_service(db)
+    result = service.get_by_id(id)
+    if not result:
         return Response._error(_("INCOME_NOT_FOUND"), _("NONE"), 404, name)
-    return Response._ok_data(IncomeRead.model_validate(income).model_dump(),_("INCOME_FOUND"), 200, name)
+    return Response._ok_data(result.model_dump(), _("INCOME_FOUND"), 200, name)
 
-@router.patch("/incomes/<int:income_id>")
-def update_income(income_id):
-    db: Session = next(get_db())
-    income = db.query(Income).filter(Income.id == income_id).first()
-    if not income:
-        return Response._error(_("INCOME_NOT_FOUND"),_("NONE"), 404, name)
-
-    try:
-        income_data = IncomeUpdate(**request.json)
-    except ValidationError as e:
-        return Response._error(_("VALIDATION_ERROR"), e.errors(),400, name)
-
-    validated_data = income_data.model_dump(exclude_unset=True)
-    for key, value in validated_data.items():
-        setattr(income, key, value)
-
-    db.commit()
-    db.refresh(income)
-    return Response._ok_data(IncomeRead.model_validate(income).model_dump(),_("INCOME_UPDATED"), 200, name)
-
-@router.delete("/incomes/<int:income_id>")
-def delete_income(income_id):
-    db: Session = next(get_db())
-    income = db.query(Income).filter(Income.id == income_id).first()
-    if not income:
-        return Response._error(("INCOME_NOT_FOUND"),_("NONE"), 404, name)
-    db.delete(income)
-    db.commit()
-    return Response._error(_("INCOME_DELETED"),_("NONE"), 204, name)
 
 @router.get("/incomes")
-def list_incomes():
+def list_all():
     db: Session = next(get_db())
-    incomes = db.query(Income).all()
-    income_data = [IncomeRead.model_validate(u).model_dump() for u in incomes]
-    if not income_data:
-        return Response._error(_("INCOME_NOT_FOUND"),_("NONE"), 404, name)
-    return Response._ok_data(income_data, _("INCOME_FOUND"), 200, name)
+    service: IReadService = _get_read_service(db)
+    results = service.get_all()
+    return Response._ok_data([r.model_dump() for r in results], _("INCOME_LIST"), 200, name)
+
+
+@router.patch("/incomes/<int:id>")
+def update(id):
+    db: Session = next(get_db())
+    try:
+        data = IncomeUpdate.model_validate(request.json)
+    except ValidationError as e:
+        return Response._error(_("VALIDATION_ERROR"), e.errors(), 400, name)
+    try:
+        service: IUpdateService = _get_update_service(db)
+        result = service.update(id, data)
+        if not result:
+            return Response._error(_("INCOME_NOT_FOUND"), _("NONE"), 404, name)
+        return Response._ok_data(result.model_dump(), _("INCOME_UPDATED"), 200, name)
+    except Exception as e:
+        return Response._error(_("DATABASE_ERROR"), str(e), 500, name)
+
+
+@router.delete("/incomes/<int:id>")
+def delete(id):
+    db: Session = next(get_db())
+    try:
+        service: IDeleteService = _get_delete_service(db)
+        success = service.delete(id)
+        if not success:
+            return Response._error(_("INCOME_NOT_FOUND"), _("NONE"), 404, name)
+        return Response._ok_message(_("INCOME_DELETED"), 204, name)
+    except Exception as e:
+        return Response._error(_("DATABASE_ERROR"), str(e), 500, name)

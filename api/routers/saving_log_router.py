@@ -1,69 +1,94 @@
-from flask import Blueprint, request, jsonify, abort
+"""Router for SavingLog endpoints following ISP."""
+from flask import Blueprint, request
 from sqlalchemy.orm import Session
 from pydantic import ValidationError
 from flask_babel import _
+
+from schemas.saving_log_schema import SavingLogCreate, SavingLogUpdate
+from services.saving_log_service import SavingLogService
+from services.interfaces import IReadService, ICreateService, IUpdateService, IDeleteService
+from db.database import get_db
 from services.response_service import Response
 
-from models.models import SavingLog
-from schemas.saving_log_schema import SavingLogCreate, SavingLogRead, SavingLogUpdate
-from db.database import get_db
 
-router = Blueprint('savings_logs', __name__)
-name= "savings_logs"
-@router.post("/savings_logs")
-def create_new_investment():
+router = Blueprint("saving_logs", __name__)
+name = "saving_logs"
+
+
+def _get_create_service(db: Session) -> ICreateService:
+    return SavingLogService(db)
+
+
+def _get_read_service(db: Session) -> IReadService:
+    return SavingLogService(db)
+
+
+def _get_update_service(db: Session) -> IUpdateService:
+    return SavingLogService(db)
+
+
+def _get_delete_service(db: Session) -> IDeleteService:
+    return SavingLogService(db)
+
+
+@router.post("/saving_logs")
+def create():
     db: Session = next(get_db())
     try:
-        new_investment_data = SavingLogCreate.model_validate(request.json, context={"db": db})
+        data = SavingLogCreate.model_validate(request.json)
     except ValidationError as e:
-        return Response._error(_("FK_ERROR_ADD_DATA"),e.errors(), 400, name)
-    new_investment_log = SavingLog(**new_investment_data.model_dump())
-    db.add(new_investment_log)
-    db.commit()
-    db.refresh(new_investment_log)
-    return Response._ok_data(SavingLogRead.model_validate(new_investment_log).model_dump(),_("SAVING_LOG_CREATED"),201, name)
-
-@router.get("/savings_logs/<int:saving_log_id>")
-def get_new_investment(saving_log_id):
-    db: Session = next(get_db())
-    saving = db.query(SavingLog).filter(SavingLog.id == saving_log_id).first()
-    if not saving:
-        return Response._error(_("SAVING_LOG_NOT_FOUND"),_("NONE"), 404, name)
-    return Response._ok_data(SavingLogRead.model_validate(saving).model_dump(),_("SAVING_LOG_FOUND"),200, name)
-
-@router.patch("/savings_logs/<int:saving_log_id>")
-def update_new_investment(saving_log_id):
-    db: Session = next(get_db())
-    saving = db.query(SavingLog).filter(SavingLog.id == saving_log_id).first()
-    if not saving:
-        return Response._error(_("SAVING_LOG_NOT_FOUND"),_("NONE"), 404, name)
+        return Response._error(_("VALIDATION_ERROR"), e.errors(), 400, name)
     try:
-        new_investment_data = SavingLogUpdate(**request.json)
+        service: ICreateService = _get_create_service(db)
+        result = service.create(data)
+        return Response._ok_data(result.model_dump(), _("SAVING_LOG_CREATED"), 201, name)
+    except Exception as e:
+        return Response._error(_("DATABASE_ERROR"), str(e), 500, name)
+
+
+@router.get("/saving_logs/<int:id>")
+def get_by_id(id):
+    db: Session = next(get_db())
+    service: IReadService = _get_read_service(db)
+    result = service.get_by_id(id)
+    if not result:
+        return Response._error(_("SAVING_LOG_NOT_FOUND"), _("NONE"), 404, name)
+    return Response._ok_data(result.model_dump(), _("SAVING_LOG_FOUND"), 200, name)
+
+
+@router.get("/saving_logs")
+def list_all():
+    db: Session = next(get_db())
+    service: IReadService = _get_read_service(db)
+    results = service.get_all()
+    return Response._ok_data([r.model_dump() for r in results], _("SAVING_LOG_LIST"), 200, name)
+
+
+@router.patch("/saving_logs/<int:id>")
+def update(id):
+    db: Session = next(get_db())
+    try:
+        data = SavingLogUpdate.model_validate(request.json)
     except ValidationError as e:
-        return Response._error(_("VALIDATION_ERROR"), e.errors(),400, name)
+        return Response._error(_("VALIDATION_ERROR"), e.errors(), 400, name)
+    try:
+        service: IUpdateService = _get_update_service(db)
+        result = service.update(id, data)
+        if not result:
+            return Response._error(_("SAVING_LOG_NOT_FOUND"), _("NONE"), 404, name)
+        return Response._ok_data(result.model_dump(), _("SAVING_LOG_UPDATED"), 200, name)
+    except Exception as e:
+        return Response._error(_("DATABASE_ERROR"), str(e), 500, name)
 
-    validated_data = new_investment_data.model_dump(exclude_unset=True)
-    for key, value in validated_data.items():
-        setattr(saving, key, value)
-    db.commit()
-    db.refresh(saving)
-    return Response._ok_data(SavingLogRead.model_validate(saving).model_dump(),_("SAVING_LOG_UPDATED"),201, name)
 
-@router.delete("/savings_logs/<int:saving_log_id>")
-def delete_new_investment(saving_log_id):
+@router.delete("/saving_logs/<int:id>")
+def delete(id):
     db: Session = next(get_db())
-    saving = db.query(SavingLog).filter(SavingLog.id == saving_log_id).first()
-    if not saving:
-        return Response._error(("SAVING_LOG_NOT_FOUND"),_("NONE"), 404, name)
-    db.delete(saving)
-    db.commit()
-    return Response._error(_("SAVING_LOG_DELETED"),_("NONE"), 204, name)
-
-@router.get("/savings_logs")
-def list_savings_logs():
-    db: Session = next(get_db())
-    savings_logs = db.query(SavingLog).all()
-    new_investment_data = [SavingLogRead.model_validate(u).model_dump() for u in savings_logs]
-    if not new_investment_data:
-        return Response._error(_("SAVING_LOGS_NOT_FOUND"),_("NONE"), 404,name)
-    return Response._ok_data(new_investment_data,_("SAVING_LOGS_FOUND"), 202, name)
+    try:
+        service: IDeleteService = _get_delete_service(db)
+        success = service.delete(id)
+        if not success:
+            return Response._error(_("SAVING_LOG_NOT_FOUND"), _("NONE"), 404, name)
+        return Response._ok_message(_("SAVING_LOG_DELETED"), 204, name)
+    except Exception as e:
+        return Response._error(_("DATABASE_ERROR"), str(e), 500, name)

@@ -1,67 +1,94 @@
-from flask import Blueprint, request, jsonify, abort
+"""Router for InvestmentsCategory endpoints following ISP."""
+from flask import Blueprint, request
 from sqlalchemy.orm import Session
 from pydantic import ValidationError
-from flask_babel import Babel, _
+from flask_babel import _
 
-
-from models.models import InvestmentsCategory
+from schemas.investment_category_schema import InvestmentsCategoryCreate, InvestmentsCategoryUpdate
+from services.investment_category_service import InvestmentsCategoryService
+from services.interfaces import IReadService, ICreateService, IUpdateService, IDeleteService
+from db.database import get_db
 from services.response_service import Response
 
-from schemas.investment_category_schema import InvestmentCategoryRead, InvestmentCategoryUpdate, InvestmentCategoryCreate
-from db.database import get_db
+
+router = Blueprint("investment_categories", __name__)
+name = "investment_categories"
 
 
+def _get_create_service(db: Session) -> ICreateService:
+    return InvestmentsCategoryService(db)
 
-router = Blueprint("investments_categories", __name__)
-name="investments_categories"
-@router.post("/investments_categories")
-def create_investment_category():
-    db = next(get_db())
+
+def _get_read_service(db: Session) -> IReadService:
+    return InvestmentsCategoryService(db)
+
+
+def _get_update_service(db: Session) -> IUpdateService:
+    return InvestmentsCategoryService(db)
+
+
+def _get_delete_service(db: Session) -> IDeleteService:
+    return InvestmentsCategoryService(db)
+
+
+@router.post("/investment_categories")
+def create():
+    db: Session = next(get_db())
     try:
-        investment_category_data = InvestmentCategoryCreate(**request.json)
-    except ValidationError as e:
-        return Response._error(_("INVALID_DATA"),e.errors(), 400, name)
-    new_investment_category = InvestmentsCategory(**investment_category_data.model_dump())
-    db.add(new_investment_category)
-    db.commit()
-    db.refresh(new_investment_category)
-    return Response._ok_data(InvestmentCategoryRead.model_validate(new_investment_category).model_dump(),_("INVESTMENT_CATEGORY_CREATED") ,201, name)
-
-@router.get("/investments_categories/<int:investment_category_id>")
-def get_investment_category(investment_category_id):
-    db = next(get_db())
-    investment_category = db.query(InvestmentsCategory).filter(InvestmentsCategory.id == investment_category_id).first()
-    if not investment_category:
-        return Response._error(_("INVESTMENT_CATEGORY_NOT_FOUND"), _("NONE"), 404, name)
-    return Response._ok_data(InvestmentCategoryRead.model_validate(investment_category).model_dump(), _("INVESTMENT_CATEGORY_FOUND"), 200, name)
-
-@router.patch("/investments_categories/<int:investment_category_id>")
-def update_investment_category(investment_category_id):
-    db = next(get_db())
-    investment_category = db.query(InvestmentsCategory).filter(InvestmentsCategory.id == investment_category_id).first()
-    if not investment_category:
-        return Response._error(_("INVESTMENT_CATEGORY_NOT_FOUND"), _("NONE"), 404, name)
-
-    try:
-        investment_category_data = InvestmentCategoryUpdate(**request.json)
+        data = InvestmentsCategoryCreate.model_validate(request.json)
     except ValidationError as e:
         return Response._error(_("VALIDATION_ERROR"), e.errors(), 400, name)
-        
-    validated_data = investment_category_data.model_dump(exclude_unset=True)
-    for key, value in validated_data.items():
-        setattr(investment_category, key, value)
+    try:
+        service: ICreateService = _get_create_service(db)
+        result = service.create(data)
+        return Response._ok_data(result.model_dump(), _("INVESTMENT_CATEGORY_CREATED"), 201, name)
+    except Exception as e:
+        return Response._error(_("DATABASE_ERROR"), str(e), 500, name)
 
 
-    db.commit()
-    db.refresh(investment_category)
-    return Response._ok_data(InvestmentCategoryRead.model_validate(investment_category).model_dump(), _("INVESTMENT_CATEGORY_UPDATED"), 200, name)
-
-@router.get("/investments_categories")
-def list_investments_categories():
-    db = next(get_db())
-    investments_categories = db.query(InvestmentsCategory).all()
-    # Convert SQLAlchemy models to Pydantic UserRead and serialize
-    investment_category_data = [InvestmentCategoryRead.model_validate(u).model_dump() for u in investments_categories]
-    if not investment_category_data:
+@router.get("/investment_categories/<int:id>")
+def get_by_id(id):
+    db: Session = next(get_db())
+    service: IReadService = _get_read_service(db)
+    result = service.get_by_id(id)
+    if not result:
         return Response._error(_("INVESTMENT_CATEGORY_NOT_FOUND"), _("NONE"), 404, name)
-    return Response._ok_data(investment_category_data, _("INVESTMENT_CATEGORY_FOUND"), 200, name)
+    return Response._ok_data(result.model_dump(), _("INVESTMENT_CATEGORY_FOUND"), 200, name)
+
+
+@router.get("/investment_categories")
+def list_all():
+    db: Session = next(get_db())
+    service: IReadService = _get_read_service(db)
+    results = service.get_all()
+    return Response._ok_data([r.model_dump() for r in results], _("INVESTMENT_CATEGORY_LIST"), 200, name)
+
+
+@router.patch("/investment_categories/<int:id>")
+def update(id):
+    db: Session = next(get_db())
+    try:
+        data = InvestmentsCategoryUpdate.model_validate(request.json)
+    except ValidationError as e:
+        return Response._error(_("VALIDATION_ERROR"), e.errors(), 400, name)
+    try:
+        service: IUpdateService = _get_update_service(db)
+        result = service.update(id, data)
+        if not result:
+            return Response._error(_("INVESTMENT_CATEGORY_NOT_FOUND"), _("NONE"), 404, name)
+        return Response._ok_data(result.model_dump(), _("INVESTMENT_CATEGORY_UPDATED"), 200, name)
+    except Exception as e:
+        return Response._error(_("DATABASE_ERROR"), str(e), 500, name)
+
+
+@router.delete("/investment_categories/<int:id>")
+def delete(id):
+    db: Session = next(get_db())
+    try:
+        service: IDeleteService = _get_delete_service(db)
+        success = service.delete(id)
+        if not success:
+            return Response._error(_("INVESTMENT_CATEGORY_NOT_FOUND"), _("NONE"), 404, name)
+        return Response._ok_message(_("INVESTMENT_CATEGORY_DELETED"), 204, name)
+    except Exception as e:
+        return Response._error(_("DATABASE_ERROR"), str(e), 500, name)

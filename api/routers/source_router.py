@@ -1,65 +1,94 @@
-from flask import Blueprint, request, jsonify, abort
+"""Router for Source endpoints following ISP."""
+from flask import Blueprint, request
 from sqlalchemy.orm import Session
 from pydantic import ValidationError
-from flask_babel import Babel, _
+from flask_babel import _
 
-
-from models.models import Source
-
-from schemas.source_schema import SourceCreate, SourceUpdate, SourceRead
+from schemas.source_schema import SourceCreate, SourceUpdate
+from services.source_service import SourceService
+from services.interfaces import IReadService, ICreateService, IUpdateService, IDeleteService
 from db.database import get_db
 from services.response_service import Response
 
 
 router = Blueprint("sources", __name__)
-name="source_router"
+name = "sources"
+
+
+def _get_create_service(db: Session) -> ICreateService:
+    return SourceService(db)
+
+
+def _get_read_service(db: Session) -> IReadService:
+    return SourceService(db)
+
+
+def _get_update_service(db: Session) -> IUpdateService:
+    return SourceService(db)
+
+
+def _get_delete_service(db: Session) -> IDeleteService:
+    return SourceService(db)
+
+
 @router.post("/sources")
-def create_source():
-    db = next(get_db())
+def create():
+    db: Session = next(get_db())
     try:
-        source_data = SourceCreate(**request.json)
+        data = SourceCreate.model_validate(request.json)
     except ValidationError as e:
-        return Response._error(_("INVALID_DATA"),e.errors(), 400, name)
-    new_source = Source(**source_data.model_dump())
-    db.add(new_source)
-    db.commit()
-    db.refresh(new_source)
-    return Response._ok_data(SourceRead.model_validate(new_source).model_dump(),_("SOURCE_CREATED"), 201, name)
-
-@router.get("/sources/<int:source_id>")
-def get_source(source_id):
-    db = next(get_db())
-    source = db.query(Source).filter(Source.id == source_id).first()
-    if not source:
-        return Response._error(_("SOURCE_NOT_FOUND"),_("NONE"), 404, name)
-    return Response._ok_data(SourceRead.model_validate(source).model_dump())
-
-@router.patch("/sources/<int:source_id>")
-def update_source(source_id):
-    db = next(get_db())
-    source = db.query(Source).filter(Source.id == source_id).first()
-    if not source:
-        return Response._error(_("SOURCE_NOT_FOUND"),_("NONE"), 404, name)
-
+        return Response._error(_("VALIDATION_ERROR"), e.errors(), 400, name)
     try:
-        source_data = SourceUpdate(**request.json)
-    except ValidationError as e:
-        return Response._error(_("VALIDATION_ERROR"),e.errors(), 400, name)        
-    validated_data = source_data.model_dump(exclude_unset=True)
-    for key, value in validated_data.items():
-        setattr(source, key, value)
+        service: ICreateService = _get_create_service(db)
+        result = service.create(data)
+        return Response._ok_data(result.model_dump(), _("SOURCE_CREATED"), 201, name)
+    except Exception as e:
+        return Response._error(_("DATABASE_ERROR"), str(e), 500, name)
 
 
-    db.commit()
-    db.refresh(source)
-    return Response._ok_data(SourceRead.model_validate(source).model_dump(),_("SOURCE_UPDATED"), 200, name)
+@router.get("/sources/<int:id>")
+def get_by_id(id):
+    db: Session = next(get_db())
+    service: IReadService = _get_read_service(db)
+    result = service.get_by_id(id)
+    if not result:
+        return Response._error(_("SOURCE_NOT_FOUND"), _("NONE"), 404, name)
+    return Response._ok_data(result.model_dump(), _("SOURCE_FOUND"), 200, name)
+
 
 @router.get("/sources")
-def list_sources():
-    db = next(get_db())
-    sources = db.query(Source).all()
-    # Convert SQLAlchemy models to Pydantic UserRead and serialize
-    source_data = [SourceRead.model_validate(u).model_dump() for u in sources]
-    if not source_data:
-        return Response._error(_("SOURCE_NOT_FOUND"),_("NONE"), 404, name)
-    return Response._ok_data(source_data,_("SOURCES_FOUND"), 200, name = name)
+def list_all():
+    db: Session = next(get_db())
+    service: IReadService = _get_read_service(db)
+    results = service.get_all()
+    return Response._ok_data([r.model_dump() for r in results], _("SOURCE_LIST"), 200, name)
+
+
+@router.patch("/sources/<int:id>")
+def update(id):
+    db: Session = next(get_db())
+    try:
+        data = SourceUpdate.model_validate(request.json)
+    except ValidationError as e:
+        return Response._error(_("VALIDATION_ERROR"), e.errors(), 400, name)
+    try:
+        service: IUpdateService = _get_update_service(db)
+        result = service.update(id, data)
+        if not result:
+            return Response._error(_("SOURCE_NOT_FOUND"), _("NONE"), 404, name)
+        return Response._ok_data(result.model_dump(), _("SOURCE_UPDATED"), 200, name)
+    except Exception as e:
+        return Response._error(_("DATABASE_ERROR"), str(e), 500, name)
+
+
+@router.delete("/sources/<int:id>")
+def delete(id):
+    db: Session = next(get_db())
+    try:
+        service: IDeleteService = _get_delete_service(db)
+        success = service.delete(id)
+        if not success:
+            return Response._error(_("SOURCE_NOT_FOUND"), _("NONE"), 404, name)
+        return Response._ok_message(_("SOURCE_DELETED"), 204, name)
+    except Exception as e:
+        return Response._error(_("DATABASE_ERROR"), str(e), 500, name)
