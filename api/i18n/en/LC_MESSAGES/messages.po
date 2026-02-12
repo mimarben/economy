@@ -131,7 +131,7 @@ msgstr ""
 
 #: routers/bank_router.py:52
 msgid "BANK_CREATED"
-msgstr ""
+msgstr "Bank Created Successfully"
 
 #: routers/bank_router.py:69 routers/bank_router.py:110
 #: routers/bank_router.py:127
@@ -140,15 +140,15 @@ msgstr ""
 
 #: routers/bank_router.py:71
 msgid "BANK_FOUND"
-msgstr ""
+msgstr "Bank not Found"
 
 #: routers/bank_router.py:87
 msgid "BANK_LIST"
-msgstr ""
+msgstr "Bank list loaded"
 
 #: routers/bank_router.py:112
 msgid "BANK_UPDATED"
-msgstr ""
+msgstr "Bank Updated Successfully"
 
 #: routers/bank_router.py:129
 msgid "BANK_DELETED"
