@@ -1,165 +1,52 @@
 <nav class="side-menu" [class.hidden]="isHidden">
   <mat-list>
-
-    <a mat-list-item
+    <a
+      *ngFor="let link of topLinks"
+      mat-list-item
       class="menu-item"
-      routerLink="/"
+      [routerLink]="link.route"
       routerLinkActive="active-link"
-      [routerLinkActiveOptions]="{ exact: true }"> <mat-icon matListItemIcon>home</mat-icon>
-      <span matListItemTitle>Home</span>
+      [routerLinkActiveOptions]="{ exact: !!link.exact }">
+      <mat-icon matListItemIcon>{{ link.icon }}</mat-icon>
+      <span matListItemTitle>{{ link.label }}</span>
     </a>
 
-    <a mat-list-item
+    <mat-expansion-panel
+      *ngFor="let section of sections"
+      hideToggle
+      class="menu-expansion-panel"
+      #panel>
+      <mat-expansion-panel-header class="menu-item">
+        <mat-panel-title class="expansion-title">
+          <mat-icon class="menu-icon" *ngIf="section.icon">{{ section.icon }}</mat-icon>
+          <mat-icon class="menu-icon" *ngIf="section.symbol">
+            <span class="material-symbols-outlined">{{ section.symbol }}</span>
+          </mat-icon>
+          <span class="menu-text">{{ section.title }}</span>
+          <mat-icon class="chevron-icon">{{ panel.expanded ? 'expand_less' : 'expand_more' }}</mat-icon>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <mat-nav-list dense class="submenu">
+        <a
+          *ngFor="let link of section.links"
+          mat-list-item
+          class="submenu-item"
+          [routerLink]="link.route"
+          routerLinkActive="active-link">
+          <span>{{ link.label }}</span>
+        </a>
+      </mat-nav-list>
+    </mat-expansion-panel>
+
+    <a
+      *ngFor="let link of bottomLinks"
+      mat-list-item
       class="menu-item"
-      routerLink="/users"
-      routerLinkActive="active-link"> <mat-icon matListItemIcon>person</mat-icon>
-      <span matListItemTitle>Users</span>
-    </a>
-
-    <a mat-list-item
-      class="menu-item"
-      routerLink="/excel_import"
-      routerLinkActive="active-link"> <mat-icon matListItemIcon>upload</mat-icon>
-      <span matListItemTitle>Import</span>
-    </a>
-    <!-- Expenses -->
-    <mat-expansion-panel hideToggle class="menu-expansion-panel" #expensesPanel>
-      <mat-expansion-panel-header class="menu-item">
-        <mat-panel-title class="expansion-title">
-          <mat-icon class="menu-icon">credit_card</mat-icon>
-          <span class="menu-text">Expenses</span>
-          <mat-icon class="chevron-icon">{{ expensesPanel.expanded ? 'expand_less' : 'expand_more' }}</mat-icon>
-        </mat-panel-title>
-      </mat-expansion-panel-header>
-      <mat-nav-list dense class="submenu">
-        <a mat-list-item class="submenu-item" routerLink="/expenses" routerLinkActive="active-link">
-          <span>Expenses</span>
-        </a>
-        <a mat-list-item class="submenu-item" routerLink="/expenses_categories" routerLinkActive="active-link">
-          <span>Expenses Category</span>
-        </a>
-        <a mat-list-item class="submenu-item" routerLink="/sources" routerLinkActive="active-link">
-          <span>Sources</span>
-        </a>
-      </mat-nav-list>
-    </mat-expansion-panel>
-
-    <!-- Incomes -->
-    <mat-expansion-panel hideToggle class="menu-expansion-panel" #incomesPanel>
-      <mat-expansion-panel-header class="menu-item">
-        <mat-panel-title class="expansion-title">
-          <mat-icon class="menu-icon">attach_money</mat-icon>
-          <span class="menu-text">Incomes</span>
-          <mat-icon class="chevron-icon">{{ incomesPanel.expanded ? 'expand_less' : 'expand_more' }}</mat-icon>
-        </mat-panel-title>
-      </mat-expansion-panel-header>
-      <mat-nav-list dense class="submenu">
-        <a mat-list-item class="submenu-item" routerLink="/incomes" routerLinkActive="active-link">
-          <span>Incomes</span>
-        </a>
-        <a mat-list-item class="submenu-item" routerLink="/incomes_categories" routerLinkActive="active-link">
-          <span>Incomes Category</span>
-        </a>
-        <a mat-list-item class="submenu-item" routerLink="/sources" routerLinkActive="active-link">
-          <span>Source</span>
-        </a>
-      </mat-nav-list>
-    </mat-expansion-panel>
-
-    <!-- Investments -->
-    <mat-expansion-panel hideToggle class="menu-expansion-panel" #investmentsPanel>
-      <mat-expansion-panel-header class="menu-item">
-        <mat-panel-title class="expansion-title">
-          <mat-icon class="menu-icon">
-            <span class="material-symbols-outlined">finance_mode</span>
-          </mat-icon>
-          <span class="menu-text">Investments</span>
-          <mat-icon class="chevron-icon">{{ investmentsPanel.expanded ? 'expand_less' : 'expand_more' }}</mat-icon>
-        </mat-panel-title>
-      </mat-expansion-panel-header>
-      <mat-nav-list dense class="submenu">
-        <a mat-list-item class="submenu-item" routerLink="/investments" routerLinkActive="active-link">
-          <span>Investments</span>
-        </a>
-        <a mat-list-item class="submenu-item" routerLink="/investments_categories" routerLinkActive="active-link">
-          <span>Investments Category</span>
-        </a>
-        <a mat-list-item class="submenu-item" routerLink="/investments_log" routerLinkActive="active-link">
-          <span>Investments Log</span>
-        </a>
-      </mat-nav-list>
-    </mat-expansion-panel>
-
-    <!-- Savings -->
-    <mat-expansion-panel hideToggle class="menu-expansion-panel" #savingsPanel>
-      <mat-expansion-panel-header class="menu-item">
-        <mat-panel-title class="expansion-title">
-          <mat-icon class="menu-icon">
-            <span class="material-symbols-outlined">savings</span>
-          </mat-icon>
-          <span class="menu-text">Savings</span>
-          <mat-icon class="chevron-icon">{{ savingsPanel.expanded ? 'expand_less' : 'expand_more' }}</mat-icon>
-        </mat-panel-title>
-      </mat-expansion-panel-header>
-      <mat-nav-list dense class="submenu">
-        <a mat-list-item class="submenu-item" routerLink="/savings" routerLinkActive="active-link">
-          <span>Savings</span>
-        </a>
-        <a mat-list-item class="submenu-item" routerLink="/savings_log" routerLinkActive="active-link">
-          <span>Savings Log</span>
-        </a>
-        <a mat-list-item class="submenu-item" routerLink="/sources" routerLinkActive="active-link">
-          <span>Source</span>
-        </a>
-      </mat-nav-list>
-    </mat-expansion-panel>
-
-    <!-- House Hold -->
-    <mat-expansion-panel hideToggle class="menu-expansion-panel" #householdPanel>
-      <mat-expansion-panel-header class="menu-item">
-        <mat-panel-title class="expansion-title">
-          <mat-icon class="menu-icon">
-            <span class="material-symbols-outlined">location_away</span>
-          </mat-icon>
-          <span class="menu-text">House Hold</span>
-          <mat-icon class="chevron-icon">{{ householdPanel.expanded ? 'expand_less' : 'expand_more' }}</mat-icon>
-        </mat-panel-title>
-      </mat-expansion-panel-header>
-      <mat-nav-list dense class="submenu">
-        <a mat-list-item class="submenu-item" routerLink="/households" routerLinkActive="active-link">
-          <span>House Hold</span>
-        </a>
-        <a mat-list-item class="submenu-item" routerLink="/households_members" routerLinkActive="active-link">
-          <span>HouseHold Members</span>
-        </a>
-      </mat-nav-list>
-    </mat-expansion-panel>
-
-    <!-- Banks -->
-    <mat-expansion-panel hideToggle class="menu-expansion-panel" #banksPanel>
-      <mat-expansion-panel-header class="menu-item">
-        <mat-panel-title class="expansion-title">
-          <mat-icon class="menu-icon">
-            <span class="material-symbols-outlined">account_balance</span>
-          </mat-icon>
-          <span class="menu-text">Banks</span>
-          <mat-icon class="chevron-icon">{{ banksPanel.expanded ? 'expand_less' : 'expand_more' }}</mat-icon>
-        </mat-panel-title>
-      </mat-expansion-panel-header>
-      <mat-nav-list dense class="submenu">
-        <a mat-list-item class="submenu-item" routerLink="/banks" routerLinkActive="active-link">
-          <span>Banks</span>
-        </a>
-        <a mat-list-item class="submenu-item" routerLink="/accounts" routerLinkActive="active-link">
-          <span>Accounts</span>
-        </a>
-      </mat-nav-list>
-    </mat-expansion-panel>
-      <a mat-list-item
-      class="menu-item"
-      routerLink="/financial_summary"
-      routerLinkActive="active-link"> <mat-icon matListItemIcon>assignment</mat-icon>
-      <span matListItemTitle>Financial Summary</span>
+      [routerLink]="link.route"
+      routerLinkActive="active-link">
+      <mat-icon matListItemIcon>{{ link.icon }}</mat-icon>
+      <span matListItemTitle>{{ link.label }}</span>
     </a>
   </mat-list>
 </nav>

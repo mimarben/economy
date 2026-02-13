@@ -1,2 +1,16 @@
-.top-menu { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; }
-.spacer { flex: 1 1 auto; }
+.top-menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  height: 64px;
+  padding-inline: 12px;
+  border-bottom: 1px solid var(--app-border);
+  background: var(--app-surface);
+  box-shadow: 0 1px 8px rgb(29 38 48 / 6%);
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
