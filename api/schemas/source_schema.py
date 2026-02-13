@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from typing import Optional
 from utils.schema_exporter import export_schema  # si guardas la función en otro archivo
-from models.models import SourceTypeEnum
+from models import SourceTypeEnum
 class SourceBase(BaseModel):
     name: str
     description: Optional[str] = None

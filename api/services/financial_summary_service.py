@@ -2,7 +2,7 @@
 from sqlalchemy.orm import Session
 from repositories.financial_summary_repository import FinancialSummaryRepository
 from schemas.financial_summary_schema import FinancialSummaryCreate, FinancialSummaryRead, FinancialSummaryUpdate
-from models.models import FinancialSummary
+from models import FinancialSummary
 from services.base_service import BaseService
 
 

@@ -2,7 +2,7 @@
 from sqlalchemy.orm import Session
 from repositories.household_member_repository import HouseholdMemberRepository
 from schemas.household_member_schema import HouseholdMemberCreate, HouseholdMemberRead, HouseholdMemberUpdate
-from models.models import HouseholdMember
+from models import HouseholdMember
 from services.base_service import BaseService
 
 

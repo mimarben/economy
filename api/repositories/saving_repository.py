@@ -1,6 +1,6 @@
 """Repository for Saving entity following segregated interfaces."""
 from repositories.base_repository import BaseRepository
-from models.models import Saving
+from models import Saving
 
 
 class SavingRepository(BaseRepository[Saving]):

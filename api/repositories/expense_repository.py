@@ -1,7 +1,7 @@
 """Expense-specific repository with business logic for expense access."""
 from typing import Optional, List
 from sqlalchemy.orm import Session
-from models.models import Expense, User, Source, ExpensesCategory, Account
+from models import Expense, User, Source, ExpensesCategory, Account
 from repositories.base_repository import BaseRepository
 
 

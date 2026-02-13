@@ -1,6 +1,6 @@
 """Repository for Account entity following segregated interfaces."""
 from repositories.base_repository import BaseRepository
-from models.models import Account
+from models import Account
 
 
 class AccountRepository(BaseRepository[Account]):

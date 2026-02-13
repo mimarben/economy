@@ -1,6 +1,6 @@
 """Repository for InvestmentsCategory entity following segregated interfaces."""
 from repositories.base_repository import BaseRepository
-from models.models import InvestmentsCategory
+from models import InvestmentsCategory
 
 
 class InvestmentsCategoryRepository(BaseRepository[InvestmentsCategory]):

@@ -2,7 +2,7 @@
 from sqlalchemy.orm import Session
 from repositories.saving_repository import SavingRepository
 from schemas.saving_schema import SavingCreate, SavingRead, SavingUpdate
-from models.models import Saving
+from models import Saving
 from services.base_service import BaseService
 
 

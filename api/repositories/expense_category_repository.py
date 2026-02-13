@@ -1,6 +1,6 @@
 """Repository for ExpensesCategory entity following segregated interfaces."""
 from repositories.base_repository import BaseRepository
-from models.models import ExpensesCategory
+from models import ExpensesCategory
 
 
 class ExpensesCategoryRepository(BaseRepository[ExpensesCategory]):

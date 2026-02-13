@@ -2,10 +2,10 @@ from pydantic import BaseModel, Field, field_validator
 from pydantic_core import PydanticCustomError
 from typing import Optional
 from datetime import datetime
-from models.models import User, Account
+from models import User, Account
 from sqlalchemy.orm import Session
 from flask_babel import _
-from models.models import CurrencyEnum
+from models import CurrencyEnum
 from utils.schema_exporter import export_schema  # si guardas la función en otro archivo
 class SavingBase(BaseModel):
     description: Optional[str] = None

@@ -2,7 +2,7 @@
 from sqlalchemy.orm import Session
 from repositories.source_repository import SourceRepository
 from schemas.source_schema import SourceCreate, SourceRead, SourceUpdate
-from models.models import Source
+from models import Source
 from services.base_service import BaseService
 
 

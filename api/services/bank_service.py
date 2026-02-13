@@ -2,7 +2,7 @@
 from sqlalchemy.orm import Session
 from repositories.bank_repository import BankRepository
 from schemas.bank_schema import BankCreate, BankRead, BankUpdate
-from models.models import Bank
+from models import Bank
 from services.base_service import BaseService
 
 

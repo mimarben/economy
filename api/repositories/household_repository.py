@@ -1,6 +1,6 @@
 """Repository for Household entity following segregated interfaces."""
 from repositories.base_repository import BaseRepository
-from models.models import Household
+from models import Household
 
 
 class HouseholdRepository(BaseRepository[Household]):

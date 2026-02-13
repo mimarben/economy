@@ -2,7 +2,7 @@ from pydantic import BaseModel, EmailStr, field_validator
 from typing import Optional, List
 import re
 from utils.schema_exporter import export_schema  # si guardas la función en otro archivo
-from models.models import UserRoleEnum
+from models import UserRoleEnum
 
 def check_dni(value: str) -> str:
     # DNI format: 8 digits + 1 letter

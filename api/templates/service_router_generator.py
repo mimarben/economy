@@ -9,7 +9,7 @@ from typing import Optional, List
 from sqlalchemy.orm import Session
 from repositories.{entity_file}_repository import {entity_class}Repository
 from schemas.{entity_file}_schema import {entity_class}Create, {entity_class}Read, {entity_class}Update
-from models.models import {entity_class}
+from models import {entity_class}
 from services.interfaces import ICRUDService
 
 
@@ -206,7 +206,7 @@ REPOSITORY_TEMPLATE = '''"""Repository for {entity_name} entity."""
 from typing import Optional, List
 from sqlalchemy.orm import Session
 from repositories.base_repository import BaseRepository
-from models.models import {entity_class}
+from models import {entity_class}
 
 
 class {entity_class}Repository(BaseRepository[{entity_class}]):

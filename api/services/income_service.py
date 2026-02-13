@@ -2,7 +2,7 @@
 from sqlalchemy.orm import Session
 from repositories.income_repository import IncomeRepository
 from schemas.income_schema import IncomeCreate, IncomeRead, IncomeUpdate
-from models.models import Income
+from models import Income
 from services.base_service import BaseService
 
 

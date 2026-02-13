@@ -1,6 +1,6 @@
 """Repository for User entity following segregated interfaces."""
 from repositories.base_repository import BaseRepository
-from models.models import User
+from models import User
 
 
 class UserRepository(BaseRepository[User]):

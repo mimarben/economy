@@ -5,7 +5,7 @@ from pathlib import Path
 
 REPO_TEMPLATE = '''"""Repository for {class_name} entity following segregated interfaces."""
 from repositories.base_repository import BaseRepository
-from models.models import {class_name}
+from models import {class_name}
 
 
 class {class_name}Repository(BaseRepository[{class_name}]):
@@ -20,7 +20,7 @@ from typing import Optional, List
 from sqlalchemy.orm import Session
 from repositories.{singular}_repository import {class_name}Repository
 from schemas.{singular}_schema import {class_name}Create, {class_name}Read, {class_name}Update
-from models.models import {class_name}
+from models import {class_name}
 from services.interfaces import ICRUDService
 
 
@@ -98,11 +98,11 @@ api_path = Path("/home/miguel/src/economy/api")
 for entity in ENTITIES:
     class_name = entity["class"]
     singular = entity["singular"]
-    
+
     # Skip if already created
     repo_file = api_path / "repositories" / f"{singular}_repository.py"
     service_file = api_path / "services" / f"{singular}_service.py"
-    
+
     # Generate repository
     if not repo_file.exists():
         repo_code = REPO_TEMPLATE.format(class_name=class_name)
@@ -110,7 +110,7 @@ for entity in ENTITIES:
         print(f"✅ Created {repo_file.name}")
     else:
         print(f"⏭️  Skipped {repo_file.name} (exists)")
-    
+
     # Generate service
     if not service_file.exists():
         service_code = SERVICE_TEMPLATE.format(

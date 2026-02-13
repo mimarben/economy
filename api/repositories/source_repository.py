@@ -1,6 +1,6 @@
 """Repository for Source entity following segregated interfaces."""
 from repositories.base_repository import BaseRepository
-from models.models import Source
+from models import Source
 
 
 class SourceRepository(BaseRepository[Source]):

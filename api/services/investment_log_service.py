@@ -2,7 +2,7 @@
 from sqlalchemy.orm import Session
 from repositories.investment_log_repository import InvestmentLogRepository
 from schemas.investment_log_schema import InvestmentLogCreate, InvestmentLogRead, InvestmentLogUpdate
-from models.models import InvestmentLog
+from models import InvestmentLog
 from services.base_service import BaseService
 
 

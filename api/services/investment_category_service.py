@@ -2,7 +2,7 @@
 from sqlalchemy.orm import Session
 from repositories.investment_category_repository import InvestmentsCategoryRepository
 from schemas.investment_category_schema import InvestmentCategoryCreate, InvestmentCategoryRead, InvestmentCategoryUpdate
-from models.models import InvestmentsCategory
+from models import InvestmentsCategory
 from services.base_service import BaseService
 
 

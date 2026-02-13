@@ -26,7 +26,7 @@ REPOSITORY_TEMPLATE = '''"""Repository for {class_name} entity following segrega
 from typing import Optional, List
 from sqlalchemy.orm import Session
 from repositories.base_repository import BaseRepository
-from models.models import {class_name}
+from models import {class_name}
 
 
 class {class_name}Repository(BaseRepository[{class_name}]):
@@ -46,7 +46,7 @@ from typing import Optional, List
 from sqlalchemy.orm import Session
 from repositories.{singular}_repository import {class_name}Repository
 from schemas.{singular}_schema import {class_name}Create, {class_name}Read, {class_name}Update
-from models.models import {class_name}
+from models import {class_name}
 from services.interfaces import ICRUDService
 
 

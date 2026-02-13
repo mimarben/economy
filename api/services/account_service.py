@@ -2,7 +2,7 @@
 from sqlalchemy.orm import Session
 from repositories.account_repository import AccountRepository
 from schemas.account_schema import AccountCreate, AccountRead, AccountUpdate
-from models.models import Account
+from models import Account
 from services.base_service import BaseService
 
 
@@ -18,7 +18,7 @@ class AccountService(BaseService[Account, AccountRead, AccountCreate, AccountUpd
         )
 
     # ISearchService
-    def search(self, **filters) -> List[AccountRead]:
+    def search(self, **filters) -> list[AccountRead]:
         """Search accounts by filters."""
         objs = self.repository.search(**filters)
         return [AccountRead.model_validate(obj) for obj in objs]

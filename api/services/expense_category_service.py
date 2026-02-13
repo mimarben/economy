@@ -2,7 +2,7 @@
 from sqlalchemy.orm import Session
 from repositories.expense_category_repository import ExpensesCategoryRepository
 from schemas.expense_category_schema import ExpenseCategoryCreate, ExpenseCategoryRead, ExpenseCategoryUpdate
-from models.models import ExpensesCategory
+from models import ExpensesCategory
 from services.base_service import BaseService
 
 

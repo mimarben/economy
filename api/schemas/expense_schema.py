@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field, field_validator
 from typing import Optional
 from datetime import datetime
-from models.models import CurrencyEnum
+from models import CurrencyEnum
 from flask_babel import _
 from utils.schema_exporter import export_schema
 

@@ -4,7 +4,7 @@ from datetime import datetime
 from sqlalchemy.orm import Session
 from repositories.expense_repository import ExpenseRepository
 from schemas.expense_schema import ExpenseCreate, ExpenseRead, ExpenseUpdate
-from models.models import Expense
+from models import Expense
 from services.base_service import BaseService
 
 

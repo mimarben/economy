@@ -3,7 +3,7 @@ from typing import Optional
 from sqlalchemy.orm import Session
 from repositories.user_repository import UserRepository
 from schemas.user_schema import UserCreate, UserRead, UserUpdate
-from models.models import User
+from models import User
 from services.base_service import BaseService
 
 

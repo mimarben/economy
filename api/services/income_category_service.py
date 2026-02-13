@@ -2,7 +2,7 @@
 from sqlalchemy.orm import Session
 from repositories.income_category_repository import IncomesCategoryRepository
 from schemas.income_category_schema import IncomeCategoryCreate, IncomeCategoryRead, IncomeCategoryUpdate
-from models.models import IncomesCategory
+from models import IncomesCategory
 from services.base_service import BaseService
 
 
