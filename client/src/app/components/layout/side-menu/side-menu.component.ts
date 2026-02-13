@@ -7,24 +7,24 @@ interface MenuLink {
   label: string;
   route: string;
   icon?: string;
-  symbol?: string;
   exact?: boolean;
 }
 
 interface MenuSection {
   title: string;
-  icon?: string;
-  symbol?: string;
+  icon: string;
   links: MenuLink[];
 }
 
 @Component({
   selector: 'app-side-menu',
-  imports: [MaterialModule, CommonModule, RouterModule],
+  standalone: true,
+  imports: [CommonModule, RouterModule, MaterialModule],
   templateUrl: './side-menu.component.html',
-  styleUrl: './side-menu.component.css'
+  styleUrls: ['./side-menu.component.css']
 })
 export class SideMenuComponent {
+
   @Input() isHidden = false;
 
   readonly topLinks: MenuLink[] = [
@@ -54,7 +54,7 @@ export class SideMenuComponent {
     },
     {
       title: 'Investments',
-      symbol: 'finance_mode',
+      icon: 'finance_mode',
       links: [
         { label: 'Investments', route: '/investments' },
         { label: 'Investments Category', route: '/investments_categories' },
@@ -63,7 +63,7 @@ export class SideMenuComponent {
     },
     {
       title: 'Savings',
-      symbol: 'savings',
+      icon: 'savings',
       links: [
         { label: 'Savings', route: '/savings' },
         { label: 'Savings Log', route: '/savings_log' },
@@ -72,7 +72,7 @@ export class SideMenuComponent {
     },
     {
       title: 'House Hold',
-      symbol: 'location_away',
+      icon: 'location_away',
       links: [
         { label: 'House Hold', route: '/households' },
         { label: 'HouseHold Members', route: '/households_members' }
@@ -80,7 +80,7 @@ export class SideMenuComponent {
     },
     {
       title: 'Banks',
-      symbol: 'account_balance',
+      icon: 'account_balance',
       links: [
         { label: 'Banks', route: '/banks' },
         { label: 'Accounts', route: '/accounts' }
