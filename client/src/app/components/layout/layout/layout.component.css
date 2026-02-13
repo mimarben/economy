@@ -1,52 +1,48 @@
 :host {
   display: flex;
   flex-direction: column;
-  height: 100vh;               /* full viewport */
+  height: 100vh;
 }
 
-/* 1) Top toolbar */
 .header {
-  height: 64px;     /* match your mat-toolbar height */
-  flex: 0 0 auto;              /* don’t flex, size to content */
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  z-index: 1000;
-}
-
-/* 2) Bottom footer */
-.footer {
-  height: 56px;     /* match your mat-toolbar height */
+  height: 64px;
   flex: 0 0 auto;
   position: fixed;
-  bottom: 0; left: 0; right: 0;
+  top: 0;
+  left: 0;
+  right: 0;
   z-index: 1000;
 }
 
-/* 3) The “canvas” area between header & footer */
+.footer {
+  height: 56px;
+  flex: 0 0 auto;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}
+
 .canvas {
-  flex: 1 1 auto;                     /* fills all remaining vertical space */
+  flex: 1 1 auto;
   display: flex;
-  transition: margin-left 0.3s;
-  /* push content below header, above footer */
-  margin-top:    var(--header-height, 64px);
+  transition: margin-left 0.25s ease;
+  margin-top: var(--header-height, 64px);
   margin-bottom: var(--footer-height, 56px);
 }
 
-/* 4) When menu is visible — push it right by its width */
 .canvas:not(.menu-hidden) {
   margin-left: var(--sidenav-width, 240px);
 }
 
-/* 5) When menu hidden — no left margin */
 .canvas.menu-hidden {
   margin-left: 0;
 }
 
-/* 6) Main content area */
-/* main content area */
 .main {
-  flex: 1 1 auto;         /* fill all row space next to side-menu */
-  overflow-y: auto;       /* <-- this gives you the vertical scrollbar */
+  flex: 1 1 auto;
+  overflow-y: auto;
   padding: 16px;
-  background: #f3f3f3;       /* your test background */
+  background: var(--app-bg);
 }

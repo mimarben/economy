@@ -1,16 +1,139 @@
-//@use '@angular/material/prebuilt-themes/indigo-pink.css';
 @use './assets/styles/toast.css';
-@use './assets/styles/m3-theme.scss' as my-theme;
-
 @use '@angular/material' as mat;
 
+:root {
+  --app-radius: 14px;
+}
+
 html {
+  color-scheme: light;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: 'Inter', 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+app-layout {
+  display: block;
+}
+
+body.theme-economy {
   @include mat.theme((
     color: (
-      primary: my-theme.$primary-palette,
-      tertiary: my-theme.$tertiary-palette,
+      primary: mat.$azure-palette,
+      tertiary: mat.$blue-palette,
     ),
-    typography: Roboto,
-    density: 0,
+    typography: 'Inter, Segoe UI, Roboto, sans-serif',
+    density: -1,
   ));
+
+  --app-bg: #f3f5f9;
+  --app-surface: #ffffff;
+  --app-border: #e3e9f2;
+  --app-text: #1f2937;
+  --app-muted: #72829b;
+  --app-primary: #1677ff;
+  --app-primary-soft: #eaf3ff;
+  --app-sidebar-bg: #1b2539;
+  --app-sidebar-border: #2a3752;
+  --app-sidebar-text: #d4deef;
+  --app-sidebar-muted: #9fb0ca;
+
+  color: var(--app-text);
+  background: radial-gradient(circle at 0% 0%, #f8fbff 0%, #f3f5f9 42%, #eef2f7 100%);
+
+  .mat-mdc-card,
+  .page-card,
+  .card {
+    border: 1px solid var(--app-border);
+    border-radius: var(--app-radius) !important;
+    box-shadow: 0 8px 24px rgb(15 23 42 / 7%) !important;
+    background: var(--app-surface);
+  }
+
+  .mat-mdc-card-header {
+    padding-bottom: 10px;
+  }
+
+  .mat-mdc-card-title {
+    font-weight: 700;
+    letter-spacing: 0.2px;
+  }
+
+  .mat-mdc-table {
+    border: 1px solid var(--app-border);
+    border-radius: var(--app-radius);
+    overflow: hidden;
+    background: var(--app-surface);
+  }
+
+  .mat-mdc-header-row {
+    background: #f7faff;
+  }
+
+  .mat-mdc-header-cell {
+    color: #5d6b82;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.35px;
+    text-transform: uppercase;
+  }
+
+  .mat-mdc-row:hover {
+    background: #f4f8ff;
+  }
+
+  .mat-mdc-paginator {
+    border-top: 1px solid var(--app-border);
+  }
+
+  .mat-mdc-form-field {
+    --mdc-outlined-text-field-container-shape: 12px;
+    --mdc-outlined-text-field-container-color: #ffffff;
+    --mdc-outlined-text-field-outline-color: #d6deea;
+    --mdc-outlined-text-field-hover-outline-color: #b7c6dd;
+    --mdc-outlined-text-field-focus-outline-color: var(--app-primary);
+  }
+
+  .mat-mdc-form-field-subscript-wrapper {
+    margin-top: 2px;
+  }
+
+  .mat-mdc-button,
+  .mat-mdc-outlined-button,
+  .mat-mdc-unelevated-button,
+  .mat-mdc-raised-button,
+  .mat-mdc-fab,
+  .mat-mdc-mini-fab {
+    border-radius: 10px !important;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+  }
+
+  .mat-mdc-raised-button,
+  .mat-mdc-unelevated-button {
+    box-shadow: 0 8px 16px rgb(22 119 255 / 24%) !important;
+  }
+
+  .mat-mdc-outlined-button {
+    border-color: #c8d5ea !important;
+    background: #fff;
+  }
+
+  .mat-mdc-chip {
+    border-radius: 999px !important;
+    font-weight: 600;
+  }
+
+  .mat-mdc-dialog-surface {
+    border-radius: 16px !important;
+  }
 }
