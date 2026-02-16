@@ -20,7 +20,7 @@ from routers import register_blueprints
 from config import Config, DevelopmentConfig
 
 # Setup logging
-from services.logger_service import setup_logger
+from services.logs.logger_service import setup_logger
 logger = setup_logger("main")
 
 

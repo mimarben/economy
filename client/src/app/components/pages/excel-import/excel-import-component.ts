@@ -55,7 +55,7 @@ const COLUMN_MAPS = {
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './excel-import-component.html',
-  styleUrls: ['./excel-import-component.scss'],
+  styleUrls: ['./excel-import-component.css'],
 })
 export class ExcelImportComponent {
   incomes: IncomeBase[] = [];
@@ -349,7 +349,7 @@ export class ExcelImportComponent {
         date: dateValue ? dateValue.toISOString() : new Date().toISOString(),
         description,
         comment,
-        amount: Math.abs(amountNum),
+        amount: amountNum,
         type,
         category_id, // Pre-filled or 0
         source_id: source_id || 1, // Default source
@@ -428,6 +428,23 @@ export class ExcelImportComponent {
       transaction.category_id = Number(value);
     }
   }
+
+  onTypeChange(transaction: any, event: any) {
+    const value = event.target.value;
+    transaction.type = value;
+  // Resetear categoría al cambiar tipo
+  transaction.category_id = 0;
+
+  // Ajustar signo coherente si quieres mantener consistencia visual
+  if (transaction.type === 'income' && transaction.amount < 0) {
+    transaction.amount = Math.abs(transaction.amount);
+  }
+
+  if (transaction.type === 'expense' && transaction.amount > 0) {
+    transaction.amount = -Math.abs(transaction.amount);
+  }
+}
+
 
   openCreateCategoryModal(transaction: any) {
     const name = prompt('Nombre de la nueva categoría para: ' + transaction.type);

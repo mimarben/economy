@@ -1,0 +1,10 @@
+"""Repository for Saving entity following segregated interfaces."""
+from repositories.core.base_repository import BaseRepository
+from models import Saving
+
+
+class SavingRepository(BaseRepository[Saving]):
+    """Repository for Saving with custom queries."""
+
+    def __init__(self, db):
+        super().__init__(db, Saving)

@@ -177,3 +177,7 @@ api/db/economy.db
 # Folders
 api/utils/api
 economy-env
+
+models/
+*.gguf
+

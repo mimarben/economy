@@ -31,12 +31,13 @@
 
     <div class="table-responsive">
       <table class="table">
-        <thead>
+        <thead class="table-header">
           <tr>
-            <th><input type="checkbox" checked disabled></th>
+            <th>Importar</th>
             <th>Fecha</th>
             <th>Descripción</th>
             <th>Importe</th>
+            <th>Tipo</th>
             <th>Categoría</th>
           </tr>
         </thead>
@@ -50,8 +51,19 @@
               <input type="text" [(ngModel)]="t.description" class="form-control-sm" style="width: 100%">
             </td>
             <td [class.text-success]="t.type === 'income'" [class.text-danger]="t.type === 'expense'">
-              {{ t.type === 'income' ? '+' : '-' }}{{ t.amount | number:'1.2-2' }} €
+              {{ t.type === 'income' ? '+' : '' }}{{ t.amount | number:'1.2-2' }} €
             </td>
+            <td>
+            <select
+              class="form-select form-select-sm"
+              [(ngModel)]="t.type"
+              (change)="onTypeChange(t, $event)"
+            >
+              <option value="expense">Gasto</option>
+              <option value="income">Ingreso</option>
+              <option value="investment">Inversión</option>
+            </select>
+          </td>
             <td>
               <select
                 class="form-select form-select-sm"
@@ -60,7 +72,7 @@
                 [style.border-color]="t.category_id === 0 ? 'red' : ''"
               >
                 <option [value]="0">-- Sin Categoría --</option>
-                <option value="NEW">➕ Crear Nueva Categoría...</option>
+                <option value="NEW">Crear Nueva Categoría...</option>
                 <optgroup label="Categorías Disponibles">
                   <option *ngFor="let cat of (t.type === 'income' ? incomeCategories : expenseCategories)" [value]="cat.id">
                     {{ cat.name }}
