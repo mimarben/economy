@@ -3,22 +3,22 @@ import { forkJoin } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { GenericTableComponent, TableColumn } from '@shared/generic-table/generic-table.component';
 import { GenericDialogComponent } from '@shared/generic-dialog/generic-dialog.component';
-import { ToastService } from '@services/toast.service';
+import { ToastService } from '@core_services/toast.service';
 import { environment } from '@environments/environment';
-import { ApiResponse } from '@models/apiResponse';
-import { IncomeBase as Income } from '@models/IncomeBase';
-import { UserBase as User } from '@models/UserBase';
-import { IncomeCategoryBase as IncomeCategory } from '@models/IncomeCategoryBase';
-import { SourceBase as Source } from '@models/SourceBase';
-import { AccountBase as Account } from '@models/AccountBase';
+import { ApiResponse } from '@core_models/apiResponse';
+import { IncomeBase as Income } from '@incomes_models/IncomeBase';
+import { UserBase as User } from '@users_models/UserBase';
+import { IncomeCategoryBase as IncomeCategory } from '@incomes_models/IncomeCategoryBase';
+import { SourceBase as Source } from '@finance_models/SourceBase';
+import { AccountBase as Account } from '@finance_models/AccountBase';
 import { FormFieldConfig } from '@shared/generic-form/form-config';
-import { IncomeService } from '@services/income.service';
+import { IncomeService } from '@incomes_services/income.service';
 import { FormFactoryService } from '@factories/forms/form-factory.service';
 import { UtilsService } from '@utils/utils.service';
-import { IncomeCategoryService } from '@services/income-category.service';
-import { UserService } from '@services/user.service';
-import { AccountService } from '@services/account.service';
-import { SourceService } from '@services/source.service';
+import { IncomeCategoryService } from '@incomes_services/income-category.service';
+import { UserService } from '@users_services/user.service';
+import { AccountService } from '@finance_services/account.service';
+import { SourceService } from '@app/services/finance/source.service';
 
 @Component({
   selector: 'app-incomes-component',

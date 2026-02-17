@@ -3,22 +3,22 @@ import { forkJoin } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { GenericTableComponent, TableColumn } from '@shared/generic-table/generic-table.component';
 import { GenericDialogComponent } from '@shared/generic-dialog/generic-dialog.component';
-import { ToastService } from '@services/toast.service';
+import { ToastService } from '@core_services/toast.service';
 import { environment } from '@environments/environment';
-import { ApiResponse } from '@models/apiResponse';
-import { ExpenseBase as Expense } from '@models/ExpenseBase';
-import { UserBase as User } from '@models/UserBase';
-import { ExpenseCategoryBase as ExpenseCategory } from '@models/ExpenseCategoryBase';
-import { SourceBase as Source } from '@models/SourceBase';
-import { AccountBase as Account } from '@models/AccountBase';
+import { ApiResponse } from '@core_models/apiResponse';
+import { ExpenseBase as Expense } from '@expenses_models/ExpenseBase';
+import { UserBase as User } from '@users_models/UserBase';
+import { ExpenseCategoryBase as ExpenseCategory } from '@expenses_models/ExpenseCategoryBase';
+import { SourceBase as Source } from '@finance_models/SourceBase';
+import { AccountBase as Account } from '@finance_models/AccountBase';
 import { FormFieldConfig } from '@shared/generic-form/form-config';
-import { ExpenseService } from '@services/expense.service';
+import { ExpenseService } from '@app/services/expenses/expense.service';
 import { FormFactoryService } from '@factories/forms/form-factory.service';
 import { UtilsService } from '@utils/utils.service';
-import { ExpenseCategoryService } from '@services/expense-category.service';
-import { UserService } from '@services/user.service';
-import { AccountService } from '@services/account.service';
-import { SourceService } from '@services/source.service';
+import { ExpenseCategoryService } from '@expenses_services/expense-category.service';
+import { UserService } from '@app/services/users/user.service';
+import { AccountService } from '@finance_services/account.service';
+import { SourceService } from '@app/services/finance/source.service';
 
 @Component({
   selector: 'app-expenses-component',

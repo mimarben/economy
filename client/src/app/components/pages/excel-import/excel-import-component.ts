@@ -3,16 +3,16 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import * as ExcelJS from 'exceljs';
 import { Worksheet, Row } from 'exceljs';
-import { CurrencyEnum } from 'src/app/models/CurrencyBase';
-import { ExpenseBase } from 'src/app/models/ExpenseBase';
-import { IncomeBase } from 'src/app/models/IncomeBase';
+import { CurrencyEnum } from '@core_models/CurrencyBase';
+import { ExpenseBase } from '@expenses_models/ExpenseBase';
+import { IncomeBase } from '@incomes_models/IncomeBase';
 import { UtilsService } from '@utils/utils.service';
-import { ExpenseCategoryService } from 'src/app/services/expense-category.service';
-import { IncomeCategoryService } from 'src/app/services/income-category.service';
-import { ExpenseService } from 'src/app/services/expense.service';
-import { IncomeService } from 'src/app/services/income.service';
-import { ExpenseCategoryBase } from 'src/app/models/ExpenseCategoryBase';
-import { IncomeCategoryBase } from 'src/app/models/IncomeCategoryBase';
+import { ExpenseCategoryService } from '@expenses_services/expense-category.service';
+import { IncomeCategoryService } from '@incomes_services/income-category.service';
+import { ExpenseService } from '@expenses_services/expense.service';
+import { IncomeService } from '@incomes_services/income.service';
+import { ExpenseCategoryBase } from '@expenses_models/ExpenseCategoryBase';
+import { IncomeCategoryBase } from '@incomes_models/IncomeCategoryBase';
 
 interface ColumnMap {
   [key: string]: number;

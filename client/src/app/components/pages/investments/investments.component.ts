@@ -4,22 +4,22 @@ import { GenericDialogComponent } from '../../shared/generic-dialog/generic-dial
 import {
   GenericTableComponent,
   TableColumn,
-} from '../../shared/generic-table/generic-table.component';
+} from '@shared/generic-table/generic-table.component';
 import { forkJoin } from 'rxjs';
-import { ApiResponse } from '@models/apiResponse';
-import { FormFactoryService } from '../../../factories/forms/form-factory.service';
-import { FormFieldConfig } from '../../shared/generic-form/form-config';
-import { ToastService } from '@services/toast.service';
-import { environment } from '../../../../environments/environment';
-import { InvestmentBase as Investment } from '@models/InvestmentBase';
-import { InvestmentService } from '@services/investment.service';
-import { UserService } from '@services/user.service';
-import { UtilsService } from '../../../utils/utils.service';
-import { UserBase as User } from '@models/UserBase';
-import { AccountService } from '@services/account.service';
-import { InvestmentCategoryService } from '@services/investment-category.service';
-import { AccountBase as Account } from '@models/AccountBase';
-import { InvestmentCategoryBase as InvestmentCategory } from '@models/InvestmentCategoryBase';
+import { ApiResponse } from '@core_models/apiResponse';
+import { FormFactoryService } from '@factories/forms/form-factory.service';
+import { FormFieldConfig } from '@shared/generic-form/form-config';
+import { ToastService } from '@core_services/toast.service';
+import { environment } from '@environments/environment';
+import { InvestmentBase as Investment } from '@investments_models/InvestmentBase';
+import { InvestmentService } from '@investments_services/investment.service';
+import { UserService } from '@users_services/user.service';
+import { UtilsService } from '@utils/utils.service';
+import { UserBase as User } from '@users_models/UserBase';
+import { AccountService } from '@finance_services/account.service';
+import { InvestmentCategoryService } from '@investments_services/investment-category.service';
+import { AccountBase as Account } from '@finance_models/AccountBase';
+import { InvestmentCategoryBase as InvestmentCategory } from '@investments_models/InvestmentCategoryBase';
 
 @Component({
   selector: 'app-investments',

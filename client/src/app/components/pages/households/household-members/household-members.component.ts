@@ -1,19 +1,19 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { forkJoin } from 'rxjs';
-import { GenericDialogComponent } from '../../../shared/generic-dialog/generic-dialog.component';
-import { HouseholdMemberBase as HouseHoldMember } from '../../../../models/HouseholdMemberBase';
-import { UserBase as User } from '../../../../models/UserBase';
-import { HouseholdBase as Household } from '../../../../models/HouseholdBase';
-import { GenericTableComponent, TableColumn } from '../../../shared/generic-table/generic-table.component';
-import { ApiResponse } from '../../../../models/apiResponse';
-import { FormFactoryService } from '../../../../factories/forms/form-factory.service';
-import { FormFieldConfig } from '../../../shared/generic-form/form-config';
-import { ToastService } from '../../../../services/toast.service';
-import { environment } from '../../../../../environments/environment';
-import { HouseholdMemberService } from '../../../../services/household-member.service';
-import { UserService } from '../../../../services/user.service';
-import { HouseholdService } from '../../../../services/household.service';
+import { GenericDialogComponent } from '@shared/generic-dialog/generic-dialog.component';
+import { HouseholdMemberBase as HouseHoldMember } from '@households_models/HouseholdMemberBase';
+import { UserBase as User } from '@users_models/UserBase';
+import { HouseholdBase as Household } from '@households_models/HouseholdBase';
+import { GenericTableComponent, TableColumn } from '@shared/generic-table/generic-table.component';
+import { ApiResponse } from '@core_models/apiResponse';
+import { FormFactoryService } from '@factories/forms/form-factory.service';
+import { FormFieldConfig } from '@shared/generic-form/form-config';
+import { ToastService } from '@core_services/toast.service';
+import { environment } from '@environments/environment';
+import { HouseholdMemberService } from '@households_services/household-member.service';
+import { UserService } from '@users_services/user.service';
+import { HouseholdService } from '@households_services/household.service';
 
 @Component({
   selector: 'app-householdmembers',

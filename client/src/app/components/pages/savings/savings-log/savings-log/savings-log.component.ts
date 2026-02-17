@@ -1,22 +1,22 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { forkJoin } from 'rxjs';
-import { GenericDialogComponent } from '../../../../shared/generic-dialog/generic-dialog.component';
-import { SavingLogBase as SavingLog } from '../../../../../models/SavingLogBase';
-import { SavingBase as Saving } from '../../../../../models/SavingBase';
+import { GenericDialogComponent } from '@shared/generic-dialog/generic-dialog.component';
+import { SavingLogBase as SavingLog } from '@savings_models/SavingLogBase';
+import { SavingBase as Saving } from '@savings_models/SavingBase';
 import {
   GenericTableComponent,
   TableColumn,
-} from '../../../../shared/generic-table/generic-table.component';
-import { ApiResponse } from '../../../../../models/apiResponse';
-import { FormFactoryService } from '../../../../../factories/forms/form-factory.service';
-import { FormFieldConfig } from '../../../../shared/generic-form/form-config';
-import { ToastService } from '../../../../../services/toast.service';
-import { environment } from '../../../../../../environments/environment';
-import { SavingLogService } from '../../../../../services/saving-log.service';
-import { SavingService } from '../../../../../services/saving.service';
-import { UtilsService } from '../../../../../utils/utils.service';
-import { SourceService } from '../../../../../services/source.service';
+} from '@shared/generic-table/generic-table.component';
+import { ApiResponse } from '@core_models/apiResponse';
+import { FormFactoryService } from '@factories/forms/form-factory.service';
+import { FormFieldConfig } from '@shared/generic-form/form-config';
+import { ToastService } from '@core_services/toast.service';
+import { environment } from '@environments/environment';
+import { SavingLogService } from '@savings_services/saving-log.service';
+import { SavingService } from '@savings_services/saving.service';
+import { UtilsService } from '@utils/utils.service';
+import { SourceService } from '@finance_services/source.service';
 
 @Component({
   selector: 'app-savings-log',

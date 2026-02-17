@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { FormFieldConfig } from '../../components/shared/generic-form/form-config';
-import { TableColumn } from '../../components/shared/generic-table/generic-table.component';
-import { RoleEnum } from '../../models/HouseholdMemberBase';
-import { CurrencyEnum } from '../../models/SavingBase';
-import { ActionEnum } from '../../models/InvestmentLogBase';
+import { FormFieldConfig } from '@shared/generic-form/form-config';
+import { TableColumn } from '@shared/generic-table/generic-table.component';
+import { RoleEnum } from '@households_models/HouseholdMemberBase';
+import { CurrencyEnum } from '@savings_models/SavingBase';
+import { ActionEnum } from '@investments_models/InvestmentLogBase';
 type ModelType = 'account' | 'bank' | "houseHold" | 'houseHoldMember' | 'source' | 'saving_log' | "saving" | 'investment' | 'investment_category' | 'investment_log' |'income' |'income_category' | 'expense' | 'expense_category';
 
 @Injectable({ providedIn: 'root' })

@@ -6,7 +6,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 
 
-import { MaterialModule } from '../../../utils/material.module';
+import { MaterialModule } from '@utils/material.module';
 
 
 export interface TableColumn<T> {

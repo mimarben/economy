@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { MaterialModule } from '../../../utils/material.module';
+import { MaterialModule } from '@utils/material.module';
 import { CommonModule } from '@angular/common';
 
-import { AppTranslateService } from '../../../utils/app-translate.service';
-import { LanguageBase as Language } from '../../../models/LanguageBase';
+import { AppTranslateService } from '@utils/app-translate.service';
+import { LanguageBase as Language } from '@core_models/LanguageBase';
 import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'app-home',

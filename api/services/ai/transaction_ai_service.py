@@ -95,5 +95,4 @@ class TransactionAIService:
                   "name": c.name,
                   "description": getattr(c, "description", None)
               }
-
         return None

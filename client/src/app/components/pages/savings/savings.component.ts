@@ -1,22 +1,22 @@
 import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { GenericDialogComponent } from '../../shared/generic-dialog/generic-dialog.component';
+import { GenericDialogComponent } from '@shared/generic-dialog/generic-dialog.component';
 import {
   GenericTableComponent,
   TableColumn,
-} from '../../shared/generic-table/generic-table.component';
-import { ApiResponse } from '../../../models/apiResponse';
-import { FormFactoryService } from '../../../factories/forms/form-factory.service';
-import { FormFieldConfig } from '../../shared/generic-form/form-config';
-import { ToastService } from '../../../services/toast.service';
-import { environment } from '../../../../environments/environment';
-import { SavingBase as Saving } from '../../../models/SavingBase';
-import { UserBase as User } from '../../../models/UserBase';
-import { AccountBase as Account } from '@models/AccountBase';
-import { SavingService } from '../../../services/saving.service';
-import { UserService } from '../../../services/user.service';
-import { UtilsService } from '../../../utils/utils.service';
-import { AccountService } from '../../../services/account.service';
+} from '@shared/generic-table/generic-table.component';
+import { ApiResponse } from '@core_models/apiResponse';
+import { FormFactoryService } from '@factories/forms/form-factory.service';
+import { FormFieldConfig } from '@shared/generic-form/form-config';
+import { ToastService } from '@core_services/toast.service';
+import { environment } from '@environments/environment';
+import { SavingBase as Saving } from '@savings_models/SavingBase';
+import { UserBase as User } from '@users_models/UserBase';
+import { AccountBase as Account } from '@finance_models/AccountBase';
+import { SavingService } from '@app/services/savings/saving.service';
+import { UserService } from '@app/services/users/user.service';
+import { UtilsService } from '@utils/utils.service';
+import { AccountService } from '@finance_services/account.service';
 import { forkJoin } from 'rxjs';
 @Component({
   selector: 'app-savings',

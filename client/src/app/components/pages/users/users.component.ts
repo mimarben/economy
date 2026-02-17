@@ -5,13 +5,13 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MaterialModule } from '../../../utils/material.module';
+import { MaterialModule } from '@utils/material.module';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateModule } from '@ngx-translate/core';
 
-import { UserService } from '../../../services/user.service';
-import { UserBase as User } from '../../../models/UserBase';
-import { ApiResponse } from '../../../models/apiResponse';
+import { UserService } from '@users_services/user.service';
+import { UserBase as User } from '@users_models/UserBase';
+import { ApiResponse } from '@core_models/apiResponse';
 import { UserFromDialogComponent } from './user-form-dialog/user-form-dialog.component';
 @Component({
   selector: 'app-users',

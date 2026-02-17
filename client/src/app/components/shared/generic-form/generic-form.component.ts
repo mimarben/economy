@@ -4,9 +4,9 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 
-import { MaterialModule } from '../../../utils/material.module';
+import { MaterialModule } from '@utils/material.module';
 import { FormFieldConfig } from './form-config';
-import { UtilsService } from '../../../utils/utils.service';
+import { UtilsService } from '@utils/utils.service';
 @Component({
   selector: 'app-generic-form',
   templateUrl: './generic-form.component.html',

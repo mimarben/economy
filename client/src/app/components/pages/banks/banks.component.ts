@@ -1,17 +1,14 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-
-
-import { BankBase as Bank } from '../../../models/BankBase';
-import { GenericTableComponent, TableColumn } from '../../shared/generic-table/generic-table.component';
-
-import { ApiResponse } from '../../../models/apiResponse';
-import { GenericDialogComponent } from '../../shared/generic-dialog/generic-dialog.component';
-import { FormFactoryService } from '../../../factories/forms/form-factory.service';
-import { BankService } from '../../../services/bank.service';
-import { FormFieldConfig } from '../../shared/generic-form/form-config';
-import { ToastService } from '../../../services/toast.service';
-import { environment } from '../../../../environments/environment';
+import { BankBase as Bank } from '@finance_models/BankBase';
+import { GenericTableComponent, TableColumn } from '@shared/generic-table/generic-table.component';
+import { ApiResponse } from '@core_models/apiResponse';
+import { GenericDialogComponent } from '@shared/generic-dialog/generic-dialog.component';
+import { FormFactoryService } from '@factories/forms/form-factory.service';
+import { BankService } from '@finance_services/bank.service';
+import { FormFieldConfig } from '@shared/generic-form/form-config';
+import { ToastService } from '@core_services/toast.service';
+import { environment } from '@environments/environment';
 
 
 @Component({

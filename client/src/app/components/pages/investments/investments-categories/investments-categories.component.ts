@@ -5,16 +5,16 @@ import {
   GenericTableComponent,
   TableColumn,
 } from '../../../shared/generic-table/generic-table.component';
-import { ApiResponse } from '../../../../models/apiResponse';
-import { FormFactoryService } from '../../../../factories/forms/form-factory.service';
-import { FormFieldConfig } from '../../../shared/generic-form/form-config';
-import { ToastService } from '../../../../services/toast.service';
-import { environment } from '../../../../../environments/environment';
-import { InvestmentCategoryBase as InvestmentCategory } from '../../../../models/InvestmentCategoryBase';
-import { InvestmentCategoryService } from '../../../../services/investment-category.service';
-import { UserService } from '../../../../services/user.service';
-import { UtilsService } from '../../../../utils/utils.service';
-import { UserBase as User } from '../../../../models/UserBase';
+import { ApiResponse } from '@core_models/apiResponse';
+import { FormFactoryService } from '@factories/forms/form-factory.service';
+import { FormFieldConfig } from '@shared/generic-form/form-config';
+import { ToastService } from '@core_services/toast.service';
+import { environment } from '@environments/environment';
+import { InvestmentCategoryBase as InvestmentCategory } from '@investments_models/InvestmentCategoryBase';
+import { InvestmentCategoryService } from '@investments_services/investment-category.service';
+import { UserService } from '@users_services/user.service';
+import { UtilsService } from '@utils/utils.service';
+import { UserBase as User } from '@users_models/UserBase';
 
 @Component({
   selector: 'app-investmentsCategories-categories',
