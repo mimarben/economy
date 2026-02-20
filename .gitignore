@@ -181,3 +181,4 @@ economy-env
 models/
 *.gguf
 
+api/db/postgres
