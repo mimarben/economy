@@ -1,3 +1,7 @@
+/* =========================
+   SIDEBAR CONTAINER
+========================= */
+
 .side-menu {
   position: fixed;
   top: 64px;
@@ -7,10 +11,12 @@
   z-index: 1000;
   overflow-y: auto;
   transition: transform 0.25s ease;
-  background: #1e293b;
-  border-right: 1px solid #334155;
-  color: #cbd5e1;
-  font-size: 14px; /* ✓ Tamaño base uniforme */
+  background: var(--app-sidebar-bg);
+  border-right: 1px solid var(--app-sidebar-border);
+  color: var(--app-sidebar-text);
+
+  /* Single source of truth for font-size across the whole sidebar */
+  font-size: 14px;
 }
 
 .side-menu.hidden {
@@ -22,17 +28,13 @@
 }
 
 /* =========================
-   LIST ITEM BASE FIX (IMPORTANTE)
+   LIST ITEM BASE
 ========================= */
 
-.side-menu .mat-mdc-list-item {
-  color: #cbd5e1 !important;
-  font-size: 14px !important; /* ✓ Tamaño uniforme */
-}
-
+.side-menu .mat-mdc-list-item,
 .side-menu .mat-mdc-list-item .mdc-list-item__primary-text {
-  color: #cbd5e1 !important;
-  font-size: 14px !important; /* ✓ Tamaño uniforme */
+  color: var(--app-sidebar-text) !important;
+  font-size: inherit !important;
 }
 
 /* =========================
@@ -46,39 +48,21 @@
 }
 
 .menu-item:hover {
-  background-color: #334155;
+  background-color: var(--app-sidebar-border);
 }
 
 .menu-item mat-icon {
-  color: #cbd5e1;
-}
-
-.menu-text {
-  font-size: 14px !important; /* ✓ Cambiado de 13px a 14px */
-  font-weight: 500;
+  color: var(--app-sidebar-text);
 }
 
 /* =========================
-   EXPANSION
+   EXPANSION PANELS
 ========================= */
-.menu-expansion-panel
-.mat-expansion-panel-header
-.mat-expansion-panel-header-title {
-  color: #ffffff !important;
-  font-size: 14px !important; /* ✓ Tamaño uniforme */
-}
-
-.menu-expansion-panel
-.mat-expansion-panel-header
-.mat-expansion-panel-header-title span {
-  color: #cbd5e1 !important;
-  font-size: 14px !important; /* ✓ Tamaño uniforme */
-}
 
 .menu-expansion-panel {
   background: transparent !important;
   box-shadow: none !important;
-  color: #cbd5e1 !important;
+  color: var(--app-sidebar-text) !important;
 }
 
 .menu-expansion-panel::before {
@@ -89,24 +73,30 @@
   height: 40px !important;
   padding: 0 16px !important;
   border-radius: 8px !important;
-  color: #cbd5e1 !important;
-  font-size: 14px !important; /* ✓ Tamaño uniforme */
+  color: var(--app-sidebar-text) !important;
+  font-size: inherit !important;
 }
 
 .menu-expansion-panel .mat-expansion-panel-header:hover {
-  background-color: #334155 !important;
-  color: #cbd5e1 !important;
+  background-color: var(--app-sidebar-border) !important;
+  color: var(--app-sidebar-text) !important;
 }
 
 .menu-expansion-panel .mat-expansion-panel-header mat-icon {
-  color: #cbd5e1 !important;
+  color: var(--app-sidebar-text) !important;
 }
 
+.menu-expansion-panel .mat-expansion-panel-header-title,
+.menu-expansion-panel .mat-expansion-panel-header-title span {
+  color: var(--app-sidebar-text) !important;
+  font-size: inherit !important;
+}
+
+/* Expansion title layout */
 .expansion-title {
   display: flex;
   align-items: center;
   width: 100%;
-  font-size: 14px !important; /* ✓ Tamaño uniforme */
 }
 
 .menu-icon {
@@ -115,10 +105,11 @@
 
 .menu-text {
   flex: 1;
+  font-weight: 500;
 }
 
 .chevron-icon {
-  color: #94a3b8;
+  color: var(--app-sidebar-muted);
   transition: transform 0.2s ease;
 }
 
@@ -127,28 +118,27 @@
 }
 
 /* =========================
-  SUBMENU (integrado, no tarjeta flotante)
+   SUBMENU
 ========================= */
 
 .submenu {
-  margin: 0 0px 0px;
-  padding: 0px 0;
-  border-radius: 0px;
-  background-color: #334155;
+  margin: 0;
+  padding: 0;
+  border-radius: 0;
+  background-color: var(--app-sidebar-border);
 }
 
 .submenu-item {
   height: 34px !important;
-  padding: 0 0px 0 0px !important;
-  padding-left: 0px !important;
+  padding-left: 16px !important;
   border-radius: 0 !important;
-  font-size: 14px !important; /* ✓ Tamaño uniforme */
+  font-size: inherit !important;
 }
 
 .submenu-item .mdc-list-item__primary-text {
-  font-size: 14px !important; /* ✓ Tamaño uniforme para texto de submenú */
+  font-size: inherit !important;
 }
 
 .submenu-item:hover {
-  background-color: #334155;
+  background-color: var(--app-sidebar-border);
 }

@@ -3,16 +3,13 @@
 
     <!-- TOP LINKS -->
     @for (link of topLinks; track link.route) {
-      <a
-        mat-list-item
-        class="menu-item"
-        [routerLink]="link.route"
-        routerLinkActive="active-link"
-        [routerLinkActiveOptions]="{ exact: !!link.exact }">
-
+      <a mat-list-item
+         class="menu-item"
+         [routerLink]="link.route"
+         routerLinkActive="active-link"
+         [routerLinkActiveOptions]="{ exact: !!link.exact }">
         <mat-icon matListItemIcon>{{ link.icon }}</mat-icon>
         <span matListItemTitle>{{ link.label }}</span>
-
       </a>
     }
 
@@ -22,40 +19,21 @@
 
         <mat-expansion-panel-header class="menu-item">
           <mat-panel-title class="expansion-title">
-
-            <mat-icon class="menu-icon">
-              {{ section.icon }}
-            </mat-icon>
-
-            <span class="menu-text">
-              {{ section.title }}
-            </span>
-
-            <mat-icon
-              class="chevron-icon"
-              [class.rotated]="panel.expanded">
-              expand_more
-            </mat-icon>
-
+            <mat-icon class="menu-icon">{{ section.icon }}</mat-icon>
+            <span class="menu-text">{{ section.title }}</span>
+            <mat-icon class="chevron-icon" [class.rotated]="panel.expanded">expand_more</mat-icon>
           </mat-panel-title>
         </mat-expansion-panel-header>
 
         <mat-nav-list class="submenu">
-
           @for (link of section.links; track link.route) {
-            <a
-              mat-list-item
-              class="submenu-item"
-              [routerLink]="link.route"
-              routerLinkActive="active-link">
-
-              <span matListItemTitle>
-                {{ link.label }}
-              </span>
-
+            <a mat-list-item
+               class="submenu-item"
+               [routerLink]="link.route"
+               routerLinkActive="active-link">
+              <span matListItemTitle>{{ link.label }}</span>
             </a>
           }
-
         </mat-nav-list>
 
       </mat-expansion-panel>
@@ -63,15 +41,12 @@
 
     <!-- BOTTOM LINKS -->
     @for (link of bottomLinks; track link.route) {
-      <a
-        mat-list-item
-        class="menu-item"
-        [routerLink]="link.route"
-        routerLinkActive="active-link">
-
+      <a mat-list-item
+         class="menu-item"
+         [routerLink]="link.route"
+         routerLinkActive="active-link">
         <mat-icon matListItemIcon>{{ link.icon }}</mat-icon>
         <span matListItemTitle>{{ link.label }}</span>
-
       </a>
     }
 
