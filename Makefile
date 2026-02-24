@@ -28,6 +28,7 @@ build-backend:
 run-backend:
 	@echo "🚀 Running backend container on port $(BACKEND_PORT)..."
 	docker run  -d --name $(BACKEND_NAME) --rm -p $(BACKEND_PORT):$(BACKEND_PORT) --env-file .env $(BACKEND_FULL)
+
 stop-backend:
 	@echo "🛑 Stopping backend container..."
 	docker stop $(BACKEND_NAME) 2>/dev/null || true
@@ -49,6 +50,7 @@ stop-frontend:
 
 dev-up: run-backend run-frontend
 	@echo "🧩 Backend and frontend running together"
+
 dev-down: stop-backend stop-frontend
 	@echo "🛑 Backend and frontend stopped"
 

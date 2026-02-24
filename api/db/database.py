@@ -7,11 +7,10 @@ from config import Config  # Double dot moves up two levels (api/db → api → 
 DATABASE_PATH = Config.DATABASE_PATH
 
 # Construct the database URL
-# DATABASE_URL = f"sqlite:///{os.path.abspath(DATABASE_PATH)}"
-DATABASE_URL = os.getenv("DATABASE_URL")
+DATABASE_URL = os.getenv("DATABASE_URL") or f"sqlite:///{os.path.abspath(DATABASE_PATH)}"
 
 print(f"📁 Database absolute path: {os.path.abspath(DATABASE_PATH)}")
-print(f"📁 Database DATABASE_URL path: {DATABASE_URL}")
+print(f"📁 Database DATABASE_URL URL: {DATABASE_URL}")
 print(f"📁 Database DB_ENGINE: {Config.DB_ENGINE}")
 
 engine = create_engine(

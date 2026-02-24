@@ -8,13 +8,13 @@ class Config:
     if DB_ENGINE == "sqlite":
         SQLITE_PATH = os.getenv("SQLITE_PATH", "db/economy.db")
         DATABASE_URL = f"sqlite:///{os.path.abspath(SQLITE_PATH)}"
+    else:
         user = os.getenv("POSTGRES_USER")
         password = os.getenv("POSTGRES_PASSWORD")
         db = os.getenv("POSTGRES_DB")
         host = os.getenv("POSTGRES_HOST", "localhost")
         port = os.getenv("POSTGRES_PORT", "5432")
         DATABASE_URL = f"postgresql://{user}:{password}@{host}:{port}/{db}"
-    else:
         raise ValueError("DB_ENGINE debe ser sqlite o postgres")
 
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'default_secret_key'
