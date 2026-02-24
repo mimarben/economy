@@ -4,18 +4,21 @@ from dotenv import load_dotenv
 load_dotenv()
 dbpath = os.getenv('DATABASE_PATH').strip()
 class Config:
-    DB_ENGINE = os.getenv("DB_ENGINE", "sqlite")
+    DB_ENGINE = os.getenv("DB_ENGINE")
     if DB_ENGINE == "sqlite":
-        SQLITE_PATH = os.getenv("SQLITE_PATH", "db/economy.db")
-        DATABASE_URL = f"sqlite:///{os.path.abspath(SQLITE_PATH)}"
-    else:
+        DATABASE_PATH = os.getenv("DATABASE_PATH")
+        DATABASE_URL = f"sqlite:///{os.path.abspath(DATABASE_PATH)}"
+    elif DB_ENGINE == "postgres":
         user = os.getenv("POSTGRES_USER")
         password = os.getenv("POSTGRES_PASSWORD")
         db = os.getenv("POSTGRES_DB")
         host = os.getenv("POSTGRES_HOST", "localhost")
         port = os.getenv("POSTGRES_PORT", "5432")
         DATABASE_URL = f"postgresql://{user}:{password}@{host}:{port}/{db}"
-        raise ValueError("DB_ENGINE debe ser sqlite o postgres")
+    else:
+        raise ValueError(
+            f"DB_ENGINE inválido: {DB_ENGINE}. Debe ser 'sqlite' o 'postgres'"
+        )
 
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'default_secret_key'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
@@ -28,7 +31,7 @@ class Config:
     BABEL_DEFAULT_LOCALE = 'en'  # Default language
     BABEL_TRANSLATION_DIRECTORIES = 'i18n'  # Path to translation files
     # DataBase
-    DATABASE_PATH = dbpath  # Path to translation files
+    #DATABASE_PATH = dbpath  # Path to translation files
 
 class DevelopmentConfig(Config):
     DEBUG = True
@@ -42,7 +45,7 @@ class DevelopmentConfig(Config):
     }
 class TestingConfig(Config):
     TESTING = True
-    DATABASE_PATH = "db/economy_test.db"  # Path to translation files
+    #DATABASE_PATH = "db/economy_test.db"  # Path to translation files
 
 
 class ProductionConfig(Config):

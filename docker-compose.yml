@@ -14,7 +14,7 @@ services:
       - ./.env
     volumes:
       - ./api:/app:Z #rw
-      - ./api/db:/app/db:Z #rw  # Bind mount para SQLite
+      #- ./database/sqlite:/app/db:Z #rw  # Bind mount para SQLite
     working_dir: /app
     #command: python -m flask run --host=0.0.0.0 --port=5001 --reload --debug
     #command: flask run --host=0.0.0.0 --port=5001 --reload #--extra-files /app/app.py
@@ -70,7 +70,7 @@ services:
       - "5432:5432"
 
     volumes:
-      - ./api/db/postgres:/var/lib/postgresql:Z
+      - ./database/postgres:/var/lib/postgresql:Z
 
     networks:
       - economy-net

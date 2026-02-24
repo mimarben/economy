@@ -75,6 +75,8 @@ pip==25.3
     # via api (pyproject.toml)
 platformdirs==4.5.0
     # via black
+psycopg2-binary==2.9.11
+    # via api (pyproject.toml)
 pydantic==2.11.3
     # via
     #   api (pyproject.toml)

@@ -37,7 +37,6 @@ class IWriteRepository(ABC, Generic[T]):
         """Delete a record by ID."""
         pass
 
-
 class ISearchRepository(ABC, Generic[T]):
     """Interface for search/filter operations."""
 

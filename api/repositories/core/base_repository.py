@@ -5,7 +5,6 @@ from repositories.core.interfaces import ICRUDRepository
 
 T = TypeVar('T')
 
-
 class BaseRepository(ICRUDRepository[T]):
     """Base repository class implementing segregated CRUD interfaces."""
 

@@ -4,22 +4,21 @@ from sqlalchemy.orm import sessionmaker
 from models import Base, User, Account, Bank
 from config import Config  # Double dot moves up two levels (api/db → api → root)
 
-DATABASE_PATH = Config.DATABASE_PATH
+DATABASE_URL = Config.DATABASE_URL
 
-# Construct the database URL
-DATABASE_URL = os.getenv("DATABASE_URL") or f"sqlite:///{os.path.abspath(DATABASE_PATH)}"
-
-print(f"📁 Database absolute path: {os.path.abspath(DATABASE_PATH)}")
-print(f"📁 Database DATABASE_URL URL: {DATABASE_URL}")
-print(f"📁 Database DB_ENGINE: {Config.DB_ENGINE}")
+print(f"Database DATABASE_URL URL: {DATABASE_URL}")
+print(f"Database DB_ENGINE: {Config.DB_ENGINE}")
 
 engine = create_engine(
-    DATABASE_URL, echo=True, pool_size=20, max_overflow=10, pool_timeout=60
+    DATABASE_URL,
+    echo=True,
+    pool_size=20,
+    max_overflow=10,
+    pool_timeout=60
 )
 
 # ✅ Enable foreign key constraints only for SQLite
 if Config.DB_ENGINE == "sqlite":
-
     @event.listens_for(engine, "connect")
     def set_sqlite_pragma(dbapi_connection, connection_record):
         cursor = dbapi_connection.cursor()
@@ -47,7 +46,7 @@ def init_db():
     # SQLITE_PATH = os.getenv("SQLITE_PATH", "db/economy.db")
     if Config.DB_ENGINE == "sqlite":
         os.makedirs("db", exist_ok=True)
-        database_exists = os.path.exists(DATABASE_PATH)
+        database_exists = os.path.exists(DATABASE_URL)
     else:
         # En PostgreSQL siempre intentamos crear tablas si no existen
         database_exists = False

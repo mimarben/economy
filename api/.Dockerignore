@@ -1,7 +1,11 @@
 README.md
-node_modules
 .venv
 __pycache__
 *.pyc
 *.pyo
 *.pyd
+# Postgres data
+api/db/postgres
+api/db/postgres/*
+db/postgres
+db/postgres/*

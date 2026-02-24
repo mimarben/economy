@@ -18,14 +18,11 @@ name = "expenses_categories"
 def _get_create_service(db: Session) -> ICreateService:
     return ExpensesCategoryService(db)
 
-
 def _get_read_service(db: Session) -> IReadService:
     return ExpensesCategoryService(db)
 
-
 def _get_update_service(db: Session) -> IUpdateService:
     return ExpensesCategoryService(db)
-
 
 def _get_delete_service(db: Session) -> IDeleteService:
     return ExpensesCategoryService(db)
