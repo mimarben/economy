@@ -182,3 +182,5 @@ models/
 *.gguf
 
 api/db/postgres
+
+nginx/certs/*
