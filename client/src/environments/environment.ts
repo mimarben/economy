@@ -7,7 +7,8 @@ export enum ToastType {
 
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:5001/api',
+  //apiUrl: 'http://localhost:5001/api',
+  apiUrl: "/api",
   headers: {
     'Content-Type': 'application/json'
   },

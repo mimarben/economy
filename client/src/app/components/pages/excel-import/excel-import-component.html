@@ -15,18 +15,25 @@
       (click)="fileInput.click()"
       [disabled]="loading"
     >
-      <span *ngIf="!loading">Seleccionar Excel</span>
-      <span *ngIf="loading">Procesando...</span>
+      @if (!loading) {
+        <span>Seleccionar Excel</span>
+      } @else {
+        <span>Procesando...</span>
+      }
     </button>
 
     <span class="file-name-display" *ngIf="fileName">{{ fileName }}</span>
   </div>
 
   <div *ngIf="loading" class="loading">
-    <p>Cargando y procesando archivo...</p>
+    <p>⏳ Cargando y procesando archivo Excel...</p>
   </div>
 
-  <div *ngIf="!loading && pendingTransactions.length > 0" class="results-section">
+  <div *ngIf="!loading && aiClassifying" class="loading">
+    <p>🤖 Clasificando transacciones con IA... (esto puede tardar unos segundos)</p>
+  </div>
+
+  <div *ngIf="!loading && !aiClassifying && pendingTransactions.length > 0" class="results-section">
     <h3>📝 Revisión de Transacciones ({{ pendingTransactions.length }})</h3>
 
     <div class="table-responsive">
@@ -67,8 +74,8 @@
             <td>
               <select
                 class="form-select form-select-sm"
-                [value]="t.category_id"
-                (change)="onCategoryChange(t, $event)"
+                [(ngModel)]="t.category_id"
+                (ngModelChange)="onCategoryChange(t, $event)"
                 [style.border-color]="t.category_id === 0 ? 'red' : ''"
               >
                 <option [value]="0">-- Sin Categoría --</option>

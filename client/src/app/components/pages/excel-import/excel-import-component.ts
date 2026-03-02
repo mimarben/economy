@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import * as ExcelJS from 'exceljs';
 import { Worksheet, Row } from 'exceljs';
+import { firstValueFrom } from 'rxjs';
 import { CurrencyEnum } from '@core_models/CurrencyBase';
 import { ExpenseBase } from '@expenses_models/ExpenseBase';
 import { IncomeBase } from '@incomes_models/IncomeBase';
@@ -13,6 +14,7 @@ import { ExpenseService } from '@expenses_services/expense.service';
 import { IncomeService } from '@incomes_services/income.service';
 import { ExpenseCategoryBase } from '@expenses_models/ExpenseCategoryBase';
 import { IncomeCategoryBase } from '@incomes_models/IncomeCategoryBase';
+import { TransactionAiService } from '@services/ai/transaction-ai.service';
 
 interface ColumnMap {
   [key: string]: number;
@@ -69,6 +71,7 @@ export class ExcelImportComponent {
   pendingTransactions: any[] = [];
 
   loading = false;
+  aiClassifying = false;
   fileName = '';
 
   private currentFormat: keyof typeof COLUMN_MAPS | null = null;
@@ -110,7 +113,8 @@ export class ExcelImportComponent {
     private expenseCategoryService: ExpenseCategoryService,
     private incomeCategoryService: IncomeCategoryService,
     private expenseService: ExpenseService,
-    private incomeService: IncomeService
+    private incomeService: IncomeService,
+    private transactionAiService: TransactionAiService
   ) {}
 
   ngOnInit() {
@@ -149,6 +153,9 @@ export class ExcelImportComponent {
 
       this.currentFormat = detection.format;
       this.parseSheet(sheet, detection.headerIndices, detection.headerRowNumber);
+
+      // Clasificar con IA antes de mostrar al usuario
+      await this.classifyWithAI();
 
     } catch (err) {
       console.error('❌ Error procesando el archivo:', err);
@@ -359,6 +366,38 @@ export class ExcelImportComponent {
     });
   }
 
+  /** Envía las transacciones al endpoint de IA para categorizarlas automáticamente */
+  private async classifyWithAI(): Promise<void> {
+    if (this.pendingTransactions.length === 0) return;
+
+    this.aiClassifying = true;
+
+    const payload = this.pendingTransactions.map(t => ({
+      id: t.id,
+      type: t.type as 'income' | 'expense' | 'investment',
+      description: t.description,
+      amount: t.amount
+    }));
+
+    try {
+      const res = await firstValueFrom(this.transactionAiService.classify(payload));
+      const results = res?.response ?? [];
+
+      for (const classification of results) {
+        const tx = this.pendingTransactions.find(t => t.id === classification.id);
+        if (tx && classification.category_id) {
+          tx.category_id = classification.category_id.id;
+        }
+      }
+
+      console.log(`✅ IA clasificó ${results.length} transacciones`);
+    } catch (err) {
+      console.warn('⚠️ La clasificación IA falló, se mostrará sin categorías:', err);
+    } finally {
+      this.aiClassifying = false;
+    }
+  }
+
   /** Conversión segura de número */
   private toNumber(value: any): number | null {
     if (value === null || value === undefined || value === '') return null;
@@ -418,12 +457,10 @@ export class ExcelImportComponent {
     return list.find(c => c.id === id)?.name || 'Sin Categoría';
   }
 
-  onCategoryChange(transaction: any, event: any) {
-    const value = event.target.value;
+  onCategoryChange(transaction: any, value: any) {
     if (value === 'NEW') {
+      transaction.category_id = 0; // Reset until created
       this.openCreateCategoryModal(transaction);
-      // Reset select to previous value until created
-      event.target.value = transaction.category_id;
     } else {
       transaction.category_id = Number(value);
     }
