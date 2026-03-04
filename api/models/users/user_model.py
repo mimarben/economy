@@ -24,5 +24,4 @@ class User(TimestampMixin, Base):
     savings = relationship('Saving', back_populates='user')
     accounts = relationship('Account', back_populates='user')
     investments = relationship('Investment', back_populates='user')
-    financials_summaries = relationship('FinancialSummary', back_populates='user')
     households_members = relationship('HouseholdMember', back_populates='user')

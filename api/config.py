@@ -13,9 +13,12 @@ class Config:
         user = os.getenv("POSTGRES_USER")
         password = os.getenv("POSTGRES_PASSWORD")
         db = os.getenv("POSTGRES_DB")
-        host = os.getenv("POSTGRES_HOST", "localhost")
+        host = os.getenv("POSTGRES_HOST")
+        if not host:
+            # Detectar si estamos dentro de Docker
+            host = "postgres" if os.path.exists("/.dockerenv") else "localhost"
         port = os.getenv("POSTGRES_PORT", "5432")
-        DATABASE_URL = f"postgresql://{user}:{password}@{host}:{port}/{db}"
+        DATABASE_URL = f"postgresql+psycopg2://{user}:{password}@{host}:{port}/{db}"
     else:
         raise ValueError(
             f"DB_ENGINE inválido: {DB_ENGINE}. Debe ser 'sqlite' o 'postgres'"

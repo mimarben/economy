@@ -65,6 +65,14 @@ dev-compose-down:
 	@echo "🛑 Stopping services with docker-compose..."
 	docker compose down
 
+postgres-up:
+	@echo "🚀 Starting PostgreSQL container..."
+	docker compose up -d postgres
+
+postgres-down:
+	@echo "🛑 Stopping PostgreSQL container..."
+	docker compose down postgres
+
 # === LIMPIEZA ===
 clean:
 	@echo "🧹 Removing stopped containers..."

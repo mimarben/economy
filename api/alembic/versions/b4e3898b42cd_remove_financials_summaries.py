@@ -1,8 +1,8 @@
-"""Remove relationship from saving of sources
+"""remove_financials_summaries
 
-Revision ID: cc1ccb89d787
-Revises: 8c04db668b45
-Create Date: 2025-10-30 08:29:49.954055
+Revision ID: b4e3898b42cd
+Revises: 95f8e82f30c2
+Create Date: 2026-03-04 22:07:20.296506
 
 """
 from typing import Sequence, Union
@@ -12,8 +12,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'cc1ccb89d787'
-down_revision: Union[str, Sequence[str], None] = '8c04db668b45'
+revision: str = 'b4e3898b42cd'
+down_revision: Union[str, Sequence[str], None] = '95f8e82f30c2'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
