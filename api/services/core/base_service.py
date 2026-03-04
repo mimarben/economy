@@ -42,8 +42,8 @@ class BaseService(
         obj = self.repository.get_by_id(id)
         return self.read_schema.model_validate(obj) if obj else None
 
-    def get_all(self) -> List[ReadT]:
-        objs = self.repository.get_all()
+    def get_all(self, page: int = 1, per_page: int = 50) -> List[ReadT]:
+        objs = self.repository.get_all(page=page, per_page=per_page)
         return [self.read_schema.model_validate(o) for o in objs]
 
     def update(self, id: int, data: UpdateT) -> Optional[ReadT]:

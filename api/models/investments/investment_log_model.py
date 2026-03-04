@@ -1,22 +1,22 @@
-from sqlalchemy import Column, Integer, String, Float, Date, ForeignKey, Enum as SQLEnum
+from sqlalchemy import Column, Integer, String, Numeric, Date, ForeignKey, Enum as SQLEnum
 from sqlalchemy.orm import relationship
 
-from ..core.base import Base
+from ..core.base import Base, TimestampMixin
 from ..core.enums import ActionEnum
 
 
-class InvestmentLog(Base):
+class InvestmentLog(TimestampMixin, Base):
     __tablename__ = "investments_logs"
     id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
     date = Column(Date, nullable=False)
-    currentValue = Column(Float, nullable=False)
-    pricePerUnit = Column(Float)
-    unitsBought = Column(Float)
+    current_value = Column(Numeric(12, 2), nullable=False)
+    price_per_unit = Column(Numeric(12, 2))
+    units_bought = Column(Numeric(12, 6))
     action = Column(SQLEnum(ActionEnum), nullable=False)
     note = Column(String)
 
     # Foreign Keys
-    investment_id = Column(Integer, ForeignKey('investments.id'), nullable=False)
+    investment_id = Column(Integer, ForeignKey('investments.id'), nullable=False, index=True)
 
     # Relationships
-    investments = relationship('Investment', back_populates='investment_logs')
+    investment = relationship('Investment', back_populates='investment_logs')

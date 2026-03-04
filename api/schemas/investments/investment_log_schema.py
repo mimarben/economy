@@ -1,51 +1,45 @@
-from pydantic import BaseModel, Field, field_validator
-from pydantic_core import PydanticCustomError
+from pydantic import BaseModel, Field
 from typing import Optional
 from datetime import datetime
-from models import Investment
-from flask_babel import _
 from models import ActionEnum
-from utils.schema_exporter import export_schema  # si guardas la función en otro archivo
+from utils.schema_exporter import export_schema
+
 
 class InvestmentLogBase(BaseModel):
+    """Base schema for InvestmentLog - format validation only."""
     date: datetime
-    currentValue: float
-    pricePerUnit: float
-    unitsBought: float
+    current_value: float = Field(..., gt=0)
+    price_per_unit: Optional[float] = Field(None, gt=0)
+    units_bought: Optional[float] = Field(None, gt=0)
     action: ActionEnum
-    note: str
+    note: Optional[str] = None
     investment_id: int = Field(..., gt=0)
 
+
 class InvestmentLogRead(InvestmentLogBase):
+    """Response schema for InvestmentLog."""
     id: int
+
     class Config:
         from_attributes = True
 
-class InvestmentLogCreate(InvestmentLogBase):
-    @field_validator('investment_id')
-    @classmethod
-    def validate_foreign_key(cls, v, info):
-        db = info.context.get('db')
-        if not db:
-            raise ValueError("DATABASE_NOT_AVAILABLE")
-        model_map = {
-            'investment_id': Investment
-        }
-        model = model_map[info.field_name]
-        if not db.query(model).filter(model.id == v).first():
-            raise PydanticCustomError("FK_ERROR", f"{info.field_name.upper()}_NOT_FOUND")
-        return v
 
-class InvestmentLogUpdate(InvestmentLogBase):
-    date: Optional[datetime]
-    currentValue: Optional[float]
-    pricePerUnit: Optional[float]
-    unitsBought: Optional[float]
-    action: Optional[ActionEnum]
-    note: Optional[str]
-    investment_id: Optional[int] = Field(..., gt=0)
-    source_id: Optional[int] = Field(..., gt=0)
-    # Optional fields
+class InvestmentLogCreate(InvestmentLogBase):
+    """Schema for creating InvestmentLog - only format validation."""
+    pass
+    # ✅ NO FK validation here - moved to service layer
+
+
+class InvestmentLogUpdate(BaseModel):
+    """Schema for updating InvestmentLog - all fields optional."""
+    date: Optional[datetime] = None
+    current_value: Optional[float] = Field(None, gt=0)
+    price_per_unit: Optional[float] = Field(None, gt=0)
+    units_bought: Optional[float] = Field(None, gt=0)
+    action: Optional[ActionEnum] = None
+    note: Optional[str] = None
+    investment_id: Optional[int] = Field(None, gt=0)
+
 
 class InvestmentLogDelete(BaseModel):
     pass

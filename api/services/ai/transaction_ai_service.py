@@ -1,9 +1,15 @@
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 from models.expenses.expense_category_model import ExpensesCategory
 from models.incomes.income_category_model import IncomesCategory
 from models.investments.investment_category_model import InvestmentsCategory
 import urllib.request
 import json
+
+# Setup logging
+from services.logs.logger_service import setup_logger
+logger = setup_logger("transaction_ai")
+
 
 class TransactionAIService:
 
@@ -30,14 +36,17 @@ class TransactionAIService:
 
         # 1️⃣ Obtener categorías según tipo
         if type_ == "expense":
-            categories = self.db.query(ExpensesCategory).all()
-            print(f"Expense categories: {[c.name for c in categories]}")
+            stmt = select(ExpensesCategory).where(ExpensesCategory.deleted_at.is_(None))
+            categories = list(self.db.execute(stmt).scalars().all())
+            logger.debug(f"Expense categories: {[c.name for c in categories]}")
         elif type_ == "income":
-            categories = self.db.query(IncomesCategory).all()
-            print(f"Income categories: {[c.name for c in categories]}")
+            stmt = select(IncomesCategory).where(IncomesCategory.deleted_at.is_(None))
+            categories = list(self.db.execute(stmt).scalars().all())
+            logger.debug(f"Income categories: {[c.name for c in categories]}")
         elif type_ == "investment":
-            categories = self.db.query(InvestmentsCategory).all()
-            print(f"Investment categories: {[c.name for c in categories]}")
+            stmt = select(InvestmentsCategory).where(InvestmentsCategory.deleted_at.is_(None))
+            categories = list(self.db.execute(stmt).scalars().all())
+            logger.debug(f"Investment categories: {[c.name for c in categories]}")
         else:
             return None
 
@@ -79,7 +88,7 @@ class TransactionAIService:
             method="POST"
         )
         with urllib.request.urlopen(req, timeout=30) as response:
-          result = json.loads(response.read().decode("utf-8"))
+            result = json.loads(response.read().decode("utf-8"))
         content = result["choices"][0]["message"]["content"]
         try:
             parsed = json.loads(content)
@@ -89,10 +98,10 @@ class TransactionAIService:
 
         # 4️⃣ Convertir nombre → id
         for c in categories:
-          if c.name.lower() == (category_name or "").lower():
-              return {
-                  "id": c.id,
-                  "name": c.name,
-                  "description": getattr(c, "description", None)
-              }
+            if c.name.lower() == (category_name or "").lower():
+                return {
+                    "id": c.id,
+                    "name": c.name,
+                    "description": getattr(c, "description", None)
+                }
         return None

@@ -1,4 +1,5 @@
 """Repository for User entity following segregated interfaces."""
+from sqlalchemy import select
 from repositories.core.base_repository import BaseRepository
 from models import User
 
@@ -11,4 +12,6 @@ class UserRepository(BaseRepository[User]):
 
     def find_by_dni(self, dni: str):
         """Find user by DNI."""
-        return self.db.query(User).filter(User.dni == dni).first()
+        stmt = self._base_query().where(User.dni == dni)
+        return self.db.execute(stmt).scalar_one_or_none()
+

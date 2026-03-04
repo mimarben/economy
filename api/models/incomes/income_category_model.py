@@ -1,10 +1,10 @@
 from sqlalchemy import Column, Integer, String, Boolean
 from sqlalchemy.orm import relationship
 
-from ..core.base import Base
+from ..core.base import Base, TimestampMixin
 
 
-class IncomesCategory(Base):
+class IncomesCategory(TimestampMixin, Base):
     __tablename__ = 'incomes_categories'
     id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
     name = Column(String, nullable=False)
@@ -12,4 +12,4 @@ class IncomesCategory(Base):
     active = Column(Boolean, default=True, nullable=False)
 
     # Relationships
-    incomes = relationship('Income', back_populates='categories')
+    incomes = relationship('Income', back_populates='category')

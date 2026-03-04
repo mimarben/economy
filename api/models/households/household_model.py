@@ -1,10 +1,10 @@
 from sqlalchemy import Column, Integer, String, Boolean
 from sqlalchemy.orm import relationship
 
-from ..core.base import Base
+from ..core.base import Base, TimestampMixin
 
 
-class Household(Base):
+class Household(TimestampMixin, Base):
     __tablename__ = "households"
     id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
     name = Column(String, nullable=False)
@@ -13,4 +13,4 @@ class Household(Base):
     active = Column(Boolean, default=True, nullable=False)
 
     # Relationships
-    households_members = relationship('HouseholdMember', back_populates='households')
+    households_members = relationship('HouseholdMember', back_populates='household')

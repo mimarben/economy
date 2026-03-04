@@ -1,11 +1,11 @@
 from sqlalchemy import Column, Integer, String, Boolean, Enum as SQLEnum
 from sqlalchemy.orm import relationship
 
-from ..core.base import Base
+from ..core.base import Base, TimestampMixin
 from ..core.enums import UserRoleEnum
 
 
-class User(Base):
+class User(TimestampMixin, Base):
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
     name = Column(String, nullable=False)
@@ -19,10 +19,10 @@ class User(Base):
     role = Column(SQLEnum(UserRoleEnum), default=UserRoleEnum.USER, nullable=False)
 
     # Relationships
-    expenses = relationship('Expense', back_populates='users')
-    incomes = relationship('Income', back_populates='users')
-    savings = relationship('Saving', back_populates='users')
-    accounts = relationship('Account', back_populates='users')
-    investments = relationship('Investment', back_populates='users')
-    financials_summaries = relationship('FinancialSummary', back_populates='users')
-    households_members = relationship('HouseholdMember', back_populates='users')
+    expenses = relationship('Expense', back_populates='user')
+    incomes = relationship('Income', back_populates='user')
+    savings = relationship('Saving', back_populates='user')
+    accounts = relationship('Account', back_populates='user')
+    investments = relationship('Investment', back_populates='user')
+    financials_summaries = relationship('FinancialSummary', back_populates='user')
+    households_members = relationship('HouseholdMember', back_populates='user')

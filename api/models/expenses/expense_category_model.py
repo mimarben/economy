@@ -1,10 +1,10 @@
 from sqlalchemy import Column, Integer, String, Boolean
 from sqlalchemy.orm import relationship
 
-from ..core.base import Base
+from ..core.base import Base, TimestampMixin
 
 
-class ExpensesCategory(Base):
+class ExpensesCategory(TimestampMixin, Base):
     __tablename__ = 'expenses_categories'
     id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
     name = Column(String, nullable=False)
@@ -12,4 +12,4 @@ class ExpensesCategory(Base):
     active = Column(Boolean, default=True, nullable=False)
 
     # Relationships
-    expenses = relationship('Expense', back_populates='categories')
+    expenses = relationship('Expense', back_populates='category')

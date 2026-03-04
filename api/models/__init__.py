@@ -1,4 +1,4 @@
-from .core.base import Base
+from .core.base import Base, TimestampMixin
 from .core.enums import (
     CurrencyEnum,
     RoleEnum,
@@ -34,6 +34,7 @@ from .summaries import FinancialSummary
 __all__ = [
     # Core
     'Base',
+    'TimestampMixin',
     # Enums
     'CurrencyEnum',
     'RoleEnum',
