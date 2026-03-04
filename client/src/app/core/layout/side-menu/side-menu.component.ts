@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { MaterialModule } from '../../../utils/material.module';
+import { MaterialModule } from '@utils/material.module';
 
 interface MenuLink {
   label: string;

@@ -1,10 +1,10 @@
 import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { GenericDialogComponent } from '../../../shared/generic-dialog/generic-dialog.component';
+import { GenericDialogComponent } from '@shared/generic-dialog/generic-dialog.component';
 import {
   GenericTableComponent,
   TableColumn,
-} from '../../../shared/generic-table/generic-table.component';
+} from '@shared/generic-table/generic-table.component';
 import { ApiResponse } from '@core_models/apiResponse';
 import { FormFactoryService } from '@factories/forms/form-factory.service';
 import { FormFieldConfig } from '@shared/generic-form/form-config';

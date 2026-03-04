@@ -1,6 +1,6 @@
 import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { GenericDialogComponent } from '../../shared/generic-dialog/generic-dialog.component';
+import { GenericDialogComponent } from '@shared/generic-dialog/generic-dialog.component';
 import {
   GenericTableComponent,
   TableColumn,

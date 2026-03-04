@@ -13,8 +13,8 @@ import { environment } from '@environments/environment';
 import { SavingBase as Saving } from '@savings_models/SavingBase';
 import { UserBase as User } from '@users_models/UserBase';
 import { AccountBase as Account } from '@finance_models/AccountBase';
-import { SavingService } from '@app/services/savings/saving.service';
-import { UserService } from '@app/services/users/user.service';
+import { SavingService } from '@app/core/services/savings/saving.service';
+import { UserService } from '@app/core/services/users/user.service';
 import { UtilsService } from '@utils/utils.service';
 import { AccountService } from '@finance_services/account.service';
 import { forkJoin } from 'rxjs';
@@ -66,7 +66,7 @@ loadSavings() {
 
     // 1. Usar forkJoin para esperar las tres llamadas simultáneamente
     forkJoin([savings$, users$, accounts$]).subscribe({
-        next: ([savingsResponse, usersResponse, accountsResponse]) => {
+        next: ([savingsResponse, usersResponse, accountsResponse]: any) => {
             // 2. Éxito: Los datos están disponibles en el orden del array
 
             // a) Asignar Ahorros (Savings)
@@ -191,7 +191,7 @@ loadSavings() {
         );
         this.cdr.detectChanges();
       },
-      error: (err) => {
+      error: (err: any) => {
         this.toastService.showToast(
           err.error as ApiResponse<string>,
           environment.toastType.Error,
@@ -212,7 +212,7 @@ loadSavings() {
         );
         this.cdr.detectChanges();
       },
-      error: (err) => {
+      error: (err: any) => {
         this.toastService.showToast(
           err.error as ApiResponse<string>,
           environment.toastType.Error,

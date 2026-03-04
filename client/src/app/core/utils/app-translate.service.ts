@@ -2,7 +2,7 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable, firstValueFrom } from 'rxjs';
-import { environment } from '../../environments/environment';
+import { environment } from '@environments/environment';
 @Injectable({
   providedIn: 'root'
 })

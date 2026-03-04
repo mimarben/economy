@@ -18,7 +18,7 @@ import { UtilsService } from '@utils/utils.service';
 import { IncomeCategoryService } from '@incomes_services/income-category.service';
 import { UserService } from '@users_services/user.service';
 import { AccountService } from '@finance_services/account.service';
-import { SourceService } from '@app/services/finance/source.service';
+import { SourceService } from '@app/core/services/finance/source.service';
 
 @Component({
   selector: 'app-incomes-component',

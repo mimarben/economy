@@ -8,7 +8,7 @@ import { ApiResponse } from '@core_models/apiResponse';
 import { FormFieldConfig } from '@shared/generic-form/form-config';
 import { FormFactoryService } from '@factories/forms/form-factory.service';
 import { ExpenseCategoryBase as ExpenseCategory } from '@expenses_models/ExpenseCategoryBase';
-import { ExpenseCategoryService } from '@app/services/expenses/expense-category.service';
+import { ExpenseCategoryService } from '@expenses_services/expense-category.service';
 import { CommonModule } from '@angular/common'; // Asegúrate de tener CommonModule si usas Directivas
 
 @Component({
@@ -54,7 +54,7 @@ export class ExpensesCategoriesComponent implements OnInit {
             this.expensesCategories = data.response;
             this.isLoading = false;
           },
-          error: (err) => {
+          error: (err: any) => {
             this.errorMessage = 'Error loading accounts';
             this.isLoading = false;
           },
@@ -108,7 +108,7 @@ export class ExpensesCategoriesComponent implements OnInit {
               }
               this.cdr.detectChanges();
             },
-            error: (error) => {
+            error: (error: any) => {
               console.error('Error updating expense categories:', error.error);
               this.isLoading = false;
               this.toastService.showToast(
@@ -133,7 +133,7 @@ export class ExpensesCategoriesComponent implements OnInit {
           this.expensesCategories = [...this.expensesCategories]; // Reassign to trigger change detection
           this.cdr.detectChanges();
         },
-        error: (error) => {
+        error: (error: any) => {
           console.error('Error creating expense category:', error.error);
           this.isLoading = false;
           this.errorMessage = 'Failed to create expense category.';

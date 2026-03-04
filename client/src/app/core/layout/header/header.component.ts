@@ -1,7 +1,7 @@
 import { Component, Output, Input, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
-import { MaterialModule } from '../../../utils/material.module';
-import { AppTranslateService } from '../../../utils/app-translate.service';
-import { UtilsModule } from '../../../utils/utils.module';
+import { MaterialModule } from '@utils/material.module';
+import { AppTranslateService } from '@utils/app-translate.service';
+import { UtilsModule } from '@utils/utils.module';
 @Component({
   selector: 'app-header',
   imports: [

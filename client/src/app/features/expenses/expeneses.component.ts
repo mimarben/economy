@@ -12,13 +12,13 @@ import { ExpenseCategoryBase as ExpenseCategory } from '@expenses_models/Expense
 import { SourceBase as Source } from '@finance_models/SourceBase';
 import { AccountBase as Account } from '@finance_models/AccountBase';
 import { FormFieldConfig } from '@shared/generic-form/form-config';
-import { ExpenseService } from '@app/services/expenses/expense.service';
+import { ExpenseService } from '@expenses_services/expense.service';
 import { FormFactoryService } from '@factories/forms/form-factory.service';
 import { UtilsService } from '@utils/utils.service';
 import { ExpenseCategoryService } from '@expenses_services/expense-category.service';
-import { UserService } from '@app/services/users/user.service';
+import { UserService } from '@users_services/user.service';
 import { AccountService } from '@finance_services/account.service';
-import { SourceService } from '@app/services/finance/source.service';
+import { SourceService } from '@finance_services/source.service';
 
 @Component({
   selector: 'app-expenses-component',
@@ -81,7 +81,7 @@ export class ExpensesComponent implements OnInit {
               this.expenses = expensesResponse.response || [];
 
 
-              const users = usersResponse.response || [];
+              const users = usersResponse?.response || [];
               this.usersMap = Object.fromEntries(
                   users.map((u: User) => [
                       u.id,
@@ -90,19 +90,19 @@ export class ExpensesComponent implements OnInit {
               );
 
 
-              const categories = categoriesResponse.response || [];
+              const categories = categoriesResponse?.response || [];
               console.log('Categories loaded:', categories);
               this.expensesCategoriesMap = Object.fromEntries(
                 categories.map((c: ExpenseCategory) => [c.id, c.name])
               );
 
 
-              const sources = sourcesResponse.response || [];
+              const sources = sourcesResponse?.response || [];
               this.sourcesMap = Object.fromEntries(
                   sources.map((s: Source) => [s.id, s.name])
               );
 
-              const accounts = accountsResponse.response || [];
+              const accounts = accountsResponse?.response || [];
               console.log('Accounts loaded:', accounts);
               this.accountsMap = Object.fromEntries(
                   accounts.map((a: Account) => [a.id, `${a.name}`])
@@ -135,10 +135,10 @@ export class ExpensesComponent implements OnInit {
   forkJoin([users$, categories$, sources$, accounts$]).subscribe({
     next: ([usersResponse, categoriesResponse, sourcesResponse, accountsResponse]) => {
       // Extraemos los datos (response de cada servicio)
-      const users = usersResponse.response || [];
-      const categories = categoriesResponse.response || [];
-      const sources = sourcesResponse.response || [];
-      const accounts = accountsResponse.response || [];
+      const users = usersResponse?.response || [];
+      const categories = categoriesResponse?.response || [];
+      const sources = sourcesResponse?.response || [];
+      const accounts = accountsResponse?.response || [];
 
       // Obtenemos la configuración base del formulario
       const baseConfig = this.formFactory.getFormConfig('expense');
@@ -255,7 +255,7 @@ export class ExpensesComponent implements OnInit {
         );
         this.cdr.detectChanges();
       },
-      error: (err) => {
+      error: (err: any) => {
         this.toastService.showToast(
           err.error as ApiResponse<string>,
           environment.toastType.Error,
