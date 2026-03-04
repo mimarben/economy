@@ -11,9 +11,8 @@
   z-index: 1000;
   overflow-y: auto;
   transition: transform 0.25s ease;
-  background: var(--app-sidebar-bg);
-  border-right: 1px solid var(--app-sidebar-border);
-  color: var(--app-sidebar-text);
+  background: var(--sidebar-bg) !important;
+  color: #fff !important;
 
   /* Single source of truth for font-size across the whole sidebar */
   font-size: 14px;
@@ -33,7 +32,7 @@
 
 .side-menu .mat-mdc-list-item,
 .side-menu .mat-mdc-list-item .mdc-list-item__primary-text {
-  color: var(--app-sidebar-text) !important;
+  color: #fff !important;
   font-size: inherit !important;
 }
 
@@ -43,16 +42,23 @@
 
 .menu-item {
   height: 40px !important;
-  margin: 2px 4px;
-  border-radius: 6px !important;
+  margin: 5px 15px !important;
+  border-radius: 3px !important;
+  transition: all 400ms !important;
+  color: #fff !important;
 }
 
 .menu-item:hover {
-  background-color: var(--app-sidebar-border);
+  background-color: rgba(200, 200, 200, 0.2) !important;
+}
+
+.active-link {
+  background-color: var(--danger-color) !important;
+  box-shadow: 0 4px 20px 0px rgba(0, 0, 0, 0.14), 0 7px 10px -5px rgba(244, 67, 54, 0.4) !important;
 }
 
 .menu-item mat-icon {
-  color: var(--app-sidebar-text);
+  color: #fff !important;
 }
 
 /* =========================
