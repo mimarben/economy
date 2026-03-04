@@ -28,9 +28,6 @@ from .investments import Investment, InvestmentLog, InvestmentsCategory
 # Households
 from .households import Household, HouseholdMember
 
-# Summaries
-from .summaries import FinancialSummary
-
 __all__ = [
     # Core
     'Base',
@@ -63,6 +60,4 @@ __all__ = [
     # Households
     'Household',
     'HouseholdMember',
-    # Summaries
-    'FinancialSummary',
 ]

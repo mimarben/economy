@@ -17,7 +17,6 @@ ENTITIES = [
     {"class": "InvestmentsCategory", "singular": "investment_category", "plural": "investment_categories"},
     {"class": "Investment", "singular": "investment", "plural": "investments"},
     {"class": "InvestmentLog", "singular": "investment_log", "plural": "investment_logs"},
-    {"class": "FinancialSummary", "singular": "financial_summary", "plural": "financial_summaries"},
     {"class": "Household", "singular": "household", "plural": "households"},
     {"class": "HouseholdMember", "singular": "household_member", "plural": "household_members"},
 ]

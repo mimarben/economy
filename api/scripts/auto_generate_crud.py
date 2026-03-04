@@ -85,7 +85,6 @@ ENTITIES = [
     {"class": "InvestmentsCategory", "singular": "investment_category"},
     {"class": "Investment", "singular": "investment"},
     {"class": "InvestmentLog", "singular": "investment_log"},
-    {"class": "FinancialSummary", "singular": "financial_summary"},
     {"class": "Household", "singular": "household"},
     {"class": "HouseholdMember", "singular": "household_member"},
 ]

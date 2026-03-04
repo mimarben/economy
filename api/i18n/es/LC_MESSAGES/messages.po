@@ -22,8 +22,6 @@ msgstr ""
 #: routers/bank_router.py:47 routers/bank_router.py:103
 #: routers/expense_category_router.py:40 routers/expense_category_router.py:81
 #: routers/expense_router.py:51 routers/expense_router.py:109
-#: routers/financial_summary_router.py:40
-#: routers/financial_summary_router.py:73 routers/household_member_router.py:40
 #: routers/household_member_router.py:73 routers/household_router.py:40
 #: routers/household_router.py:73 routers/income_category_router.py:40
 #: routers/income_category_router.py:73 routers/income_router.py:40
@@ -57,9 +55,6 @@ msgstr "Datos invalidos en la consulta."
 #: routers/expense_category_router.py:72 routers/expense_category_router.py:89
 #: routers/expense_category_router.py:102 routers/expense_router.py:67
 #: routers/expense_router.py:121 routers/expense_router.py:139
-#: routers/expense_router.py:162 routers/financial_summary_router.py:46
-#: routers/financial_summary_router.py:81
-#: routers/financial_summary_router.py:94 routers/household_member_router.py:46
 #: routers/household_member_router.py:81 routers/household_member_router.py:94
 #: routers/household_router.py:46 routers/household_router.py:81
 #: routers/household_router.py:94 routers/income_category_router.py:46
@@ -92,9 +87,6 @@ msgstr ""
 #: routers/expense_category_router.py:58 routers/expense_category_router.py:86
 #: routers/expense_category_router.py:99 routers/expense_router.py:80
 #: routers/expense_router.py:117 routers/expense_router.py:135
-#: routers/expense_router.py:153 routers/financial_summary_router.py:55
-#: routers/financial_summary_router.py:78
-#: routers/financial_summary_router.py:91 routers/household_member_router.py:55
 #: routers/household_member_router.py:78 routers/household_member_router.py:91
 #: routers/household_router.py:55 routers/household_router.py:78
 #: routers/household_router.py:91 routers/income_category_router.py:55
@@ -208,29 +200,21 @@ msgstr ""
 msgid "EXPENSE_DELETED"
 msgstr ""
 
-#: routers/financial_summary_router.py:44
 msgid "FINANCIAL_SUMMARY_CREATED"
 msgstr ""
 
-#: routers/financial_summary_router.py:55
-#: routers/financial_summary_router.py:78
-#: routers/financial_summary_router.py:91
 msgid "FINANCIAL_SUMMARY_NOT_FOUND"
 msgstr ""
 
-#: routers/financial_summary_router.py:56
 msgid "FINANCIAL_SUMMARY_FOUND"
 msgstr ""
 
-#: routers/financial_summary_router.py:64
 msgid "FINANCIAL_SUMMARY_LIST"
 msgstr ""
 
-#: routers/financial_summary_router.py:79
 msgid "FINANCIAL_SUMMARY_UPDATED"
 msgstr ""
 
-#: routers/financial_summary_router.py:92
 msgid "FINANCIAL_SUMMARY_DELETED"
 msgstr ""
 
