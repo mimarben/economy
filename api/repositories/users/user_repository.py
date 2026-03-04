@@ -14,4 +14,7 @@ class UserRepository(BaseRepository[User]):
         """Find user by DNI."""
         stmt = self._base_query().where(User.dni == dni)
         return self.db.execute(stmt).scalar_one_or_none()
-
+    def find_by_email(self, email: str):
+        """Find user by email."""
+        stmt = self._base_query().where(User.email == email)
+        return self.db.execute(stmt).scalar_one_or_none()

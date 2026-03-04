@@ -7,7 +7,7 @@ import sys
 from werkzeug.exceptions import HTTPException
 from flask_cors import CORS
 from sqlalchemy.exc import TimeoutError as SQLAlchemyTimeoutError
-
+from flask_jwt_extended import JWTManager
 
 load_dotenv()
 pythonpath = os.getenv('PYTHONPATH')
@@ -26,6 +26,8 @@ logger = setup_logger("main")
 
 app = Flask(__name__)
 app.config.from_object(DevelopmentConfig)
+jwt = JWTManager(app)
+
 CORS(app,
     origins=app.config['CORS']['origins'],
     methods=app.config['CORS']['methods'],

@@ -15,7 +15,6 @@ class Config:
         db = os.getenv("POSTGRES_DB")
         host = os.getenv("POSTGRES_HOST")
         if not host:
-            # Detectar si estamos dentro de Docker
             host = "postgres" if os.path.exists("/.dockerenv") else "localhost"
         port = os.getenv("POSTGRES_PORT", "5432")
         DATABASE_URL = f"postgresql+psycopg2://{user}:{password}@{host}:{port}/{db}"
@@ -24,14 +23,13 @@ class Config:
             f"DB_ENGINE inválido: {DB_ENGINE}. Debe ser 'sqlite' o 'postgres'"
         )
 
-    SECRET_KEY = os.environ.get('SECRET_KEY')
+    JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     DEBUG = False
     LANGUAGES = {
         'en': 'English',
         'es': 'Spanish'
     }
-    # Flask-Babel settings
     BABEL_DEFAULT_LOCALE = 'en'
     BABEL_TRANSLATION_DIRECTORIES = 'i18n'
 
@@ -41,7 +39,7 @@ class DevelopmentConfig(Config):
     PORT = 5001
     HOST = "0.0.0.0"
     PREFIX = "/api"
-    SECRET_KEY = Config.SECRET_KEY or 'dev-secret-key-change-in-production'
+    JWT_SECRET_KEY = Config.JWT_SECRET_KEY or 'dev-jwt-secret-change-in-production'
     CORS = {
         "origins": ["http://localhost:4200"],
         "methods": ["GET", "POST", "PUT", "PATCH", "DELETE"],
@@ -51,20 +49,21 @@ class DevelopmentConfig(Config):
 
 class TestingConfig(Config):
     TESTING = True
-    SECRET_KEY = 'testing-secret-key'
+    JWT_SECRET_KEY = 'testing-jwt-secret'    # ✅ fixed value, no env dependency
 
 
 class ProductionConfig(Config):
     DEBUG = False
     PORT = 5000
-    HOST = ""
+    HOST = "0.0.0.0"
     PREFIX = "/api"
+    CORS = {
+        "origins": os.getenv("ALLOWED_ORIGINS", "").split(","),
+        "methods": ["GET", "POST", "PUT", "PATCH", "DELETE"],
+        "allow_headers": ["Content-Type", "Authorization"]
+    }
 
     @classmethod
-    def _validate(cls):
-        if not cls.SECRET_KEY:
-            raise ValueError("SECRET_KEY must be set in production environment")
-
-    def __init_subclass__(cls, **kwargs):
-        super().__init_subclass__(**kwargs)
-        cls._validate()
+    def validate(cls):
+        if not cls.JWT_SECRET_KEY:
+            raise ValueError("JWT_SECRET_KEY must be set in production environment")

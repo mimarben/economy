@@ -5,7 +5,7 @@ from repositories.users.user_repository import UserRepository
 from schemas.users.user_schema import UserCreate, UserRead, UserUpdate
 from models import User
 from services.core.base_service import BaseService
-
+from services.core.security_service import hash_password
 
 class UserService(BaseService[User, UserRead, UserCreate, UserUpdate]):
     """Service for User domain logic with custom DNI validation."""
@@ -23,7 +23,8 @@ class UserService(BaseService[User, UserRead, UserCreate, UserUpdate]):
         # Check if user with same DNI exists
         if self.repository.find_by_dni(data.dni):
             raise ValueError("User with this DNI already exists")
-
+        # Hash password
+        data.password = hash_password(data.password)
         return super().create(data)
 
     def update(self, id: int, data: UserUpdate) -> Optional[UserRead]:
@@ -36,5 +37,6 @@ class UserService(BaseService[User, UserRead, UserCreate, UserUpdate]):
         if data.dni and data.dni != existing.dni:
             if self.repository.find_by_dni(data.dni):
                 raise ValueError("Another user with this DNI already exists")
-
+        if data.password:
+            data.password = hash_password(data.password)
         return super().update(id, data)
