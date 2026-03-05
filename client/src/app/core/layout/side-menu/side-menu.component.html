@@ -1,7 +1,15 @@
 <nav class="side-menu" [class.hidden]="isHidden">
-  <mat-nav-list>
+  <div class="brand">
+    <img src="assets/logo.png" alt="Economy" class="brand-logo" />
+    <div class="brand-text">
+      <span class="brand-title">Economy App</span>
+      <span class="brand-subtitle">Control panel</span>
+    </div>
+  </div>
 
-    <!-- TOP LINKS -->
+  <mat-nav-list>
+    <p class="group-title">General</p>
+
     @for (link of topLinks; track link.route) {
       <a mat-list-item
          class="menu-item"
@@ -13,10 +21,11 @@
       </a>
     }
 
-    <!-- SECTIONS -->
+    <mat-divider class="menu-divider"></mat-divider>
+    <p class="group-title">Finance</p>
+
     @for (section of sections; track section.title) {
       <mat-expansion-panel hideToggle class="menu-expansion-panel" #panel>
-
         <mat-expansion-panel-header class="menu-item">
           <mat-panel-title class="expansion-title">
             <mat-icon class="menu-icon">{{ section.icon }}</mat-icon>
@@ -35,11 +44,11 @@
             </a>
           }
         </mat-nav-list>
-
       </mat-expansion-panel>
     }
 
-    <!-- BOTTOM LINKS -->
+    <mat-divider class="menu-divider"></mat-divider>
+
     @for (link of bottomLinks; track link.route) {
       <a mat-list-item
          class="menu-item"
@@ -49,6 +58,5 @@
         <span matListItemTitle>{{ link.label }}</span>
       </a>
     }
-
   </mat-nav-list>
 </nav>
