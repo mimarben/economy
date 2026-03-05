@@ -18,7 +18,7 @@ import {
 } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
-import { ToastService } from '@core_services/toast.service';
+import { ToastService } from '@core_services/core/toast.service';
 import { environment } from '@environments/environment';
 
 @Injectable()

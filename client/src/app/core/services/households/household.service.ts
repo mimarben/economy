@@ -8,7 +8,7 @@
 
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BaseCrudService } from '@core_services/base-crud.service';
+import { BaseCrudService } from '@core_services/core/base-crud.service';
 import { HouseholdBase as Household } from '@households_models/HouseholdBase';
 
 @Injectable({

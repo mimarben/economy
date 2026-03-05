@@ -9,7 +9,7 @@ import { forkJoin } from 'rxjs';
 import { ApiResponse } from '@core_models/apiResponse';
 import { FormFactoryService } from '@factories/forms/form-factory.service';
 import { FormFieldConfig } from '@shared/generic-form/form-config';
-import { ToastService } from '@core_services/toast.service';
+import { ToastService } from '@core_services/core/toast.service';
 import { environment } from '@environments/environment';
 import { InvestmentBase as Investment } from '@investments_models/InvestmentBase';
 import { InvestmentService } from '@investments_services/investment.service';

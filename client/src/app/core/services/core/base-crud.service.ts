@@ -8,7 +8,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '@environments/environment';
 import { ApiResponse } from '@core_models/apiResponse';
-import { ICrudService } from '@core_services/interfaces';
+import { ICrudService } from '@core_services/core/interfaces';
 
 @Injectable({ providedIn: 'root' })
 export abstract class BaseCrudService<T> implements ICrudService<T> {

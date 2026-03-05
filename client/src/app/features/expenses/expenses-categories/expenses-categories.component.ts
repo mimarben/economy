@@ -2,7 +2,7 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { GenericTableComponent, TableColumn } from '@shared/generic-table/generic-table.component';
 import { GenericDialogComponent } from '@shared/generic-dialog/generic-dialog.component';
-import { ToastService } from '@core_services/toast.service';
+import { ToastService } from '@core_services/core/toast.service';
 import { environment } from '@environments/environment';
 import { ApiResponse } from '@core_models/apiResponse';
 import { FormFieldConfig } from '@shared/generic-form/form-config';

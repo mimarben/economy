@@ -5,7 +5,7 @@
 
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BaseCrudService } from '@core_services/base-crud.service';
+import { BaseCrudService } from '@core_services/core/base-crud.service';
 import { BankBase as Bank } from '@finance_models/BankBase';
 import { Observable } from 'rxjs';
 import { ApiResponse } from '@core_models/apiResponse';

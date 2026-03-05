@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BaseCrudService } from '@core_services/base-crud.service';
+import { BaseCrudService } from '@core_services/core/base-crud.service';
 import { UserBase as User } from '@users_models/UserBase';
 import { Observable } from 'rxjs';
 import { ApiResponse } from '@core_models/apiResponse';

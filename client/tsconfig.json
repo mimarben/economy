@@ -33,7 +33,7 @@
       "@savings_models/*": ["src/app/models/savings/*"],
       "@summaries_models/*": ["src/app/models/summaries/*"],
       "@users_models/*": ["src/app/models/users/*"],
-      "@core_services/*": ["src/app/core/services/core/*"],
+      "@core_services/*": ["src/app/core/services/*"],
       "@expenses_services/*": ["src/app/core/services/expenses/*"],
       "@finance_services/*": ["src/app/core/services/finance/*"],
       "@households_services/*": ["src/app/core/services/households/*"],

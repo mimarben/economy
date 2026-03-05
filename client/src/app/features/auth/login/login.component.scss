@@ -1,67 +1,137 @@
-.login-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.login-page {
+
   height: 100vh;
-  background-color: #eeeeee;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: radial-gradient(circle at top, #f5f5f7, #e6e6ea);
+
 }
+
+
+.login-wrapper {
+
+  width: 100%;
+  max-width: 380px;
+
+}
+
+
+/* ---------- BRAND ---------- */
+
+.login-brand {
+
+  text-align: center;
+  margin-bottom: 26px;
+
+}
+
+.login-brand h1 {
+
+  margin: 6px 0;
+  font-size: 26px;
+  font-weight: 600;
+
+}
+
+.login-brand p {
+
+  margin: 0;
+  color: #666;
+  font-size: 14px;
+
+}
+
+
+/* ---------- LOGO ---------- */
+
+.logo {
+
+  width: 42px;
+  height: 42px;
+
+  margin: auto;
+
+  border-radius: 10px;
+
+  background: linear-gradient(135deg, #9333ea, #7c3aed);
+
+  color: white;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-weight: 600;
+  font-size: 18px;
+
+}
+
+
+/* ---------- CARD ---------- */
 
 .login-card {
-  width: 100%;
-  max-width: 400px;
-  padding: 0;
-  border-radius: 8px;
-  box-shadow: 0 4px 20px 0px rgba(0, 0, 0, 0.14), 0 7px 10px -5px rgba(156, 39, 176, 0.4);
-  background-color: transparent !important;
+
+  padding: 10px;
+
+  border-radius: 12px;
+
+  box-shadow:
+    0 10px 30px rgba(0,0,0,0.08),
+    0 3px 10px rgba(0,0,0,0.05);
+
+  animation: fadeUp .35s ease;
+
 }
 
-mat-card-content {
-  background-color: #fff;
-  padding: 30px 20px 20px;
-  border-bottom-left-radius: 8px;
-  border-bottom-right-radius: 8px;
-}
 
-.card-header-primary {
-  background: linear-gradient(60deg, #ab47bc, #8e24aa);
-  box-shadow: 0 4px 20px 0px rgba(0, 0, 0, 0.14), 0 7px 10px -5px rgba(156, 39, 176, 0.4);
-  margin: -20px 15px 0;
-  border-radius: 3px;
-  padding: 15px;
-  color: #fff;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  
-  mat-card-title h2 {
-    margin: 0;
-    font-weight: 300;
-  }
-  
-  mat-card-subtitle {
-    color: rgba(255, 255, 255, 0.8);
-    margin-top: 5px;
-  }
-}
+/* ---------- FORM ---------- */
 
 .login-form {
+
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 20px;
+
 }
 
 .full-width {
   width: 100%;
 }
 
-.submit-btn {
-  margin-top: 10px;
-  padding: 8px 0;
-  background-color: #9c27b0;
-  color: white;
-  
-  &:disabled {
-    background-color: rgba(0,0,0,.12);
+
+/* ---------- BUTTON ---------- */
+
+.login-button {
+
+  height: 44px;
+
+  border-radius: 8px;
+
+  font-weight: 500;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+}
+
+
+/* ---------- ANIMATION ---------- */
+
+@keyframes fadeUp {
+
+  from {
+    opacity:0;
+    transform: translateY(10px);
   }
+
+  to {
+    opacity:1;
+    transform: translateY(0);
+  }
+
 }

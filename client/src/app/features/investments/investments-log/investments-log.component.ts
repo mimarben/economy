@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { GenericDialogComponent } from '@shared/generic-dialog/generic-dialog.component';
 import { GenericTableComponent } from '@shared/generic-table/generic-table.component';
 import { TableColumn } from '@shared/generic-table/generic-table.component';
-import { ToastService } from '@core_services/toast.service';
+import { ToastService } from '@core_services/core/toast.service';
 import { environment } from '@environments/environment';
 import { ApiResponse } from '@core_models/apiResponse';
 import { InvestmentLogBase as InvestmentLog } from '@investments_models/InvestmentLogBase';

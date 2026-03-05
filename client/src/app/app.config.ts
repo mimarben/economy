@@ -11,8 +11,8 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { HttpClient } from '@angular/common/http';
 
 import { environment } from '../environments/environment';
-import { HttpInterceptorService } from '@core_services/http.interceptor';
-import { ErrorHandlerService } from '@core_services/error-handler.service';
+import { HttpInterceptorService } from '@core_services/core/http.interceptor';
+import { ErrorHandlerService } from '@core_services/core/error-handler.service';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');

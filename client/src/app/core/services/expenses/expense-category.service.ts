@@ -7,7 +7,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { BaseCrudService } from '@core_services/base-crud.service';
+import { BaseCrudService } from '@core_services/core/base-crud.service';
 import { HttpClient } from '@angular/common/http';
 import { ExpenseCategoryBase as ExpenseCategory } from '@expenses_models/ExpenseCategoryBase';
 

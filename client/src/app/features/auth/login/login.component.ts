@@ -1,64 +1,63 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { Component, OnInit, inject } from '@angular/core';
+import { FormBuilder, Validators, ReactiveFormsModule, NonNullableFormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthService } from '../../../core/services/auth/auth.service';
+
+import { AuthService } from '@core_services/auth/auth.service';
+
 import { CommonModule } from '@angular/common';
-import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
+import { MaterialModule } from '@utils/material.module';
+
 import { HotToastService } from '@ngxpert/hot-toast';
 
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [
-    CommonModule, 
+    CommonModule,
     ReactiveFormsModule,
-    MatCardModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatIconModule
+    MaterialModule
   ],
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  styleUrl: './login.component.scss'
 })
 export class LoginComponent implements OnInit {
-  loginForm!: FormGroup;
+
+  private fb = inject(NonNullableFormBuilder);
+  private authService = inject(AuthService);
+  private router = inject(Router);
+  private toast = inject(HotToastService);
+
   hidePassword = true;
   isLoading = false;
 
-  constructor(
-    private fb: FormBuilder,
-    private authService: AuthService,
-    private router: Router,
-    private toast: HotToastService
-  ) {}
+  loginForm = this.fb.group({
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', [Validators.required, Validators.minLength(6)]]
+  });
 
-  ngOnInit(): void {
-    this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]]
+  ngOnInit(): void {}
+
+  onSubmit(): void {
+
+    if (this.loginForm.invalid) {
+      this.loginForm.markAllAsTouched();
+      return;
+    }
+
+    this.isLoading = true;
+
+    const credentials = this.loginForm.getRawValue();
+
+    this.authService.login(credentials).subscribe({
+      next: () => {
+        this.toast.success('Login successful');
+        this.router.navigateByUrl('/');
+      },
+      error: (err) => {
+        this.toast.error(err?.message ?? 'Login failed');
+        this.isLoading = false;
+      }
     });
   }
 
-  onSubmit(): void {
-    if (this.loginForm.valid) {
-      this.isLoading = true;
-      this.authService.login(this.loginForm.value).subscribe({
-        next: () => {
-          this.toast.success('Login successful!');
-          this.router.navigate(['/']);
-        },
-        error: (err) => {
-          this.toast.error(err.message || 'Login failed');
-          this.isLoading = false;
-        }
-      });
-    } else {
-      this.loginForm.markAllAsTouched();
-    }
-  }
 }

@@ -5,7 +5,7 @@
 
 import { Injectable, ErrorHandler, Injector } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ToastService } from '@core_services/toast.service';
+import { ToastService } from '@core_services/core/toast.service';
 import { environment } from '@environments/environment';
 
 export interface ApiError {

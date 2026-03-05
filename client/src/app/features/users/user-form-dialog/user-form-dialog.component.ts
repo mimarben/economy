@@ -8,7 +8,7 @@ import { MaterialModule } from '@utils/material.module';
 import { UserBase as User, USER_ROLE_OPTIONS } from '@users_models/UserBase';
 import { UserService } from '@users_services/user.service';
 import { ApiResponse } from '@core_models/apiResponse';
-import { ToastService } from '@core_services/toast.service';
+import { ToastService } from '@core_services/core/toast.service';
 import { environment } from '@environments/environment';
 @Component({
   selector: 'app-user-form-dialog',

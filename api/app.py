@@ -7,7 +7,7 @@ import sys
 from werkzeug.exceptions import HTTPException
 from flask_cors import CORS
 from sqlalchemy.exc import TimeoutError as SQLAlchemyTimeoutError
-from flask_jwt_extended import JWTManager
+from flask_jwt_extended import JWTManager, verify_jwt_in_request
 
 load_dotenv()
 pythonpath = os.getenv('PYTHONPATH')
@@ -16,8 +16,7 @@ if pythonpath and pythonpath not in sys.path:
 
 
 from routers import register_blueprints
-
-from config import Config, DevelopmentConfig
+from config import DevelopmentConfig
 
 # Setup logging
 from services.logs.logger_service import setup_logger
@@ -28,11 +27,18 @@ app = Flask(__name__)
 app.config.from_object(DevelopmentConfig)
 jwt = JWTManager(app)
 
+@app.before_request
+def global_auth():
+    if request.path.startswith(f"{app.config['PREFIX']}/auth"):
+        return
+    if request.method == "OPTIONS":
+        return
+    verify_jwt_in_request()
+
 CORS(app,
     origins=app.config['CORS']['origins'],
     methods=app.config['CORS']['methods'],
     allow_headers=app.config['CORS']['allow_headers'])
-
 
 # Define the locale selector function
 def get_locale():
@@ -44,7 +50,6 @@ babel = Babel(app, locale_selector=get_locale)
 
 # Register route blueprint
 register_blueprints(app, url_prefix=app.config['PREFIX'])
-
 
 # Global error handler
 @app.errorhandler(Exception)

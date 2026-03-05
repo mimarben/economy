@@ -9,7 +9,7 @@ import { GenericTableComponent, TableColumn } from '@shared/generic-table/generi
 import { ApiResponse } from '@core_models/apiResponse';
 import { FormFactoryService } from '@factories/forms/form-factory.service';
 import { FormFieldConfig } from '@shared/generic-form/form-config';
-import { ToastService } from '@core_services/toast.service';
+import { ToastService } from '@core_services/core/toast.service';
 import { environment } from '@environments/environment';
 import { HouseholdMemberService } from '@households_services/household-member.service';
 import { UserService } from '@users_services/user.service';
