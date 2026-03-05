@@ -33,7 +33,7 @@
 }
 
 .canvas:not(.menu-hidden) {
-  margin-left: var(--sidenav-width, 240px);
+  margin-left: var(--sidenav-width, 250px);
 }
 
 .canvas.menu-hidden {
