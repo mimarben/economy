@@ -3,34 +3,39 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
 import { environment } from '@environments/environment';
+import { ApiResponse } from '@core_models/apiResponse';
 
-export interface LoginResponse {
+interface LoginTokens {
   access_token: string;
   refresh_token: string;
-  user_id: string;
-  role: string;
+  token_type: string;
 }
-
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private readonly apiUrl = environment.apiUrl;
   private readonly tokenKey = 'auth_token';
-  
+
   // Observable to track login state
   private isLoggedInSubject = new BehaviorSubject<boolean>(this.hasToken());
   public isLoggedIn$ = this.isLoggedInSubject.asObservable();
 
   constructor(private http: HttpClient) {}
 
-  login(credentials: { email: string; password: string }): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.apiUrl}/auth/login`, credentials).pipe(
-      tap((response) => {
-        if (response && response.access_token) {
-          localStorage.setItem(this.tokenKey, response.access_token);
-          if (response.refresh_token) {
-            localStorage.setItem('refresh_token', response.refresh_token);
+  login(credentials: { email: string; password: string }): Observable<ApiResponse<LoginTokens>> {
+    return this.http.post<ApiResponse<LoginTokens>>(`${this.apiUrl}/auth/login`, credentials).pipe(
+      tap((res) => {
+        const accessToken= res.response.access_token;
+        const refreshToken= res.response.refresh_token;
+        const tokenType= res.response.token_type;
+        if (accessToken) {
+          localStorage.setItem(this.tokenKey, accessToken);
+          if (refreshToken) {
+            localStorage.setItem('refresh_token', refreshToken);
+          }
+          if(tokenType){
+            localStorage.setItem('token_type', tokenType);
           }
           this.isLoggedInSubject.next(true);
         }

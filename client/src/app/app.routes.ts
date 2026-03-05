@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from './features/home/home.component';
 import { authGuard } from './core/guards/auth.guard';
-import { UsersComponent } from './features/users/users.component';
+import { UsersComponent } from '@components/users/users.component';
 import { ExpensesComponent } from './features/expenses/expeneses.component';
 import { IncomesComponent } from  './features/incomes/incomes-component'
 import { IncomesCategoriesComponent } from './features/incomes/incomes-categories/incomes-categories.component';
