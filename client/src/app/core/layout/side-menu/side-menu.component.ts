@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MaterialModule } from '@utils/material.module';
@@ -91,6 +91,7 @@ const BOTTOM_LINKS: MenuLink[] = [
 export class SideMenuComponent {
 
   @Input() isHidden = false;
+  @Output() hideMenu = new EventEmitter<void>();
 
   readonly topLinks    = TOP_LINKS;
   readonly sections    = SECTIONS;
