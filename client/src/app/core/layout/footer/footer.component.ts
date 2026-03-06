@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { MaterialModule } from '@utils/material.module';
-
 import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'app-footer',
@@ -9,7 +8,7 @@ import { TranslateModule } from '@ngx-translate/core';
     TranslateModule
   ],
   templateUrl: './footer.component.html',
-  styleUrl: './footer.component.css'
+  styleUrl: './footer.component.scss'
 })
 export class FooterComponent {
 

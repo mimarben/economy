@@ -1,7 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, Validators, ReactiveFormsModule, NonNullableFormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
-
+import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from '@core_services/auth/auth.service';
 
 import { CommonModule } from '@angular/common';
@@ -15,7 +15,8 @@ import { HotToastService } from '@ngxpert/hot-toast';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    MaterialModule
+    MaterialModule,
+    TranslateModule
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'

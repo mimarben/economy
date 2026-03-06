@@ -1,11 +1,11 @@
 .footer {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  justify-content: center;
+  width: 100%;
   height: 56px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   border-top: 1px solid var(--app-border);
   background: var(--app-surface);
   color: var(--app-muted);
+  // quita position: fixed, bottom, left, right
 }

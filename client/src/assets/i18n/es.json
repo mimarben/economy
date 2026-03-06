@@ -13,7 +13,7 @@
     "edit": "Editar",
     "view": "Ver"
   },
-   "users": {
+  "users": {
     "title": "Users List",
     "refresh": "Refresh list",
     "no_data": "No users available",
@@ -53,5 +53,33 @@
   },
   "places":{
     "title": "Places"
+  },
+  "AUTH": {
+    "BRAND": {
+      "NAME": "Enconomy"
+    },
+    "LOGIN": {
+      "SUBTITLE": "Aplicación para economia del hogar",
+      "SUBMIT": "Iniciar sesión",
+      "FORGOT_PASSWORD": "¿Olvidaste tu contraseña?",
+      "CREATE_ACCOUNT": "Crear cuenta",
+      "EMAIL": {
+        "LABEL": "Correo electrónico",
+        "PLACEHOLDER": "ejemplo@correo.com",
+        "ERROR": {
+          "REQUIRED": "El correo es obligatorio",
+          "INVALID": "Correo electrónico inválido"
+        }
+      },
+      "PASSWORD": {
+        "LABEL": "Contraseña",
+        "TOGGLE": "Mostrar u ocultar contraseña",
+        "ERROR": {
+          "REQUIRED": "La contraseña es obligatoria",
+          "MINLENGTH": "Mínimo 6 caracteres"
+        }
+      }
+    }
   }
 }
+

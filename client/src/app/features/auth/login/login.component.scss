@@ -1,0 +1,67 @@
+// Mínimo CSS para centrar — todo lo demás es Material puro
+.login-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1976d2 0%, #42a5f5 100%);
+}
+
+.login-card {
+  mat-card-header {
+    flex-direction: column;
+    align-items: center;
+
+    // wrapper interno que genera Material
+    ::ng-deep .mat-mdc-card-header-text {
+      margin: 0;
+      text-align: center;
+      width: 100%;
+    }
+
+    mat-card-title,
+    mat-card-subtitle {
+      text-align: center;
+      width: 100%;
+      margin: 0;
+    }
+  }
+}
+
+
+.login-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 16px 16px;
+  gap: 8px;
+
+  h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 500;
+  }
+}
+
+.login-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+  }
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px 0;
+}
+
+.full-width {
+  width: 100%;
+}

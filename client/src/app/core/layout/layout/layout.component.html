@@ -1,16 +1,16 @@
-@if (!isLoginPage) {
-  <app-header [title]="pageTitle" (toggleSidenav)="handleToggleSideMenu()"></app-header>
-}
+<mat-sidenav-container class="container" autosize>
+  <mat-sidenav #sidenav mode="side" opened="true" class="sidenav">
+    <app-side-menu></app-side-menu>
+  </mat-sidenav>
 
-<div class="canvas" [class.menu-hidden]="isSideMenuHidden" [class.login-layout]="isLoginPage">
-  @if (!isLoginPage) {
-    <app-side-menu [isHidden]="isSideMenuHidden" (hideMenu)="handleToggleSideMenu()"></app-side-menu>
-  }
-  <main class="main" [class.full-width]="isLoginPage">
-    <router-outlet (activate)="setHeaderTitle()"></router-outlet>
-  </main>
-</div>
+  <mat-sidenav-content>
+    <app-header
+      [title]="pageTitle"
+      (toggleSidenav)="sidenav.toggle()">
+    </app-header>
 
-@if (!isLoginPage) {
-  <app-footer></app-footer>
-}
+    <div class="content">
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>

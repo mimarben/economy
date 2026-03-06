@@ -1,65 +1,128 @@
-<nav class="side-menu" [class.hidden]="isHidden">
-  <div class="brand">
-    <img src="assets/logo.png" alt="Economy" class="brand-logo" />
-    <div class="brand-text">
-      <span class="brand-title">Economy App</span>
-      <span class="brand-subtitle">Control panel</span>
-    </div>
-    <button mat-icon-button class="hide-menu-button" (click)="hideMenu.emit()" aria-label="Ocultar menú lateral">
-      <mat-icon>chevron_left</mat-icon>
-    </button>
-  </div>
+<div class="side-menu-container" [class.mini]="!isExpanded && !isShowing">
 
+  <!-- BRAND -->
   <mat-nav-list>
-    <p class="group-title">General</p>
+    <mat-list-item class="brand-item" (click)="toggleExpand.emit()" disableRipple>
+
+      <mat-icon matListItemIcon *ngIf="!isExpanded && !isShowing">
+        menu
+      </mat-icon>
+
+      <span matListItemTitle *ngIf="isExpanded || isShowing">
+        Economy App
+      </span>
+
+    </mat-list-item>
+  </mat-nav-list>
+
+  <mat-divider></mat-divider>
+
+  <!-- TOP LINKS -->
+  <mat-nav-list>
 
     @for (link of topLinks; track link.route) {
+
       <a mat-list-item
-         class="menu-item"
          [routerLink]="link.route"
          routerLinkActive="active-link"
-         [routerLinkActiveOptions]="{ exact: !!link.exact }">
-        <mat-icon matListItemIcon>{{ link.icon }}</mat-icon>
-        <span matListItemTitle>{{ link.label }}</span>
+         disableRipple>
+
+        <mat-icon matListItemIcon>
+          {{ link.icon }}
+        </mat-icon>
+
+        <span matListItemTitle *ngIf="isExpanded || isShowing">
+          {{ link.label }}
+        </span>
+
       </a>
+
     }
 
-    <mat-divider class="menu-divider"></mat-divider>
-    <p class="group-title">Finance</p>
+  </mat-nav-list>
+
+  <mat-divider *ngIf="sections.length"></mat-divider>
+
+  <!-- SECTIONS -->
+  <mat-accordion class="menu-accordion">
 
     @for (section of sections; track section.title) {
-      <mat-expansion-panel hideToggle class="menu-expansion-panel" #panel>
-        <mat-expansion-panel-header class="menu-item">
-          <mat-panel-title class="expansion-title">
-            <mat-icon class="menu-icon">{{ section.icon }}</mat-icon>
-            <span class="menu-text">{{ section.title }}</span>
-            <mat-icon class="chevron-icon" [class.rotated]="panel.expanded">expand_more</mat-icon>
+
+      <mat-expansion-panel
+        class="section-panel"
+        [hideToggle]="true"
+        [disabled]="!isExpanded && !isShowing">
+
+        <mat-expansion-panel-header class="section-header">
+
+          <mat-panel-title>
+
+            <mat-icon>
+              {{ section.icon }}
+            </mat-icon>
+
+            <span *ngIf="isExpanded || isShowing">
+              {{ section.title }}
+            </span>
+
           </mat-panel-title>
+
+          <mat-icon class="chevron" *ngIf="isExpanded || isShowing">
+            expand_more
+          </mat-icon>
+
         </mat-expansion-panel-header>
 
-        <mat-nav-list class="submenu">
+        <mat-nav-list class="submenu-list">
+
           @for (link of section.links; track link.route) {
+
             <a mat-list-item
-               class="submenu-item"
                [routerLink]="link.route"
-               routerLinkActive="active-link">
-              <span matListItemTitle>{{ link.label }}</span>
+               routerLinkActive="active-link"
+               disableRipple>
+
+              <span matListItemTitle>
+                {{ link.label }}
+              </span>
+
             </a>
+
           }
+
         </mat-nav-list>
+
       </mat-expansion-panel>
+
     }
 
-    <mat-divider class="menu-divider"></mat-divider>
+  </mat-accordion>
+
+  <mat-divider></mat-divider>
+
+  <!-- BOTTOM LINKS -->
+
+  <mat-nav-list>
 
     @for (link of bottomLinks; track link.route) {
+
       <a mat-list-item
-         class="menu-item"
          [routerLink]="link.route"
-         routerLinkActive="active-link">
-        <mat-icon matListItemIcon>{{ link.icon }}</mat-icon>
-        <span matListItemTitle>{{ link.label }}</span>
+         routerLinkActive="active-link"
+         disableRipple>
+
+        <mat-icon matListItemIcon>
+          {{ link.icon }}
+        </mat-icon>
+
+        <span matListItemTitle *ngIf="isExpanded || isShowing">
+          {{ link.label }}
+        </span>
+
       </a>
+
     }
+
   </mat-nav-list>
-</nav>
+
+</div>

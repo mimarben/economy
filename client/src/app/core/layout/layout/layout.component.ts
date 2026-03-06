@@ -3,10 +3,10 @@ import { RouterOutlet } from '@angular/router';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { filter, Subscription } from 'rxjs';
-
+import { MaterialModule } from '@app/core/utils/material.module';
 import { HeaderComponent } from '../header/header.component';
 import { SideMenuComponent } from '../side-menu/side-menu.component';
-import { FooterComponent } from '../footer/footer.component';
+
 
 @Component({
   selector: 'app-layout',
@@ -16,25 +16,26 @@ import { FooterComponent } from '../footer/footer.component';
     RouterOutlet,
     HeaderComponent,
     SideMenuComponent,
-    FooterComponent
+    MaterialModule,
   ],
   templateUrl: './layout.component.html',
-  styleUrl: './layout.component.css'
+  styleUrl: './layout.component.scss',
 })
 export class LayoutComponent implements OnInit, OnDestroy {
-  isSideMenuHidden = false;
   pageTitle = '';
-  isLoginPage = false;
+
   private routerSubscription?: Subscription;
 
-  constructor(private router: Router, private activatedRoute: ActivatedRoute) {}
+  constructor(
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
+  ) {}
 
   ngOnInit() {
-    this.checkIfLogin(this.router.url);
+    this.setHeaderTitle(); // Set initial title
     this.routerSubscription = this.router.events
-      .pipe(filter(event => event instanceof NavigationEnd))
+      .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
-        this.checkIfLogin(event.urlAfterRedirects);
         this.setHeaderTitle();
       });
   }
@@ -45,19 +46,11 @@ export class LayoutComponent implements OnInit, OnDestroy {
     }
   }
 
-  private checkIfLogin(url: string) {
-    this.isLoginPage = url.includes('/login');
-  }
-
   setHeaderTitle() {
     let route = this.activatedRoute;
     while (route.firstChild) {
       route = route.firstChild;
     }
     this.pageTitle = route.snapshot.data['title'] || '';
-  }
-
-  handleToggleSideMenu() {
-    this.isSideMenuHidden = !this.isSideMenuHidden;
   }
 }

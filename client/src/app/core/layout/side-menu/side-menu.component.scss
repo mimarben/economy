@@ -1,0 +1,128 @@
+:host {
+  display: block;
+  height: 100%;
+}
+
+/* SIDEBAR WIDTH */
+
+.side-menu-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 240px;
+}
+
+.side-menu-container.mini {
+  width: 64px;
+}
+
+/* REMOVE MATERIAL HOVER BACKGROUND */
+
+.mat-mdc-list-item:hover {
+  background: transparent !important;
+}
+
+/* BRAND */
+
+.brand-item {
+  height: 64px;
+  font-weight: 600;
+}
+
+/* SECTIONS */
+
+.section-header {
+  height: 48px;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+}
+
+/* CHEVRON */
+
+.chevron {
+  margin-left: auto;
+  transition: transform 0.2s ease;
+}
+
+.section-panel.mat-expanded .chevron {
+  transform: rotate(180deg);
+}
+
+/* SUBMENU */
+
+.submenu-list a {
+  height: 44px;
+  padding-left: 52px;
+  font-size: 0.9rem;
+}
+
+/* ACTIVE LINK */
+
+.active-link {
+  font-weight: 600;
+  color: var(--mat-sys-primary);
+}
+
+.active-link mat-icon {
+  color: var(--mat-sys-primary);
+}
+
+/* DIVIDERS */
+
+mat-divider {
+  margin: 4px 0;
+}
+
+/* REMOVE MATERIAL ACCORDION STYLE */
+
+.section-panel {
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
+}
+
+.section-panel .mat-expansion-panel-body {
+  padding: 0;
+}
+
+/* REMOVE MATERIAL PANEL STYLE COMPLETELY */
+
+.section-panel {
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  margin: 0 !important;
+}
+
+/* remove divider between panels */
+
+.section-panel:not(:last-child) {
+  border-bottom: none !important;
+}
+
+/* header */
+
+.section-panel .mat-expansion-panel-header {
+  padding: 0 16px;
+  height: 48px;
+  background: transparent !important;
+}
+
+/* body */
+
+.section-panel .mat-expansion-panel-body {
+  padding: 0 !important;
+}
+
+/* remove MDC elevation */
+
+.mat-expansion-panel {
+  box-shadow: none !important;
+}
+
+/* remove spacing Angular Material adds */
+
+.mat-accordion .mat-expansion-panel {
+  margin: 0 !important;
+}

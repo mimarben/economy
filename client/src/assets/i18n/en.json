@@ -59,5 +59,32 @@
   },
   "places":{
     "title": "Places"
+  },
+  "AUTH": {
+    "BRAND": {
+      "NAME": "Enconomy"
+    },
+    "LOGIN": {
+      "SUBTITLE": "Home eceonomy app",
+      "SUBMIT": "Login",
+      "FORGOT_PASSWORD": "Do you forget the password?",
+      "CREATE_ACCOUNT": "Create account",
+      "EMAIL": {
+        "LABEL": "Email",
+        "PLACEHOLDER": "sample@email.com",
+        "ERROR": {
+          "REQUIRED": "Email is mandatory",
+          "INVALID": "Invalid email"
+        }
+      },
+      "PASSWORD": {
+        "LABEL": "Password",
+        "TOGGLE": "Show and hide password",
+        "ERROR": {
+          "REQUIRED": "The password is mandatory",
+          "MINLENGTH": "Minimun 8 characteres"
+        }
+      }
+    }
   }
 }

@@ -1,12 +1,11 @@
-<mat-toolbar class="top-menu" style="background: transparent; color: #555555;">
-  <button mat-icon-button (click)="toggleSidenav.emit()">
+<mat-toolbar color="primary" class="example-toolbar">
+
+  <button mat-icon-button (click)="toggleMenu()">
     <mat-icon>menu</mat-icon>
   </button>
-  <span>My Economy App</span>
-  <span class="spacer"></span>
-  <span class="toolbar-title">{{ title | translate }}</span>
-  <span class="spacer"></span>
-  <button mat-icon-button aria-label="Home">
-    <mat-icon>home</mat-icon>
-  </button>
+
+  <span class="example-app-name">
+    {{ title || 'Nested Menus' }}
+  </span>
+
 </mat-toolbar>

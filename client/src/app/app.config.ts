@@ -6,23 +6,32 @@ import { authInterceptor } from './core/interceptors/auth.interceptor';
 import { routes } from './app.routes';
 import { provideHotToastConfig } from '@ngxpert/hot-toast';
 
-import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { HttpClient } from '@angular/common/http';
+import { provideTranslateService } from '@ngx-translate/core';
+import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
+
 
 import { environment } from '../environments/environment';
 import { HttpInterceptorService } from '@core_services/core/http.interceptor';
 import { ErrorHandlerService } from '@core_services/core/error-handler.service';
 
-export function HttpLoaderFactory(http: HttpClient) {
-  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
-}
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
+
     provideRouter(routes),
+
     provideHttpClient(withInterceptors([authInterceptor])),
+
+    provideTranslateService({
+      defaultLanguage: environment.i18n.defaultLanguage,
+      loader: provideTranslateHttpLoader({
+        prefix: './assets/i18n/',
+        suffix: '.json'
+      })
+    }),
+
+    provideHotToastConfig(),
 
     // ✅ Register Global HTTP Interceptor
     {
@@ -35,19 +44,6 @@ export const appConfig: ApplicationConfig = {
     {
       provide: ErrorHandler,
       useClass: ErrorHandlerService,
-    },
-
-    provideHotToastConfig(),
-    importProvidersFrom(
-      TranslateModule.forRoot({
-        defaultLanguage: environment.i18n.defaultLanguage,
-        loader: {
-          provide: TranslateLoader,
-          useFactory: HttpLoaderFactory,
-          deps: [HttpClient]
-        }
-      })
-    )
+    }
   ]
-
 };
