@@ -1,6 +1,20 @@
 <div class="excel-import-container">
   <h2>📂 Importar movimientos bancarios</h2>
 
+  <div class="upload-section bank-selector">
+    <label for="bank-select" class="bank-label">Banco / formato</label>
+    <select id="bank-select" class="form-select" [(ngModel)]="selectedBankId" [disabled]="loading || aiClassifying">
+      <option *ngFor="let bank of bankOptions" [value]="bank.id">{{ bank.name }}</option>
+    </select>
+  </div>
+
+
+  <div class="upload-section ai-toggle">
+    <label class="bank-label" for="ai-toggle">Clasificación IA</label>
+    <input id="ai-toggle" type="checkbox" [(ngModel)]="useAiClassification" [disabled]="loading || aiClassifying" />
+    <small class="hint">Si lo desactivas, importas primero y categorizas manualmente.</small>
+  </div>
+
   <div class="upload-section">
     <input
       type="file"
@@ -22,7 +36,7 @@
       }
     </button>
 
-    <span class="file-name-display" *ngIf="fileName">{{ fileName }}</span>
+    <span class="file-name-display" *ngIf="fileName">{{ fileName }} · {{ getSelectedBank()?.name }}</span>
   </div>
 
   <div *ngIf="loading" class="loading">

@@ -4,7 +4,9 @@ from models.expenses.expense_category_model import ExpensesCategory
 from models.incomes.income_category_model import IncomesCategory
 from models.investments.investment_category_model import InvestmentsCategory
 import urllib.request
+import urllib.error
 import json
+import re
 import unicodedata
 
 # Setup logging
@@ -38,7 +40,7 @@ class TransactionAIService:
             if tx_id is None or not categories:
                 continue
 
-            merchant_match = self._match_known_merchant(tx, categories, type_)
+            merchant_match = self._match_known_patterns(tx, categories, type_)
             if merchant_match:
                 predictions_by_id[tx_id] = merchant_match
                 continue
@@ -91,7 +93,10 @@ class TransactionAIService:
             {
                 "id": tx.get("id"),
                 "description": tx.get("description"),
-                "amount": tx.get("amount")
+                "amount": tx.get("amount"),
+                "bank_id": tx.get("bank_id"),
+                "bank_name": tx.get("bank_name"),
+                "import_format": tx.get("import_format"),
             }
             for tx in transactions
         ]
@@ -103,7 +108,8 @@ class TransactionAIService:
 
                   Rules:
                   - Use only category names from available categories.
-                  - If a merchant clearly maps to a category (example: Carrefour -> supermarket), prioritize that category.
+                  - Consider bank context (bank_id, bank_name, import_format) to interpret descriptions.
+                  - Prioritize specific merchant matches over generic labels.
                   - Return exactly one category per transaction id.
 
                   Return only valid JSON with this schema:
@@ -132,10 +138,14 @@ class TransactionAIService:
             method="POST"
         )
 
-        with urllib.request.urlopen(req, timeout=45) as response:
-            result = json.loads(response.read().decode("utf-8"))
+        try:
+            with urllib.request.urlopen(req, timeout=45) as response:
+                result = json.loads(response.read().decode("utf-8"))
+        except urllib.error.URLError as exc:
+            logger.warning("AI service unavailable. Returning empty predictions. Error: %s", exc)
+            return {}
 
-        content = result["choices"][0]["message"]["content"]
+        content = result.get("choices", [{}])[0].get("message", {}).get("content", "")
         try:
             parsed = json.loads(content)
         except Exception:
@@ -164,31 +174,47 @@ class TransactionAIService:
 
         return predictions
 
-    def _match_known_merchant(self, tx: dict, categories: list, type_: str):
+    def _match_known_patterns(self, tx: dict, categories: list, type_: str):
         if type_ != "expense":
             return None
 
         description = self._normalize_text(tx.get("description", ""))
-        supermarket_merchants = ["carrefour", "mercadona", "lidl", "dia", "alcampo", "eroski"]
-        is_supermarket_merchant = any(merchant in description for merchant in supermarket_merchants)
+        bank_context = self._normalize_text(
+            f"{tx.get('bank_id', '')} {tx.get('bank_name', '')} {tx.get('import_format', '')}"
+        )
 
-        if not is_supermarket_merchant:
-            return None
+        keyword_groups = [
+            ["carrefour", "mercadona", "lidl", "dia", "alcampo", "eroski", "consum"],
+            ["netflix", "spotify", "prime video", "hbo", "disney"],
+            ["repsol", "cepsa", "bp", "gasolin"],
+            ["farmacia", "parafarmacia"],
+        ]
 
+        for keywords in keyword_groups:
+            if any(keyword in description for keyword in keywords):
+                matched = self._find_category_by_keywords(categories, keywords)
+                if matched:
+                    return matched
+
+        if "carrefour_pass" in bank_context and any(token in description for token in ["seguro", "comision", "interes"]):
+            matched = self._find_category_by_keywords(categories, ["comision", "interes", "seguro", "banco"])
+            if matched:
+                return matched
+
+        return None
+
+    def _find_category_by_keywords(self, categories: list, keywords: list[str]):
+        normalized_keywords = [self._normalize_text(k) for k in keywords]
         for category in categories:
             category_text = self._normalize_text(
                 f"{category.name} {getattr(category, 'description', '')}"
             )
-            if any(
-                keyword in category_text
-                for keyword in ["supermerc", "market", "grocery", "alimentacion", "comida"]
-            ):
+            if any(re.search(rf"\b{re.escape(keyword)}", category_text) for keyword in normalized_keywords):
                 return {
                     "id": category.id,
                     "name": category.name,
                     "description": getattr(category, "description", None)
                 }
-
         return None
 
     def _normalize_text(self, text: str) -> str:

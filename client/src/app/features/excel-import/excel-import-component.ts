@@ -28,6 +28,27 @@ interface FormatDetection {
   headerRowNumber: number;
 }
 
+interface BankOption {
+  id: string;
+  name: string;
+  format: keyof typeof COLUMN_MAPS;
+}
+
+interface PendingTransaction {
+  id: number;
+  date: string;
+  description: string;
+  comment: string;
+  amount: number;
+  type: 'income' | 'expense' | 'investment';
+  category_id: number;
+  source_id: number;
+  selected: boolean;
+  bank_id: string | null;
+  bank_name: string | null;
+  import_format: keyof typeof COLUMN_MAPS | null;
+}
+
 const COLUMN_MAPS = {
   ing: {
     requiredHeaders: ['F. VALOR', 'DESCRIPCIÓN', 'IMPORTE (€)', 'SALDO (€)'],
@@ -71,11 +92,19 @@ export class ExcelImportComponent {
   sources: SourceBase[] = [];
 
   // Transacciones pendientes de revisión
-  pendingTransactions: any[] = [];
+  pendingTransactions: PendingTransaction[] = [];
 
   loading = false;
   aiClassifying = false;
   fileName = '';
+  useAiClassification = true;
+
+  readonly bankOptions: BankOption[] = [
+    { id: 'ing', name: 'ING', format: 'ing' },
+    { id: 'carrefour_pass', name: 'Carrefour Pass', format: 'carrefour_pass' },
+  ];
+
+  selectedBankId = this.bankOptions[0].id;
 
   private currentFormat: keyof typeof COLUMN_MAPS | null = null;
 
@@ -145,6 +174,11 @@ export class ExcelImportComponent {
       .filter(({ keyword }) => !!keyword?.trim());
   }
 
+
+  getSelectedBank(): BankOption | undefined {
+    return this.bankOptions.find(bank => bank.id === this.selectedBankId);
+  }
+
   /** Evento al seleccionar un archivo Excel */
   async onFileSelected(event: Event): Promise<void> {
     const input = event.target as HTMLInputElement;
@@ -159,7 +193,13 @@ export class ExcelImportComponent {
       const workbook = await this.loadWorkbook(file);
       const sheet = workbook.worksheets[0];
 
-      const detection = this.identifyFormat(sheet);
+      const selectedBank = this.getSelectedBank();
+      if (!selectedBank) {
+        alert('❌ ERROR: Debes seleccionar un banco válido antes de importar.');
+        return;
+      }
+
+      const detection = this.identifyFormat(sheet, selectedBank.format);
 
       if (!detection.format || !detection.headerIndices) {
         alert('❌ ERROR: Formato de archivo Excel no reconocido.');
@@ -169,8 +209,10 @@ export class ExcelImportComponent {
       this.currentFormat = detection.format;
       this.parseSheet(sheet, detection.headerIndices, detection.headerRowNumber);
 
-      // Clasificar con IA antes de mostrar al usuario
-      await this.classifyWithAI();
+      // Paso 1: parsear y mostrar. Paso 2 (opcional): clasificar con IA.
+      if (this.useAiClassification) {
+        await this.classifyWithAI();
+      }
 
     } catch (err) {
       console.error('❌ Error procesando el archivo:', err);
@@ -199,7 +241,7 @@ export class ExcelImportComponent {
   }
 
   /** Identifica el formato del archivo y devuelve los índices de las columnas clave */
-  private identifyFormat(sheet: ExcelJS.Worksheet): FormatDetection {
+  private identifyFormat(sheet: ExcelJS.Worksheet, expectedFormat: keyof typeof COLUMN_MAPS): FormatDetection {
     let headerRow: ExcelJS.Row | null = null;
     let headers: string[] = [];
     let headerRowNumber = 0;
@@ -226,9 +268,9 @@ export class ExcelImportComponent {
 
       if (normalized.filter(n => n !== '').length === 0) continue;
 
-      // Comprobar cada formato
-      for (const formatName in COLUMN_MAPS) {
-        const format = COLUMN_MAPS[formatName as keyof typeof COLUMN_MAPS];
+      // Comprobar sólo el formato esperado para el banco seleccionado
+      for (const formatName of [expectedFormat]) {
+        const format = COLUMN_MAPS[formatName];
         const required = format.requiredHeaders.map(h => this.normalize(h));
 
         // Verificar si todos los headers requeridos están presentes
@@ -251,8 +293,8 @@ export class ExcelImportComponent {
     }
 
     // Mapear columnas según el formato detectado
-    for (const formatName in COLUMN_MAPS) {
-      const format = COLUMN_MAPS[formatName as keyof typeof COLUMN_MAPS];
+    for (const formatName of [expectedFormat]) {
+      const format = COLUMN_MAPS[formatName];
       const required = format.requiredHeaders.map(h => this.normalize(h));
 
       const hasAllRequired = required.every(req =>
@@ -365,6 +407,8 @@ export class ExcelImportComponent {
       const source_id = this.findSource(description);
 
       // --- Construir objeto pendiente ---
+      const selectedBank = this.getSelectedBank();
+
       this.pendingTransactions.push({
         id: Date.now() + rowIndex, // ID temporal
         date: dateValue ? dateValue.toISOString() : new Date().toISOString(),
@@ -374,7 +418,10 @@ export class ExcelImportComponent {
         type,
         category_id, // Pre-filled or 0
         source_id: source_id || 1, // Default source
-        selected: true // Checkbox para importar
+        selected: true, // Checkbox para importar
+        bank_id: selectedBank?.id ?? null,
+        bank_name: selectedBank?.name ?? null,
+        import_format: this.currentFormat,
       });
     });
   }
@@ -385,7 +432,10 @@ export class ExcelImportComponent {
 
     this.aiClassifying = true;
 
-    const payload = this.pendingTransactions.map(t => ({
+    const payload = this.pendingTransactions.map((t: PendingTransaction) => ({
+      bank_id: t.bank_id ?? null,
+      bank_name: t.bank_name ?? null,
+      import_format: t.import_format ?? this.currentFormat ?? null,
       id: t.id,
       type: t.type as 'income' | 'expense' | 'investment',
       description: t.description,
