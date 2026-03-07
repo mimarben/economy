@@ -9,6 +9,9 @@ export interface ClassifyRequest {
   type: 'income' | 'expense' | 'investment';
   description: string;
   amount: number;
+  bank_id?: string;
+  bank_name?: string;
+  import_format?: string;
 }
 
 export interface ClassifyResult {
