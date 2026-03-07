@@ -34,6 +34,21 @@ interface BankOption {
   format: keyof typeof COLUMN_MAPS;
 }
 
+interface PendingTransaction {
+  id: number;
+  date: string;
+  description: string;
+  comment: string;
+  amount: number;
+  type: 'income' | 'expense' | 'investment';
+  category_id: number;
+  source_id: number;
+  selected: boolean;
+  bank_id: string | null;
+  bank_name: string | null;
+  import_format: keyof typeof COLUMN_MAPS | null;
+}
+
 const COLUMN_MAPS = {
   ing: {
     requiredHeaders: ['F. VALOR', 'DESCRIPCIÓN', 'IMPORTE (€)', 'SALDO (€)'],
@@ -77,11 +92,12 @@ export class ExcelImportComponent {
   sources: SourceBase[] = [];
 
   // Transacciones pendientes de revisión
-  pendingTransactions: any[] = [];
+  pendingTransactions: PendingTransaction[] = [];
 
   loading = false;
   aiClassifying = false;
   fileName = '';
+  useAiClassification = true;
 
   readonly bankOptions: BankOption[] = [
     { id: 'ing', name: 'ING', format: 'ing' },
@@ -193,8 +209,10 @@ export class ExcelImportComponent {
       this.currentFormat = detection.format;
       this.parseSheet(sheet, detection.headerIndices, detection.headerRowNumber);
 
-      // Clasificar con IA antes de mostrar al usuario
-      await this.classifyWithAI();
+      // Paso 1: parsear y mostrar. Paso 2 (opcional): clasificar con IA.
+      if (this.useAiClassification) {
+        await this.classifyWithAI();
+      }
 
     } catch (err) {
       console.error('❌ Error procesando el archivo:', err);
@@ -414,7 +432,7 @@ export class ExcelImportComponent {
 
     this.aiClassifying = true;
 
-    const payload = this.pendingTransactions.map(t => ({
+    const payload = this.pendingTransactions.map((t: PendingTransaction) => ({
       bank_id: t.bank_id ?? null,
       bank_name: t.bank_name ?? null,
       import_format: t.import_format ?? this.currentFormat ?? null,

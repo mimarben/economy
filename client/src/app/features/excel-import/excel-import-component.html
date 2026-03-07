@@ -8,6 +8,13 @@
     </select>
   </div>
 
+
+  <div class="upload-section ai-toggle">
+    <label class="bank-label" for="ai-toggle">Clasificación IA</label>
+    <input id="ai-toggle" type="checkbox" [(ngModel)]="useAiClassification" [disabled]="loading || aiClassifying" />
+    <small class="hint">Si lo desactivas, importas primero y categorizas manualmente.</small>
+  </div>
+
   <div class="upload-section">
     <input
       type="file"

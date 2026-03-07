@@ -175,3 +175,11 @@
     max-width: 280px;
   }
 }
+
+
+.ai-toggle {
+  .hint {
+    color: #666;
+    font-size: 0.85em;
+  }
+}
