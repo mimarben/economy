@@ -16,14 +16,20 @@ import {
   HttpResponse,
   HttpErrorResponse,
 } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { Observable, throwError, BehaviorSubject } from 'rxjs';
+import { catchError, tap, switchMap, filter, take } from 'rxjs/operators';
+import { AuthService } from '../auth/auth.service';
+import { Router } from '@angular/router';
 import { ToastService } from '@core_services/core/toast.service';
 import { environment } from '@environments/environment';
+import { Injector } from '@angular/core';
 
 @Injectable()
 export class HttpInterceptorService implements HttpInterceptor {
-  constructor(private toastService: ToastService) {}
+  private isRefreshing = false;
+  private refreshTokenSubject: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
+
+  constructor(private toastService: ToastService, private injector: Injector) {}
 
   /**
    * Intercept all HTTP requests
@@ -52,6 +58,9 @@ export class HttpInterceptorService implements HttpInterceptor {
       }),
       // Handle errors globally
       catchError((error: HttpErrorResponse) => {
+        if (error.status === 401 && !request.url.includes('/auth/login') && !request.url.includes('/auth/refresh')) {
+          return this.handle401Error(request, next);
+        }
         this.handleError(error);
         return throwError(() => error);
       })
@@ -135,7 +144,7 @@ export class HttpInterceptorService implements HttpInterceptor {
             break;
           case 401:
             errorMessage = 'Unauthorized: please log in again';
-            this.handleUnauthorized();
+            // handle401Error will handle the retry or the redirect if retry fails
             break;
           case 403:
             errorMessage = 'Forbidden: you do not have permission';
@@ -176,12 +185,46 @@ export class HttpInterceptorService implements HttpInterceptor {
 
   /**
    * Handle 401 Unauthorized
-   * Can redirect to login or refresh token
+   * Redirect to login and clear auth token
    */
   private handleUnauthorized(): void {
-    // Clear auth token
-    localStorage.removeItem('auth_token');
-    // Could redirect to login page here
-    // this.router.navigate(['/login']);
+    const authService = this.injector.get(AuthService);
+    authService.logout();
+    const router = this.injector.get(Router);
+    router.navigate(['/login']);
+  }
+
+  /**
+   * Refresh Token and retry failed request
+   */
+  private handle401Error(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    if (!this.isRefreshing) {
+      this.isRefreshing = true;
+      this.refreshTokenSubject.next(null);
+
+      const authService = this.injector.get(AuthService);
+
+      return authService.refreshToken().pipe(
+        switchMap((tokenResponse: any) => {
+          this.isRefreshing = false;
+          const newToken = localStorage.getItem('auth_token');
+          this.refreshTokenSubject.next(newToken);
+          return next.handle(this.addHeaders(request));
+        }),
+        catchError((err) => {
+          this.isRefreshing = false;
+          this.handleUnauthorized();
+          return throwError(() => err);
+        })
+      );
+    } else {
+      return this.refreshTokenSubject.pipe(
+        filter(token => token != null),
+        take(1),
+        switchMap(jwt => {
+          return next.handle(this.addHeaders(request));
+        })
+      );
+    }
   }
 }

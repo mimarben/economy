@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
 import { environment } from '@environments/environment';
@@ -55,5 +55,32 @@ export class AuthService {
 
   hasToken(): boolean {
     return !!localStorage.getItem(this.tokenKey);
+  }
+
+  refreshToken(): Observable<ApiResponse<LoginTokens>> {
+    const refreshToken = localStorage.getItem('refresh_token');
+    
+    if (!refreshToken) {
+      return throwError(() => new Error('No refresh token available'));
+    }
+
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${refreshToken}`
+    });
+
+    return this.http.post<ApiResponse<LoginTokens>>(`${this.apiUrl}/auth/refresh`, {}, { headers }).pipe(
+      tap((res) => {
+        const accessToken = res.response?.access_token;
+        const newRefreshToken = res.response?.refresh_token;
+        
+        if (accessToken) {
+          localStorage.setItem(this.tokenKey, accessToken);
+          if (newRefreshToken) {
+             localStorage.setItem('refresh_token', newRefreshToken);
+          }
+          this.isLoggedInSubject.next(true);
+        }
+      })
+    );
   }
 }

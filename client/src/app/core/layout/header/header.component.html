@@ -5,7 +5,13 @@
   </button>
 
   <span class="example-app-name">
-    {{ title || 'Nested Menus' }}
+    {{ title | translate}}
   </span>
+
+  <span class="spacer" style="flex: 1 1 auto;"></span>
+
+  <button mat-icon-button (click)="logout()" aria-label="Logout" [matTooltip]="'Logout'">
+    <mat-icon>logout</mat-icon>
+  </button>
 
 </mat-toolbar>
