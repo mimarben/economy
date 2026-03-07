@@ -15,6 +15,8 @@ import { IncomeService } from '@incomes_services/income.service';
 import { ExpenseCategoryBase } from '@expenses_models/ExpenseCategoryBase';
 import { IncomeCategoryBase } from '@incomes_models/IncomeCategoryBase';
 import { TransactionAiService } from '@services/ai/transaction-ai.service';
+import { SourceService } from '@finance_services/source.service';
+import { SourceBase } from '@finance_models/SourceBase';
 
 interface ColumnMap {
   [key: string]: number;
@@ -66,6 +68,7 @@ export class ExcelImportComponent {
   // Listas de referencia cargadas de BD
   expenseCategories: ExpenseCategoryBase[] = [];
   incomeCategories: IncomeCategoryBase[] = [];
+  sources: SourceBase[] = [];
 
   // Transacciones pendientes de revisión
   pendingTransactions: any[] = [];
@@ -76,37 +79,8 @@ export class ExcelImportComponent {
 
   private currentFormat: keyof typeof COLUMN_MAPS | null = null;
 
-  // Mantenemos las keywords para la pre-clasificación
-  private readonly keywordCategories = [
-    { keyword: 'mercadona', category_id: 1 },
-    { keyword: 'carrefour', category_id: 1 },
-    { keyword: 'supermercado', category_id: 1 },
-    { keyword: 'gadis', category_id: 1 },
-    { keyword: 'amazon', category_id: 2 },
-    { keyword: 'nómina', category_id: 3 },
-    { keyword: 'nomina', category_id: 3 },
-    { keyword: 'transferencia', category_id: 4 },
-    { keyword: 'fruta', category_id: 1 },
-    { keyword: 'salon', category_id: 5 },
-    { keyword: 'belleza', category_id: 5 },
-  ];
-
-  private readonly keywordPlaces = [
-    { keyword: 'mercadona', place_id: 2 },
-    { keyword: 'carrefour', place_id: 1 },
-    { keyword: 'gadis', place_id: 6 },
-    { keyword: 'arte de la fruta', place_id: 5 },
-    { keyword: 'el arte', place_id: 5 },
-    { keyword: 'amazon', place_id: 3 },
-    { keyword: 'salon', place_id: 7 },
-  ];
-
-  private readonly keywordSources = [
-    { keyword: 'empresa', source_id: 1 },
-    { keyword: 'ingreso', source_id: 2 },
-    { keyword: 'nómina', source_id: 1 },
-    { keyword: 'salario', source_id: 1 },
-  ];
+  private keywordCategories: Array<{ keyword: string; category_id: number; type: 'income' | 'expense' }> = [];
+  private keywordSources: Array<{ keyword: string; source_id: number }> = [];
 
   constructor(
     private utils: UtilsService,
@@ -114,7 +88,8 @@ export class ExcelImportComponent {
     private incomeCategoryService: IncomeCategoryService,
     private expenseService: ExpenseService,
     private incomeService: IncomeService,
-    private transactionAiService: TransactionAiService
+    private transactionAiService: TransactionAiService,
+    private sourceService: SourceService
   ) {}
 
   ngOnInit() {
@@ -123,11 +98,51 @@ export class ExcelImportComponent {
 
   loadCategories() {
     this.expenseCategoryService.getAll().subscribe(res => {
-      if (res.response) this.expenseCategories = res.response;
+      if (res.response) {
+        this.expenseCategories = res.response;
+        this.rebuildKeywordCategories();
+      }
     });
+
     this.incomeCategoryService.getAll().subscribe(res => {
-      if (res.response) this.incomeCategories = res.response;
+      if (res.response) {
+        this.incomeCategories = res.response;
+        this.rebuildKeywordCategories();
+      }
     });
+
+    this.sourceService.getAll().subscribe(res => {
+      if (res.response) {
+        this.sources = res.response;
+        this.rebuildKeywordSources();
+      }
+    });
+  }
+
+  private rebuildKeywordCategories(): void {
+    const expenseKeywords = this.expenseCategories.map(category => ({
+      keyword: category.name,
+      category_id: category.id,
+      type: 'expense' as const,
+    }));
+
+    const incomeKeywords = this.incomeCategories.map(category => ({
+      keyword: category.name,
+      category_id: category.id,
+      type: 'income' as const,
+    }));
+
+    this.keywordCategories = [...expenseKeywords, ...incomeKeywords]
+      .filter(({ keyword }) => !!keyword?.trim());
+  }
+
+  private rebuildKeywordSources(): void {
+    this.keywordSources = this.sources
+      .map(source => ({
+        keyword: source.name,
+        source_id: source.id,
+      }))
+      .filter(({ keyword }) => !!keyword?.trim());
   }
 
   /** Evento al seleccionar un archivo Excel */
@@ -346,9 +361,8 @@ export class ExcelImportComponent {
 
       // --- Pre-categorización ---
       const type = amountNum > 0 ? 'income' : 'expense';
-      const category_id = this.findCategory(description);
+      const category_id = this.findCategory(description, type);
       const source_id = this.findSource(description);
-      const place_id = this.findPlace(description);
 
       // --- Construir objeto pendiente ---
       this.pendingTransactions.push({
@@ -360,7 +374,6 @@ export class ExcelImportComponent {
         type,
         category_id, // Pre-filled or 0
         source_id: source_id || 1, // Default source
-        place_id: place_id || 1, // Default place
         selected: true // Checkbox para importar
       });
     });
@@ -424,21 +437,13 @@ export class ExcelImportComponent {
   }
 
   /** Buscar categoría por palabra clave */
-  private findCategory(description: string): number {
+  private findCategory(description: string, type: 'income' | 'expense'): number {
     const lowerDesc = (description || '').toLowerCase();
     const found = this.keywordCategories.find(k =>
+      k.type === type &&
       lowerDesc.includes(k.keyword.toLowerCase())
     );
     return found?.category_id ?? 0;
-  }
-
-  /** Buscar lugar por palabra clave */
-  private findPlace(description: string): number | null {
-    const lowerDesc = (description || '').toLowerCase();
-    const found = this.keywordPlaces.find(k =>
-      lowerDesc.includes(k.keyword.toLowerCase())
-    );
-    return found?.place_id ?? null;
   }
 
   /** Buscar fuente por palabra clave */
@@ -536,8 +541,7 @@ export class ExcelImportComponent {
         user_id: 1, // TODO: Get from auth
         account_id: 1, // TODO: Selectable account
         category_id: t.category_id || 1, // Default fallback
-        // Specific fields
-        ...(t.type === 'income' ? { source_id: t.source_id } : { place_id: t.place_id })
+        source_id: t.source_id || 1,
       };
 
       const service = t.type === 'income' ? this.incomeService : this.expenseService;
