@@ -433,9 +433,9 @@ export class ExcelImportComponent {
     this.aiClassifying = true;
 
     const payload = this.pendingTransactions.map((t: PendingTransaction) => ({
-      bank_id: t.bank_id ?? null,
-      bank_name: t.bank_name ?? null,
-      import_format: t.import_format ?? this.currentFormat ?? null,
+      bank_id: t.bank_id ?? undefined,
+      bank_name: t.bank_name ?? undefined,
+      import_format: t.import_format ?? this.currentFormat ?? undefined,
       id: t.id,
       type: t.type as 'income' | 'expense' | 'investment',
       description: t.description,
