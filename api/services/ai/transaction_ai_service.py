@@ -50,7 +50,16 @@ class TransactionAIService:
                 continue
 
             categories = categories_by_type[type_]
-            ai_predictions = self._classify_batch(type_, txs, categories)
+            try:
+                ai_predictions = self._classify_batch(type_, txs, categories)
+            except Exception as exc:
+                logger.exception(
+                    "AI classification failed for type=%s and %s transactions. Falling back to uncategorized results.",
+                    type_,
+                    len(txs),
+                    exc_info=exc,
+                )
+                ai_predictions = {}
             predictions_by_id.update(ai_predictions)
 
         return [{"id": tx.get("id"), "category_id": predictions_by_id.get(tx.get("id"))} for tx in transactions]
