@@ -80,8 +80,14 @@ export class HttpInterceptorService implements HttpInterceptor {
 
     // Add Authorization header if token exists
     const token = this.getAuthToken();
+    const isAuthRequest = request.url.includes('/auth/login') || request.url.includes('/auth/refresh');
     if (token && !request.url.includes('assets')) {
       headers = headers.set('Authorization', `Bearer ${token}`);
+
+      if (!isAuthRequest) {
+        const authService = this.injector.get(AuthService);
+        authService.registerUserActivity();
+      }
     }
 
     return request.clone({ headers });
@@ -203,6 +209,12 @@ export class HttpInterceptorService implements HttpInterceptor {
       this.refreshTokenSubject.next(null);
 
       const authService = this.injector.get(AuthService);
+
+      if (authService.isSessionExpiredByInactivity()) {
+        this.isRefreshing = false;
+        this.handleUnauthorized();
+        return throwError(() => new Error('Session expired by inactivity'));
+      }
 
       return authService.refreshToken().pipe(
         switchMap((tokenResponse: any) => {

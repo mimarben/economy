@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { AppTranslateService } from '@utils/app-translate.service';
+import { AuthService } from '@core_services/auth/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -10,5 +11,27 @@ import { AppTranslateService } from '@utils/app-translate.service';
   template: `<router-outlet></router-outlet>`
 })
 export class AppComponent {
-  constructor(private translateService: AppTranslateService){}
+  constructor(
+    private translateService: AppTranslateService,
+    private authService: AuthService
+  ){}
+
+  @HostListener('document:click')
+  @HostListener('document:keydown')
+  @HostListener('document:touchstart')
+  @HostListener('document:touchmove')
+  @HostListener('document:mousemove')
+  @HostListener('document:pointerdown')
+  @HostListener('window:scroll')
+  @HostListener('window:wheel')
+  trackActivity(): void {
+    this.authService.registerUserActivity();
+  }
+
+  @HostListener('document:visibilitychange')
+  onVisibilityChange(): void {
+    if (document.visibilityState === 'visible') {
+      this.authService.registerUserActivity();
+    }
+  }
 }

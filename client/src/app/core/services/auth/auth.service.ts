@@ -16,6 +16,12 @@ interface LoginTokens {
 export class AuthService {
   private readonly apiUrl = environment.apiUrl;
   private readonly tokenKey = 'auth_token';
+  private readonly refreshTokenKey = 'refresh_token';
+  private readonly tokenTypeKey = 'token_type';
+  private readonly lastActivityKey = 'auth_last_activity';
+  private readonly idleTimeoutMs = 15 * 60 * 1000;
+  private readonly minActivityWriteIntervalMs = 30 * 1000;
+  private lastActivityWriteAt = 0;
 
   // Observable to track login state
   private isLoggedInSubject = new BehaviorSubject<boolean>(this.hasToken());
@@ -32,11 +38,12 @@ export class AuthService {
         if (accessToken) {
           localStorage.setItem(this.tokenKey, accessToken);
           if (refreshToken) {
-            localStorage.setItem('refresh_token', refreshToken);
+            localStorage.setItem(this.refreshTokenKey, refreshToken);
           }
           if(tokenType){
-            localStorage.setItem('token_type', tokenType);
+            localStorage.setItem(this.tokenTypeKey, tokenType);
           }
+          this.updateLastActivity(true);
           this.isLoggedInSubject.next(true);
         }
       }),
@@ -48,17 +55,54 @@ export class AuthService {
   }
 
   logout(): void {
-    localStorage.removeItem(this.tokenKey);
-    localStorage.removeItem('refresh_token');
+    this.clearSessionTokens();
     this.isLoggedInSubject.next(false);
   }
 
   hasToken(): boolean {
-    return !!localStorage.getItem(this.tokenKey);
+    const hasAccessToken = !!localStorage.getItem(this.tokenKey);
+    if (!hasAccessToken) {
+      return false;
+    }
+
+    if (this.isSessionExpiredByInactivity()) {
+      this.clearSessionTokens();
+      this.isLoggedInSubject.next(false);
+      return false;
+    }
+
+    return true;
+  }
+
+  registerUserActivity(): void {
+    if (!localStorage.getItem(this.tokenKey)) {
+      return;
+    }
+    this.updateLastActivity();
+  }
+
+  isSessionExpiredByInactivity(): boolean {
+    const lastActivity = localStorage.getItem(this.lastActivityKey);
+    if (!lastActivity) {
+      return false;
+    }
+
+    const lastActivityTs = Number(lastActivity);
+    if (!Number.isFinite(lastActivityTs)) {
+      return false;
+    }
+
+    return Date.now() - lastActivityTs >= this.idleTimeoutMs;
   }
 
   refreshToken(): Observable<ApiResponse<LoginTokens>> {
-    const refreshToken = localStorage.getItem('refresh_token');
+    if (this.isSessionExpiredByInactivity()) {
+      this.clearSessionTokens();
+      this.isLoggedInSubject.next(false);
+      return throwError(() => new Error('Session expired by inactivity'));
+    }
+
+    const refreshToken = localStorage.getItem(this.refreshTokenKey);
     
     if (!refreshToken) {
       return throwError(() => new Error('No refresh token available'));
@@ -76,11 +120,29 @@ export class AuthService {
         if (accessToken) {
           localStorage.setItem(this.tokenKey, accessToken);
           if (newRefreshToken) {
-             localStorage.setItem('refresh_token', newRefreshToken);
+             localStorage.setItem(this.refreshTokenKey, newRefreshToken);
           }
+          this.updateLastActivity(true);
           this.isLoggedInSubject.next(true);
         }
       })
     );
+  }
+
+  private updateLastActivity(forceWrite = false): void {
+    const now = Date.now();
+    if (!forceWrite && now - this.lastActivityWriteAt < this.minActivityWriteIntervalMs) {
+      return;
+    }
+
+    localStorage.setItem(this.lastActivityKey, String(now));
+    this.lastActivityWriteAt = now;
+  }
+
+  private clearSessionTokens(): void {
+    localStorage.removeItem(this.tokenKey);
+    localStorage.removeItem(this.refreshTokenKey);
+    localStorage.removeItem(this.tokenTypeKey);
+    localStorage.removeItem(this.lastActivityKey);
   }
 }
