@@ -12,6 +12,12 @@ export type Dni = string;
 export type Email = string | null;
 export type Active = boolean;
 export type Telephone = number | null;
+export type UserRole = 'administrator' | 'editor' | 'user' | 'guest';
+
+
+
+export const USER_ROLE_OPTIONS: UserRole[] = ['administrator', 'editor', 'user', 'guest'];
+
 
 export interface UserBase {
   name: Name;
@@ -21,5 +27,9 @@ export interface UserBase {
   email?: Email;
   active?: Active;
   telephone?: Telephone;
-  [k: string]: unknown;
+  password?: string;
+  role?: UserRole;
+  created_at?: string;
+  updated_at?: string;
+  //[k: string]: unknown;
 }
