@@ -72,7 +72,7 @@ constructor(
     });
   }
   updateHouseHold(houseHold: Household): void {
-    this.householdService.update(houseHold.id, houseHold).subscribe({
+    this.householdService.update(houseHold.id!, houseHold).subscribe({
     next: (response: ApiResponse<Household>) => {
       const updated = response.response;
       const index = this.houseHolds.findIndex(h => h.id === updated.id);

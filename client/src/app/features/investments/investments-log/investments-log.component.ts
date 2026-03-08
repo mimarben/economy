@@ -67,7 +67,7 @@ export class InvestmentsLogComponent implements OnInit {
           const savingField = this.formFields.find((s) => s.key === 'investment_id');
           if (savingField) {
             this.savingMap = Object.fromEntries(
-              res.response.map((s) => [s.id, s.name])
+              res.response.map((s) => [s.id ?? 0, s.name])
             );
           }
         },
@@ -79,9 +79,9 @@ export class InvestmentsLogComponent implements OnInit {
           const field = this.formFields.find((f) => f.key === 'saving_id');
           if (field) {
             field.type = 'select';
-            field.options = res.response.map(s => ({
+            field.options = res.response.map((s) => ({
               label: `${s.name}`,
-              value: s.id,
+              value: s.id ?? 0,
             }));
           }
         },
@@ -136,7 +136,7 @@ export class InvestmentsLogComponent implements OnInit {
   }
 
   update(investmentlog: InvestmentLog): void {
-    this.investmentlogService.update(investmentlog.id, investmentlog).subscribe({
+    this.investmentlogService.update(investmentlog.id!, investmentlog).subscribe({
       next: (response: ApiResponse<InvestmentLog>) => {
         const updated = response.response;
         const index = this.investmentlogs.findIndex((h) => h.id === updated.id);

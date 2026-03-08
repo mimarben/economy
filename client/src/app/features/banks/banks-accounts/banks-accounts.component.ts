@@ -182,7 +182,7 @@ private loadUsers(): void {
   } */
 
   updateAccount(account: Account): void {
-    this.accountService.update(account.id, account).subscribe({
+    this.accountService.update(account.id!, account).subscribe({
       next: (response: ApiResponse<Account>) => {
         this.isLoading = false;
         this.toastService.showToast(response, environment.toastType.Success, {});

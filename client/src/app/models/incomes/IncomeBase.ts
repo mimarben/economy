@@ -30,6 +30,7 @@ export type SourceId = number;
 export type CategoryId = number;
 
 export interface IncomeBase {
+  id?: number;
   name: Name;
   description?: Description;
   amount: Amount;
@@ -38,5 +39,4 @@ export interface IncomeBase {
   user_id: UserId;
   source_id: SourceId;
   category_id: CategoryId;
-  [k: string]: unknown;
 }

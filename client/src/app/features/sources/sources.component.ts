@@ -71,7 +71,7 @@ openDialog(data?: Source): void {
     });
   }
   updateSource(source: Source): void {
-    this.sourceService.update(source.id, source).subscribe({
+    this.sourceService.update(source.id!, source).subscribe({
     next: (response: ApiResponse<Source>) => {
       const updated = response.response;
       const index = this.sources.findIndex(h => h.id === updated.id);

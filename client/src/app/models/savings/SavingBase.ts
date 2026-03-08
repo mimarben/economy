@@ -29,6 +29,7 @@ export type UserId = number;
 export type AccountId = number;
 
 export interface SavingBase {
+  id?: number;
   name: Name;
   description?: Description;
   amount: Amount;
@@ -36,5 +37,7 @@ export interface SavingBase {
   currency: CurrencyEnum;
   user_id: UserId;
   account_id: AccountId;
-  [k: string]: unknown;
+  created_at?: string;
+  updated_at?: string;
+  deleted_at?: string | null;
 }

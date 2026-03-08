@@ -30,6 +30,7 @@ export type CurrencyEnum =
   | "TRX";
 
 export interface ExpenseBase {
+  id?: number;
   name: Name;
   description?: Description;
   amount: Amount;
@@ -38,5 +39,4 @@ export interface ExpenseBase {
   place_id: PlaceId;
   user_id: UserId;
   currency: CurrencyEnum;
-  [k: string]: unknown;
 }

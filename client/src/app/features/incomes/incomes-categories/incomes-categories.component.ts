@@ -74,7 +74,7 @@ export class IncomesCategoriesComponent implements OnInit {
     }
 
     update(incomecategory: IncomeCategory): void {
-      this.incomeCategoryService.update(incomecategory.id, incomecategory).subscribe({
+      this.incomeCategoryService.update(incomecategory.id!, incomecategory).subscribe({
         next: (response: ApiResponse<IncomeCategory>) => {
           this.isLoading = false;
           this.toastService.showToast(

@@ -94,7 +94,7 @@ constructor(
     }
 
   updateInvestmentCategory(investmentCategory: InvestmentCategory): void {
-    this.investmentCategoryService.update(investmentCategory.id, investmentCategory).subscribe({
+    this.investmentCategoryService.update(investmentCategory.id!, investmentCategory).subscribe({
       next: (response: ApiResponse<InvestmentCategory>) => {
         const updated = response.response;
         const index = this.investmentsCategories.findIndex((h) => h.id === updated.id);

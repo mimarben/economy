@@ -90,7 +90,7 @@ export class BanksComponent implements OnInit {
   }
 
   updateBank(bank: Bank): void {
-    this.bankService.updateBank(bank.id, bank).subscribe({
+    this.bankService.updateBank(bank.id!, bank).subscribe({
       next: (response: ApiResponse<Bank>) => {
         this.isLoading = false;
         this.toastService.showToast(

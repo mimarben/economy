@@ -14,6 +14,7 @@ export type Note = string;
 export type InvestmentId = number;
 
 export interface InvestmentLogBase {
+  id?: number;
   date: Date;
   currentValue: Currentvalue;
   pricePerUnit: Priceperunit;
@@ -21,5 +22,4 @@ export interface InvestmentLogBase {
   action: ActionEnum;
   note: Note;
   investment_id: InvestmentId;
-  [k: string]: unknown;
 }

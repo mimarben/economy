@@ -209,7 +209,7 @@ export class IncomesComponent implements OnInit {
   }
 
   update(income: Income): void {
-    this.incomeService.update(income.id, income).subscribe({
+    this.incomeService.update(income.id!, income).subscribe({
       next: (response: ApiResponse<Income>) => {
         const updated = response.response;
         const index = this.incomes.findIndex((h) => h.id === updated.id);

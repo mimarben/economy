@@ -69,7 +69,7 @@ export class SavingsLogComponent implements OnInit {
         const savingField = this.formFields.find((s) => s.key === 'saving_id');
         if (savingField) {
           this.savingMap = Object.fromEntries(
-            res.response.map((s) => [s.id, s.name])
+            res.response.map((s) => [s.id ?? 0, s.name])
           );
         }
       },
@@ -81,9 +81,9 @@ export class SavingsLogComponent implements OnInit {
         const field = this.formFields.find((f) => f.key === 'saving_id');
         if (field) {
           field.type = 'select';
-          field.options = res.response.map(s => ({
+          field.options = res.response.map((s) => ({
             label: `${s.name}`,
-            value: s.id,
+            value: s.id ?? 0,
           }));
         }
       },
@@ -115,9 +115,9 @@ export class SavingsLogComponent implements OnInit {
           if (field.key === 'saving_id') {
             return {
               ...field,
-              options: responses.savings.response.map(r => ({
-                value: r.id,
-                label: r.description
+              options: responses.savings.response.map((r) => ({
+                value: r.id ?? 0,
+                label: r.description ?? ''
               }))
             };
           }
@@ -125,8 +125,8 @@ export class SavingsLogComponent implements OnInit {
           if (field.key === 'source_id') {
             return {
               ...field,
-              options: responses.sources.response.map(r => ({
-                value: r.id,
+              options: responses.sources.response.map((r) => ({
+                value: r.id ?? 0,
                 label: `${r.name}`
               }))
             };
@@ -172,7 +172,12 @@ export class SavingsLogComponent implements OnInit {
   } */
 
   updateSavingLog(savinglog: SavingLog): void {
-    this.savinglogService.update(savinglog.id, savinglog).subscribe({
+    if (savinglog.id == null) {
+      this.errorMessage = 'Error updating saving log: missing id';
+      return;
+    }
+
+    this.savinglogService.update(savinglog.id!, savinglog).subscribe({
       next: (response: ApiResponse<SavingLog>) => {
         const updated = response.response;
         const index = this.savinglogs.findIndex((h) => h.id === updated.id);

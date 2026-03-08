@@ -10,8 +10,11 @@ export type Description = string | null;
 export type Active = boolean;
 
 export interface SourceBase {
+  id?: number;
   name: Name;
   description?: Description;
   active?: Active;
-  [k: string]: unknown;
+  created_at?: string;
+  updated_at?: string;
+  deleted_at?: string | null;
 }

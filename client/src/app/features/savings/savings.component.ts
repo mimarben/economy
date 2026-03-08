@@ -176,7 +176,7 @@ loadSavings() {
     });
   }
   updateSaving(saving: Saving): void {
-    this.savingService.update(saving.id, saving).subscribe({
+    this.savingService.update(saving.id!, saving).subscribe({
       next: (response: ApiResponse<Saving>) => {
         const updated = response.response;
         const index = this.savings.findIndex((h) => h.id === updated.id);
