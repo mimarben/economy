@@ -31,7 +31,6 @@
       "@incomes_models/*": ["src/app/models/incomes/*"],
       "@investments_models/*": ["src/app/models/investments/*"],
       "@savings_models/*": ["src/app/models/savings/*"],
-      "@summaries_models/*": ["src/app/models/summaries/*"],
       "@users_models/*": ["src/app/models/users/*"],
       "@core_services/*": ["src/app/core/services/*"],
       "@expenses_services/*": ["src/app/core/services/expenses/*"],
