@@ -3,6 +3,7 @@ from typing import Optional
 from datetime import datetime
 from models import CurrencyEnum
 from utils.schema_exporter import export_schema
+from schemas.audit_schema import AuditFields
 
 
 class InvestmentBase(BaseModel):
@@ -15,7 +16,7 @@ class InvestmentBase(BaseModel):
     category_id: int = Field(..., gt=0)
 
 
-class InvestmentRead(InvestmentBase):
+class InvestmentRead(InvestmentBase, AuditFields):
     """Response schema for Investment."""
     id: int
 

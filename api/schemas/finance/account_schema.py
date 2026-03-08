@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field
 from typing import Optional
 from utils.schema_exporter import export_schema  # si guardas la función en otro archivo
+from schemas.audit_schema import AuditFields
 class AccountBase(BaseModel):
     name: str
     description: Optional[str] = None
@@ -9,7 +10,7 @@ class AccountBase(BaseModel):
     active: bool = True
     bank_id: int = Field(..., gt=0)
     user_id: int = Field(..., gt=0)
-class AccountRead(AccountBase):
+class AccountRead(AccountBase, AuditFields):
     id: int
 
     class Config:

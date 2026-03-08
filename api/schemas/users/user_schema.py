@@ -3,6 +3,7 @@ from typing import Optional, List
 import re
 from utils.schema_exporter import export_schema  # si guardas la función en otro archivo
 from models import UserRoleEnum
+from schemas.audit_schema import AuditFields
 
 # -------------------------
 # Validators
@@ -56,7 +57,7 @@ class UserBase(BaseModel):
 # -------------------------
 # Read schema (API response)
 # -------------------------
-class UserRead(UserBase):
+class UserRead(UserBase, AuditFields):
     id: int  # Include the database ID in the read schema
 
     class Config:

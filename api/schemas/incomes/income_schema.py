@@ -3,6 +3,7 @@ from typing import Optional
 from datetime import datetime
 from models import CurrencyEnum
 from utils.schema_exporter import export_schema
+from schemas.audit_schema import AuditFields
 
 
 class IncomeBase(BaseModel):
@@ -18,7 +19,7 @@ class IncomeBase(BaseModel):
     account_id: Optional[int] = Field(None, gt=0)
 
 
-class IncomeRead(IncomeBase):
+class IncomeRead(IncomeBase, AuditFields):
     """Response schema for Income."""
     id: int
 
