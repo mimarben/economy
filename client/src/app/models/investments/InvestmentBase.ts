@@ -30,6 +30,7 @@ export type AccountId = number;
 export type CategoryId = number;
 
 export interface InvestmentBase {
+  id?: number;
   name: Name;
   amount: Amount;
   value: Value;

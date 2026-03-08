@@ -30,6 +30,7 @@ export type CurrencyEnum =
   | "TRX";
 
 export interface ExpenseBase {
+  id?: number;
   name: Name;
   description?: Description;
   amount: Amount;
