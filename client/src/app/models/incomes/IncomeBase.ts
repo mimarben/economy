@@ -39,4 +39,5 @@ export interface IncomeBase {
   user_id: UserId;
   source_id: SourceId;
   category_id: CategoryId;
+
 }

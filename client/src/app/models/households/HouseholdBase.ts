@@ -16,4 +16,5 @@ export interface HouseholdBase {
   address: Address;
   description: Description;
   active?: Active;
+
 }

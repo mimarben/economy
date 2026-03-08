@@ -16,4 +16,5 @@ export interface PlaceBase {
   address?: Address;
   description?: Description;
   active?: Active;
+
 }
