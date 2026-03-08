@@ -1,0 +1,52 @@
+{
+  "properties": {
+    "name": {
+      "title": "Name",
+      "type": "string"
+    },
+    "description": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Description"
+    },
+    "iban": {
+      "title": "Iban",
+      "type": "string"
+    },
+    "balance": {
+      "title": "Balance",
+      "type": "number"
+    },
+    "active": {
+      "default": true,
+      "title": "Active",
+      "type": "boolean"
+    },
+    "bank_id": {
+      "exclusiveMinimum": 0,
+      "title": "Bank Id",
+      "type": "integer"
+    },
+    "user_id": {
+      "exclusiveMinimum": 0,
+      "title": "User Id",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "name",
+    "iban",
+    "balance",
+    "bank_id",
+    "user_id"
+  ],
+  "title": "AccountBase",
+  "type": "object"
+}

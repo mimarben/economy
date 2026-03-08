@@ -1,0 +1,72 @@
+{
+  "$defs": {
+    "CurrencyEnum": {
+      "enum": [
+        "€",
+        "$",
+        "¥",
+        "₿",
+        "Ξ",
+        "USDC",
+        "DOGE",
+        "LTC",
+        "XRP",
+        "XLM",
+        "ADA",
+        "DOT",
+        "SOL",
+        "SHIB",
+        "TRX"
+      ],
+      "title": "CurrencyEnum",
+      "type": "string"
+    }
+  },
+  "description": "Base schema for Investment - format validation only.",
+  "properties": {
+    "name": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Name"
+    },
+    "date": {
+      "format": "date-time",
+      "title": "Date",
+      "type": "string"
+    },
+    "currency": {
+      "$ref": "#/$defs/CurrencyEnum"
+    },
+    "user_id": {
+      "exclusiveMinimum": 0,
+      "title": "User Id",
+      "type": "integer"
+    },
+    "account_id": {
+      "exclusiveMinimum": 0,
+      "title": "Account Id",
+      "type": "integer"
+    },
+    "category_id": {
+      "exclusiveMinimum": 0,
+      "title": "Category Id",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "date",
+    "currency",
+    "user_id",
+    "account_id",
+    "category_id"
+  ],
+  "title": "InvestmentBase",
+  "type": "object"
+}

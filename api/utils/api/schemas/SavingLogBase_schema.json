@@ -1,0 +1,58 @@
+{
+  "description": "Base schema for SavingLog - format validation only.",
+  "properties": {
+    "date": {
+      "format": "date-time",
+      "title": "Date",
+      "type": "string"
+    },
+    "amount": {
+      "exclusiveMinimum": 0,
+      "title": "Amount",
+      "type": "number"
+    },
+    "total_amount": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Total Amount"
+    },
+    "note": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Note"
+    },
+    "saving_id": {
+      "exclusiveMinimum": 0,
+      "title": "Saving Id",
+      "type": "integer"
+    },
+    "source_id": {
+      "exclusiveMinimum": 0,
+      "title": "Source Id",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "date",
+    "amount",
+    "saving_id",
+    "source_id"
+  ],
+  "title": "SavingLogBase",
+  "type": "object"
+}

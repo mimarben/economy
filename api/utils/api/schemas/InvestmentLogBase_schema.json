@@ -1,0 +1,83 @@
+{
+  "$defs": {
+    "ActionEnum": {
+      "enum": [
+        "buy",
+        "sell",
+        "transfer",
+        "deposit",
+        "withdraw",
+        "hold"
+      ],
+      "title": "ActionEnum",
+      "type": "string"
+    }
+  },
+  "description": "Base schema for InvestmentLog - format validation only.",
+  "properties": {
+    "date": {
+      "format": "date-time",
+      "title": "Date",
+      "type": "string"
+    },
+    "current_value": {
+      "exclusiveMinimum": 0,
+      "title": "Current Value",
+      "type": "number"
+    },
+    "price_per_unit": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Price Per Unit"
+    },
+    "units_bought": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Units Bought"
+    },
+    "action": {
+      "$ref": "#/$defs/ActionEnum"
+    },
+    "note": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Note"
+    },
+    "investment_id": {
+      "exclusiveMinimum": 0,
+      "title": "Investment Id",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "date",
+    "current_value",
+    "action",
+    "investment_id"
+  ],
+  "title": "InvestmentLogBase",
+  "type": "object"
+}

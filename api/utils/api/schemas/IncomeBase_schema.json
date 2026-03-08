@@ -1,0 +1,99 @@
+{
+  "$defs": {
+    "CurrencyEnum": {
+      "enum": [
+        "€",
+        "$",
+        "¥",
+        "₿",
+        "Ξ",
+        "USDC",
+        "DOGE",
+        "LTC",
+        "XRP",
+        "XLM",
+        "ADA",
+        "DOT",
+        "SOL",
+        "SHIB",
+        "TRX"
+      ],
+      "title": "CurrencyEnum",
+      "type": "string"
+    }
+  },
+  "description": "Base schema for Income - format validation only.",
+  "properties": {
+    "name": {
+      "maxLength": 255,
+      "minLength": 1,
+      "title": "Name",
+      "type": "string"
+    },
+    "description": {
+      "anyOf": [
+        {
+          "maxLength": 500,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Description"
+    },
+    "amount": {
+      "exclusiveMinimum": 0,
+      "title": "Amount",
+      "type": "number"
+    },
+    "date": {
+      "format": "date-time",
+      "title": "Date",
+      "type": "string"
+    },
+    "currency": {
+      "$ref": "#/$defs/CurrencyEnum"
+    },
+    "user_id": {
+      "exclusiveMinimum": 0,
+      "title": "User Id",
+      "type": "integer"
+    },
+    "source_id": {
+      "exclusiveMinimum": 0,
+      "title": "Source Id",
+      "type": "integer"
+    },
+    "category_id": {
+      "exclusiveMinimum": 0,
+      "title": "Category Id",
+      "type": "integer"
+    },
+    "account_id": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Account Id"
+    }
+  },
+  "required": [
+    "name",
+    "amount",
+    "date",
+    "currency",
+    "user_id",
+    "source_id",
+    "category_id"
+  ],
+  "title": "IncomeBase",
+  "type": "object"
+}

@@ -1,0 +1,47 @@
+{
+  "$defs": {
+    "SourceTypeEnum": {
+      "enum": [
+        "income",
+        "saving",
+        "investment",
+        "expense",
+        "other"
+      ],
+      "title": "SourceTypeEnum",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "name": {
+      "title": "Name",
+      "type": "string"
+    },
+    "description": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Description"
+    },
+    "active": {
+      "default": true,
+      "title": "Active",
+      "type": "boolean"
+    },
+    "type": {
+      "$ref": "#/$defs/SourceTypeEnum"
+    }
+  },
+  "required": [
+    "name",
+    "type"
+  ],
+  "title": "SourceBase",
+  "type": "object"
+}
