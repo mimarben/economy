@@ -92,7 +92,7 @@ export class ExpensesCategoriesComponent implements OnInit {
     // ... (Los métodos update, create, applyFilter se mantienen sin cambios) ...
 
     update(expensecategory: ExpenseCategory): void {
-          this.expenseCategoryService.update(expensecategory.id, expensecategory).subscribe({
+          this.expenseCategoryService.update(expensecategory.id!, expensecategory).subscribe({
             next: (response: ApiResponse<ExpenseCategory>) => {
               this.isLoading = false;
               this.toastService.showToast(

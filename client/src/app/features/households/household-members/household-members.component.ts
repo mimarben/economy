@@ -140,7 +140,7 @@ export class HouseholdmembersComponent implements OnInit {
 }
 
   updateHouseHoldMember(householdMember: HouseHoldMember): void {
-    this.householdmemberService.update(householdMember.id, householdMember).subscribe({
+    this.householdmemberService.update(householdMember.id!, householdMember).subscribe({
     next: (response: ApiResponse<HouseHoldMember>) => {
       const updated = response.response;
       const index = this.houseHoldsMembers.findIndex(h => h.id === updated.id);

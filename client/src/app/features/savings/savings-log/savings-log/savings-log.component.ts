@@ -177,7 +177,7 @@ export class SavingsLogComponent implements OnInit {
       return;
     }
 
-    this.savinglogService.update(savinglog.id, savinglog).subscribe({
+    this.savinglogService.update(savinglog.id!, savinglog).subscribe({
       next: (response: ApiResponse<SavingLog>) => {
         const updated = response.response;
         const index = this.savinglogs.findIndex((h) => h.id === updated.id);

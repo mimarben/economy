@@ -32,5 +32,4 @@ export interface UserBase {
   role?: UserRole;
   created_at?: string;
   updated_at?: string;
-  //[k: string]: unknown;
 }

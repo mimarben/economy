@@ -169,7 +169,7 @@ constructor(
   }
 
   updateInvestment(investment: Investment): void {
-    this.investmentService.update(investment.id, investment).subscribe({
+    this.investmentService.update(investment.id!, investment).subscribe({
       next: (response: ApiResponse<Investment>) => {
         const updated = response.response;
         const index = this.investments.findIndex((h) => h.id === updated.id);

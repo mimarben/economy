@@ -151,13 +151,13 @@ export class ExcelImportComponent {
   private rebuildKeywordCategories(): void {
     const expenseKeywords = this.expenseCategories.map(category => ({
       keyword: category.name,
-      category_id: category.id,
+      category_id: category.id ?? 0,
       type: 'expense' as const,
     }));
 
     const incomeKeywords = this.incomeCategories.map(category => ({
       keyword: category.name,
-      category_id: category.id,
+      category_id: category.id ?? 0,
       type: 'income' as const,
     }));
 
@@ -169,7 +169,7 @@ export class ExcelImportComponent {
     this.keywordSources = this.sources
       .map(source => ({
         keyword: source.name,
-        source_id: source.id,
+        source_id: source.id ?? 0,
       }))
       .filter(({ keyword }) => !!keyword?.trim());
   }
