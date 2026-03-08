@@ -14,6 +14,7 @@ export type BankId = number;
 export type UserId = number;
 
 export interface AccountBase {
+  id?: number;
   name: Name;
   description?: Description;
   iban: Iban;

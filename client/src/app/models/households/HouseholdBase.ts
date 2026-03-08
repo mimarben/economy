@@ -11,6 +11,7 @@ export type Description = string | null;
 export type Active = boolean;
 
 export interface HouseholdBase {
+  id?: number;
   name: Name;
   address: Address;
   description: Description;

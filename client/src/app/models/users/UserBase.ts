@@ -20,6 +20,7 @@ export const USER_ROLE_OPTIONS: UserRole[] = ['administrator', 'editor', 'user',
 
 
 export interface UserBase {
+  id?: number;
   name: Name;
   surname1: Surname1;
   surname2?: Surname2;
