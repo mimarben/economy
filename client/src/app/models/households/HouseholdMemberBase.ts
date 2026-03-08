@@ -16,5 +16,4 @@ export interface HouseholdMemberBase {
   household_id: HouseholdId;
   user_id: UserId;
   active?: Active;
-  [k: string]: unknown;
 }

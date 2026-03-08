@@ -22,5 +22,4 @@ export interface InvestmentLogBase {
   action: ActionEnum;
   note: Note;
   investment_id: InvestmentId;
-  [k: string]: unknown;
 }

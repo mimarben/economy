@@ -39,5 +39,4 @@ export interface ExpenseBase {
   place_id: PlaceId;
   user_id: UserId;
   currency: CurrencyEnum;
-  [k: string]: unknown;
 }

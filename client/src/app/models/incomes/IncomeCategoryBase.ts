@@ -14,5 +14,4 @@ export interface IncomeCategoryBase {
   name: Name;
   description?: Description;
   active?: Active;
-  [k: string]: unknown;
 }

@@ -14,5 +14,4 @@ export interface BankBase {
   name: Name;
   description?: Description;
   active?: Active;
-  [k: string]: unknown;
 }

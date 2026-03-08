@@ -17,5 +17,4 @@ export interface SourceBase {
   created_at?: string;
   updated_at?: string;
   deleted_at?: string | null;
-  [k: string]: unknown;
 }

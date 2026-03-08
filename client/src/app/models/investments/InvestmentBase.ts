@@ -39,5 +39,4 @@ export interface InvestmentBase {
   user_id: UserId;
   account_id: AccountId;
   category_id: CategoryId;
-  [k: string]: unknown;
 }

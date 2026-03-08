@@ -22,5 +22,4 @@ export interface AccountBase {
   active?: Active;
   bank_id: BankId;
   user_id: UserId;
-  [k: string]: unknown;
 }
