@@ -178,9 +178,8 @@ api/db/economy.db
 api/utils/api
 economy-env
 
-models/
 *.gguf
 
-api/db/postgres
+/nginx/certs/*
 
-nginx/certs/*
+/database/
