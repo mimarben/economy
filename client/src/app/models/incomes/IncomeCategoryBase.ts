@@ -10,6 +10,7 @@ export type Description = string | null;
 export type Active = boolean;
 
 export interface IncomeCategoryBase {
+  id?: number;
   name: Name;
   description?: Description;
   active?: Active;

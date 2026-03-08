@@ -30,6 +30,7 @@ export type SourceId = number;
 export type CategoryId = number;
 
 export interface IncomeBase {
+  id?: number;
   name: Name;
   description?: Description;
   amount: Amount;

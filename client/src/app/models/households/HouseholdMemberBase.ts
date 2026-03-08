@@ -11,6 +11,7 @@ export type UserId = number;
 export type Active = boolean;
 
 export interface HouseholdMemberBase {
+  id?: number;
   role: RoleEnum;
   household_id: HouseholdId;
   user_id: UserId;

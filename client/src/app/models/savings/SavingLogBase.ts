@@ -12,10 +12,14 @@ export type Note = string;
 export type SavingId = number;
 
 export interface SavingLogBase {
+  id?: number;
   date: Date;
   amount: Amount;
   total_amount: TotalAmount;
   note: Note;
   saving_id: SavingId;
+  created_at?: string;
+  updated_at?: string;
+  deleted_at?: string | null;
   [k: string]: unknown;
 }
