@@ -4,6 +4,7 @@ from datetime import datetime
 from models import CurrencyEnum
 from flask_babel import _
 from utils.schema_exporter import export_schema
+from schemas.audit_schema import AuditFields
 
 
 class ExpenseBase(BaseModel):
@@ -28,7 +29,7 @@ class ExpenseBase(BaseModel):
         return v
 
 
-class ExpenseRead(ExpenseBase):
+class ExpenseRead(ExpenseBase, AuditFields):
     """Response schema for Expense."""
 
     id: int

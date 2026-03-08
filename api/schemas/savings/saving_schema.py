@@ -3,6 +3,7 @@ from typing import Optional
 from datetime import datetime
 from models import CurrencyEnum
 from utils.schema_exporter import export_schema
+from schemas.audit_schema import AuditFields
 
 
 class SavingBase(BaseModel):
@@ -15,7 +16,7 @@ class SavingBase(BaseModel):
     account_id: int = Field(..., gt=0)
 
 
-class SavingRead(SavingBase):
+class SavingRead(SavingBase, AuditFields):
     """Response schema for Saving."""
     id: int
 

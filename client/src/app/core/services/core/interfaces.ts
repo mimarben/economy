@@ -5,14 +5,15 @@
 
 import { Observable } from 'rxjs';
 import { ApiResponse } from '@core_models/apiResponse';
+import { WithAuditFields } from '@core_models/auditable';
 
 /**
  * Interface for read operations only
  * Used by components that only need to retrieve data
  */
 export interface IReadService<T> {
-  getAll(): Observable<ApiResponse<T[]>>;
-  getById(id: number): Observable<ApiResponse<T>>;
+  getAll(): Observable<ApiResponse<WithAuditFields<T>[]>>;
+  getById(id: number): Observable<ApiResponse<WithAuditFields<T>>>;
 }
 
 /**
@@ -20,7 +21,7 @@ export interface IReadService<T> {
  * Used by components that only need to create data
  */
 export interface ICreateService<T> {
-  create(item: T): Observable<ApiResponse<T>>;
+  create(item: T): Observable<ApiResponse<WithAuditFields<T>>>;
 }
 
 /**
@@ -28,7 +29,7 @@ export interface ICreateService<T> {
  * Used by components that only need to update data
  */
 export interface IUpdateService<T> {
-  update(id: number, item: T): Observable<ApiResponse<T>>;
+  update(id: number, item: T): Observable<ApiResponse<WithAuditFields<T>>>;
 }
 
 /**
