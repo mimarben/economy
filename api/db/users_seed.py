@@ -1,8 +1,11 @@
 from sqlalchemy.orm import Session
-from werkzeug.security import generate_password_hash
+from services.core.security_service import hash_password
 
 from models import User, UserRoleEnum
+import os
+from dotenv import load_dotenv
 
+load_dotenv()
 
 def seed_admin(db: Session):
 
@@ -16,9 +19,9 @@ def seed_admin(db: Session):
         surname1="System",
         surname2="",
         dni="00000000T",
-        email="admin@economy.com",
-        telephone="+34000000000",
-        password=generate_password_hash("Admin123!"),
+        email=os.getenv("POSTGRES_ADMIN_EMAIL"),
+        telephone="676767676",
+        password=hash_password(os.getenv("POSTGRES_ADMIN_PASSWORD")),
         role=UserRoleEnum.ADMIN,
         active=True
     )

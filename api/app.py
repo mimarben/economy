@@ -8,6 +8,7 @@ from werkzeug.exceptions import HTTPException
 from flask_cors import CORS
 from sqlalchemy.exc import TimeoutError as SQLAlchemyTimeoutError
 from flask_jwt_extended import JWTManager, verify_jwt_in_request
+from db.database import init_db
 
 load_dotenv()
 pythonpath = os.getenv('PYTHONPATH')
@@ -26,6 +27,9 @@ logger = setup_logger("main")
 app = Flask(__name__)
 app.config.from_object(DevelopmentConfig)
 jwt = JWTManager(app)
+
+# Ensure schema/tables exist on service startup (especially for first Postgres run)
+init_db()
 
 @app.before_request
 def global_auth():

@@ -20,6 +20,9 @@ services:
     #command: flask run --host=0.0.0.0 --port=5001 --reload #--extra-files /app/app.py
     #command: flask --app app.py run --host=0.0.0.0 --port=5001 --reload
     command: python app.py
+    depends_on:
+        postgres:
+          condition: service_healthy
     networks:
       - economy-net
 
@@ -72,7 +75,14 @@ services:
 
     volumes:
       - ./database/postgres:/var/lib/postgresql:Z
-
+      
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+      
     networks:
       - economy-net
   nginx:
