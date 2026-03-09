@@ -15,9 +15,23 @@ sudo mkcert -install
 
 mkcert economy.app.local
 
-
+sudo cp "$(mkcert -CAROOT)/rootCA.pem" /etc/pki/ca-trust/source/anchors/mkcert-rootCA.pem
 
 Luego tocar etc/hosts y poner 127.0.0.1 economy.app.local
+
+sudo update-ca-trust
+
+
+Chrome/Chromium usan otra base de certificados.
+certutil -d sql:$HOME/.pki/nssdb -A \
+  -t "C,," \
+  -n mkcert \
+  -i "$(mkcert -CAROOT)/rootCA.pem"
+
+pkill chrome
+pkill chromium
+
+Abrir de nuevo
 
 openssl req -x509 -newkey rsa:2048 -nodes \
   -keyout economy.app.local-key.pem \

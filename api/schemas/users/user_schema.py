@@ -3,7 +3,7 @@ from typing import Optional, List
 import re
 from utils.schema_exporter import export_schema  # si guardas la función en otro archivo
 from models import UserRoleEnum
-from schemas.audit_schema import AuditFields
+from schemas.core.audit_schema import AuditFields
 
 # -------------------------
 # Validators

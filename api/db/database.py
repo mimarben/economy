@@ -4,6 +4,7 @@ from sqlalchemy.orm import sessionmaker
 from contextlib import contextmanager
 from models import Base, User, Account, Bank
 from config import Config
+from .users_seed import seed_admin
 
 DATABASE_URL = Config.DATABASE_URL
 
@@ -71,6 +72,8 @@ def init_db():
 
     if not database_exists or Config.DB_ENGINE == "postgres":
         Base.metadata.create_all(engine)
-        logger.info("Database and tables created!")
+        with get_db_session() as db:
+           seed_admin(db)
+        logger.info("Database and tables created, with seed!")
     else:
         logger.info("Database already exists, skipping creation.")

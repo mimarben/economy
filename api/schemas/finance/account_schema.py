@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field
 from typing import Optional
 from utils.schema_exporter import export_schema  # si guardas la función en otro archivo
-from schemas.audit_schema import AuditFields
+from schemas.core.audit_schema import AuditFields
 class AccountBase(BaseModel):
     name: str
     description: Optional[str] = None
