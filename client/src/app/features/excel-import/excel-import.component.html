@@ -1,1 +1,19 @@
-<p>excel-import works!</p>
+<input
+  type="file"
+  (change)="onFileChange($event)"
+  accept=".xls,.xlsx"
+/>
+
+@if (excelHeaders.length > 0) {
+
+  <h3>Cabeceras detectadas</h3>
+
+  <ul>
+    @for (h of excelHeaders; track h) {
+      <li>
+        {{ h }}
+      </li>
+    }
+  </ul>
+
+}
