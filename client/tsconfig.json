@@ -44,7 +44,8 @@
       "@utils/*": ["src/app/core/utils/*"],
       "@assets/*": ["src/assets/*"],
       "@environments/*": ["src/environments/*"],
-      "@shared/*": ["src/app/shared/components/*"]
+      "@shared/*": ["src/app/shared/components/*"],
+      "@features/*":["src/app/features"]
     }
   },
   "angularCompilerOptions": {

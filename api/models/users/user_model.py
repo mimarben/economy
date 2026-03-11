@@ -19,9 +19,9 @@ class User(TimestampMixin, Base):
     role = Column(SQLEnum(UserRoleEnum), default=UserRoleEnum.USER, nullable=False)
 
     # Relationships
-    expenses = relationship('Expense', back_populates='user')
-    incomes = relationship('Income', back_populates='user')
-    savings = relationship('Saving', back_populates='user')
+    #expenses = relationship('Expense', back_populates='user')
+    #incomes = relationship('Income', back_populates='user')
+    #savings = relationship('Saving', back_populates='user')
     accounts = relationship('Account', back_populates='user')
-    investments = relationship('Investment', back_populates='user')
+    #investments = relationship('Investment', back_populates='user')
     households_members = relationship('HouseholdMember', back_populates='user')

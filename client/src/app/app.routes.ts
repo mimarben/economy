@@ -18,7 +18,7 @@ import { InvestmentsLogComponent } from './features/investments/investments-log/
 import { InvestmentsCategoriesComponent } from './features/investments/investments-categories/investments-categories.component';
 import { NotFoundComponent } from './features/not-found/not-found.component';
 import { SummaryComponent} from './features/financial/summary-component/summary-component';
-import { ExcelImportComponent } from './features/excel-import/excel-import-component';
+import { ExcelImportComponent } from './features/excel-import/excel-import.component';
 import { LoginComponent } from './features/auth/login/login.component';
 import { LayoutComponent } from './core/layout/layout/layout.component';
 export const routes: Routes = [

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import * as ExcelJS from 'exceljs';
 import { Worksheet, Row } from 'exceljs';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom , Observable, map} from 'rxjs';
 import { CurrencyEnum } from '@core_models/CurrencyBase';
 import { ExpenseBase } from '@expenses_models/ExpenseBase';
 import { IncomeBase } from '@incomes_models/IncomeBase';
@@ -17,6 +17,10 @@ import { IncomeCategoryBase } from '@incomes_models/IncomeCategoryBase';
 import { TransactionAiService } from '@services/ai/transaction-ai.service';
 import { SourceService } from '@finance_services/source.service';
 import { SourceBase } from '@finance_models/SourceBase';
+import { UserService } from '@app/core/services/users/user.service';
+import { BankBase } from '@app/models/finance/BankBase';
+import { BankService } from '@app/core/services/finance/bank.service';
+import { ApiResponse } from '@app/models/core/apiResponse';
 
 interface ColumnMap {
   [key: string]: number;
@@ -85,32 +89,13 @@ const COLUMN_MAPS = {
 export class ExcelImportComponent {
   incomes: IncomeBase[] = [];
   expenses: ExpenseBase[] = [];
-
-  // Listas de referencia cargadas de BD
   expenseCategories: ExpenseCategoryBase[] = [];
   incomeCategories: IncomeCategoryBase[] = [];
   sources: SourceBase[] = [];
-
+  banks: BankBase[]=[]
+  
   // Transacciones pendientes de revisión
   pendingTransactions: PendingTransaction[] = [];
-
-  loading = false;
-  aiClassifying = false;
-  fileName = '';
-  useAiClassification = true;
-
-  readonly bankOptions: BankOption[] = [
-    { id: 'ing', name: 'ING', format: 'ing' },
-    { id: 'carrefour_pass', name: 'Carrefour Pass', format: 'carrefour_pass' },
-  ];
-
-  selectedBankId = this.bankOptions[0].id;
-
-  private currentFormat: keyof typeof COLUMN_MAPS | null = null;
-
-  private keywordCategories: Array<{ keyword: string; category_id: number; type: 'income' | 'expense' }> = [];
-  private keywordSources: Array<{ keyword: string; source_id: number }> = [];
-
   constructor(
     private utils: UtilsService,
     private expenseCategoryService: ExpenseCategoryService,
@@ -118,8 +103,27 @@ export class ExcelImportComponent {
     private expenseService: ExpenseService,
     private incomeService: IncomeService,
     private transactionAiService: TransactionAiService,
-    private sourceService: SourceService
+    private sourceService: SourceService,
+    private userService: UserService,
+    private bankService: BankService
   ) {}
+
+  // Listas de referencia cargadas de BD
+
+  loading = false;
+  aiClassifying = false;
+  fileName = '';
+  useAiClassification = true;
+  selectedBankId!: number;
+  
+
+
+
+  private currentFormat: keyof typeof COLUMN_MAPS | null = null;
+
+  private keywordCategories: Array<{ keyword: string; category_id: number; type: 'income' | 'expense' }> = [];
+  private keywordSources: Array<{ keyword: string; source_id: number }> = [];
+
 
   ngOnInit() {
     this.loadCategories();
@@ -146,6 +150,11 @@ export class ExcelImportComponent {
         this.rebuildKeywordSources();
       }
     });
+    this.bankService.getAll().subscribe(res=>{
+    if(res.response){
+      this.banks = res.response;
+    }
+  })
   }
 
   private rebuildKeywordCategories(): void {
@@ -175,9 +184,11 @@ export class ExcelImportComponent {
   }
 
 
-  getSelectedBank(): BankOption | undefined {
-    return this.bankOptions.find(bank => bank.id === this.selectedBankId);
-  }
+getSelectedBank(): Observable<BankBase> {
+  return this.bankService.getById(this.selectedBankId).pipe(
+    map(res => res.response)
+  );
+}
 
   /** Evento al seleccionar un archivo Excel */
   async onFileSelected(event: Event): Promise<void> {
