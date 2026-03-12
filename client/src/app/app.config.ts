@@ -11,8 +11,8 @@ import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 
 
 import { environment } from '../environments/environment';
-import { HttpInterceptorService } from '@core_services/core/http.interceptor';
-import { ErrorHandlerService } from '@core_services/core/error-handler.service';
+import { HttpInterceptorService } from '@core_services/http.interceptor';
+import { ErrorHandlerService } from '@core_services/error-handler.service';
 
 
 export const appConfig: ApplicationConfig = {

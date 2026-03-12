@@ -2,11 +2,11 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { GenericTableComponent, TableColumn } from '@shared/generic-table/generic-table.component';
 import { GenericDialogComponent } from '@shared/generic-dialog/generic-dialog.component';
-import { ToastService } from '@core_services/core/toast.service';
-import { environment } from '@environments/environment';
+import { ToastService } from '@core_services/toast.service';
+import { environment } from '@env/environment';
 import { ApiResponse } from '@core_models/apiResponse';
 import { FormFieldConfig } from '@shared/generic-form/form-config';
-import { FormFactoryService } from '@factories/forms/form-factory.service';
+import { FormFactoryService } from '@app/core/factories/forms/form-factory.service';
 import { ExpenseCategoryBase as ExpenseCategory } from '@expenses_models/ExpenseCategoryBase';
 import { ExpenseCategoryService } from '@expenses_services/expense-category.service';
 import { CommonModule } from '@angular/common'; // Asegúrate de tener CommonModule si usas Directivas

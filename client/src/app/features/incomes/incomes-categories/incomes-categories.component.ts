@@ -2,11 +2,11 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { GenericTableComponent, TableColumn } from '@shared/generic-table/generic-table.component';
 import { GenericDialogComponent } from '@shared/generic-dialog/generic-dialog.component';
-import { ToastService } from '@core_services/core/toast.service';
-import { environment } from '@environments/environment';
+import { ToastService } from '@core_services/toast.service';
+import { environment } from '@env/environment';
 import { ApiResponse } from '@core_models/apiResponse';
 import { FormFieldConfig } from '@shared/generic-form/form-config';
-import { FormFactoryService } from '@factories/forms/form-factory.service';
+import { FormFactoryService } from '@app/core/factories/forms/form-factory.service';
 import { IncomeCategoryBase as IncomeCategory } from '@incomes_models/IncomeCategoryBase';
 import { IncomeCategoryService } from '@incomes_services/income-category.service';
 @Component({

@@ -1,4 +1,39 @@
+
+<p>Banks count: {{ banks.length }}</p>
+
+
+
+<h4>Banco</h4>
+<mat-form-field>
+  <mat-label>{{"BANK.BANKS"|translate}}</mat-label>
+  <select matNativeControl required #bankSelect (change)="onBankSelected(+bankSelect.value)">
+     <option value="">Seleccionar banco</option>
+
+  @for (bank of banks; track bank.id) {
+
+    <option [value]="bank.id">
+      {{ bank.name }}
+    </option>
+
+  }
+  </select>
+</mat-form-field>
+
+<br>
+
+<br><br>
+
+<!-- File upload Material style -->
+
+
+ <button matFab extended  (click)="fileInput.click()">
+        <mat-icon>upload</mat-icon>
+        {{"SELECT_EXCEL"|translate}}
+      </button>
+
 <input
+  hidden
+  #fileInput
   type="file"
   (change)="onFileChange($event)"
   accept=".xls,.xlsx"
@@ -10,9 +45,7 @@
 
   <ul>
     @for (h of excelHeaders; track h) {
-      <li>
-        {{ h }}
-      </li>
+      <li>{{ h }}</li>
     }
   </ul>
 

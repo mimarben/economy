@@ -3,8 +3,8 @@ import { forkJoin } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { GenericTableComponent, TableColumn } from '@shared/generic-table/generic-table.component';
 import { GenericDialogComponent } from '@shared/generic-dialog/generic-dialog.component';
-import { ToastService } from '@core_services/core/toast.service';
-import { environment } from '@environments/environment';
+import { ToastService } from '@core_services/toast.service';
+import { environment } from '@env/environment';
 import { ApiResponse } from '@core_models/apiResponse';
 import { IncomeBase as Income } from '@incomes_models/IncomeBase';
 import { UserBase as User } from '@users_models/UserBase';
@@ -13,12 +13,12 @@ import { SourceBase as Source } from '@finance_models/SourceBase';
 import { AccountBase as Account } from '@finance_models/AccountBase';
 import { FormFieldConfig } from '@shared/generic-form/form-config';
 import { IncomeService } from '@incomes_services/income.service';
-import { FormFactoryService } from '@factories/forms/form-factory.service';
-import { UtilsService } from '@utils/utils.service';
+import { FormFactoryService } from '@app/core/factories/forms/form-factory.service';
+import { UtilsService } from '@app/utils/utils.service';
 import { IncomeCategoryService } from '@incomes_services/income-category.service';
 import { UserService } from '@users_services/user.service';
 import { AccountService } from '@finance_services/account.service';
-import { SourceService } from '@app/core/services/finance/source.service';
+import { SourceService } from '@finance_services/source.service';
 
 @Component({
   selector: 'app-incomes-component',

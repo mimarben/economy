@@ -3,17 +3,17 @@ import { MatDialog } from '@angular/material/dialog';
 import { GenericDialogComponent } from '@shared/generic-dialog/generic-dialog.component';
 import { GenericTableComponent } from '@shared/generic-table/generic-table.component';
 import { TableColumn } from '@shared/generic-table/generic-table.component';
-import { ToastService } from '@core_services/core/toast.service';
-import { environment } from '@environments/environment';
+import { ToastService } from '@core_services/toast.service';
+import { environment } from '@env/environment';
 import { ApiResponse } from '@core_models/apiResponse';
 import { InvestmentLogBase as InvestmentLog } from '@investments_models/InvestmentLogBase';
 import { FormFieldConfig } from '@shared/generic-form/form-config';
 import { InvestmentLogService } from '@investments_services/investment-log.service';
 import { InvestmentBase as Investment } from '@investments_models/InvestmentBase';
 import { InvestmentService } from '@investments_services/investment.service';
-import { FormFactoryService } from '@factories/forms/form-factory.service';
+import { FormFactoryService } from '@app/core/factories/forms/form-factory.service';
 import { InvestmentCategoryService } from '@investments_services/investment-category.service';
-import { UtilsService } from '@utils/utils.service';
+import { UtilsService } from '@app/utils/utils.service';
 import { InvestmentCategoryBase  as InvestmentCategory} from '@investments_models/InvestmentCategoryBase';
 @Component({
   selector: 'app-investments-log',

@@ -2,10 +2,10 @@ import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, Validators, ReactiveFormsModule, NonNullableFormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-import { AuthService } from '@core_services/auth/auth.service';
+import { AuthService } from '@auth_services/auth.service';
 
 import { CommonModule } from '@angular/common';
-import { MaterialModule } from '@utils/material.module';
+import { MaterialModule } from '@app/utils/material.module';
 
 import { HotToastService } from '@ngxpert/hot-toast';
 

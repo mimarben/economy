@@ -7,14 +7,14 @@ import {
 } from '@shared/generic-table/generic-table.component';
 import { forkJoin } from 'rxjs';
 import { ApiResponse } from '@core_models/apiResponse';
-import { FormFactoryService } from '@factories/forms/form-factory.service';
+import { FormFactoryService } from '@app/core/factories/forms/form-factory.service';
 import { FormFieldConfig } from '@shared/generic-form/form-config';
-import { ToastService } from '@core_services/core/toast.service';
-import { environment } from '@environments/environment';
+import { ToastService } from '@core_services/toast.service';
+import { environment } from '@env/environment';
 import { InvestmentBase as Investment } from '@investments_models/InvestmentBase';
 import { InvestmentService } from '@investments_services/investment.service';
 import { UserService } from '@users_services/user.service';
-import { UtilsService } from '@utils/utils.service';
+import { UtilsService } from '@app/utils/utils.service';
 import { UserBase as User } from '@users_models/UserBase';
 import { AccountService } from '@finance_services/account.service';
 import { InvestmentCategoryService } from '@investments_services/investment-category.service';

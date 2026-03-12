@@ -1,8 +1,7 @@
 import { Component, HostListener } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-import { AppTranslateService } from '@utils/app-translate.service';
-import { AuthService } from '@core_services/auth/auth.service';
+import { AuthService } from '@auth_services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -12,7 +11,6 @@ import { AuthService } from '@core_services/auth/auth.service';
 })
 export class AppComponent {
   constructor(
-    private translateService: AppTranslateService,
     private authService: AuthService
   ){}
 

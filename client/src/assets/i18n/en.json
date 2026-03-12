@@ -86,5 +86,8 @@
         }
       }
     }
+  },
+   "BANK": {
+    "NOT_FOUND": "Bank not found"
   }
 }

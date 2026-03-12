@@ -9,13 +9,13 @@ import {
   TableColumn,
 } from '@shared/generic-table/generic-table.component';
 import { ApiResponse } from '@core_models/apiResponse';
-import { FormFactoryService } from '@factories/forms/form-factory.service';
+import { FormFactoryService } from '@app/core/factories/forms/form-factory.service';
 import { FormFieldConfig } from '@shared/generic-form/form-config';
-import { ToastService } from '@core_services/core/toast.service';
-import { environment } from '@environments/environment';
+import { ToastService } from '@core_services/toast.service';
+import { environment } from '@env/environment';
 import { SavingLogService } from '@savings_services/saving-log.service';
 import { SavingService } from '@savings_services/saving.service';
-import { UtilsService } from '@utils/utils.service';
+import { UtilsService } from '@app/utils/utils.service';
 import { SourceService } from '@finance_services/source.service';
 
 @Component({

@@ -2,14 +2,14 @@ import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MaterialModule } from '@utils/material.module';
+import { MaterialModule } from '@app/utils/material.module';
 
 
 import { UserBase as User, USER_ROLE_OPTIONS } from '@users_models/UserBase';
 import { UserService } from '@users_services/user.service';
 import { ApiResponse } from '@core_models/apiResponse';
-import { ToastService } from '@core_services/core/toast.service';
-import { environment } from '@environments/environment';
+import { ToastService } from '@core_services/toast.service';
+import { environment } from '@env/environment';
 @Component({
   selector: 'app-user-form-dialog',
   imports: [CommonModule,

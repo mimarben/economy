@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from './features/home/home.component';
 import { authGuard } from './core/guards/auth.guard';
-import { UsersComponent } from '@components/users/users.component';
+import { UsersComponent } from './features/users/users.component';
 import { ExpensesComponent } from './features/expenses/expeneses.component';
 import { IncomesComponent } from  './features/incomes/incomes-component'
 import { IncomesCategoriesComponent } from './features/incomes/incomes-categories/incomes-categories.component';
@@ -20,7 +20,7 @@ import { NotFoundComponent } from './features/not-found/not-found.component';
 import { SummaryComponent} from './features/financial/summary-component/summary-component';
 import { ExcelImportComponent } from './features/import/excel/excel-import.component';
 import { LoginComponent } from './features/auth/login/login.component';
-import { LayoutComponent } from './core/layout/layout/layout.component';
+import { LayoutComponent } from './layout/layout/layout.component';
 export const routes: Routes = [
   // Rutas SIN layout
   { path: 'login', component: LoginComponent, data: { title: 'login.title' } },

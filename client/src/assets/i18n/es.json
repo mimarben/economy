@@ -80,6 +80,14 @@
         }
       }
     }
+  },
+   "BANK": {
+    "NOT_FOUND": "Banco no encontrado"
   }
+  
+  
+  
+  
+  
 }
 

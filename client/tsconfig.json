@@ -20,11 +20,41 @@
     "baseUrl": "./",
     "paths": {
       "@app/*": ["src/app/*"],
+      
+      "@factories/*": ["src/app/core/factories/*"],
+      
+      "@guards/*": ["src/app/core/guards"],
+      
+      "@interceptors/*": ["src/app/core/interceptors"],
+      
+      "@data/*": ["src/app/core/const"],
+      
       "@env/*": ["src/environments/*"],
-      "@services/*": ["src/app/core/services/*"],
-      "@factories/*": ["src/app/factories/*"],
-      "@components/*": ["src/app/features/*"],
-      "@core_models/*": ["src/app/models/core/*"],
+      
+      "@services/*": ["src/app/services/*"],
+      "@core_services/*": ["src/app/services/core/*"],
+      
+      "@expenses_services/*": ["src/app/services/expenses/*"],
+      "@households_services/*": ["src/app/services/households/*"],
+      "@finance_services/*": ["src/app/services/finance/*"],
+      "@incomes_services/*": ["src/app/services/incomes/*"],
+      "@investments_services/*": ["src/app/services/investments/*"],
+      "@savings_services/*": ["src/app/services/savings/*"],
+      "@users_services/*": ["src/app/services/users/*"],
+      "@auth_services/*":["src/app/services/auth/*"],
+      "@import_services/*":["src/app/services/import/*"],
+
+        
+      "@features/*":["src/app/features/*"],
+      
+      "@utils/*": ["src/app/utils/*"],
+      
+      "@shared/*": ["src/app/shared/components/*"],
+      
+      "@assets/*": ["src/assets/*"],
+      
+      "@utils_module/*":["src/app/utils/*"],
+      "@core_models/*":["src/app/models/core/*"],
       "@expenses_models/*": ["src/app/models/expenses/*"],
       "@finance_models/*": ["src/app/models/finance/*"],
       "@households_models/*": ["src/app/models/households/*"],
@@ -32,20 +62,9 @@
       "@investments_models/*": ["src/app/models/investments/*"],
       "@savings_models/*": ["src/app/models/savings/*"],
       "@users_models/*": ["src/app/models/users/*"],
-      "@core_services/*": ["src/app/core/services/*"],
-      "@expenses_services/*": ["src/app/core/services/expenses/*"],
-      "@finance_services/*": ["src/app/core/services/finance/*"],
-      "@households_services/*": ["src/app/core/services/households/*"],
-      "@incomes_services/*": ["src/app/core/services/incomes/*"],
-      "@investments_services/*": ["src/app/core/services/investments/*"],
-      "@savings_services/*": ["src/app/core/services/savings/*"],
-      "@summaries_services/*": ["src/app/core/services/summaries/*"],
-      "@users_services/*": ["src/app/core/services/users/*"],
-      "@utils/*": ["src/app/core/utils/*"],
-      "@assets/*": ["src/assets/*"],
-      "@environments/*": ["src/environments/*"],
-      "@shared/*": ["src/app/shared/components/*"],
-      "@features/*":["src/app/features"]
+      "@const_models/*": ["src/app/core/const/*"],
+      "@import_models/*": ["src/app/models/import/*"]
+      
     }
   },
   "angularCompilerOptions": {
