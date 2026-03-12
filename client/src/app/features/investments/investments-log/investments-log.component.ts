@@ -11,7 +11,7 @@ import { FormFieldConfig } from '@shared/generic-form/form-config';
 import { InvestmentLogService } from '@investments_services/investment-log.service';
 import { InvestmentBase as Investment } from '@investments_models/InvestmentBase';
 import { InvestmentService } from '@investments_services/investment.service';
-import { FormFactoryService } from '@app/core/factories/forms/form-factory.service';
+import { FormFactoryService } from '@app/core/factories/form-factory.service';
 import { InvestmentCategoryService } from '@investments_services/investment-category.service';
 import { UtilsService } from '@app/utils/utils.service';
 import { InvestmentCategoryBase  as InvestmentCategory} from '@investments_models/InvestmentCategoryBase';

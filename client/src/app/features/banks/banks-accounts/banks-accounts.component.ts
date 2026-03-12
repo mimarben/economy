@@ -8,7 +8,7 @@ import { GenericTableComponent, TableColumn } from '@shared/generic-table/generi
 import { AccountService } from '@finance_services/account.service';
 import { ApiResponse } from '@core_models/apiResponse';
 import { GenericDialogComponent } from '@shared/generic-dialog/generic-dialog.component';
-import { FormFactoryService } from '@app/core/factories/forms/form-factory.service';
+import { FormFactoryService } from '@app/core/factories/form-factory.service';
 import { BankService } from '@finance_services/bank.service';
 import { UserService } from '@users_services/user.service';
 import { FormFieldConfig } from '@shared/generic-form/form-config';

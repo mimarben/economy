@@ -4,6 +4,7 @@
  * DO NOT MODIFY IT BY HAND. Instead, modify the source JSONSchema file,
  * and run json-schema-to-typescript to regenerate this file.
  */
+import { CurrencyEnum } from "@core/const/currency.enum";
 
 export type Name = string;
 export type Description = string | null;
@@ -12,22 +13,6 @@ export type Date = string;
 export type CategoryId = number;
 export type PlaceId = number;
 export type UserId = number;
-export type CurrencyEnum =
-  | "€"
-  | "$"
-  | "¥"
-  | "₿"
-  | "Ξ"
-  | "USDC"
-  | "DOGE"
-  | "LTC"
-  | "XRP"
-  | "XLM"
-  | "ADA"
-  | "DOT"
-  | "SOL"
-  | "SHIB"
-  | "TRX";
 
 export interface ExpenseBase {
   id?: number;

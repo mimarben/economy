@@ -7,7 +7,7 @@ from ..core.base import Base, TimestampMixin
 class IncomesCategory(TimestampMixin, Base):
     __tablename__ = 'incomes_categories'
     id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
-    name = Column(String, nullable=False)
+    name = Column(String, nullable=False, unique=True)
     description = Column(String)
     active = Column(Boolean, default=True, nullable=False)
 

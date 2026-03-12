@@ -4,27 +4,12 @@
  * DO NOT MODIFY IT BY HAND. Instead, modify the source JSONSchema file,
  * and run json-schema-to-typescript to regenerate this file.
  */
-
+import { CurrencyEnum } from "@core/const/currency.enum";
 export type Name = string;
 export type Amount = number;
 export type Value = number;
 export type Date = string;
-export type CurrencyEnum =
-  | "€"
-  | "$"
-  | "¥"
-  | "₿"
-  | "Ξ"
-  | "USDC"
-  | "DOGE"
-  | "LTC"
-  | "XRP"
-  | "XLM"
-  | "ADA"
-  | "DOT"
-  | "SOL"
-  | "SHIB"
-  | "TRX";
+
 export type UserId = number;
 export type AccountId = number;
 export type CategoryId = number;

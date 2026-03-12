@@ -7,7 +7,7 @@ import { UserBase as User } from '@users_models/UserBase';
 import { HouseholdBase as Household } from '@households_models/HouseholdBase';
 import { GenericTableComponent, TableColumn } from '@shared/generic-table/generic-table.component';
 import { ApiResponse } from '@core_models/apiResponse';
-import { FormFactoryService } from '@app/core/factories/forms/form-factory.service';
+import { FormFactoryService } from '@app/core/factories/form-factory.service';
 import { FormFieldConfig } from '@shared/generic-form/form-config';
 import { ToastService } from '@core_services/toast.service';
 import { environment } from '@env/environment';

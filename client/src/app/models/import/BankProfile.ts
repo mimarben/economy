@@ -4,8 +4,13 @@ export interface BankProfile {
 
   name: string;
 
-  headerKeywords: string[];
-
   headerRowGuess?: number;
+  
+  columns: {
+    date: string[];
+    description: string[];
+    amount: string[];
+    balance:string[];
+  };
 
 }

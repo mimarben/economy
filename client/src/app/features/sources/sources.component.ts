@@ -4,7 +4,7 @@ import { GenericDialogComponent } from '@shared/generic-dialog/generic-dialog.co
 import { SourceBase as Source } from '@finance_models/SourceBase';
 import { GenericTableComponent, TableColumn } from "@shared/generic-table/generic-table.component";
 import { ApiResponse } from '@core_models/apiResponse';
-import { FormFactoryService } from '@app/core/factories/forms/form-factory.service';
+import { FormFactoryService } from '@app/core/factories/form-factory.service';
 import { FormFieldConfig } from '@shared/generic-form/form-config';
 import { ToastService } from '@core_services/toast.service';
 import { environment } from '@env/environment';

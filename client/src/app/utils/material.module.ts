@@ -25,6 +25,7 @@ import { MatListItem } from '@angular/material/list';
 import { MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatListItemMeta } from '@angular/material/list';
 import { MatListItemTitle } from '@angular/material/list';
+import { MatTableModule } from '@angular/material/table';
 
 import { environment } from '@env/environment';
 
@@ -56,7 +57,8 @@ import { environment } from '@env/environment';
     MatSidenav,
     MatListItem,
     MatListItemMeta,
-    MatListItemTitle
+    MatListItemTitle,
+    MatTableModule
   ],
   exports: [
     MatButtonModule,
@@ -84,7 +86,8 @@ import { environment } from '@env/environment';
     MatSidenav,
     MatListItem,
     MatListItemMeta,
-    MatListItemTitle
+    MatListItemTitle,
+    MatTableModule
   ],
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: environment.locations.defaultLocation }, // 'en-GB' uses DD-MM-YYYY by default

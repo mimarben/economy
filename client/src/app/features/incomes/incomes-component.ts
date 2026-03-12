@@ -13,7 +13,7 @@ import { SourceBase as Source } from '@finance_models/SourceBase';
 import { AccountBase as Account } from '@finance_models/AccountBase';
 import { FormFieldConfig } from '@shared/generic-form/form-config';
 import { IncomeService } from '@incomes_services/income.service';
-import { FormFactoryService } from '@app/core/factories/forms/form-factory.service';
+import { FormFactoryService } from '@app/core/factories/form-factory.service';
 import { UtilsService } from '@app/utils/utils.service';
 import { IncomeCategoryService } from '@incomes_services/income-category.service';
 import { UserService } from '@users_services/user.service';

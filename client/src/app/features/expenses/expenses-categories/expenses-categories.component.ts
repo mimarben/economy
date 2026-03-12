@@ -6,7 +6,7 @@ import { ToastService } from '@core_services/toast.service';
 import { environment } from '@env/environment';
 import { ApiResponse } from '@core_models/apiResponse';
 import { FormFieldConfig } from '@shared/generic-form/form-config';
-import { FormFactoryService } from '@app/core/factories/forms/form-factory.service';
+import { FormFactoryService } from '@app/core/factories/form-factory.service';
 import { ExpenseCategoryBase as ExpenseCategory } from '@expenses_models/ExpenseCategoryBase';
 import { ExpenseCategoryService } from '@expenses_services/expense-category.service';
 import { CommonModule } from '@angular/common'; // Asegúrate de tener CommonModule si usas Directivas

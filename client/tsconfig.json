@@ -53,6 +53,8 @@
       
       "@assets/*": ["src/assets/*"],
       
+      "@core/*": ["src/app/core/*"],
+      
       "@utils_module/*":["src/app/utils/*"],
       "@core_models/*":["src/app/models/core/*"],
       "@expenses_models/*": ["src/app/models/expenses/*"],
