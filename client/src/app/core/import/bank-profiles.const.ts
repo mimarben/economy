@@ -22,7 +22,7 @@ export const BANK_PROFILES: BankProfile[] = [
       date: ["fecha"],
       description: ["concepto"],
       balance: ["saldo"],
-      amount: ["cargo"],
+      amount: ["cargo", "abono", "Cargo/Abono (€)"],
     }
   },
 

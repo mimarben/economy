@@ -20,7 +20,7 @@
 <!-- File upload Material style -->
 
 
-<button matFab extended (click)="fileInput.click()">
+<button matFab extended (click)="fileInput.click()" [disabled]="!bankSelect.value">
   <mat-icon>upload</mat-icon>
   {{"SELECT_EXCEL"|translate}}
 </button>

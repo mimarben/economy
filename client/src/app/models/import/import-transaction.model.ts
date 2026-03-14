@@ -10,6 +10,6 @@ export interface ImportTransaction {
   
   selected: boolean;
 
-  suggestedCategoryId?: number;
+  suggestedCategoryId?: number | null;
 
 }

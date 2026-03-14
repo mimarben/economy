@@ -3,7 +3,7 @@ import { CategoryRule } from "@app/models/import/category-rule.model";
 export const CATEGORY_RULES: CategoryRule[] = [
 
   {
-    keywords: ["carrefour", "mercadona", "lidl", "dia"],
+    keywords: ["carrefour", "mercadona", "lidl", "dia","ga","gadis"],
     categoryName: "Supermercado",
     type: "expense"
   },

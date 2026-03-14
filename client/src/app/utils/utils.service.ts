@@ -79,4 +79,37 @@ export class UtilsService {
 
     return null; // cualquier otro tipo no válido
   }
+  public normalize(text: string): string {
+  return text
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "") // elimina acentos
+    .replace(/[^a-z0-9 ]/g, "") // elimina símbolos
+    .trim();
+  }
+  public parseAmount(value: any): number {
+    if (value == null || value === '' || value === undefined) return 0;
+    if (typeof value === 'number') return value;
+
+    let str = String(value)
+      .trim()
+      .replace(/[€\s]/g, '')
+      .replace('−', '-');
+
+    const lastDot = str.lastIndexOf('.');
+    const lastComma = str.lastIndexOf(',');
+
+    if (lastComma > lastDot) {
+      // formato europeo 1.501,70
+      str = str.replace(/\./g, '').replace(',', '.');
+    } else if (lastDot > lastComma) {
+      // formato inglés 1,501.70
+      str = str.replace(/,/g, '');
+    }
+    const num = Number(str);
+    if (Number.isNaN(num)) return 0;
+    //console.log("Valor raw:", value, "parsed:", num);
+    return num;
+  }
+
   }

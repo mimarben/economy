@@ -9,7 +9,6 @@ import json
 import re
 import unicodedata
 
-# Setup logging
 from services.logs.logger_service import setup_logger
 logger = setup_logger("transaction_ai")
 
@@ -17,36 +16,56 @@ logger = setup_logger("transaction_ai")
 class TransactionAIService:
 
     def __init__(self, db: Session):
+        # Guardamos la sesión de base de datos para usarla en las consultas
         self.db = db
 
-    def classify(self, transactions: list[dict]) -> list[dict]:
+    # ─────────────────────────────────────────────
+    # MÉTODO PRINCIPAL
+    # Recibe las transacciones y las reglas del frontend
+    # Devuelve cada transacción con su categoría asignada o sugerida
+    # ─────────────────────────────────────────────
+    def classify(self, transactions: list[dict], rules: list[dict]) -> list[dict]:
         if not transactions:
             return []
 
+        # 1. Cargamos todas las categorías de la base de datos agrupadas por tipo
         categories_by_type = {
             "expense": self._get_categories("expense"),
             "income": self._get_categories("income"),
             "investment": self._get_categories("investment")
         }
 
+        # Aquí guardaremos las predicciones indexadas por el id de la transacción
         predictions_by_id = {}
-        transactions_by_type: dict[str, list[dict]] = {"expense": [], "income": [], "investment": []}
 
+        # Transacciones que no matchearon con las rules y hay que enviar a la IA
+        transactions_by_type: dict[str, list[dict]] = {
+            "expense": [],
+            "income": [],
+            "investment": []
+        }
+
+        # 2. Primera pasada: intentamos categorizar con las rules del frontend
         for tx in transactions:
             type_ = tx.get("type")
             tx_id = tx.get("id")
             categories = categories_by_type.get(type_)
 
+            # Si no tiene tipo o no hay categorías para ese tipo, la ignoramos
             if tx_id is None or not categories:
                 continue
 
-            merchant_match = self._match_known_patterns(tx, categories, type_)
+            # Intentamos hacer match con las rules (ej: "mercadona" → Supermercado)
+            merchant_match = self._match_known_patterns(tx, categories, type_, rules)
+
             if merchant_match:
+                # Match encontrado → la guardamos directamente, no va a la IA
                 predictions_by_id[tx_id] = merchant_match
-                continue
+            else:
+                # Sin match → la añadimos a la lista para enviar a la IA
+                transactions_by_type[type_].append(tx)
 
-            transactions_by_type[type_].append(tx)
-
+        # 3. Segunda pasada: enviamos a la IA las que no matchearon
         for type_, txs in transactions_by_type.items():
             if not txs:
                 continue
@@ -56,81 +75,101 @@ class TransactionAIService:
                 ai_predictions = self._classify_batch(type_, txs, categories)
             except Exception as exc:
                 logger.exception(
-                    "AI classification failed for type=%s and %s transactions. Falling back to uncategorized results.",
-                    type_,
-                    len(txs),
-                    exc_info=exc,
+                    "Fallo en clasificación IA para type=%s con %s transacciones.",
+                    type_, len(txs), exc_info=exc,
                 )
                 ai_predictions = {}
+
             predictions_by_id.update(ai_predictions)
 
-        return [{"id": tx.get("id"), "category_id": predictions_by_id.get(tx.get("id"))} for tx in transactions]
+        # 4. Construimos el resultado final con todas las transacciones
+        # Si no se encontró predicción, category será None
+        return [
+            {
+                "id": tx.get("id"),
+                "category": predictions_by_id.get(tx.get("id")),
+            }
+            for tx in transactions
+        ]
 
+    # ─────────────────────────────────────────────
+    # CONSULTA DE CATEGORÍAS EN BASE DE DATOS
+    # Devuelve las categorías activas (sin deleted_at) según el tipo
+    # ─────────────────────────────────────────────
     def _get_categories(self, type_: str) -> list:
         if type_ == "expense":
             stmt = select(ExpensesCategory).where(ExpensesCategory.deleted_at.is_(None))
             categories = list(self.db.execute(stmt).scalars().all())
-            logger.debug(f"Expense categories: {[c.name for c in categories]}")
+            logger.debug(f"Categorías de gasto: {[c.name for c in categories]}")
             return categories
+
         if type_ == "income":
             stmt = select(IncomesCategory).where(IncomesCategory.deleted_at.is_(None))
             categories = list(self.db.execute(stmt).scalars().all())
-            logger.debug(f"Income categories: {[c.name for c in categories]}")
+            logger.debug(f"Categorías de ingreso: {[c.name for c in categories]}")
             return categories
+
         if type_ == "investment":
             stmt = select(InvestmentsCategory).where(InvestmentsCategory.deleted_at.is_(None))
             categories = list(self.db.execute(stmt).scalars().all())
-            logger.debug(f"Investment categories: {[c.name for c in categories]}")
+            logger.debug(f"Categorías de inversión: {[c.name for c in categories]}")
             return categories
+
         return []
 
+    # ─────────────────────────────────────────────
+    # CLASIFICACIÓN POR IA
+    # Envía un lote de transacciones al modelo de IA local
+    # Le pasamos las categorías disponibles para que elija entre ellas
+    # Si no hay match, pedimos que sugiera una categoría nueva
+    # ─────────────────────────────────────────────
     def _classify_batch(self, type_: str, transactions: list[dict], categories: list) -> dict:
+
+        # Preparamos las categorías disponibles para pasárselas a la IA
         categories_payload = [
             {"name": c.name, "description": getattr(c, "description", "")}
             for c in categories
         ]
+
+        # Preparamos las transacciones con solo los campos relevantes
         tx_payload = [
             {
                 "id": tx.get("id"),
                 "description": tx.get("description"),
                 "amount": tx.get("amount"),
-                "bank_id": tx.get("bank_id"),
-                "bank_name": tx.get("bank_name"),
-                "import_format": tx.get("import_format"),
             }
             for tx in transactions
         ]
 
+        # Prompt que le enviamos a la IA con instrucciones claras
         prompt = f"""
                   Type: {type_}
                   Transactions: {json.dumps(tx_payload, ensure_ascii=False)}
                   Available categories: {json.dumps(categories_payload, ensure_ascii=False)}
 
                   Rules:
-                  - Use only category names from available categories.
-                  - Consider bank context (bank_id, bank_name, import_format) to interpret descriptions.
+                  - Use only category names from available categories when possible.
                   - Prioritize specific merchant matches over generic labels.
-                  - Return exactly one category per transaction id.
+                  - Return exactly one entry per transaction id.
+                  - If NO existing category fits, set category to null and provide suggested_new_category in Spanish.
 
                   Return only valid JSON with this schema:
-                  {{"classifications":[{{"id":"...","category":"..."}}]}}
+                  {{"classifications":[{{"id":"...","category":"..." | null,"suggested_new_category":"..." | null}}]}}
                   """
 
+        # Payload completo para la API del modelo de IA (formato OpenAI compatible)
         payload = {
             "messages": [
-                {
-                    "role": "system",
-                    "content": "You are a strict financial classifier. Return only JSON."
-                },
-                {
-                    "role": "user",
-                    "content": prompt
-                }
+                # El rol system define el comportamiento general del modelo
+                {"role": "system", "content": "You are a strict financial classifier. Return only JSON."},
+                # El rol user es el prompt con los datos reales
+                {"role": "user", "content": prompt}
             ],
-            "temperature": 0,
-            "max_tokens": max(120, len(transactions) * 40)
+            "temperature": 0,  # 0 = respuestas más deterministas, sin creatividad
+            "max_tokens": max(120, len(transactions) * 40)  # tokens proporcionales al número de transacciones
         }
 
+        # Construimos la petición HTTP al servidor de IA local
         req = urllib.request.Request(
             "http://ai:8180/v1/chat/completions",
             data=json.dumps(payload).encode("utf-8"),
@@ -138,85 +177,117 @@ class TransactionAIService:
             method="POST"
         )
 
+        # Enviamos la petición y leemos la respuesta
         try:
             with urllib.request.urlopen(req, timeout=45) as response:
                 result = json.loads(response.read().decode("utf-8"))
         except urllib.error.URLError as exc:
-            logger.warning("AI service unavailable. Returning empty predictions. Error: %s", exc)
+            logger.warning("Servicio de IA no disponible: %s", exc)
             return {}
 
+        # Extraemos el texto de la respuesta del modelo
         content = result.get("choices", [{}])[0].get("message", {}).get("content", "")
+
+        # Intentamos parsear el JSON directamente
+        # A veces la IA añade texto extra o bloques ```json ... ```, así que
+        # si falla el parse directo, buscamos el JSON con una expresión regular
         try:
             parsed = json.loads(content)
         except Exception:
-            logger.warning(f"Invalid AI response for batch classification: {content}")
-            return {}
+            match = re.search(r'\{.*\}', content, re.DOTALL)
+            if match:
+                try:
+                    parsed = json.loads(match.group())
+                except Exception:
+                    logger.warning("No se pudo extraer JSON de la respuesta IA: %s", content)
+                    return {}
+            else:
+                logger.warning("No se encontró JSON en la respuesta IA: %s", content)
+                return {}
 
+        # Creamos un diccionario de categorías normalizadas para hacer lookup rápido
+        # clave: nombre normalizado (sin tildes, minúsculas) → valor: objeto categoría
         category_by_name = {self._normalize_text(c.name): c for c in categories}
         predictions = {}
 
+        # Procesamos cada clasificación que devolvió la IA
         for item in parsed.get("classifications", []):
             tx_id = item.get("id")
             category_name = item.get("category")
+            suggested = item.get("suggested_new_category")
 
-            if tx_id is None or not category_name:
+            if tx_id is None:
                 continue
 
-            matched = category_by_name.get(self._normalize_text(str(category_name)))
-            if not matched:
-                continue
+            if category_name:
+                # La IA propuso una categoría existente → buscamos en BD
+                matched = category_by_name.get(self._normalize_text(str(category_name)))
+                if matched:
+                    predictions[tx_id] = {
+                        "id": matched.id,
+                        "name": matched.name,
+                        "description": getattr(matched, "description", None),
+                        "suggested_new_category": None  # tiene categoría real, no necesita sugerencia
+                    }
+                    continue
 
+            # La IA no encontró categoría existente → guardamos la sugerencia de nueva categoría
             predictions[tx_id] = {
-                "id": matched.id,
-                "name": matched.name,
-                "description": getattr(matched, "description", None)
+                "id": None,
+                "name": None,
+                "description": None,
+                "suggested_new_category": suggested  # ej: "Peajes", "Gimnasio", "Farmacia"
             }
 
         return predictions
 
-    def _match_known_patterns(self, tx: dict, categories: list, type_: str):
-        if type_ != "expense":
-            return None
-
+    # ─────────────────────────────────────────────
+    # MATCH POR RULES DEL FRONTEND
+    # Antes de llamar a la IA, intentamos clasificar con las reglas
+    # que vienen del frontend (CATEGORY_RULES de Angular)
+    # Ejemplo: si la descripción contiene "mercadona" → categoría "Supermercado"
+    # ─────────────────────────────────────────────
+    def _match_known_patterns(self, tx: dict, categories: list, type_: str, rules: list[dict]):
+        # Normalizamos la descripción para comparar sin tildes ni mayúsculas
         description = self._normalize_text(tx.get("description", ""))
-        bank_context = self._normalize_text(
-            f"{tx.get('bank_id', '')} {tx.get('bank_name', '')} {tx.get('import_format', '')}"
-        )
 
-        keyword_groups = [
-            ["carrefour", "mercadona", "lidl", "dia", "alcampo", "eroski", "consum"],
-            ["netflix", "spotify", "prime video", "hbo", "disney"],
-            ["repsol", "cepsa", "bp", "gasolin"],
-            ["farmacia", "parafarmacia"],
-        ]
+        for rule in rules:
+            # Solo procesamos rules del mismo tipo (expense, income, investment)
+            if rule.get("type") != type_:
+                continue
 
-        for keywords in keyword_groups:
-            if any(keyword in description for keyword in keywords):
-                matched = self._find_category_by_keywords(categories, keywords)
-                if matched:
-                    return matched
+            # Normalizamos las keywords de la rule
+            keywords = [self._normalize_text(k) for k in rule.get("keywords", [])]
 
-        if "carrefour_pass" in bank_context and any(token in description for token in ["seguro", "comision", "interes"]):
-            matched = self._find_category_by_keywords(categories, ["comision", "interes", "seguro", "banco"])
-            if matched:
-                return matched
+            # Comprobamos si alguna keyword aparece en la descripción
+            if not any(kw in description for kw in keywords):
+                continue
 
-        return None
-
-    def _find_category_by_keywords(self, categories: list, keywords: list[str]):
-        normalized_keywords = [self._normalize_text(k) for k in keywords]
-        for category in categories:
-            category_text = self._normalize_text(
-                f"{category.name} {getattr(category, 'description', '')}"
+            # Keyword encontrada → buscamos la categoría por nombre exacto en BD
+            category_name = self._normalize_text(rule.get("categoryName", ""))
+            matched = next(
+                (c for c in categories if self._normalize_text(c.name) == category_name),
+                None
             )
-            if any(re.search(rf"\b{re.escape(keyword)}", category_text) for keyword in normalized_keywords):
+
+            if matched:
                 return {
-                    "id": category.id,
-                    "name": category.name,
-                    "description": getattr(category, "description", None)
+                    "id": matched.id,
+                    "name": matched.name,
+                    "description": getattr(matched, "description", None),
+                    "suggested_new_category": None
                 }
+
+        # Ninguna rule coincidió
         return None
 
+    # ─────────────────────────────────────────────
+    # NORMALIZACIÓN DE TEXTO
+    # Elimina tildes y convierte a minúsculas para comparar textos
+    # Ejemplo: "Ñoño" → "nono", "Ámsterdam" → "amsterdam"
+    # ─────────────────────────────────────────────
     def _normalize_text(self, text: str) -> str:
+        # NFKD descompone los caracteres con tilde en letra + diacrítico separados
         normalized = unicodedata.normalize("NFKD", str(text))
+        # Filtramos los diacríticos (tildes, cedillas, etc.) y pasamos a minúsculas
         return "".join(c for c in normalized if not unicodedata.combining(c)).strip().lower()

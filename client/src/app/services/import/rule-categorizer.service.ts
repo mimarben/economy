@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core";
 
-import { CATEGORY_RULES } from "@app/core/import/category-rules.const";
-import { ImportTransaction } from "@app/models/import/import-transaction.model";
-import { IncomeCategoryBase } from "@app/models/incomes/IncomeCategoryBase";
-import { ExpenseCategoryBase } from "@app/models/expenses/ExpenseCategoryBase";
+import { CATEGORY_RULES } from "@core/import/category-rules.const";
+import { ImportTransaction } from "@import_models/import-transaction.model";
+import { IncomeCategoryBase } from "@incomes_models/IncomeCategoryBase";
+import { ExpenseCategoryBase } from "@expenses_models/ExpenseCategoryBase";
 
 @Injectable({
   providedIn: "root"
