@@ -25,6 +25,7 @@ class TransactionAIService:
     # Devuelve cada transacción con su categoría asignada o sugerida
     # ─────────────────────────────────────────────
     def classify(self, transactions: list[dict], rules: list[dict]) -> list[dict]:
+        rules = rules or []
         if not transactions:
             return []
 
@@ -143,15 +144,49 @@ class TransactionAIService:
 
         # Prompt que le enviamos a la IA con instrucciones claras
         prompt = f"""
+                  You are a financial transaction classifier.
                   Type: {type_}
                   Transactions: {json.dumps(tx_payload, ensure_ascii=False)}
                   Available categories: {json.dumps(categories_payload, ensure_ascii=False)}
 
-                  Rules:
-                  - Use only category names from available categories when possible.
-                  - Prioritize specific merchant matches over generic labels.
-                  - Return exactly one entry per transaction id.
-                  - If NO existing category fits, set category to null and provide suggested_new_category in Spanish.
+                Rules:
+                    - Only use an existing category if it clearly fits the transaction.
+                    - Do not force a category if it does not match well.
+                    - If no category fits, set category to null and suggest a new category.
+
+                    Suggested category rules:
+                    - Must be a GENERIC expense category.
+                    - Must NOT contain merchant names.
+                    - Must NOT contain cities or locations.
+                    - Use short names (1-3 words).
+
+                    Examples of valid suggestions:
+                    Salud
+                    Farmacia
+                    Parking
+                    Peajes
+                    Gimnasio
+                    Mascotas
+                    Veterinario
+                    Ocio
+
+                Good examples:
+
+                    Transaction: FARMACIA GARCIA
+                    Result:
+                    {{"id":1,"category":null,"suggested_new_category":"Farmacia"}}
+
+                    Transaction: PARKING PLAZA MAYOR
+                    Result:
+                    {{"id":1,"category":null,"suggested_new_category":"Parking"}}
+
+                    Transaction: CLINICA DENTAL
+                    Result:
+                    {{"id":1,"category":null,"suggested_new_category":"Salud"}}
+
+                    Return ONLY JSON in this format:
+                    {{"classifications":[{{"id":"...","category":"..." | null,"suggested_new_category":"..." | null}}]}}
+
 
                   Return only valid JSON with this schema:
                   {{"classifications":[{{"id":"...","category":"..." | null,"suggested_new_category":"..." | null}}]}}

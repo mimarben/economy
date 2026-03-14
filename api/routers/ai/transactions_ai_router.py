@@ -15,10 +15,16 @@ def classify():
     db: Session = next(get_db())
 
     try:
-        data = request.get_json(force=True)
+        data = request.get_json(force=True) or {}
+
         print(f"Received data for classification: {data}")
+
+        transactions = data.get("transactions", [])
+        rules = data.get("rules", [])
+
         service = TransactionAIService(db)
-        result = service.classify(data)
+
+        result = service.classify(transactions, rules)
 
         return Response._ok_data(result, _("CLASSIFIED"), 200, name)
 
