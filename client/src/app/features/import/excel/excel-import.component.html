@@ -37,17 +37,22 @@
     }
   </ul>
 } -->
+@if (isClassifying) {
+<div style="display:flex; align-items:center; gap:12px; margin:24px 0">
+  <mat-spinner diameter="32"></mat-spinner>
+  <span>Clasificando transacciones...</span>
+</div>
+}
+
+@if (!isClassifying && transactions.length > 0) {
 <table mat-table [dataSource]="transactions">
 
   <!-- Checkbox -->
   <ng-container matColumnDef="select">
-    <th mat-header-cell *matHeaderCellDef> Importar 
-        <mat-checkbox
-      (change)="toggleAll($event.checked)"
-      [checked]="isAllSelected()"
-      [indeterminate]="isSomeSelected()">
+    <th mat-header-cell *matHeaderCellDef> Importar
+      <mat-checkbox (change)="toggleAll($event.checked)" [checked]="isAllSelected()" [indeterminate]="isSomeSelected()">
 
-    </mat-checkbox>
+      </mat-checkbox>
     </th>
     <td mat-cell *matCellDef="let t">
       <mat-checkbox [(ngModel)]="t.selected"></mat-checkbox>
@@ -106,6 +111,13 @@
           }
 
         </mat-select>
+        <!-- Sugerencia de nueva categoría -->
+        @if (t.suggestedCategoryName && !t.suggestedCategoryId) {
+        <mat-hint>
+          <mat-icon style="font-size:14px;vertical-align:middle">lightbulb</mat-icon>
+          {{ t.suggestedCategoryName }}
+        </mat-hint>
+        }
 
       </mat-form-field>
 
@@ -118,7 +130,8 @@
 
 </table>
 <br>
- <button matFab extended (click)="confirmImport()">
-        <mat-icon>content_paste_go</mat-icon>
-        {{"IMPORT_DATA" | translate}}
-      </button>
+<button matFab extended (click)="confirmImport()">
+  <mat-icon>content_paste_go</mat-icon>
+  {{"IMPORT_DATA" | translate}}
+</button>
+}

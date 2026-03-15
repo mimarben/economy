@@ -37,6 +37,7 @@ export class ExcelImportComponent implements OnInit {
   transactions: ImportTransaction[] = [];
   expenseCategories: ExpenseCategoryBase[] = [];
   incomeCategories: IncomeCategoryBase[] = [];
+  isClassifying = false;
   displayedColumns = [
     'select',
     'date',
@@ -199,22 +200,25 @@ export class ExcelImportComponent implements OnInit {
       });
       console.log('Valid rows:', validRows);
 
-      this.transactions = validRows.map((row) => ({
+      const tempTransactions: ImportTransaction[] = validRows.map((row) => ({
         date: row[dateIndex],
         description: row[descriptionIndex],
         amount: this.utilsService.parseAmount(row[amountIndex]),
         balance: this.utilsService.parseAmount(row[balanceIndex]),
         suggestedCategoryId: null,
+        suggestedCategoryName: null,
         selected: false,
       }));
-      this.transactions = this.ruleCategorizerService.categorize(
-        this.transactions,
+
+      const categorized = this.ruleCategorizerService.categorize(
+        tempTransactions,
         this.incomeCategories,
         this.expenseCategories,
       );
-      const uncategorized = this.transactions.filter(
-        t => !t.suggestedCategoryId
-      );
+      const uncategorized = categorized.filter(t => !t.suggestedCategoryId);
+
+      console.log('Uncategorized transactions:', uncategorized);
+
       const payload: ClassifyPayload = {
         transactions: uncategorized.map((t, index) => ({
           id: index,
@@ -224,17 +228,31 @@ export class ExcelImportComponent implements OnInit {
         })),
         rules: CATEGORY_RULES
       };
-      console.log('Classify payload:', JSON.stringify(payload, null, 2));
-      
-      this.transactionAiService.publicclassify(payload).subscribe(res => {
-        const results = res?.response ?? [];
-        for (const classification of results) {
-          const tx = this.transactions.find(t => t.description === classification.category?.description);
-          if (tx && classification.category) {
-            tx.suggestedCategoryId = classification.category.id;
+      console.log('Payload:', JSON.stringify(payload), payload);
+
+      this.isClassifying = true; // ← activa spinner
+
+      this.transactionAiService.publicclassify(payload).subscribe({
+        next: res => {
+          const results = res?.response ?? [];
+          for (const classification of results) {
+            const tx = uncategorized[classification.id];
+            if (!tx) continue;
+            if (classification.category?.id) {
+              tx.suggestedCategoryId = classification.category.id;
+            } else if (classification.category?.suggested_new_category) {
+              tx.suggestedCategoryName = classification.category.suggested_new_category;
+            }
           }
+          this.transactions = categorized; // ← tabla aparece aquí
+          this.isClassifying = false;
+        },
+        error: err => {
+          console.error('Error en classify:', err);
+          this.transactions = categorized; // ← muestra igualmente si falla la IA
+          this.isClassifying = false;
         }
-      })
+      });
     };
 
     reader.readAsBinaryString(file);

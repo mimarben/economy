@@ -7,6 +7,7 @@ import { AuthService } from '@auth_services/auth.service';
 import { CommonModule } from '@angular/common';
 import { MaterialModule } from '@app/utils/material.module';
 
+import { AppTranslateService } from '@utils/app-translate.service';
 import { HotToastService } from '@ngxpert/hot-toast';
 
 @Component({
@@ -27,6 +28,7 @@ export class LoginComponent implements OnInit {
   private authService = inject(AuthService);
   private router = inject(Router);
   private toast = inject(HotToastService);
+  private appTranslateService = inject(AppTranslateService);
 
   hidePassword = true;
   isLoading = false;
@@ -36,7 +38,9 @@ export class LoginComponent implements OnInit {
     password: ['', [Validators.required, Validators.minLength(6)]]
   });
 
-  ngOnInit(): void {}
+ ngOnInit(): void {
+    this.appTranslateService.initialize();
+  }
 
   onSubmit(): void {
 

@@ -11,5 +11,7 @@ export interface ImportTransaction {
   selected: boolean;
 
   suggestedCategoryId?: number | null;
+  
+  suggestedCategoryName?: string | null; // ← añade esto
 
 }

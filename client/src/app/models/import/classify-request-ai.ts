@@ -12,7 +12,12 @@ export interface CategoryRule {
 }
 export interface ClassifyResult {
   id: number;
-  category: { id: number; name: string; description?: string } | null;
+  category: { 
+    id: number; 
+    name: string; 
+    description?: string,
+    suggested_new_category?: string | null; 
+  } | null;
 }
 
 export interface ClassifyPayload {
