@@ -78,16 +78,16 @@ export class HttpInterceptorService implements HttpInterceptor {
       headers = headers.set('Content-Type', 'application/json');
     }
 
-    // Add Authorization header if token exists
+    // Add Authorization header if token exists and request doesn't already define one
     const token = this.getAuthToken();
     const isAuthRequest = request.url.includes('/auth/login') || request.url.includes('/auth/refresh');
-    if (token && !request.url.includes('assets')) {
+    const hasAuthorizationHeader = headers.has('Authorization');
+
+    if (token && !request.url.includes('assets') && !isAuthRequest && !hasAuthorizationHeader) {
       headers = headers.set('Authorization', `Bearer ${token}`);
 
-      if (!isAuthRequest) {
-        const authService = this.injector.get(AuthService);
-        authService.registerUserActivity();
-      }
+      const authService = this.injector.get(AuthService);
+      authService.registerUserActivity();
     }
 
     return request.clone({ headers });
