@@ -6,7 +6,7 @@ from flask_jwt_extended import create_access_token, create_refresh_token
 from services.core.security_service import hash_password, verify_password
 from models import User, UserRoleEnum
 from repositories.users.user_repository import UserRepository
-from schemas.auth.auth_schema import LoginRequest, RegisterRequest, TokenResponse, RefreshResponse
+from schemas.auth.auth_schema import LoginRequest, TokenResponse, RefreshResponse
 from schemas.users.user_schema import UserRead
 
 # Setup logging
