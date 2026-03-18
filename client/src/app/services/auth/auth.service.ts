@@ -19,7 +19,7 @@ export class AuthService {
   private readonly refreshTokenKey = 'refresh_token';
   private readonly tokenTypeKey = 'token_type';
   private readonly lastActivityKey = 'auth_last_activity';
-  private readonly idleTimeoutMs = 15 * 60 * 1000;
+  private readonly idleTimeoutMs = 7 * 24 * 60 * 60 * 1000; // 7 days matching typical refresh token
   private readonly minActivityWriteIntervalMs = 30 * 1000;
   private lastActivityWriteAt = 0;
 
