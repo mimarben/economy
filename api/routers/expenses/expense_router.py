@@ -67,6 +67,39 @@ def create_expense():
         return Response._error(_("DATABASE_ERROR"), str(e), 500, name)
 
 
+@router.post("/expenses/bulk")
+def create_expenses_bulk():
+    """
+    Create multiple expenses atomically.
+
+    If one item fails, none are persisted.
+    """
+    db: Session = next(get_db())
+
+    if not isinstance(request.json, list):
+        return Response._error(_("VALIDATION_ERROR"), "Request body must be an array", 400, name)
+
+    try:
+        expenses_data = [ExpenseCreate.model_validate(item) for item in request.json]
+    except ValidationError as e:
+        return Response._error(_("VALIDATION_ERROR"), e.errors(), 400, name)
+
+    try:
+        service = ExpenseService(db)
+        result = service.create_batch_atomic(expenses_data)
+        return Response._ok_data(
+            [item.model_dump() for item in result],
+            _("EXPENSE_CREATED"),
+            201,
+            name
+        )
+    except ValueError as e:
+        return Response._error(_("FK_ERROR"), str(e), 400, name)
+    except Exception as e:
+        db.rollback()
+        return Response._error(_("DATABASE_ERROR"), str(e), 500, name)
+
+
 @router.get("/expenses/<int:expense_id>")
 def get_expense(expense_id):
     """Get a single expense by ID."""
