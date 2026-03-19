@@ -42,7 +42,30 @@ def create():
         service: ICreateService = _get_create_service(db)
         result = service.create(data)
         return Response._ok_data(result.model_dump(), _("INCOME_CREATED"), 201, name)
+    except ValueError as e:
+        return Response._error(_("FK_ERROR"), str(e), 400, name)
     except Exception as e:
+        return Response._error(_("DATABASE_ERROR"), str(e), 500, name)
+
+@router.post("/incomes/bulk")
+def create_bulk():
+    db: Session = next(get_db())
+    if not isinstance(request.json, list):
+        return Response._error(_("VALIDATION_ERROR"), "Request body must be an array", 400, name)
+
+    try:
+        data = [IncomeCreate.model_validate(item) for item in request.json]
+    except ValidationError as e:
+        return Response._error(_("VALIDATION_ERROR"), e.errors(), 400, name)
+
+    try:
+        service = IncomeService(db)
+        result = service.create_batch_atomic(data)
+        return Response._ok_data([r.model_dump() for r in result], _("INCOME_CREATED"), 201, name)
+    except ValueError as e:
+        return Response._error(_("FK_ERROR"), str(e), 400, name)
+    except Exception as e:
+        db.rollback()
         return Response._error(_("DATABASE_ERROR"), str(e), 500, name)
 
 
