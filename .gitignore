@@ -106,6 +106,10 @@ docs/_build/
 db.sqlite3
 db.sqlite3-journal
 /database/
+/backups/*
+!/backups/README.md
+!/backups/backup_postgres.sh
+!/backups/restore_postgres.sh
 
 # ============================================================
 # NGINX
