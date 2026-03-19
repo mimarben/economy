@@ -281,6 +281,46 @@ export class ExcelImportComponent implements OnInit {
   }
   confirmImport() {
     const selected = this.transactions.filter((t) => t.selected);
-    console.log('Transactions to import:', selected);
+    if (!selected.length) {
+      this.toastService.error('Selecciona al menos una transacción');
+      return;
+    }
+
+    const withoutCategory = selected.filter((t) => !t.suggestedCategoryId);
+    if (withoutCategory.length > 0) {
+      this.toastService.error('Hay transacciones sin categoría asignada');
+      return;
+    }
+
+    const expenses = selected.filter((t) => t.amount < 0);
+    const incomes = selected.filter((t) => t.amount >= 0);
+
+    const expensesDraftPayload = expenses.map((t) => ({
+      name: String(t.description).trim().slice(0, 255),
+      description: String(t.description).trim(),
+      amount: Math.abs(Number(t.amount)),
+      date: t.date,
+      category_id: t.suggestedCategoryId,
+    }));
+
+    const incomesDraftPayload = incomes.map((t) => ({
+      name: String(t.description).trim().slice(0, 255),
+      description: String(t.description).trim(),
+      amount: Number(t.amount),
+      date: t.date,
+      category_id: t.suggestedCategoryId,
+    }));
+
+    // IMPORTANTE:
+    // Hacer 2 llamadas separadas (/expenses/bulk y /incomes/bulk) NO garantiza atomicidad global.
+    // Para "todo o nada" real entre gastos+ingresos hace falta 1 endpoint backend único
+    // que envuelva ambas inserciones en la misma transacción.
+    console.log('Expense bulk draft payload:', expensesDraftPayload);
+    console.log('Income bulk draft payload:', incomesDraftPayload);
+
+    this.toastService.success(
+      `Preparado: ${expenses.length} gastos y ${incomes.length} ingresos. ` +
+      'Siguiente paso: endpoint backend único para guardar ambos en una sola transacción.',
+    );
   }
 }

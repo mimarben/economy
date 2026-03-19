@@ -10,8 +10,19 @@ Para un import de Excel conviene guardar en **una sola transacción**:
 En esta base ya existe endpoint:
 
 - `POST /expenses/bulk`
+- `POST /incomes/bulk`
 
 Ese endpoint valida y persiste todo en bloque con comportamiento all-or-nothing.
+
+### ¿Y si separo en 2 llamadas (`expenses/bulk` + `incomes/bulk`)?
+
+Con **dos peticiones HTTP distintas** no hay atomicidad global garantizada.
+
+- Puede guardarse `expenses` y fallar `incomes`.
+- Para evitar duplicados/parciales, la opción robusta es un endpoint único tipo:
+  - `POST /imports/transactions/bulk-atomic`
+  - body: `{ expenses: [...], incomes: [...] }`
+  - una sola transacción en backend para ambos bloques.
 
 ## 2) Reglas + IA para categorizar
 
