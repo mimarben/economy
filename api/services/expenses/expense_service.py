@@ -41,6 +41,39 @@ class ExpenseService(BaseService[Expense, ExpenseRead, ExpenseCreate, ExpenseUpd
 
         return super().create(data)
 
+    def create_batch_atomic(self, items: List[ExpenseCreate]) -> List[ExpenseRead]:
+        """
+        Create multiple expenses in a single DB transaction.
+
+        All rows are persisted together (all-or-nothing). If one row fails
+        validation or persistence, the whole batch is rolled back.
+        """
+        if not items:
+            return []
+
+        for item in items:
+            is_valid, error = self.repository.validate_foreign_keys(
+                user_id=item.user_id,
+                source_id=item.source_id,
+                category_id=item.category_id,
+                account_id=item.account_id
+            )
+            if not is_valid:
+                raise ValueError(f"Invalid foreign key: {error}")
+
+        created_objects: List[Expense] = []
+        with self.db.begin():
+            for item in items:
+                obj = Expense(**item.model_dump())
+                self.db.add(obj)
+                created_objects.append(obj)
+            self.db.flush()
+
+        for obj in created_objects:
+            self.db.refresh(obj)
+
+        return [ExpenseRead.model_validate(obj) for obj in created_objects]
+
     # Domain-specific methods
     def get_by_user(self, user_id: int) -> List[ExpenseRead]:
         """Get all expenses for a specific user."""
@@ -74,4 +107,3 @@ class ExpenseService(BaseService[Expense, ExpenseRead, ExpenseCreate, ExpenseUpd
             expenses = self.repository.get_by_user(user_id)
 
         return sum(exp.amount for exp in expenses)
-
