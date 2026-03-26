@@ -1,10 +1,12 @@
 from .core.base import Base, TimestampMixin
+from .core.category_rule_model import CategoryRule
 from .core.enums import (
     CurrencyEnum,
     RoleEnum,
     SourceTypeEnum,
     ActionEnum,
     UserRoleEnum,
+    TransactionEnum,
 )
 
 # Users
@@ -32,12 +34,14 @@ __all__ = [
     # Core
     'Base',
     'TimestampMixin',
+    'CategoryRule',
     # Enums
     'CurrencyEnum',
     'RoleEnum',
     'SourceTypeEnum',
     'ActionEnum',
     'UserRoleEnum',
+    'TransactionEnum',
     # Users
     'User',
     # Finance

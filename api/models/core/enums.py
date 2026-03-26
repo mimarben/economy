@@ -48,3 +48,10 @@ class UserRoleEnum(str, enum.Enum):
     EDITOR = "editor"
     USER = "user"
     GUEST = "guest"
+
+
+class TransactionEnum(str, enum.Enum):
+    """Types of transactions for categorization rules."""
+    expense = "expense"
+    income = "income"
+    investment = "investment"

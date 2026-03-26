@@ -26,6 +26,9 @@ import { MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatListItemMeta } from '@angular/material/list';
 import { MatListItemTitle } from '@angular/material/list';
 import { MatTableModule } from '@angular/material/table';
+import { MatSortModule } from '@angular/material/sort';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatGridListModule } from '@angular/material/grid-list';
 
 import { environment } from '@env/environment';
 
@@ -43,6 +46,7 @@ import { environment } from '@env/environment';
     MatFormFieldModule,
     MatGridList,
     MatGridTile,
+    MatGridListModule,
     MatDialogModule,
     MatInputModule,
     MatCheckboxModule,
@@ -58,7 +62,9 @@ import { environment } from '@env/environment';
     MatListItem,
     MatListItemMeta,
     MatListItemTitle,
-    MatTableModule
+    MatTableModule,
+    MatSortModule,
+    MatPaginatorModule
   ],
   exports: [
     MatButtonModule,
@@ -72,6 +78,7 @@ import { environment } from '@env/environment';
     MatFormFieldModule,
     MatGridList,
     MatGridTile,
+    MatGridListModule,
     MatDialogModule,
     MatInputModule,
     MatCheckboxModule,
@@ -87,7 +94,9 @@ import { environment } from '@env/environment';
     MatListItem,
     MatListItemMeta,
     MatListItemTitle,
-    MatTableModule
+    MatTableModule,
+    MatSortModule,
+    MatPaginatorModule
   ],
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: environment.locations.defaultLocation }, // 'en-GB' uses DD-MM-YYYY by default

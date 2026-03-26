@@ -9,6 +9,7 @@ import { UtilsService } from '@utils/utils.service';
 import { TransactionAiService } from '@services/ai/transaction-ai.service';
 import { RuleCategorizerService } from '@import_services/rule-categorizer.service';
 import { ToastService } from '@core_services/toast.service';
+import { TransactionImportService } from '@app/services/import/transaction-import.service';
 
 import { BankProfile } from '@import_models/BankProfile';
 import { BANK_PROFILES } from '@app/core/import/bank-profiles.const';
@@ -16,7 +17,6 @@ import { BankService } from '@finance_services/bank.service';
 import { BankBase as Bank } from '@finance_models/BankBase';
 import { ImportTransaction } from '@import_models/import-transaction.model';
 import { ClassifyRequest, ClassifyResult, ClassifyPayload } from '@import_models/classify-request-ai';
-import { CATEGORY_RULES } from "@core/import/category-rules.const";
 
 import { AppTranslateService } from '@utils/app-translate.service';
 import { TranslateModule } from '@ngx-translate/core';
@@ -54,7 +54,8 @@ export class ExcelImportComponent implements OnInit {
     private expenseCategoryService: ExpenseCategoryService,
     private ruleCategorizerService: RuleCategorizerService,
     private utilsService: UtilsService,
-    private transactionAiService: TransactionAiService
+    private transactionAiService: TransactionAiService,
+    private transactionImportService: TransactionImportService
   ) { }
   ngOnInit(): void {
     this.bankService.getBanks().subscribe({
@@ -226,7 +227,7 @@ export class ExcelImportComponent implements OnInit {
           description: (String(t.description)).trim(),
           amount: Number(+t.amount),
         })),
-        rules: CATEGORY_RULES
+        rules: [] // Rules are now managed on the backend
       };
       console.log('Payload:', JSON.stringify(payload), payload);
 
@@ -315,12 +316,28 @@ export class ExcelImportComponent implements OnInit {
     // Hacer 2 llamadas separadas (/expenses/bulk y /incomes/bulk) NO garantiza atomicidad global.
     // Para "todo o nada" real entre gastos+ingresos hace falta 1 endpoint backend único
     // que envuelva ambas inserciones en la misma transacción.
+    // -> IMPLEMENTADO: Se llama al nuevo endpoint único y atómico.
+
     console.log('Expense bulk draft payload:', expensesDraftPayload);
     console.log('Income bulk draft payload:', incomesDraftPayload);
 
-    this.toastService.success(
-      `Preparado: ${expenses.length} gastos y ${incomes.length} ingresos. ` +
-      'Siguiente paso: endpoint backend único para guardar ambos en una sola transacción.',
-    );
+    const payload = {
+      expenses: expensesDraftPayload,
+      incomes: incomesDraftPayload
+    };
+
+    this.transactionImportService.importAtomic(payload).subscribe({
+      next: (res) => {
+        this.toastService.success(
+          `¡Éxito! Importados ${res.response?.expenses_created || 0} gastos y ${res.response?.incomes_created || 0} ingresos en una transacción.`
+        );
+        this.transactions = [];
+        this.excelRows = [];
+      },
+      error: (err) => {
+        console.error('Error importing atomic transactions:', err);
+        this.toastService.error('Error durante la importación. Ningún dato fue guardado.');
+      }
+    });
   }
 }

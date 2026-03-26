@@ -1,0 +1,31 @@
+.chart-card {
+  border-radius: 16px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.chart-content {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+
+  canvas {
+    max-height: 100%;
+  }
+}
+
+mat-card-header {
+  padding: 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+mat-card-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+}

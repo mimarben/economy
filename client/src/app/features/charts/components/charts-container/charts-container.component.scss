@@ -1,0 +1,67 @@
+.charts-container {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.filter-card {
+  border-radius: 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.filter-form {
+  display: flex;
+  gap: 16px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.form-field {
+  width: 100%;
+  max-width: 250px;
+
+  @media (max-width: 600px) {
+    max-width: 100%;
+  }
+}
+
+.custom-range {
+  display: flex;
+  gap: 16px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.load-btn {
+  height: 56px;
+}
+
+.error-message {
+  padding: 16px;
+  background-color: #ffebee;
+  border-left: 4px solid #f44336;
+  border-radius: 4px;
+  color: #c62828;
+  font-weight: 500;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 16px;
+}
+
+mat-grid-list {
+  @media (max-width: 1200px) {
+    // Switch to single column on tablets
+  }
+}
+
+.chart-component {
+  width: 100%;
+  height: 100%;
+}

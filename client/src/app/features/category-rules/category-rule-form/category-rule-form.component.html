@@ -1,0 +1,106 @@
+<h2 mat-dialog-title>
+  {{ mode === 'create' ? 'Create New Rule' : 'Edit Rule' }}
+</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form">
+    <!-- Name Field -->
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Rule Name</mat-label>
+      <input matInput formControlName="name" placeholder="e.g., Grocery Stores" />
+      <mat-error *ngIf="getErrorMessage('name')">
+        {{ getErrorMessage('name') }}
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Type Field -->
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Transaction Type</mat-label>
+      <mat-select formControlName="type">
+        <mat-option *ngFor="let type of transactionTypes" [value]="type.value">
+          {{ type.label }}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="getErrorMessage('type')">
+        {{ getErrorMessage('type') }}
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Pattern Field -->
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Regex Pattern</mat-label>
+      <input
+        matInput
+        formControlName="pattern"
+        placeholder="e.g., (carrefour|mercadona|lidl|dia)"
+        (change)="onPatternChange()"
+      />
+      <mat-hint *ngIf="patternHint" [innerHTML]="patternHint"></mat-hint>
+      <mat-error *ngIf="getErrorMessage('pattern')">
+        {{ getErrorMessage('pattern') }}
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Test Pattern Section -->
+    <div class="test-pattern-section">
+      <h3>Test Pattern</h3>
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Sample Description</mat-label>
+        <input
+          matInput
+          [(ngModel)]="testDescription"
+          [ngModelOptions]="{ standalone: true }"
+          placeholder="Enter text to test regex against"
+        />
+      </mat-form-field>
+
+      <button type="button" mat-stroked-button (click)="testPattern()" class="test-btn">
+        <mat-icon>check</mat-icon>
+        Test Pattern
+      </button>
+
+      <div *ngIf="testResult !== null" class="test-result">
+        <mat-icon [ngClass]="testResult ? 'match-icon' : 'no-match-icon'">
+          {{ testResult ? 'check_circle' : 'cancel' }}
+        </mat-icon>
+        <span>{{ testResult ? 'Pattern matches!' : 'Pattern does not match' }}</span>
+      </div>
+    </div>
+
+    <!-- Category ID Field -->
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Category ID</mat-label>
+      <input matInput type="number" formControlName="category_id" placeholder="Enter category ID" />
+      <mat-error *ngIf="getErrorMessage('category_id')">
+        {{ getErrorMessage('category_id') }}
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Priority Field -->
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Priority</mat-label>
+      <input matInput type="number" formControlName="priority" placeholder="Higher value = applied first" />
+      <mat-hint>Higher priority rules are applied first (typical: 1-100)</mat-hint>
+      <mat-error *ngIf="getErrorMessage('priority')">
+        {{ getErrorMessage('priority') }}
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Active Toggle -->
+    <div class="active-toggle">
+      <mat-checkbox formControlName="is_active">
+        <span>Rule is Active</span>
+      </mat-checkbox>
+      <mat-icon matTooltip="Active rules are applied during transaction categorization">
+        info
+      </mat-icon>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="!form.valid">
+    {{ mode === 'create' ? 'Create' : 'Update' }}
+  </button>
+</mat-dialog-actions>

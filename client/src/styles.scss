@@ -1,9 +1,54 @@
 @use './assets/styles/toast.css';
 @use '@angular/material' as mat;
 
+// ============================================================================
+// DESIGN SYSTEM VARIABLES (Spacing & Layout)
+// ============================================================================
 :root {
+  /* Border Radius */
   --app-radius: 14px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 14px;
+
+  /* Spacing (consistent 8px, 16px pattern) */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+
+  /* Colors - Material Palette */
+  --color-primary: #1e40af;
+  --color-primary-light: #3b82f6;
+  --color-primary-bg: #eff6ff;
+  --color-success: #16a34a;
+  --color-success-bg: #f0fdf4;
+  --color-error: #dc2626;
+  --color-error-bg: #fef2f2;
+  --color-warning: #ea580c;
+  --color-warning-bg: #fffbeb;
+  --color-info: #0891b2;
+  --color-info-bg: #ecf9fd;
+
+  /* Borders */
+  --app-border: #e5e7eb;
+  --app-border-light: #f3f4f6;
+
+  /* Surfaces */
+  --app-surface: #ffffff;
+  --app-surface-hover: #f9fafb;
+  --app-surface-active: #f3f4f6;
+
+  /* Text Colors */
+  --text-primary: #1f2937;
+  --text-secondary: #6b7280;
+  --text-tertiary: #9ca3af;
 }
+
+// ============================================================================
+// GLOBAL STYLES
+// ============================================================================
 
 html {
   color-scheme: light;
@@ -15,11 +60,17 @@ body {
   font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  background-color: #f9fafb;
+  color: var(--text-primary);
 }
 
 * {
   box-sizing: border-box;
 }
+
+// ============================================================================
+// MATERIAL ICONS
+// ============================================================================
 
 mat-icon {
   font-family: 'Material Symbols Outlined' !important;
@@ -30,9 +81,17 @@ mat-icon {
     'opsz' 24;
 }
 
+// ============================================================================
+// APP LAYOUT
+// ============================================================================
+
 app-layout {
   display: block;
 }
+
+// ============================================================================
+// MATERIAL THEME
+// ============================================================================
 
 body.theme-economy {
   @include mat.theme((
@@ -43,4 +102,65 @@ body.theme-economy {
     typography: 'Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif',
     density: -1,
   ));
+}
+
+// ============================================================================
+// SCROLLBAR STYLING
+// ============================================================================
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f3f4f6;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 4px;
+
+  &:hover {
+    background: #9ca3af;
+  }
+}
+
+// ============================================================================
+// MATERIAL OVERRIDES - Better spacing & radius
+// ============================================================================
+
+/* Form Fields */
+.mat-mdc-form-field {
+  width: 100%;
+
+  .mdc-text-field {
+    border-radius: var(--radius-md) !important;
+  }
+}
+
+/* Buttons */
+.mat-mdc-button,
+.mat-mdc-raised-button,
+.mat-mdc-stroked-button {
+  border-radius: var(--radius-md) !important;
+  font-weight: 500;
+  text-transform: none;
+}
+
+/* Cards */
+.mat-mdc-card {
+  border-radius: var(--app-radius) !important;
+  background: var(--app-surface);
+}
+
+/* Dialog */
+.mat-mdc-dialog-container {
+  border-radius: var(--app-radius) !important;
+}
+
+/* Tooltip */
+.mat-mdc-tooltip {
+  font-size: 12px;
+  border-radius: 4px;
 }
