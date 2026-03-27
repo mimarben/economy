@@ -1,51 +1,60 @@
 :host {
   display: block;
   height: 100%;
-  background-color: #f5f5f5;
 }
 
-$menu-text-color: #666;
-$menu-active-color: #667eea;
-$menu-bg: #f5f5f5;
-$menu-hover: #efefef;
-$menu-border: #e0e0e0;
+$menu-text: #4b5563; 
+$menu-active-text: #1d4ed8; 
+$menu-active-bg: #eff6ff; 
+$menu-hover-bg: #f3f4f6; 
+$menu-border: #e5e7eb; 
 
 .side-menu-container {
   display: flex;
   flex-direction: column;
   height: 100%;
-  width: 240px;
-  background-color: $menu-bg;
+  width: 250px;
+  background-color: #ffffff;
   border-right: 1px solid $menu-border;
-  color: $menu-text-color;
-  font-size: 0.85rem;
-  font-weight: 500;
+  transition: width 0.3s ease;
 }
 
 .side-menu-container.mini {
   width: 64px;
 }
 
-mat-nav-list,
-mat-accordion,
-mat-expansion-panel,
-mat-expansion-panel-header {
-  background-color: $menu-bg !important;
+/* RESET MATERIAL STUFF */
+mat-nav-list, mat-accordion {
+  padding-top: 0 !important;
 }
 
-.mat-mdc-list-item:hover {
-  background: transparent !important;
+mat-accordion .mat-expansion-panel {
+  background-color: transparent !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  margin: 0 !important;
+  border: none !important; /* Removes inner border/reborde */
+
+  &::before, &::after {
+    display: none !important;
+  }
 }
 
-.brand-item {
-  height: 64px;
-  padding: 0 16px !important;
+.section-panel {
+  border-bottom: none !important;
+}
+
+/* BRAND */
+.brand-container {
   display: flex;
   align-items: center;
-  cursor: pointer;
-
+  height: 64px;
+  padding: 0 16px;
+  background: transparent;
+  cursor: default;
+  
   .brand-icon {
-    color: $menu-active-color;
+    color: $menu-active-text;
     font-size: 24px;
     width: 24px;
     height: 24px;
@@ -53,96 +62,153 @@ mat-expansion-panel-header {
   }
 
   .brand-title {
-    font-size: 0.9rem;
+    font-size: 1.1rem;
     font-weight: 600;
-    color: #333;
+    color: #111827;
+    white-space: nowrap;
   }
 }
 
-.section-panel {
-  background: $menu-bg !important;
-  box-shadow: none;
-  border-bottom: 1px solid #e8e8e8;
-  margin: 0;
+/* Typography baseline for menu items */
+$menu-font-family: inherit;
 
-  .mat-expansion-panel-body {
-    padding: 0;
-  }
-}
-
+/* HEADER STYLE (The Accordion trigger: menus with sub-items) */
 .section-header {
-  padding: 0 16px;
-  min-height: 48px;
+  height: 48px !important;
+  min-height: 48px !important;
+  padding: 0 16px !important;
+  border-left: 3px solid transparent; 
+  transition: all 0.2s ease, box-shadow 0.2s ease;
+  background: transparent !important;
+  border-radius: 0 !important;
+  cursor: pointer;
+  box-shadow: none !important;
+  
+  &:hover {
+    background-color: $menu-hover-bg !important;
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.03) !important; /* Suave sombreado over */
+    .chevron, mat-panel-title mat-icon { color: #4b5563; }
+    mat-panel-title { color: #111827; }
+  }
+
+  /* Active/Expanded State */
+  &.mat-expanded {
+    background-color: $menu-active-bg !important;
+    border-left-color: $menu-active-text !important;
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.05) !important;
+    
+    mat-panel-title { color: $menu-active-text !important; font-weight: 600; }
+    mat-panel-title mat-icon, .chevron { color: $menu-active-text !important; }
+  }
 
   mat-panel-title {
     display: flex;
     align-items: center;
-    gap: 12px;
-    font-size: 0.85rem;
+    font-size: 0.875rem;
     font-weight: 500;
-    color: $menu-text-color;
+    color: $menu-text;
+    margin: 0;
+    font-family: $menu-font-family;
 
     mat-icon {
       font-size: 20px;
       width: 20px;
       height: 20px;
-      color: $menu-active-color;
+      margin-right: 12px;
+      color: #9ca3af;
     }
-  }
-
-  &:hover {
-    background-color: $menu-hover !important;
   }
 }
 
+/* LINK STYLE (Standard nav items: menus without sub-items) */
+.custom-menu-item {
+  height: 48px !important;
+  border-left: 3px solid transparent;
+  color: $menu-text !important;
+  transition: all 0.2s ease, box-shadow 0.2s ease;
+  background: transparent !important;
+  border-radius: 0 !important;
+  cursor: pointer;
+  box-shadow: none !important;
+  padding: 0 16px !important; /* Consistent padding */
+  margin: 0 !important;
+
+  /* Force consistent typography on MDC elements */
+  font-family: $menu-font-family !important;
+
+  ::ng-deep .mdc-list-item__primary-text {
+    font-size: 0.875rem !important;
+    font-weight: 500 !important;
+    font-family: Roboto, "Helvetica Neue", sans-serif !important;
+    color: inherit;
+  }
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    color: #9ca3af;
+  }
+
+  /* Hover soft state */
+  &:hover {
+    background-color: $menu-hover-bg !important;
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.03) !important; /* Suave sombreado over */
+    color: #111827 !important;
+    
+    mat-icon { 
+      color: #4b5563 !important; 
+    }
+  }
+
+  /* Active selection state */
+  &.active-link {
+    background-color: $menu-active-bg !important;
+    color: $menu-active-text !important;
+    border-left-color: $menu-active-text !important;
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.05) !important; /* Seleccionado cuando estas en ruta */
+
+    ::ng-deep .mdc-list-item__primary-text {
+      font-weight: 600 !important;
+    }
+
+    mat-icon {
+      color: $menu-active-text !important;
+    }
+  }
+}
+
+/* SUBMENU ADJUSTMENTS */
+::ng-deep .mat-expansion-panel-body {
+  padding: 0 !important;
+}
+
+.submenu-list {
+  padding-top: 0 !important;
+
+  /* Padding left directly targeting link text */
+  ::ng-deep .mdc-list-item__content {
+    padding-left: 32px !important;
+  }
+
+  .submenu-link {
+    height: 40px !important;
+    border-left: 3px solid transparent !important;
+  }
+}
+
+/* CHEVRON ICON */
 .chevron {
+  color: #9ca3af !important;
+  font-size: 20px !important;
+  width: 20px !important;
+  height: 20px !important;
   margin-left: auto;
   transition: transform 0.2s ease;
-  color: #999;
 }
 
 .section-panel.mat-expanded .chevron {
   transform: rotate(180deg);
-}
-
-mat-nav-list a,
-.submenu-list a {
-  font-size: 0.85rem;
-  font-weight: 500;
-  color: $menu-text-color;
-  height: 48px;
-  padding: 0 16px !important;
-
-  &:hover {
-    background-color: $menu-hover;
-  }
-
-  &.active-link {
-    color: $menu-active-color;
-    background-color: $menu-hover;
-    border-left: 3px solid $menu-active-color;
-    font-weight: 600;
-    padding-left: 13px !important;
-  }
-}
-
-.submenu-list a {
-  padding-left: 16px !important;
-
-  &.active-link {
-    padding-left: 13px !important;
-  }
-}
-
-mat-nav-list a mat-icon {
-  color: $menu-active-color;
-  font-size: 20px;
-  width: 20px;
-  height: 20px;
-}
-
-mat-nav-list a span {
-  margin-left: 12px;
 }
 
 mat-divider {

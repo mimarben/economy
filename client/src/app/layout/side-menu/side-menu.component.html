@@ -1,19 +1,14 @@
 <div class="side-menu-container" [class.mini]="!isExpanded && !isShowing">
 
   <!-- BRAND -->
-  <mat-nav-list>
-    <mat-list-item class="brand-item" (click)="toggleExpand.emit()" disableRipple>
-
-      <mat-icon matListItemIcon class="brand-icon">
-        dashboard
-      </mat-icon>
-
-      <span matListItemTitle *ngIf="isExpanded || isShowing" class="brand-title">
-        Economy App
-      </span>
-
-    </mat-list-item>
-  </mat-nav-list>
+  <div class="brand-container">
+    <mat-icon class="brand-icon" (click)="toggleExpand.emit()" style="cursor: pointer;">
+      dashboard
+    </mat-icon>
+    <span *ngIf="isExpanded || isShowing" class="brand-title">
+      Economy App
+    </span>
+  </div>
 
   <mat-divider></mat-divider>
 
@@ -25,6 +20,7 @@
       <a mat-list-item
          [routerLink]="link.route"
          routerLinkActive="active-link"
+         class="custom-menu-item"
          disableRipple>
 
         <mat-icon matListItemIcon>
@@ -80,6 +76,7 @@
             <a mat-list-item
                [routerLink]="link.route"
                routerLinkActive="active-link"
+               class="custom-menu-item submenu-link"
                disableRipple>
 
               <span matListItemTitle>
@@ -109,6 +106,7 @@
       <a mat-list-item
          [routerLink]="link.route"
          routerLinkActive="active-link"
+         class="custom-menu-item"
          disableRipple>
 
         <mat-icon matListItemIcon>
