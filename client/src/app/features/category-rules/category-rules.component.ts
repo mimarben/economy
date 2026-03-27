@@ -8,10 +8,12 @@ import { MatDialog } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { MaterialModule } from '@app/utils/material.module';
+import { FormFieldConfig } from '@shared/generic-form/form-config';
+import { GenericDialogComponent } from '@shared/generic-dialog/generic-dialog.component';
 
 import { CategoryRuleService, CategoryRule } from '../../services/category-rule/category-rule.service';
-import { CategoryRuleFormComponent } from './category-rule-form/category-rule-form.component';
 import { GenericTableComponent, TableColumn } from '../../shared/components/generic-table/generic-table.component';
+import { regexValidator } from '../../utils/validators/regex.validator';
 
 @Component({
   selector: 'app-category-rules',
@@ -37,6 +39,49 @@ export class CategoryRulesComponent implements OnInit, OnDestroy {
       sortable: true,
       formatter: (value: boolean) => (value ? 'Yes' : 'No'),
     },
+  ];
+  dialogFields: FormFieldConfig[] = [
+    { key: 'id', label: 'Id', type: 'number' },
+    {
+      key: 'name',
+      label: 'Rule Name',
+      type: 'text',
+      required: true,
+      minLength: 3,
+    },
+    {
+      key: 'type',
+      label: 'Transaction Type',
+      type: 'select',
+      required: true,
+      options: [
+        { value: 'expense', label: 'Expense' },
+        { value: 'income', label: 'Income' },
+        { value: 'investment', label: 'Investment' },
+      ],
+    },
+    {
+      key: 'pattern',
+      label: 'Regex Pattern',
+      type: 'text',
+      required: true,
+      validators: [regexValidator()],
+    },
+    {
+      key: 'category_id',
+      label: 'Category ID',
+      type: 'number',
+      required: true,
+      min: 1,
+    },
+    {
+      key: 'priority',
+      label: 'Priority',
+      type: 'number',
+      required: true,
+      min: 0,
+    },
+    { key: 'is_active', label: 'Rule is Active', type: 'checkbox' },
   ];
 
   private destroy$ = new Subject<void>();
@@ -99,9 +144,18 @@ export class CategoryRulesComponent implements OnInit, OnDestroy {
   }
 
   openCreateDialog(): void {
-    const dialogRef = this.dialog.open(CategoryRuleFormComponent, {
+    const dialogRef = this.dialog.open(GenericDialogComponent, {
       width: '600px',
-      data: { mode: 'create' },
+      data: {
+        title: 'Create New Rule',
+        fields: this.dialogFields,
+        initialData: {
+          type: 'expense',
+          category_id: 1,
+          priority: 100,
+          is_active: true,
+        },
+      },
     });
 
     dialogRef
@@ -115,9 +169,13 @@ export class CategoryRulesComponent implements OnInit, OnDestroy {
   }
 
   openEditDialog(rule: CategoryRule): void {
-    const dialogRef = this.dialog.open(CategoryRuleFormComponent, {
+    const dialogRef = this.dialog.open(GenericDialogComponent, {
       width: '600px',
-      data: { mode: 'edit', rule },
+      data: {
+        title: 'Edit Rule',
+        fields: this.dialogFields,
+        initialData: rule,
+      },
     });
 
     dialogRef
