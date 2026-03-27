@@ -1,19 +1,36 @@
 :host {
   display: block;
   height: 100%;
+  background-color: #f5f5f5;
 }
+
+$menu-text-color: #666;
+$menu-active-color: #667eea;
+$menu-bg: #f5f5f5;
+$menu-hover: #efefef;
+$menu-border: #e0e0e0;
 
 .side-menu-container {
   display: flex;
   flex-direction: column;
   height: 100%;
   width: 240px;
-  background-color: #f5f5f5;
-  border-right: 1px solid #e0e0e0;
+  background-color: $menu-bg;
+  border-right: 1px solid $menu-border;
+  color: $menu-text-color;
+  font-size: 0.85rem;
+  font-weight: 500;
 }
 
 .side-menu-container.mini {
   width: 64px;
+}
+
+mat-nav-list,
+mat-accordion,
+mat-expansion-panel,
+mat-expansion-panel-header {
+  background-color: $menu-bg !important;
 }
 
 .mat-mdc-list-item:hover {
@@ -28,7 +45,7 @@
   cursor: pointer;
 
   .brand-icon {
-    color: #667eea;
+    color: $menu-active-color;
     font-size: 24px;
     width: 24px;
     height: 24px;
@@ -43,7 +60,7 @@
 }
 
 .section-panel {
-  background: transparent;
+  background: $menu-bg !important;
   box-shadow: none;
   border-bottom: 1px solid #e8e8e8;
   margin: 0;
@@ -55,21 +72,26 @@
 
 .section-header {
   padding: 0 16px;
+  min-height: 48px;
 
   mat-panel-title {
     display: flex;
     align-items: center;
     gap: 12px;
     font-size: 0.85rem;
-    font-weight: 600;
-    color: #666;
+    font-weight: 500;
+    color: $menu-text-color;
 
     mat-icon {
       font-size: 20px;
       width: 20px;
       height: 20px;
-      color: #667eea;
+      color: $menu-active-color;
     }
+  }
+
+  &:hover {
+    background-color: $menu-hover !important;
   }
 }
 
@@ -83,55 +105,46 @@
   transform: rotate(180deg);
 }
 
+mat-nav-list a,
 .submenu-list a {
   font-size: 0.85rem;
-  color: #666;
-  height: 40px;
-  padding-left: 42px !important;
+  font-weight: 500;
+  color: $menu-text-color;
+  height: 48px;
+  padding: 0 16px !important;
 
   &:hover {
-    background-color: #f0f0f0;
+    background-color: $menu-hover;
   }
 
   &.active-link {
-    color: #667eea;
-    background-color: #f0f0f0;
-    border-left: 3px solid #667eea;
-    padding-left: 39px !important;
+    color: $menu-active-color;
+    background-color: $menu-hover;
+    border-left: 3px solid $menu-active-color;
     font-weight: 600;
+    padding-left: 13px !important;
   }
 }
 
-mat-nav-list a {
-  font-size: 0.85rem;
-  color: #666;
-  height: 48px;
-  padding: 0 16px;
-
-  &:hover {
-    background-color: #efefef;
-  }
+.submenu-list a {
+  padding-left: 16px !important;
 
   &.active-link {
-    color: #667eea;
-    background-color: #efefef;
-    font-weight: 600;
-    border-left: 3px solid #667eea;
-    padding-left: 13px;
+    padding-left: 13px !important;
   }
+}
 
-  mat-icon {
-    color: #667eea;
-    font-size: 20px;
-    width: 20px;
-    height: 20px;
-  }
+mat-nav-list a mat-icon {
+  color: $menu-active-color;
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
 
-  span {
-    margin-left: 12px;
-  }
+mat-nav-list a span {
+  margin-left: 12px;
 }
 
 mat-divider {
-  border-color: #e0e0e0;
+  border-color: $menu-border;
 }
