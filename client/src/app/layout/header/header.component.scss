@@ -1,10 +1,74 @@
-.example-toolbar {
+.header-toolbar {
+  height: 60px;
+  background: #f5f5f5;
+  border-bottom: 1px solid #e0e0e0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  padding: 0 8px;
   display: flex;
-  justify-content: flex-start;
   align-items: center;
+  gap: 0;
+  z-index: 99;
+
+  .menu-button {
+    color: #666;
+    transition: all 0.3s ease;
+    border-radius: 6px;
+    flex-shrink: 0;
+
+    &:hover {
+      background-color: #efefef;
+      color: #333;
+    }
+
+    mat-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  .page-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #666;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-left: 4px;
+  }
+
+  .spacer {
+    flex: 1 1 auto;
+  }
+
+  .logout-button {
+    color: #999;
+    transition: all 0.3s ease;
+    border-radius: 6px;
+    flex-shrink: 0;
+
+    &:hover {
+      color: #d9534f;
+      background-color: #fff5f5;
+    }
+
+    mat-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+    }
+  }
 }
 
-.example-app-name {
-  margin-left: 8px;
-  font-weight: 500;
+@media (max-width: 768px) {
+  .header-toolbar {
+    height: 56px;
+    padding: 0 6px;
+
+    .page-title {
+      font-size: 0.8rem;
+      margin-left: 2px;
+    }
+  }
 }

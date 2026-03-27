@@ -4,11 +4,11 @@
   <mat-nav-list>
     <mat-list-item class="brand-item" (click)="toggleExpand.emit()" disableRipple>
 
-      <mat-icon matListItemIcon *ngIf="!isExpanded && !isShowing">
-        menu
+      <mat-icon matListItemIcon class="brand-icon">
+        dashboard
       </mat-icon>
 
-      <span matListItemTitle *ngIf="isExpanded || isShowing">
+      <span matListItemTitle *ngIf="isExpanded || isShowing" class="brand-title">
         Economy App
       </span>
 

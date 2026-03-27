@@ -14,8 +14,12 @@ class Config:
         password = os.getenv("POSTGRES_PASSWORD")
         db = os.getenv("POSTGRES_DB")
         host = os.getenv("POSTGRES_HOST")
-        if not host:
-            host = "postgres" if os.path.exists("/.dockerenv") else "localhost"
+        
+        # Use localhost if not in Docker and no explicit host provided
+        in_docker = os.path.exists("/.dockerenv")
+        if not host or (host == "postgres" and not in_docker):
+            host = "postgres" if in_docker else "localhost"
+        
         port = os.getenv("POSTGRES_PORT", "5432")
         DATABASE_URL = f"postgresql+psycopg2://{user}:{password}@{host}:{port}/{db}"
     else:

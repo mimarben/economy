@@ -3,14 +3,14 @@
 from typing import List, Optional
 from sqlalchemy.orm import Session
 
-from api.models import CategoryRule, TransactionEnum
-from api.repositories.category_rule_repository import CategoryRuleRepository
-from api.schemas.core.category_rule_schema import (
+from models import CategoryRule, TransactionEnum
+from repositories.category_rule_repository import CategoryRuleRepository
+from schemas.core.category_rule_schema import (
     CategoryRuleRead,
     CategoryRuleCreate,
     CategoryRuleUpdate,
 )
-from .core.base_service import BaseService
+from services.core.base_service import BaseService
 
 
 class CategoryRuleService(BaseService[CategoryRule, CategoryRuleRead, CategoryRuleCreate, CategoryRuleUpdate]):

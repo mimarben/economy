@@ -6,6 +6,7 @@ import { filter, Subscription } from 'rxjs';
 import { MaterialModule } from '@utils_module/material.module';
 import { HeaderComponent } from '../header/header.component';
 import { SideMenuComponent } from '../side-menu/side-menu.component';
+import { FooterComponent } from '../footer/footer.component';
 
 
 @Component({
@@ -16,6 +17,7 @@ import { SideMenuComponent } from '../side-menu/side-menu.component';
     RouterOutlet,
     HeaderComponent,
     SideMenuComponent,
+    FooterComponent,
     MaterialModule,
   ],
   templateUrl: './layout.component.html',

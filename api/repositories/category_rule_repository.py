@@ -4,7 +4,7 @@ from typing import List, Optional
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from api.models import CategoryRule, TransactionEnum
+from models import CategoryRule, TransactionEnum
 from .core.base_repository import BaseRepository
 
 

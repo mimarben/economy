@@ -4,16 +4,20 @@ from flask_babel import Babel, gettext
 import os
 from dotenv import load_dotenv
 import sys
+from pathlib import Path
 from werkzeug.exceptions import HTTPException
 from flask_cors import CORS
 from sqlalchemy.exc import TimeoutError as SQLAlchemyTimeoutError
 from flask_jwt_extended import JWTManager, verify_jwt_in_request
-from db.database import init_db
+
+# Add current directory to Python path
+current_dir = str(Path(__file__).parent)
+if current_dir not in sys.path:
+    sys.path.insert(0, current_dir)
 
 load_dotenv()
-pythonpath = os.getenv('PYTHONPATH')
-if pythonpath and pythonpath not in sys.path:
-    sys.path.insert(0,pythonpath)
+
+from db.database import init_db
 
 
 from routers import register_blueprints

@@ -21,6 +21,8 @@ import { SummaryComponent} from './features/financial/summary-component/summary-
 import { ExcelImportComponent } from './features/import/excel/excel-import.component';
 import { LoginComponent } from './features/auth/login/login.component';
 import { LayoutComponent } from './layout/layout/layout.component';
+import { ChartsContainerComponent } from './features/charts/components/charts-container/charts-container.component';
+import { CategoryRulesComponent } from './features/category-rules/category-rules.component';
 export const routes: Routes = [
   // Rutas SIN layout
   { path: 'login', component: LoginComponent, data: { title: 'login.title' } },
@@ -50,6 +52,8 @@ export const routes: Routes = [
       { path: 'investments_log', component: InvestmentsLogComponent, data: { title: 'investments_log.title' } },
       { path: 'financial_summary', component: SummaryComponent, data: { title: 'summary.title' } },
       { path: 'excel_import', component: ExcelImportComponent, data: { title: 'excel_import.title' } },
+      { path: 'charts', component: ChartsContainerComponent, data: { title: 'charts.title' } },
+      { path: 'category_rules', component: CategoryRulesComponent, data: { title: 'category_rules.title' } },
     ]
   },
 

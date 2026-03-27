@@ -2,12 +2,12 @@ from typing import Dict, Any, Optional
 from datetime import datetime
 from sqlalchemy.orm import Session
 
-from api.repositories.expenses.expense_repository import ExpenseRepository
-from api.repositories.incomes.income_repository import IncomeRepository
-from api.models import Expense, Income
-from api.services.incomes.income_service import IncomeService
-from api.services.category_rules.categorization_service import CategorizationService
-from api.schemas.imports.import_schema import BulkImportRequest
+from repositories.expenses.expense_repository import ExpenseRepository
+from repositories.incomes.income_repository import IncomeRepository
+from models import Expense, Income
+from services.incomes.income_service import IncomeService
+from services.category_rules.categorization_service import CategorizationService
+from schemas.imports.import_schema import BulkImportRequest
 
 
 class ImportService:

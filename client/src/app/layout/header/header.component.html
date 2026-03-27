@@ -1,17 +1,23 @@
-<mat-toolbar color="primary" class="example-toolbar">
-
-  <button mat-icon-button (click)="toggleMenu()">
+<mat-toolbar class="header-toolbar">
+  <button mat-icon-button 
+          class="menu-button"
+          (click)="toggleMenu()" 
+          aria-label="Toggle menu"
+          matTooltip="Toggle navigation">
     <mat-icon>menu</mat-icon>
   </button>
 
-  <span class="example-app-name">
-    {{ title | translate}}
+  <span class="page-title">
+    {{ title | translate }}
   </span>
 
-  <span class="spacer" style="flex: 1 1 auto;"></span>
+  <div class="spacer"></div>
 
-  <button mat-icon-button (click)="logout()" aria-label="Logout" [matTooltip]="'Logout'">
+  <button mat-icon-button 
+          class="logout-button"
+          (click)="logout()" 
+          aria-label="Logout" 
+          matTooltip="Logout">
     <mat-icon>logout</mat-icon>
   </button>
-
 </mat-toolbar>

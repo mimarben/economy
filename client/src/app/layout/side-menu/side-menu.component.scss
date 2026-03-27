@@ -3,126 +3,135 @@
   height: 100%;
 }
 
-/* SIDEBAR WIDTH */
-
 .side-menu-container {
   display: flex;
   flex-direction: column;
   height: 100%;
   width: 240px;
+  background-color: #f5f5f5;
+  border-right: 1px solid #e0e0e0;
 }
 
 .side-menu-container.mini {
   width: 64px;
 }
 
-/* REMOVE MATERIAL HOVER BACKGROUND */
-
 .mat-mdc-list-item:hover {
   background: transparent !important;
 }
 
-/* BRAND */
-
 .brand-item {
   height: 64px;
-  font-weight: 600;
-}
-
-/* SECTIONS */
-
-.section-header {
-  height: 48px;
-  padding: 0 16px;
+  padding: 0 16px !important;
   display: flex;
   align-items: center;
+  cursor: pointer;
+
+  .brand-icon {
+    color: #667eea;
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+    margin-right: 12px;
+  }
+
+  .brand-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #333;
+  }
 }
 
-/* CHEVRON */
+.section-panel {
+  background: transparent;
+  box-shadow: none;
+  border-bottom: 1px solid #e8e8e8;
+  margin: 0;
+
+  .mat-expansion-panel-body {
+    padding: 0;
+  }
+}
+
+.section-header {
+  padding: 0 16px;
+
+  mat-panel-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #666;
+
+    mat-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+      color: #667eea;
+    }
+  }
+}
 
 .chevron {
   margin-left: auto;
   transition: transform 0.2s ease;
+  color: #999;
 }
 
 .section-panel.mat-expanded .chevron {
   transform: rotate(180deg);
 }
 
-/* SUBMENU */
-
 .submenu-list a {
-  height: 44px;
-  padding-left:0px;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
+  color: #666;
+  height: 40px;
+  padding-left: 42px !important;
+
+  &:hover {
+    background-color: #f0f0f0;
+  }
+
+  &.active-link {
+    color: #667eea;
+    background-color: #f0f0f0;
+    border-left: 3px solid #667eea;
+    padding-left: 39px !important;
+    font-weight: 600;
+  }
 }
 
-/* ACTIVE LINK */
+mat-nav-list a {
+  font-size: 0.85rem;
+  color: #666;
+  height: 48px;
+  padding: 0 16px;
 
-.active-link {
-  font-weight: 600;
-  color: var(--mat-sys-primary);
+  &:hover {
+    background-color: #efefef;
+  }
+
+  &.active-link {
+    color: #667eea;
+    background-color: #efefef;
+    font-weight: 600;
+    border-left: 3px solid #667eea;
+    padding-left: 13px;
+  }
+
+  mat-icon {
+    color: #667eea;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+
+  span {
+    margin-left: 12px;
+  }
 }
-
-.active-link mat-icon {
-  color: var(--mat-sys-primary);
-}
-
-/* DIVIDERS */
 
 mat-divider {
-  margin: 4px 0;
-}
-
-/* REMOVE MATERIAL ACCORDION STYLE */
-
-.section-panel {
-  background: transparent;
-  box-shadow: none;
-  border-radius: 0;
-}
-
-.section-panel .mat-expansion-panel-body {
-  padding: 0;
-}
-
-/* REMOVE MATERIAL PANEL STYLE COMPLETELY */
-
-.section-panel {
-  background: transparent !important;
-  box-shadow: none !important;
-  border-radius: 0 !important;
-  margin: 0 !important;
-}
-
-/* remove divider between panels */
-
-.section-panel:not(:last-child) {
-  border-bottom: none !important;
-}
-
-/* header */
-
-.section-panel .mat-expansion-panel-header {
-  padding: 0 16px;
-  height: 48px;
-  background: transparent !important;
-}
-
-/* body */
-
-.section-panel .mat-expansion-panel-body {
-  padding: 0 !important;
-}
-
-/* remove MDC elevation */
-
-.mat-expansion-panel {
-  box-shadow: none !important;
-}
-
-/* remove spacing Angular Material adds */
-
-.mat-accordion .mat-expansion-panel {
-  margin: 0 !important;
+  border-color: #e0e0e0;
 }

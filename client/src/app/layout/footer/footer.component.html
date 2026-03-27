@@ -1,4 +1,49 @@
-<!-- Footer -->
-<mat-toolbar color="primary" class="footer">
-  <span>{{"app.footer"| translate}}</span>
-</mat-toolbar>
+<footer class="footer-container">
+  <div class="footer-content">
+    <div class="footer-section">
+      <h4>Economy App</h4>
+      <p>Your personal finance management solution</p>
+    </div>
+
+    <div class="footer-section">
+      <h5>Product</h5>
+      <ul>
+        <li><a href="/charts">Charts</a></li>
+        <li><a href="/financial_summary">Summary</a></li>
+        <li><a href="/category_rules">Rules</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-section">
+      <h5>Resources</h5>
+      <ul>
+        <li><a href="#">Documentation</a></li>
+        <li><a href="#">Support</a></li>
+        <li><a href="#">Blog</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-section">
+      <h5>Legal</h5>
+      <ul>
+        <li><a href="#">Privacy</a></li>
+        <li><a href="#">Terms</a></li>
+        <li><a href="#">License</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <div class="footer-copyright">
+      <p>&copy; {{ currentYear }} Economy App. All rights reserved.</p>
+    </div>
+    <div class="footer-socials">
+      <a href="#" class="social-link" title="GitHub">
+        <mat-icon>code</mat-icon>
+      </a>
+      <a href="#" class="social-link" title="Twitter">
+        <mat-icon>language</mat-icon>
+      </a>
+    </div>
+  </div>
+</footer>

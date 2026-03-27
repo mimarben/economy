@@ -3,14 +3,20 @@
     <app-side-menu></app-side-menu>
   </mat-sidenav>
 
-  <mat-sidenav-content>
-    <app-header
-      [title]="pageTitle"
-      (toggleSidenav)="sidenav.toggle()">
-    </app-header>
+  <mat-sidenav-content class="sidenav-content">
+    <div class="layout-wrapper">
+      <app-header
+        [title]="pageTitle"
+        (toggleSidenav)="sidenav.toggle()">
+      </app-header>
 
-    <div class="content">
-      <router-outlet></router-outlet>
+      <div class="content-wrapper">
+        <div class="content">
+          <router-outlet></router-outlet>
+        </div>
+      </div>
+
+      <app-footer></app-footer>
     </div>
   </mat-sidenav-content>
 </mat-sidenav-container>
