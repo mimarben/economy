@@ -20,6 +20,6 @@ export class InvestmentCategoryService extends BaseCrudService<InvestmentCategor
    * @param http Angular HttpClient for making HTTP requests
    */
   constructor(protected override http: HttpClient) {
-    super(http, 'investments_categories');
+    super(http, 'investment_categories');
   }
 }
