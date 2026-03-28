@@ -1,6 +1,7 @@
 """Pydantic schemas for CategoryRule model."""
 
 from typing import Optional
+from schemas.core.audit_schema import AuditFields
 from pydantic import BaseModel, field_validator
 import re
 
@@ -25,11 +26,9 @@ class CategoryRuleBase(BaseModel):
         return v
 
 
-class CategoryRuleRead(CategoryRuleBase):
+class CategoryRuleRead(CategoryRuleBase, AuditFields):
     """Schema for reading CategoryRule."""
     id: int
-    created_at: Optional[str] = None
-    updated_at: Optional[str] = None
 
     class Config:
         from_attributes = True

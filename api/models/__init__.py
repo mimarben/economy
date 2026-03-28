@@ -1,5 +1,4 @@
 from .core.base import Base, TimestampMixin
-from .core.category_rule_model import CategoryRule
 from .core.enums import (
     CurrencyEnum,
     RoleEnum,
@@ -8,6 +7,8 @@ from .core.enums import (
     UserRoleEnum,
     TransactionEnum,
 )
+
+
 
 # Users
 from .users import User
@@ -30,38 +31,32 @@ from .investments import Investment, InvestmentLog, InvestmentsCategory
 # Households
 from .households import Household, HouseholdMember
 
+# Category Rules
+from .category_rules import CategoryRule
+
 __all__ = [
-    # Core
     'Base',
     'TimestampMixin',
-    'CategoryRule',
-    # Enums
     'CurrencyEnum',
     'RoleEnum',
     'SourceTypeEnum',
     'ActionEnum',
     'UserRoleEnum',
     'TransactionEnum',
-    # Users
     'User',
-    # Finance
     'Bank',
     'Account',
     'Source',
-    # Incomes
     'Income',
     'IncomesCategory',
-    # Expenses
     'Expense',
     'ExpensesCategory',
-    # Savings
     'Saving',
     'SavingLog',
-    # Investments
     'Investment',
     'InvestmentLog',
     'InvestmentsCategory',
-    # Households
     'Household',
     'HouseholdMember',
+    'CategoryRule',
 ]

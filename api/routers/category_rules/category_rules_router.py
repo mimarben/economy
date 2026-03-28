@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from pydantic import ValidationError
 from flask_babel import _
 
-from schemas.core.category_rule_schema import CategoryRuleCreate, CategoryRuleUpdate
+from schemas.category_rules.category_rule_schema import CategoryRuleCreate, CategoryRuleUpdate
 from services.category_rules.categorization_service import CategoryRuleService
 from services.core.interfaces import IReadService, ICreateService, IUpdateService, IDeleteService
 from db.database import get_db

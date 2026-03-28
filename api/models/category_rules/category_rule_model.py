@@ -9,8 +9,8 @@ import re
 from sqlalchemy import Column, Integer, String, Boolean, Enum as SQLEnum, Index, CheckConstraint
 from sqlalchemy.orm import relationship
 
-from .base import Base, TimestampMixin
-from .enums import TransactionEnum
+from ..core.base import Base, TimestampMixin
+from ..core.enums import TransactionEnum
 
 
 class CategoryRule(TimestampMixin, Base):

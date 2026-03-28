@@ -4,8 +4,8 @@ from typing import List, Optional
 from sqlalchemy.orm import Session
 
 from models import CategoryRule, TransactionEnum
-from repositories.category_rule_repository import CategoryRuleRepository
-from schemas.core.category_rule_schema import (
+from repositories.category_rules.category_rule_repository import CategoryRuleRepository
+from schemas.category_rules.category_rule_schema import (
     CategoryRuleRead,
     CategoryRuleCreate,
     CategoryRuleUpdate,

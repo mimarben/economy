@@ -5,7 +5,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from models import CategoryRule, TransactionEnum
-from .core.base_repository import BaseRepository
+from ..core.base_repository import BaseRepository
 
 
 class CategoryRuleRepository(BaseRepository[CategoryRule]):

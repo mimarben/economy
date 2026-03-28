@@ -17,7 +17,7 @@ from .ai.transactions_ai_router import router as transactions_ai_router
 from .core.system_router import router as core_router
 from .auth.auth_router import router as auth_router
 from .imports.import_router import router as import_router
-from .category_rules_router import router as category_rules_router
+from .category_rules.category_rules_router import router as category_rules_router
 from .summaries.summary_router import router as summary_router
 
 def register_blueprints(app, url_prefix=""):
