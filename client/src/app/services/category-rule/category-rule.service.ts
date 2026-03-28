@@ -7,7 +7,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { tap, map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 
 export interface CategoryRule {
@@ -45,63 +45,72 @@ export class CategoryRuleService {
    * Get all categorization rules.
    */
   getAllRules(): Observable<CategoryRule[]> {
-    return this.http.get<CategoryRule[]>(this.apiUrl).pipe(
-      tap(rules => this.rulesSubject.next(rules))
+    return this.http.get<{ response: CategoryRule[]; details: string }>(this.apiUrl).pipe(
+      tap((payload) => {
+        const rules = payload?.response || [];
+        this.rulesSubject.next(rules);
+      }),
+      map((payload) => payload?.response || [])
     );
-  }
-
-  /**
-   * Get active rules for a specific transaction type.
-   * Rules are ordered by priority (DESC).
-   */
-  getActiveRulesByType(type: 'expense' | 'income' | 'investment'): Observable<CategoryRule[]> {
-    return this.http.get<CategoryRule[]>(`${this.apiUrl}/by_type/${type}`);
   }
 
   /**
    * Get a specific rule by ID.
    */
   getRuleById(id: number): Observable<CategoryRule> {
-    return this.http.get<CategoryRule>(`${this.apiUrl}/${id}`);
+    return this.http
+      .get<{ response: CategoryRule; details: string }>(`${this.apiUrl}/${id}`)
+      .pipe(map((payload) => payload?.response));
   }
 
   /**
    * Create a new categorization rule.
    */
   createRule(rule: CategoryRule): Observable<CategoryRule> {
-    return this.http.post<CategoryRule>(this.apiUrl, rule).pipe(
-      tap(newRule => {
-        const current = this.rulesSubject.value;
-        this.rulesSubject.next([...current, newRule]);
-      })
-    );
+    return this.http
+      .post<{ response: CategoryRule; details: string }>(this.apiUrl, rule)
+      .pipe(
+        map((payload) => payload?.response),
+        tap((newRule) => {
+          if (newRule) {
+            const current = this.rulesSubject.value;
+            this.rulesSubject.next([...current, newRule]);
+          }
+        })
+      );
   }
 
   /**
    * Update an existing rule.
    */
   updateRule(id: number, updates: CategoryRuleUpdate): Observable<CategoryRule> {
-    return this.http.patch<CategoryRule>(`${this.apiUrl}/${id}`, updates).pipe(
-      tap(updated => {
-        const current = this.rulesSubject.value;
-        const index = current.findIndex(r => r.id === id);
-        if (index !== -1) {
-          current[index] = updated;
-          this.rulesSubject.next([...current]);
-        }
-      })
-    );
+    return this.http
+      .patch<{ response: CategoryRule; details: string }>(`${this.apiUrl}/${id}`, updates)
+      .pipe(
+        map((payload) => payload?.response),
+        tap((updated) => {
+          if (updated) {
+            const current = this.rulesSubject.value;
+            const index = current.findIndex((r) => r.id === id);
+            if (index !== -1) {
+              current[index] = updated;
+              this.rulesSubject.next([...current]);
+            }
+          }
+        })
+      );
   }
 
   /**
    * Delete a rule.
    */
   deleteRule(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
+    return this.http.delete<{ response: unknown; details: string }>(`${this.apiUrl}/${id}`).pipe(
       tap(() => {
         const current = this.rulesSubject.value;
-        this.rulesSubject.next(current.filter(r => r.id !== id));
-      })
+        this.rulesSubject.next(current.filter((r) => r.id !== id));
+      }),
+      map(() => undefined as void)
     );
   }
 

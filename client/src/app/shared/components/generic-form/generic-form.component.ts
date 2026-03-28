@@ -63,6 +63,15 @@ export class GenericFormComponent implements OnChanges {
       });
 
     this.form = this.fb.group(controls);
+
+    this.fields.forEach((field) => {
+      if (field.onChange && this.form.get(field.key)) {
+        this.form.get(field.key)!.valueChanges.subscribe((value) => {
+          field.onChange?.(value, this.form);
+        });
+      }
+    });
+
     this.emitFormValidity();
   }
 

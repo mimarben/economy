@@ -9,6 +9,7 @@ export interface FormFieldConfig {
   required?: boolean;
   validators?: ValidatorFn[];
   options?: { value: string | number; label: string }[]; // For select fields
+  onChange?: (value: any, form?: any) => void;
   minLength?: number; // For text/email fields
   maxLength?: number; // For text/email fields
   pattern?: string; // For text/email fields

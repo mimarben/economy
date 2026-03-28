@@ -1,6 +1,7 @@
 """Service for CategoryRule domain logic and transaction categorization."""
 
 from typing import List, Optional
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from models import CategoryRule, TransactionEnum
@@ -34,6 +35,56 @@ class CategoryRuleService(BaseService[CategoryRule, CategoryRuleRead, CategoryRu
         
         rules = self.repository.get_active_by_type(enum_type)
         return [self.read_schema.model_validate(r) for r in rules]
+
+    def _get_category_model_by_type(self, transaction_type: str):
+        try:
+            enum_type = TransactionEnum(transaction_type)
+        except ValueError:
+            raise ValueError(f"Invalid transaction type: {transaction_type}")
+
+        if enum_type == TransactionEnum.expense:
+            from models import ExpensesCategory
+            return ExpensesCategory
+        elif enum_type == TransactionEnum.income:
+            from models import IncomesCategory
+            return IncomesCategory
+        elif enum_type == TransactionEnum.investment:
+            from models import InvestmentsCategory
+            return InvestmentsCategory
+
+        raise ValueError(f"Unsupported transaction type: {transaction_type}")
+
+    def _category_exists_for_type(self, transaction_type: str, category_id: int) -> bool:
+        if category_id is None:
+            return False
+
+        category_model = self._get_category_model_by_type(transaction_type)
+        stmt = select(category_model).where(category_model.id == category_id)
+        return self.db.execute(stmt).scalar_one_or_none() is not None
+
+    def _validate_category_for_type(self, transaction_type: str, category_id: int) -> None:
+        if category_id is None:
+            raise ValueError("category_id is required")
+
+        if not self._category_exists_for_type(transaction_type, category_id):
+            raise ValueError(f"category_id {category_id} is invalid for type {transaction_type}")
+
+    def create(self, data: CategoryRuleCreate) -> CategoryRuleRead:
+        self._validate_category_for_type(data.type, data.category_id)
+        return super().create(data)
+
+    def update(self, id: int, data: CategoryRuleUpdate) -> Optional[CategoryRuleRead]:
+        existing = self.repository.get_by_id(id)
+        if not existing:
+            return None
+
+        update_data = data.model_dump(exclude_unset=True)
+        type_to_check = update_data.get('type', getattr(existing.type, 'value', existing.type))
+        category_id_to_check = update_data.get('category_id', existing.category_id)
+
+        self._validate_category_for_type(type_to_check, category_id_to_check)
+
+        return super().update(id, data)
 
 
 class CategorizationService:
