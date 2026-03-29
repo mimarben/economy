@@ -42,6 +42,7 @@ export class ExcelImportComponent implements OnInit {
     'select',
     'date',
     'description',
+    'type',
     'amount',
     'balance',
     'category',
@@ -126,7 +127,7 @@ export class ExcelImportComponent implements OnInit {
     });
   }
 
-  onFileChange(event: Event) {
+  async onFileChange(event: Event) {
     if (!this.selectedProfile) {
       console.warn(
         'Import profile not found for bank',
@@ -146,7 +147,7 @@ export class ExcelImportComponent implements OnInit {
 
     const reader = new FileReader();
 
-    reader.onload = (e: any) => {
+    reader.onload = async (e: any) => {
       const workbook = XLSX.read(e.target.result, {
         type: 'binary',
       });
@@ -211,6 +212,9 @@ export class ExcelImportComponent implements OnInit {
         selected: false,
       }));
 
+      // Make sure rules are loaded/refreshed before local categorization.
+      await this.ruleCategorizerService.refreshRules();
+
       const categorized = this.ruleCategorizerService.categorize(
         tempTransactions,
         this.incomeCategories,
@@ -220,40 +224,41 @@ export class ExcelImportComponent implements OnInit {
 
       console.log('Uncategorized transactions:', uncategorized);
 
-      const payload: ClassifyPayload = {
-        transactions: uncategorized.map((t, index) => ({
-          id: index,
-          type: t.amount < 0 ? 'expense' as const : 'income' as const,
-          description: (String(t.description)).trim(),
-          amount: Number(+t.amount),
-        })),
-        rules: [] // Rules are now managed on the backend
-      };
-      console.log('Payload:', JSON.stringify(payload), payload);
+      this.transactions = categorized;
+      this.isClassifying = false;
 
-      this.isClassifying = true; // ← activa spinner
-
-      this.transactionAiService.publicclassify(payload).subscribe({
-        next: res => {
-          const results = res?.response ?? [];
-          for (const classification of results) {
-            const tx = uncategorized[classification.id];
-            if (!tx) continue;
-            if (classification.category?.id) {
-              tx.suggestedCategoryId = classification.category.id;
-            } else if (classification.category?.suggested_new_category) {
-              tx.suggestedCategoryName = classification.category.suggested_new_category;
-            }
-          }
-          this.transactions = categorized; // ← tabla aparece aquí
-          this.isClassifying = false;
-        },
-        error: err => {
-          console.error('Error en classify:', err);
-          this.transactions = categorized; // ← muestra igualmente si falla la IA
-          this.isClassifying = false;
-        }
-      });
+//      const payload: ClassifyPayload = {
+//        transactions: uncategorized.map((t, index) => ({
+//          id: index,
+//          type: t.amount < 0 ? 'expense' as const : 'income' as const,
+//          description: (String(t.description)).trim(),
+//          amount: Number(+t.amount),
+//        })),
+//        rules: [] // Rules are now managed on the backend
+//      };
+//      this.isClassifying = true; // ← activa spinner
+//
+//      this.transactionAiService.publicclassify(payload).subscribe({
+//        next: res => {
+//          const results = res?.response ?? [];
+//          for (const classification of results) {
+//            const tx = uncategorized[classification.id];
+//            if (!tx) continue;
+//            if (classification.category?.id) {
+//              tx.suggestedCategoryId = classification.category.id;
+//            } else if (classification.category?.suggested_new_category) {
+//              tx.suggestedCategoryName = classification.category.suggested_new_category;
+//            }
+//          }
+//          this.transactions = categorized; // ← tabla aparece aquí
+//          this.isClassifying = false;
+//        },
+//        error: err => {
+//          console.error('Error en classify:', err);
+//          this.transactions = categorized; // ← muestra igualmente si falla la IA
+//          this.isClassifying = false;
+//        }
+//      });
     };
 
     reader.readAsBinaryString(file);

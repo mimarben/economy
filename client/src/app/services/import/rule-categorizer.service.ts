@@ -14,6 +14,12 @@ export class RuleCategorizerService {
   private rulesCache: CategoryRule[] = [];
 
   constructor(private categoryRuleService: CategoryRuleService) {
+    // Keep local cache in sync with any changes in the service.
+    this.categoryRuleService.rules$.subscribe((rules) => {
+      this.rulesCache = rules;
+      console.log('[RuleCategorizerService] rules$ updated:', this.rulesCache);
+    });
+
     this.loadRulesCache();
   }
 
@@ -23,9 +29,11 @@ export class RuleCategorizerService {
    */
   async loadRulesCache(): Promise<void> {
     try {
-      this.rulesCache = await firstValueFrom(this.categoryRuleService.getAllRules());
+      const rules = await firstValueFrom(this.categoryRuleService.getAllRules());
+      this.rulesCache = rules;
+      console.log('[RuleCategorizerService] Category rules loaded and cached:', this.rulesCache);
     } catch (error) {
-      console.error('Failed to load category rules from backend:', error);
+      console.error('[RuleCategorizerService] Failed to load category rules from backend:', error);
       this.rulesCache = [];
     }
   }
@@ -57,12 +65,23 @@ export class RuleCategorizerService {
     expenseCategories: ExpenseCategoryBase[]
   ): ImportTransaction[] {
     // Note: Categorization now happens on the backend during import.
-    // This method is kept for backward compatibility with the UI flow,
-    // but the actual categorization is delegated to the CategorizationService on the backend.
-    
-    return transactions.map(t => {
-      // For now, return transactions as-is. The backend will handle categorization.
-      // If you need client-side suggestion logic, implement it here using this.rulesCache
+    // This method is also used for UI suggestions (local rule matching) if available.
+
+    return transactions.map((t) => {
+      const type = t.amount < 0 ? 'expense' : 'income';
+      const matchCategoryId = this.suggestCategory(String(t.description || ''), type);
+
+      if (matchCategoryId) {
+        t.suggestedCategoryId = matchCategoryId;
+
+        const matchedCategory = (type === 'expense' ? expenseCategories : incomeCategories)
+          .find((c) => c.id === matchCategoryId);
+
+        if (matchedCategory) {
+          t.suggestedCategoryName = (matchedCategory as any).name || null;
+        }
+      }
+
       return t;
     });
   }
