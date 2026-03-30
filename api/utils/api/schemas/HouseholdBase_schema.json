@@ -17,6 +17,7 @@
           "type": "null"
         }
       ],
+      "default": null,
       "title": "Description"
     },
     "active": {
@@ -27,8 +28,7 @@
   },
   "required": [
     "name",
-    "address",
-    "description"
+    "address"
   ],
   "title": "HouseholdBase",
   "type": "object"

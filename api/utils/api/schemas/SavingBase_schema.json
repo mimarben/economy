@@ -22,38 +22,33 @@
       "type": "string"
     }
   },
-  "description": "Base schema for Saving - format validation only.",
+  "description": "Base schema for Saving aligned with ORM model.",
   "properties": {
     "description": {
-      "anyOf": [
-        {
-          "maxLength": 500,
-          "type": "string"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null,
-      "title": "Description"
+      "maxLength": 500,
+      "minLength": 1,
+      "title": "Description",
+      "type": "string"
     },
     "amount": {
-      "exclusiveMinimum": 0,
-      "title": "Amount",
-      "type": "number"
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "title": "Amount"
     },
     "date": {
-      "format": "date-time",
+      "format": "date",
       "title": "Date",
       "type": "string"
     },
     "currency": {
       "$ref": "#/$defs/CurrencyEnum"
-    },
-    "user_id": {
-      "exclusiveMinimum": 0,
-      "title": "User Id",
-      "type": "integer"
     },
     "account_id": {
       "exclusiveMinimum": 0,
@@ -62,10 +57,10 @@
     }
   },
   "required": [
+    "description",
     "amount",
     "date",
     "currency",
-    "user_id",
     "account_id"
   ],
   "title": "SavingBase",

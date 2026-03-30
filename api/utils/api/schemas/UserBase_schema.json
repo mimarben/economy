@@ -13,28 +13,12 @@
   },
   "properties": {
     "name": {
-      "anyOf": [
-        {
-          "type": "string"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null,
-      "title": "Name"
+      "title": "Name",
+      "type": "string"
     },
     "surname1": {
-      "anyOf": [
-        {
-          "type": "string"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null,
-      "title": "Surname1"
+      "title": "Surname1",
+      "type": "string"
     },
     "surname2": {
       "anyOf": [
@@ -49,16 +33,8 @@
       "title": "Surname2"
     },
     "dni": {
-      "anyOf": [
-        {
-          "type": "string"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null,
-      "title": "Dni"
+      "title": "Dni",
+      "type": "string"
     },
     "email": {
       "anyOf": [
@@ -74,16 +50,9 @@
       "title": "Email"
     },
     "active": {
-      "anyOf": [
-        {
-          "type": "boolean"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null,
-      "title": "Active"
+      "default": true,
+      "title": "Active",
+      "type": "boolean"
     },
     "telephone": {
       "anyOf": [
@@ -98,17 +67,15 @@
       "title": "Telephone"
     },
     "role": {
-      "anyOf": [
-        {
-          "$ref": "#/$defs/UserRoleEnum"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null
+      "$ref": "#/$defs/UserRoleEnum",
+      "default": "user"
     }
   },
+  "required": [
+    "name",
+    "surname1",
+    "dni"
+  ],
   "title": "UserBase",
   "type": "object"
 }

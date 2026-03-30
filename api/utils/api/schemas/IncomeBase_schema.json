@@ -22,44 +22,39 @@
       "type": "string"
     }
   },
-  "description": "Base schema for Income - format validation only.",
+  "description": "Base schema for Income aligned with ORM model.",
   "properties": {
-    "name": {
-      "maxLength": 255,
+    "description": {
+      "maxLength": 500,
       "minLength": 1,
-      "title": "Name",
+      "title": "Description",
       "type": "string"
     },
-    "description": {
+    "amount": {
       "anyOf": [
         {
-          "maxLength": 500,
-          "type": "string"
+          "exclusiveMinimum": 0.0,
+          "type": "number"
         },
         {
-          "type": "null"
+          "type": "string"
         }
       ],
-      "default": null,
-      "title": "Description"
-    },
-    "amount": {
-      "exclusiveMinimum": 0,
-      "title": "Amount",
-      "type": "number"
+      "title": "Amount"
     },
     "date": {
-      "format": "date-time",
+      "format": "date",
       "title": "Date",
       "type": "string"
     },
     "currency": {
       "$ref": "#/$defs/CurrencyEnum"
     },
-    "user_id": {
-      "exclusiveMinimum": 0,
-      "title": "User Id",
-      "type": "integer"
+    "dedup_hash": {
+      "maxLength": 64,
+      "minLength": 64,
+      "title": "Dedup Hash",
+      "type": "string"
     },
     "source_id": {
       "exclusiveMinimum": 0,
@@ -72,27 +67,20 @@
       "type": "integer"
     },
     "account_id": {
-      "anyOf": [
-        {
-          "exclusiveMinimum": 0,
-          "type": "integer"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null,
-      "title": "Account Id"
+      "exclusiveMinimum": 0,
+      "title": "Account Id",
+      "type": "integer"
     }
   },
   "required": [
-    "name",
+    "description",
     "amount",
     "date",
     "currency",
-    "user_id",
+    "dedup_hash",
     "source_id",
-    "category_id"
+    "category_id",
+    "account_id"
   ],
   "title": "IncomeBase",
   "type": "object"

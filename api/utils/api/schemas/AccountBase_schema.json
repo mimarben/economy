@@ -1,4 +1,27 @@
 {
+  "$defs": {
+    "CurrencyEnum": {
+      "enum": [
+        "€",
+        "$",
+        "¥",
+        "₿",
+        "Ξ",
+        "USDC",
+        "DOGE",
+        "LTC",
+        "XRP",
+        "XLM",
+        "ADA",
+        "DOT",
+        "SOL",
+        "SHIB",
+        "TRX"
+      ],
+      "title": "CurrencyEnum",
+      "type": "string"
+    }
+  },
   "properties": {
     "name": {
       "title": "Name",
@@ -17,12 +40,34 @@
       "title": "Description"
     },
     "iban": {
-      "title": "Iban",
-      "type": "string"
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Iban"
+    },
+    "currency": {
+      "$ref": "#/$defs/CurrencyEnum"
     },
     "balance": {
-      "title": "Balance",
-      "type": "number"
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Balance"
     },
     "active": {
       "default": true,
@@ -42,8 +87,7 @@
   },
   "required": [
     "name",
-    "iban",
-    "balance",
+    "currency",
     "bank_id",
     "user_id"
   ],

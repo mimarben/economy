@@ -22,32 +22,39 @@
       "type": "string"
     }
   },
-  "description": "Base schema for Investment - format validation only.",
+  "description": "Base schema for Investment aligned with ORM model.",
   "properties": {
-    "name": {
-      "anyOf": [
-        {
-          "type": "string"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null,
-      "title": "Name"
+    "description": {
+      "maxLength": 500,
+      "minLength": 1,
+      "title": "Description",
+      "type": "string"
     },
     "date": {
-      "format": "date-time",
+      "format": "date",
       "title": "Date",
       "type": "string"
     },
     "currency": {
       "$ref": "#/$defs/CurrencyEnum"
     },
-    "user_id": {
-      "exclusiveMinimum": 0,
-      "title": "User Id",
-      "type": "integer"
+    "amount": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "title": "Amount"
+    },
+    "dedup_hash": {
+      "maxLength": 64,
+      "minLength": 64,
+      "title": "Dedup Hash",
+      "type": "string"
     },
     "account_id": {
       "exclusiveMinimum": 0,
@@ -61,9 +68,11 @@
     }
   },
   "required": [
+    "description",
     "date",
     "currency",
-    "user_id",
+    "amount",
+    "dedup_hash",
     "account_id",
     "category_id"
   ],
