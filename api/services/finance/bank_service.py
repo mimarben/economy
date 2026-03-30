@@ -4,7 +4,6 @@ from repositories.finance.bank_repository import BankRepository
 from schemas.finance.bank_schema import BankCreate, BankRead, BankUpdate
 from models import Bank
 from services.core.base_service import BaseService
-from core.exceptions import ValidationError
 
 
 class BankService(BaseService[Bank, BankRead, BankCreate, BankUpdate]):
@@ -29,7 +28,7 @@ class BankService(BaseService[Bank, BankRead, BankCreate, BankUpdate]):
         data.cif = cif
 
         if cif and self.repository.find_by_cif(cif):
-            raise ValidationError("Bank with this CIF already exists")
+            raise ValueError("Bank with this CIF already exists")
 
         return super().create(data)
 
@@ -41,7 +40,7 @@ class BankService(BaseService[Bank, BankRead, BankCreate, BankUpdate]):
         if data.cif is not None:
             normalized = self._normalize_cif(data.cif)
             if normalized != existing.cif and self.repository.find_by_cif(normalized):
-                raise ValidationError("Another bank with this CIF already exists")
+                raise ValueError("Another bank with this CIF already exists")
             data.cif = normalized
 
         return super().update(id, data)
