@@ -18,19 +18,15 @@ export class AppTranslateService {
    * Initialize translation service
    */
   initialize(): void {
-    // Comment translated to English.
     this.translate.addLangs(this.availableLanguages);
 
-    // Comment translated to English.
     this.translate.setDefaultLang(this.defaultLanguage);
 
-    // Comment translated to English.
     const savedLang = localStorage.getItem('preferredLanguage');
 
     if (savedLang && this.availableLanguages.includes(savedLang)) {
       this.translate.use(savedLang);
     } else {
-      // Comment translated to English.
       const browserLang = this.translate.getBrowserLang();
       if (browserLang && this.availableLanguages.includes(browserLang)) {
         this.translate.use(browserLang);

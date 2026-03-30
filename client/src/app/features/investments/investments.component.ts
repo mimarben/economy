@@ -72,7 +72,6 @@ constructor(
     categories: this.investmentCategoryService.getAll()
   }).subscribe({
     next: ({ investments, users, accounts, categories }) => {
-      // Comment translated to English.
       //this.investments = investments?.response ?? investments ?? [];
       this.investments = investments.response;
       this.usersMap = Object.fromEntries(
@@ -106,17 +105,14 @@ constructor(
     this.openDialog();
   }
   openDialog(data?: Investment): void {
-    // Comment translated to English.
     forkJoin({
       users: this.userService.getUsers(),
       accounts: this.accountService.getAll(),
       categories: this.investmentCategoryService.getAll()
     }).subscribe({
       next: (responses) => {
-        // Comment translated to English.
         const baseConfig = this.formFactory.getFormConfig('investment');
 
-        // Comment translated to English.
         const enrichedConfig = baseConfig.map((field: FormFieldConfig) => {
           if (field.key === 'user_id') {
             return {

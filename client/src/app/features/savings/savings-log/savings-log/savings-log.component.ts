@@ -102,7 +102,6 @@ export class SavingsLogComponent implements OnInit {
   }
 
   openDialog(data?: SavingLog): void {
-    // Comment translated to English.
     forkJoin({
       savings: this.savingService.getAll(),
       sources: this.sourceService.getAll()
@@ -110,7 +109,6 @@ export class SavingsLogComponent implements OnInit {
       next: (responses) => {
         const baseConfig = this.formFactory.getFormConfig('saving_log');
 
-        // Comment translated to English.
         const enrichedConfig = baseConfig.map(field => {
           if (field.key === 'saving_id') {
             return {
@@ -135,7 +133,6 @@ export class SavingsLogComponent implements OnInit {
           return field;
         });
 
-        // Comment translated to English.
         const dialogRef = this.dialog.open(GenericDialogComponent, {
           data: {
             title: data ? 'Edit Household Member' : 'New Household Member',

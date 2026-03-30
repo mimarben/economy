@@ -12,7 +12,6 @@ import {
   isEmpty,
   map,
   filter,
-  // Comment translated to English.
 } from 'lodash-es';
 
 @Injectable({
@@ -24,7 +23,6 @@ export class UtilsService {
     isEmpty: isEmpty,
     map: map,
     filter: filter,
-    // Comment translated to English.
   };
   //readonly moment = moment;
   // Internal helper to convert MomentInput (Date, string, number) to a Date object,
@@ -39,7 +37,6 @@ export class UtilsService {
   formatDateShortStr(date: Date | string | number | null | undefined): string {
     const d = this.getDate(date);
     if (!d) return '';
-    // Comment translated to English.
     return format(d, 'dd-MM-yyyy');
   }
   // Uses 'date-fns/startOfDay' and returns a native Date

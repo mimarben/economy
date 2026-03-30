@@ -16,54 +16,43 @@ logger = setup_logger("transaction_ai")
 class TransactionAIService:
 
     def __init__(self, db: Session):
-        # Comment translated to English.
         self.db = db
 
     # ─────────────────────────────────────────────
-    # Comment translated to English.
-    # Comment translated to English.
-    # Comment translated to English.
     # ─────────────────────────────────────────────
     def classify(self, transactions: list[dict], rules: list[dict]) -> list[dict]:
         rules = rules or []
         if not transactions:
             return []
 
-        # Comment translated to English.
         categories_by_type = {
             "expense": self._get_categories("expense"),
             "income": self._get_categories("income"),
             "investment": self._get_categories("investment")
         }
 
-        # Comment translated to English.
         predictions_by_id = {}
 
-        # Comment translated to English.
         transactions_by_type: dict[str, list[dict]] = {
             "expense": [],
             "income": [],
             "investment": []
         }
 
-        # Comment translated to English.
         for tx in transactions:
             type_ = tx.get("type")
             tx_id = tx.get("id")
             categories = categories_by_type.get(type_)
 
-            # Comment translated to English.
             if tx_id is None or not categories:
                 continue
 
-            # Comment translated to English.
             merchant_match = self._match_known_patterns(tx, categories, type_, rules)
 
             if merchant_match:
                 # Match encontrado → la guardamos directamente, no va a la IA
                 predictions_by_id[tx_id] = merchant_match
             else:
-                # Comment translated to English.
                 transactions_by_type[type_].append(tx)
 
         # 3. Segunda pasada: enviamos a la IA las que no matchearon
@@ -83,8 +72,6 @@ class TransactionAIService:
 
             predictions_by_id.update(ai_predictions)
 
-        # Comment translated to English.
-        # Comment translated to English.
         return [
             {
                 "id": tx.get("id"),
@@ -94,8 +81,6 @@ class TransactionAIService:
         ]
 
     # ─────────────────────────────────────────────
-    # Comment translated to English.
-    # Comment translated to English.
     # ─────────────────────────────────────────────
     def _get_categories(self, type_: str) -> list:
         if type_ == "expense":
@@ -119,20 +104,14 @@ class TransactionAIService:
         return []
 
     # ─────────────────────────────────────────────
-    # Comment translated to English.
-    # Comment translated to English.
-    # Comment translated to English.
-    # Comment translated to English.
     # ─────────────────────────────────────────────
     def _classify_batch(self, type_: str, transactions: list[dict], categories: list) -> dict:
 
-        # Comment translated to English.
         categories_payload = [
             {"name": c.name, "description": getattr(c, "description", "")}
             for c in categories
         ]
 
-        # Comment translated to English.
         tx_payload = [
             {
                 "id": tx.get("id"),
@@ -142,7 +121,6 @@ class TransactionAIService:
             for tx in transactions
         ]
 
-        # Comment translated to English.
         prompt = f"""
                   You are a financial transaction classifier.
                   Type: {type_}
@@ -192,19 +170,16 @@ class TransactionAIService:
                   {{"classifications":[{{"id":"...","category":"..." | null,"suggested_new_category":"..." | null}}]}}
                   """
 
-        # Comment translated to English.
         payload = {
             "messages": [
                 # El rol system define el comportamiento general del modelo
                 {"role": "system", "content": "You are a strict financial classifier. Return only JSON."},
-                # Comment translated to English.
                 {"role": "user", "content": prompt}
             ],
-            "temperature": 0,  # Comment translated to English.
-            "max_tokens": max(120, len(transactions) * 40)  # Comment translated to English.
+            "temperature": 0,
+            "max_tokens": max(120, len(transactions) * 40)
         }
 
-        # Comment translated to English.
         req = urllib.request.Request(
             "http://ai:8180/v1/chat/completions",
             data=json.dumps(payload).encode("utf-8"),
@@ -313,16 +288,10 @@ class TransactionAIService:
                     "suggested_new_category": None
                 }
 
-        # Comment translated to English.
         return None
 
     # ─────────────────────────────────────────────
-    # Comment translated to English.
-    # Comment translated to English.
-    # Comment translated to English.
     # ─────────────────────────────────────────────
     def _normalize_text(self, text: str) -> str:
-        # Comment translated to English.
         normalized = unicodedata.normalize("NFKD", str(text))
-        # Comment translated to English.
         return "".join(c for c in normalized if not unicodedata.combining(c)).strip().lower()

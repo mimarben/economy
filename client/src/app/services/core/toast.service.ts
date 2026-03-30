@@ -7,7 +7,6 @@ import { ApiResponse } from '@core_models/apiResponse';
 export class ToastService {
   constructor(private toast: HotToastService) {}
 
-  // Comment translated to English.
   showToast<T>(
     message: ApiResponse<T>,
     type: 'success' | 'error' | 'info' | 'warning' = 'info',
@@ -104,7 +103,6 @@ export class ToastService {
     message: ApiResponse<T>,
     type: 'success' | 'error' | 'info' | 'warning'
   ): { response?: string; details?: string } {
-    // Comment translated to English.
     if (typeof message.response === 'string') {
       return {
         details: message.details, // Ej: "ERROR_DNI_DUPLICATED"
@@ -112,9 +110,8 @@ export class ToastService {
       };
     }
 
-    // Comment translated to English.
     if (typeof message.response === 'object' && message.response !== null) {
-      const obj = message.response as any; // Comment translated to English.
+      const obj = message.response as any;
       let responseMessage = 'Operation completed successfully';
 
       // Intentar extraer una propiedad representativa
@@ -127,7 +124,6 @@ export class ToastService {
       } else if (obj.email) {
         responseMessage = `Item with email ${obj.email} updated successfully`;
       } else {
-        // Comment translated to English.
         responseMessage = `Item updated successfully`;
       }
 
@@ -137,7 +133,6 @@ export class ToastService {
       };
     }
 
-    // Comment translated to English.
     return {
       details: message.details || 'UNKNOWN',
       response: 'Operation completed',

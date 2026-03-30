@@ -64,11 +64,8 @@ loadSavings() {
     const users$ = this.userService.getUsers();
     const accounts$ = this.accountService.getAll();
 
-    // Comment translated to English.
     forkJoin([savings$, users$, accounts$]).subscribe({
         next: ([savingsResponse, usersResponse, accountsResponse]: any) => {
-            // Comment translated to English.
-
             // a) Asignar Ahorros (Savings)
             this.savings = savingsResponse.response || [];
 
@@ -87,9 +84,7 @@ loadSavings() {
                 accounts.map((a: Account) => [a.id, `${a.name}`])
             );
 
-            // Comment translated to English.
             this.isLoading = false;
-            // Comment translated to English.
             // this.cdr.detectChanges();
         },
         error: (err: any) => {
@@ -123,16 +118,13 @@ loadSavings() {
     });
   } */
   openDialog(data?: Saving): void {
-    // Comment translated to English.
     forkJoin({
       users: this.userService.getUsers(),
       accounts: this.accountService.getAll(),
     }).subscribe({
       next: (responses) => {
-        // Comment translated to English.
         const baseConfig = this.formFactory.getFormConfig('saving');
 
-        // Comment translated to English.
         const enrichedConfig = baseConfig.map((field: FormFieldConfig) => {
           if (field.key === 'user_id') {
             return {

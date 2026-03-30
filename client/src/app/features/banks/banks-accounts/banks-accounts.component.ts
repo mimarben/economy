@@ -113,16 +113,13 @@ private loadUsers(): void {
     this.openDialog();
   }
   openDialog(data?: Account): void {
-    // Comment translated to English.
     forkJoin({
       banks: this.bankService.getBanks(),
       users: this.userService.getUsers()
     }).subscribe({
       next: (responses) => {
-        // Comment translated to English.
         const baseConfig = this.formFactory.getFormConfig('account');
 
-        // Comment translated to English.
         const enrichedConfig = baseConfig.map((field: FormFieldConfig) => {
           if (field.key === 'bank_id') {
             return {

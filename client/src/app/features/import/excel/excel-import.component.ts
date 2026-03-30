@@ -472,7 +472,6 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
     }));
 
     // IMPORTANT:
-    // Comment translated to English.
     // Real "all-or-nothing" behavior across expenses+incomes requires a single backend endpoint
     // wrapping both insert operations in the same transaction.
     // -> IMPLEMENTED: call the unified atomic endpoint.

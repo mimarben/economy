@@ -33,7 +33,7 @@ export class UserFromDialogComponent {
     private toastService: ToastService) {
       this.isEditMode = !!data?.id;
       this.userForm = this.fb.group({
-        id: [this.isEditMode ? data.id : null], // Comment translated to English.
+        id: [this.isEditMode ? data.id : null],
         name: [this.isEditMode ? data.name : '', [Validators.required, Validators.minLength(2)]],
         surname1: [this.isEditMode ? data.surname1 : '', [Validators.required]],
         surname2: [this.isEditMode ? data.surname2 : ''], // Opcional
@@ -42,12 +42,10 @@ export class UserFromDialogComponent {
         dni: [this.isEditMode ? data.dni : '', [Validators.required, this.validateDNI]],
         active: [this.isEditMode ? data.active : true],
         role: [this.isEditMode ? data.role : 'user', [Validators.required]],
-        password: ['', this.isEditMode ? [] : [Validators.required, this.passwordValidator]], // Comment translated to English.
+        password: ['', this.isEditMode ? [] : [Validators.required, this.passwordValidator]],
       });
-      // Comment translated to English.
     }
 
-    // Comment translated to English.
     validateDNI(control: any) {
       const value = control.value;
       const dniRegex = /^[0-9]{8}[A-Za-z]$/;
@@ -56,7 +54,6 @@ export class UserFromDialogComponent {
         return { invalidDNI: true };
       }
 
-      // Comment translated to English.
       const dniLetters = "TRWAGMYFPDXBNJZSQVHLCKE";
       const numbers = value.slice(0, 8);
       const letter = value.slice(-1).toUpperCase();
@@ -74,16 +71,13 @@ export class UserFromDialogComponent {
       if (!value || value.length < 8) {
         return null;
       }
-      // Comment translated to English.
       const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*¿?&_!¡€#|/(){}-])[A-Za-z\d@$!%*?&]{8,}$/;
 
       if (!passwordRegex.test(value)) {
-          // Comment translated to English.
           return { strongPassword: true };
       }
       return null;
   }
-  // Comment translated to English.
   get formControls() {
     return this.userForm.controls;
   }
@@ -109,7 +103,6 @@ export class UserFromDialogComponent {
         });
       }
       else {
-        // Comment translated to English.
         this.userService.createUser(userData).subscribe({
           next: (response: ApiResponse<User>) => {
             this.isLoading = false;

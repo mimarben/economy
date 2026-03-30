@@ -123,7 +123,6 @@ export class IncomesComponent implements OnInit {
   const sources$ = this.sourceService.getAll();
   const accounts$ = this.accountService.getAll();
 
-  // Comment translated to English.
   forkJoin([users$, categories$, sources$, accounts$]).subscribe({
     next: ([usersResponse, categoriesResponse, sourcesResponse, accountsResponse]) => {
       // Extraemos los datos (response de cada servicio)
@@ -132,10 +131,8 @@ export class IncomesComponent implements OnInit {
       const sources = sourcesResponse.response || [];
       const accounts = accountsResponse.response || [];
 
-      // Comment translated to English.
       const baseConfig = this.formFactory.getFormConfig('income');
 
-      // Comment translated to English.
       const enrichedConfig = baseConfig.map((field: FormFieldConfig) => {
         switch (field.key) {
           case 'user_id':
@@ -175,7 +172,6 @@ export class IncomesComponent implements OnInit {
         }
       });
 
-      // Comment translated to English.
       const dialogRef = this.dialog.open(GenericDialogComponent, {
         data: {
           title: data ? 'Edit Income' : 'New Income',
