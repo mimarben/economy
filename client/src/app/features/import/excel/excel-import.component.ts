@@ -49,8 +49,6 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
   selectedBank: Bank | null = null;
   selectedAccount: Account | null = null;
   selectedProfile: BankProfile | null = null;
-  sourceFilter: string = '';
-  accountFilter: string = '';
   transactions: ImportTransaction[] = [];
   dataSource: MatTableDataSource<ImportTransaction> = new MatTableDataSource<ImportTransaction>([]);
   expenseCategories: ExpenseCategoryBase[] = [];
@@ -95,7 +93,6 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
     this.accountService.getAll().subscribe({
       next: (res) => {
         this.accounts = res.response;
-        this.filteredAccounts = this.accounts;
       },
       error: (error) => {
         this.toastService.error(
@@ -392,33 +389,9 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
 
   private updateDataSource(): void {
     this.dataSource.data = this.transactions;
-    this.applyTableFilter();
     if (this.sort) {
       this.dataSource.sort = this.sort;
     }
-  }
-
-  applySourceFilter(value: string): void {
-    this.sourceFilter = value.trim().toLowerCase();
-    this.applyTableFilter();
-  }
-
-  applyAccountFilter(value: string): void {
-    this.accountFilter = value.trim().toLowerCase();
-    this.applyTableFilter();
-  }
-
-  private applyTableFilter(): void {
-    this.dataSource.filterPredicate = (data: ImportTransaction, filter: string) => {
-      const sourceId = data.source_id?.toString() ?? '';
-      const accountId = data.account_id?.toString() ?? '';
-      const sourceMatch = !this.sourceFilter || sourceId.includes(this.sourceFilter);
-      const accountMatch = !this.accountFilter || accountId.includes(this.accountFilter);
-      return sourceMatch && accountMatch;
-    };
-
-    // trigger filtering with artificial value
-    this.dataSource.filter = (this.sourceFilter || this.accountFilter).toLowerCase();
   }
 
   toggleAll(checked: boolean) {

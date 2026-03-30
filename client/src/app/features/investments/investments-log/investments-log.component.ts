@@ -67,7 +67,7 @@ export class InvestmentsLogComponent implements OnInit {
           const savingField = this.formFields.find((s) => s.key === 'investment_id');
           if (savingField) {
             this.savingMap = Object.fromEntries(
-              res.response.map((s) => [s.id ?? 0, s.name])
+              res.response.map((s) => [s.id ?? 0, s.description])
             );
           }
         },
@@ -80,7 +80,7 @@ export class InvestmentsLogComponent implements OnInit {
           if (field) {
             field.type = 'select';
             field.options = res.response.map((s) => ({
-              label: `${s.name}`,
+              label: `${s.description}`,
               value: s.id ?? 0,
             }));
           }

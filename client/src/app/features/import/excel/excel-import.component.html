@@ -13,7 +13,7 @@
   </select>
 </mat-form-field>
 
-<mat-form-field *ngIf="filteredAccounts.length > 0" style="margin-left: 16px; width: 240px;">
+<mat-form-field *ngIf="selectedBank" style="margin-left: 16px; width: 240px;">
   <mat-label>Cuenta</mat-label>
   <mat-select required [value]="selectedAccount?.id" (selectionChange)="onAccountSelected($event.value)">
     <mat-option [value]="null">Seleccionar cuenta</mat-option>
@@ -21,18 +21,6 @@
       <mat-option [value]="account.id">{{ account.name }} ({{ account.iban }})</mat-option>
     }
   </mat-select>
-</mat-form-field>
-
-<br>
-
-<mat-form-field style="margin-right:16px; width:220px;">
-  <mat-label>Filtrar Source ID</mat-label>
-  <input matInput (input)="applySourceFilter($any($event.target).value)">
-</mat-form-field>
-
-<mat-form-field style="margin-right:16px; width:220px;">
-  <mat-label>Filtrar Account ID</mat-label>
-  <input matInput (input)="applyAccountFilter($any($event.target).value)">
 </mat-form-field>
 
 <br><br>

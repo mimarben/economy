@@ -13,23 +13,33 @@
       "type": "string"
     }
   },
-  "description": "Base schema for InvestmentLog - format validation only.",
+  "description": "Base schema for InvestmentLog aligned with ORM model.",
   "properties": {
     "date": {
-      "format": "date-time",
+      "format": "date",
       "title": "Date",
       "type": "string"
     },
     "current_value": {
-      "exclusiveMinimum": 0,
-      "title": "Current Value",
-      "type": "number"
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "title": "Current Value"
     },
     "price_per_unit": {
       "anyOf": [
         {
-          "exclusiveMinimum": 0,
+          "exclusiveMinimum": 0.0,
           "type": "number"
+        },
+        {
+          "type": "string"
         },
         {
           "type": "null"
@@ -41,8 +51,11 @@
     "units_bought": {
       "anyOf": [
         {
-          "exclusiveMinimum": 0,
+          "exclusiveMinimum": 0.0,
           "type": "number"
+        },
+        {
+          "type": "string"
         },
         {
           "type": "null"
