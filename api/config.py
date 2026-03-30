@@ -37,6 +37,8 @@ class Config:
     BABEL_DEFAULT_LOCALE = 'en'
     BABEL_TRANSLATION_DIRECTORIES = 'i18n'
     INIT_DB_ON_STARTUP = False
+    SCHEMA_INIT_STRATEGY = os.getenv("SCHEMA_INIT_STRATEGY", "create_all")
+    SEED_DB_ON_STARTUP = os.getenv("SEED_DB_ON_STARTUP", "false").lower() == "true"
 
 
 class DevelopmentConfig(Config):
@@ -51,6 +53,7 @@ class DevelopmentConfig(Config):
         "allow_headers": ["Content-Type", "Authorization"]
     }
     INIT_DB_ON_STARTUP = True
+    SEED_DB_ON_STARTUP = True
 
 
 class TestingConfig(Config):
@@ -59,6 +62,7 @@ class TestingConfig(Config):
 
 
 class ProductionConfig(Config):
+    SCHEMA_INIT_STRATEGY = "migrations"
     DEBUG = False
     PORT = 5000
     HOST = "0.0.0.0"
