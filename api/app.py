@@ -6,7 +6,7 @@ from flask_cors import CORS
 from sqlalchemy.exc import TimeoutError as SQLAlchemyTimeoutError
 from flask_jwt_extended import JWTManager, verify_jwt_in_request
 
-from db.database import init_db
+from db.database import init_db, remove_db_session
 from routers import register_blueprints
 from config import DevelopmentConfig
 from services.logs.logger_service import setup_logger
@@ -39,6 +39,10 @@ def create_app(config_class=DevelopmentConfig) -> Flask:
         if request.method == "OPTIONS":
             return
         verify_jwt_in_request()
+
+    @app.teardown_appcontext
+    def shutdown_session(_exception=None):
+        remove_db_session()
 
     CORS(
         app,
