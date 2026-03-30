@@ -20,7 +20,6 @@ import { Observable, throwError, BehaviorSubject } from 'rxjs';
 import { catchError, tap, switchMap, filter, take } from 'rxjs/operators';
 import { AuthService } from '../auth/auth.service';
 import { Router } from '@angular/router';
-import { ToastService } from './toast.service';
 import { environment } from '@env/environment';
 import { Injector } from '@angular/core';
 
@@ -29,7 +28,7 @@ export class HttpInterceptorService implements HttpInterceptor {
   private isRefreshing = false;
   private refreshTokenSubject: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
 
-  constructor(private toastService: ToastService, private injector: Injector) {}
+  constructor(private injector: Injector) {}
 
   /**
    * Intercept all HTTP requests
