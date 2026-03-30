@@ -7,6 +7,7 @@ import { LanguageBase as Language } from '@core_models/LanguageBase';
 import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'app-home',
+  standalone: true,
   imports: [
     MaterialModule,
     CommonModule,

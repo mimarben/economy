@@ -50,8 +50,8 @@ export class ErrorHandlerService implements ErrorHandler {
 
     // Parse backend error response
     if (error.error instanceof Object) {
-      code = error.error.code || `HTTP_${statusCode}`;
-      message = error.error.message || error.error.detail || error.statusText;
+      code = error.error.code || error.error.response || `HTTP_${statusCode}`;
+      message = error.error.message || error.error.details || error.error.detail || error.statusText;
     }
 
     return {

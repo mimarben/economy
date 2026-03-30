@@ -13,6 +13,7 @@ import { CommonModule } from '@angular/common'; // Required when structural dire
 
 @Component({
   selector: 'app-expenses-categories',
+  standalone: true,
   // CommonModule and GenericTableComponent are required by this view.
   imports: [GenericTableComponent, CommonModule],
   templateUrl: './expenses-categories.component.html',

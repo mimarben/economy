@@ -22,6 +22,7 @@ import { SourceService } from '@finance_services/source.service';
 
 @Component({
   selector: 'app-expenses-component',
+  standalone: true,
   imports: [GenericTableComponent],
   templateUrl: './expenses.component.html',
   styleUrl: './expenses.component.css',

@@ -20,6 +20,6 @@ export class SavingLogService extends BaseCrudService<SavingLog> {
    * @param http Angular HttpClient for making HTTP requests
    */
   constructor(protected override http: HttpClient) {
-    super(http, 'savings_logs');
+    super(http, 'saving_logs');
   }
 }
