@@ -1,10 +1,12 @@
 """Service for Income implementing CRUD operations."""
 from typing import List
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 from repositories.incomes.income_repository import IncomeRepository
 from schemas.incomes.income_schema import IncomeCreate, IncomeRead, IncomeUpdate
 from models import Income
 from services.core.base_service import BaseService
+from services.core.dedup_service import generate_dedup_hash
 
 
 class IncomeService(BaseService[Income, IncomeRead, IncomeCreate, IncomeUpdate]):
@@ -37,10 +39,22 @@ class IncomeService(BaseService[Income, IncomeRead, IncomeCreate, IncomeUpdate])
         if not is_valid:
             raise ValueError(f"Invalid foreign key: {error}")
 
-        obj = Income(**self._to_income_model_kwargs(data))
-        self.db.add(obj)
-        self.db.commit()
-        self.db.refresh(obj)
+        dedup_hash = generate_dedup_hash(
+            account_id=data.account_id,
+            txn_date=data.date,
+            amount=data.amount,
+            description=data.description,
+        )
+
+        obj = Income(**self._to_income_model_kwargs(data), dedup_hash=dedup_hash)
+
+        try:
+            obj = self.repository.create(obj)
+        except IntegrityError as e:
+            if 'uq_incomes_account_dedup_hash' in str(e.orig):
+                raise ValueError("DUPLICATE_TRANSACTION")
+            raise
+
         return IncomeRead.model_validate(obj)
 
     def create_batch_atomic(self, items: List[IncomeCreate]) -> List[IncomeRead]:
@@ -57,15 +71,30 @@ class IncomeService(BaseService[Income, IncomeRead, IncomeCreate, IncomeUpdate])
             if not is_valid:
                 raise ValueError(f"Invalid foreign key: {error}")
 
+        batch_seen = set()
         created_objects: List[Income] = []
-        with self.db.begin():
-            for item in items:
-                obj = Income(**self._to_income_model_kwargs(item))
-                self.db.add(obj)
-                created_objects.append(obj)
-            self.db.flush()
 
-        for obj in created_objects:
-            self.db.refresh(obj)
+        for item in items:
+            dedup_hash = generate_dedup_hash(
+                account_id=item.account_id,
+                txn_date=item.date,
+                amount=item.amount,
+                description=item.description,
+            )
+            key = (item.account_id, dedup_hash)
+            if key in batch_seen:
+                continue
+            batch_seen.add(key)
+
+            if self.repository.exists_by_dedup(item.account_id, dedup_hash):
+                continue
+
+            obj = Income(**self._to_income_model_kwargs(item), dedup_hash=dedup_hash)
+
+            try:
+                obj = self.repository.create(obj)
+                created_objects.append(obj)
+            except IntegrityError:
+                continue
 
         return [IncomeRead.model_validate(obj) for obj in created_objects]

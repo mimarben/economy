@@ -25,6 +25,13 @@ class IncomeRepository(BaseRepository[Income]):
         stmt = select(Account).where(Account.id == account_id)
         return self.db.execute(stmt).scalar_one_or_none() is not None
 
+    def exists_by_dedup(self, account_id: int, dedup_hash: str) -> bool:
+        stmt = self._base_query().where(
+            Income.account_id == account_id,
+            Income.dedup_hash == dedup_hash
+        )
+        return self.db.execute(stmt).scalar_one_or_none() is not None
+
     def validate_foreign_keys(
         self,
         source_id: int,

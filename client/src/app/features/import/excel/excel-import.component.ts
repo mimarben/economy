@@ -485,8 +485,11 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
 
     this.transactionImportService.importAtomic(payload).subscribe({
       next: (res) => {
+        const inserted = res.response?.inserted ?? (res.response?.expenses_created ?? 0) + (res.response?.incomes_created ?? 0);
+        const duplicates = res.response?.duplicates ?? 0;
+
         this.toastService.success(
-          `¡Éxito! Importados ${res.response?.expenses_created || 0} gastos y ${res.response?.incomes_created || 0} ingresos en una transacción.`
+          `¡Éxito! ${inserted} transacciones importadas. ${duplicates} duplicados ignorados.`
         );
         this.transactions = [];
         this.excelRows = [];

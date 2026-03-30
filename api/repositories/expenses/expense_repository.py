@@ -59,6 +59,14 @@ class ExpenseRepository(BaseRepository[Expense]):
         stmt = select(Account).where(Account.id == account_id)
         return self.db.execute(stmt).scalar_one_or_none() is not None
 
+    def exists_by_dedup(self, account_id: int, dedup_hash: str) -> bool:
+        """Check if a transaction with this account_id + dedup_hash already exists."""
+        stmt = self._base_query().where(
+            Expense.account_id == account_id,
+            Expense.dedup_hash == dedup_hash
+        )
+        return self.db.execute(stmt).scalar_one_or_none() is not None
+
     def validate_foreign_keys(self, user_id: int, source_id: int, category_id: int, account_id: Optional[int]) -> tuple[bool, Optional[str]]:
         """
         Validate all foreign keys at once.

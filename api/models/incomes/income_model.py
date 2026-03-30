@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Numeric, Date, ForeignKey, Enum as SQLEnum
+from sqlalchemy import Column, Integer, String, Numeric, Date, ForeignKey, Enum as SQLEnum, UniqueConstraint
 from sqlalchemy.orm import relationship
 
 from ..core.base import Base, TimestampMixin
@@ -7,11 +7,16 @@ from ..core.enums import CurrencyEnum
 
 class Income(TimestampMixin, Base):
     __tablename__ = 'incomes'
+    __table_args__ = (
+        UniqueConstraint('account_id', 'dedup_hash', name='uq_incomes_account_dedup_hash'),
+    )
+
     id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
     description = Column(String, nullable=False)
     amount = Column(Numeric(12, 2), nullable=False)
     date = Column(Date, nullable=False)
     currency = Column(SQLEnum(CurrencyEnum), nullable=False)
+    dedup_hash = Column(String(64), nullable=False, index=True)
 
     # Foreign Keys
     #user_id = Column(Integer, ForeignKey('users.id'), nullable=False, index=True)

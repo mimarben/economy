@@ -43,6 +43,8 @@ def create():
         result = service.create(data)
         return Response._ok_data(result.model_dump(), _("INCOME_CREATED"), 201, name)
     except ValueError as e:
+        if str(e) == "DUPLICATE_TRANSACTION":
+            return Response._error(_("DUPLICATE_TRANSACTION"), str(e), 409, name)
         return Response._error(_("FK_ERROR"), str(e), 400, name)
     except Exception as e:
         return Response._error(_("DATABASE_ERROR"), str(e), 500, name)

@@ -1,12 +1,13 @@
 from typing import Dict, Any, Optional
 from datetime import datetime
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from repositories.expenses.expense_repository import ExpenseRepository
 from repositories.incomes.income_repository import IncomeRepository
 from models import Expense, Income
-from services.incomes.income_service import IncomeService
 from services.category_rules.categorization_service import CategorizationService
+from services.core.dedup_service import generate_dedup_hash
 from schemas.imports.import_schema import BulkImportRequest
 
 
@@ -86,57 +87,98 @@ class ImportService:
             if not is_valid:
                 raise ValueError(f"Income FK error: {error}")
 
-        # Step 4: Atomic transaction - insert all or nothing
-        created_expenses = []
-        created_incomes = []
-        
-        with self.db.begin():
-            # Insert expenses
-            for item in data.expenses:
-                # Parse date if it's a string
-                date = item.date
-                if isinstance(date, str):
-                    date = datetime.fromisoformat(date)
-                
-                obj = Expense(
-                    name=item.name,
-                    description=item.description,
-                    amount=item.amount,
-                    date=date,
-                    currency=item.currency,
-                    user_id=item.user_id,
-                    source_id=item.source_id,
-                    category_id=item.category_id,
-                    account_id=item.account_id
-                )
-                self.db.add(obj)
-                created_expenses.append(obj)
+        # Step 4: Deduplicate and insert
+        inserted_expenses = 0
+        inserted_incomes = 0
+        duplicates = 0
+        batch_expense_keys = set()
+        batch_income_keys = set()
 
-            # Insert incomes
-            for item in data.incomes:
-                # Parse date if it's a string
-                date = item.date
-                if isinstance(date, str):
-                    date = datetime.fromisoformat(date)
-                
-                obj = Income(
-                    name=item.name,
-                    description=item.description,
-                    amount=item.amount,
-                    date=date,
-                    currency=item.currency,
-                    source_id=item.source_id,
-                    category_id=item.category_id,
-                    account_id=item.account_id
-                )
-                self.db.add(obj)
-                created_incomes.append(obj)
+        for item in data.expenses:
+            date = item.date
+            if isinstance(date, str):
+                date = datetime.fromisoformat(date)
 
-            self.db.flush()
+            dedup_hash = generate_dedup_hash(
+                account_id=item.account_id,
+                txn_date=date,
+                amount=item.amount,
+                description=item.description
+            )
+
+            key = (item.account_id, dedup_hash)
+            if key in batch_expense_keys:
+                duplicates += 1
+                continue
+            batch_expense_keys.add(key)
+
+            if self.expense_repo.exists_by_dedup(item.account_id, dedup_hash):
+                duplicates += 1
+                continue
+
+            obj = Expense(
+                name=item.name,
+                description=item.description,
+                amount=item.amount,
+                date=date,
+                currency=item.currency,
+                user_id=item.user_id,
+                source_id=item.source_id,
+                category_id=item.category_id,
+                account_id=item.account_id,
+                dedup_hash=dedup_hash
+            )
+
+            try:
+                self.expense_repo.create(obj)
+                inserted_expenses += 1
+            except IntegrityError:
+                duplicates += 1
+
+        for item in data.incomes:
+            date = item.date
+            if isinstance(date, str):
+                date = datetime.fromisoformat(date)
+
+            dedup_hash = generate_dedup_hash(
+                account_id=item.account_id,
+                txn_date=date,
+                amount=item.amount,
+                description=item.description
+            )
+
+            key = (item.account_id, dedup_hash)
+            if key in batch_income_keys:
+                duplicates += 1
+                continue
+            batch_income_keys.add(key)
+
+            if self.income_repo.exists_by_dedup(item.account_id, dedup_hash):
+                duplicates += 1
+                continue
+
+            obj = Income(
+                description=item.description,
+                amount=item.amount,
+                date=date,
+                currency=item.currency,
+                source_id=item.source_id,
+                category_id=item.category_id,
+                account_id=item.account_id,
+                dedup_hash=dedup_hash
+            )
+
+            try:
+                self.income_repo.create(obj)
+                inserted_incomes += 1
+            except IntegrityError:
+                duplicates += 1
+
+        total = len(data.expenses) + len(data.incomes)
 
         return {
-            "expenses_created": len(created_expenses),
-            "incomes_created": len(created_incomes),
-            "auto_categorization": data.auto_categorize
+            "inserted": inserted_expenses + inserted_incomes,
+            "duplicates": duplicates,
+            "total": total
         }
 

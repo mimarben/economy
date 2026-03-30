@@ -1,11 +1,13 @@
 """Expense service implementing CRUD operations with business logic."""
 from typing import Optional, List
 from datetime import datetime
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 from repositories.expenses.expense_repository import ExpenseRepository
 from schemas.expenses.expense_schema import ExpenseCreate, ExpenseRead, ExpenseUpdate
 from models import Expense
 from services.core.base_service import BaseService
+from services.core.dedup_service import generate_dedup_hash
 
 
 class ExpenseService(BaseService[Expense, ExpenseRead, ExpenseCreate, ExpenseUpdate]):
@@ -27,26 +29,38 @@ class ExpenseService(BaseService[Expense, ExpenseRead, ExpenseCreate, ExpenseUpd
         )
 
     def create(self, data: ExpenseCreate) -> ExpenseRead:
-        """Create a new expense with foreign key validation."""
-        # Validate foreign keys (moved from schema)
+        """Create a new expense with foreign key validation and dedup protection."""
         is_valid, error = self.repository.validate_foreign_keys(
             user_id=data.user_id,
             source_id=data.source_id,
             category_id=data.category_id,
             account_id=data.account_id
         )
-
         if not is_valid:
             raise ValueError(f"Invalid foreign key: {error}")
 
-        return super().create(data)
+        dedup_hash = generate_dedup_hash(
+            account_id=data.account_id,
+            txn_date=data.date,
+            amount=data.amount,
+            description=data.description
+        )
+
+        obj = Expense(**data.model_dump(), dedup_hash=dedup_hash)
+        try:
+            obj = self.repository.create(obj)
+        except IntegrityError as e:
+            if 'uq_expenses_account_dedup_hash' in str(e.orig):
+                raise ValueError("DUPLICATE_TRANSACTION")
+            raise
+
+        return ExpenseRead.model_validate(obj)
 
     def create_batch_atomic(self, items: List[ExpenseCreate]) -> List[ExpenseRead]:
         """
-        Create multiple expenses in a single DB transaction.
+        Create multiple expenses in a single DB transaction with deduplication.
 
-        All rows are persisted together (all-or-nothing). If one row fails
-        validation or persistence, the whole batch is rolled back.
+        Duplicates are skipped (same account_id + dedup_hash) and valid rows are persisted.
         """
         if not items:
             return []
@@ -61,16 +75,33 @@ class ExpenseService(BaseService[Expense, ExpenseRead, ExpenseCreate, ExpenseUpd
             if not is_valid:
                 raise ValueError(f"Invalid foreign key: {error}")
 
+        batch_seen = set()
         created_objects: List[Expense] = []
-        with self.db.begin():
-            for item in items:
-                obj = Expense(**item.model_dump())
-                self.db.add(obj)
-                created_objects.append(obj)
-            self.db.flush()
 
-        for obj in created_objects:
-            self.db.refresh(obj)
+        for item in items:
+            dedup_hash = generate_dedup_hash(
+                account_id=item.account_id,
+                txn_date=item.date,
+                amount=item.amount,
+                description=item.description
+            )
+
+            key = (item.account_id, dedup_hash)
+            if key in batch_seen:
+                continue
+
+            batch_seen.add(key)
+
+            if self.repository.exists_by_dedup(item.account_id, dedup_hash):
+                continue
+
+            obj = Expense(**item.model_dump(), dedup_hash=dedup_hash)
+
+            try:
+                obj = self.repository.create(obj)
+                created_objects.append(obj)
+            except IntegrityError:
+                continue
 
         return [ExpenseRead.model_validate(obj) for obj in created_objects]
 
