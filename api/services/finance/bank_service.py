@@ -18,16 +18,30 @@ class BankService(BaseService[Bank, BankRead, BankCreate, BankUpdate]):
             read_schema=BankRead
         )
 
-    def create(self, obj_in: BankCreate) -> Bank:
-        existing = self.repository.find_by_cif(obj_in.cif)
-        if existing:
+    @staticmethod
+    def _normalize_cif(cif: str | None) -> str | None:
+        if cif is None:
+            return None
+        return cif.replace(' ', '').upper()
+
+    def create(self, data: BankCreate) -> BankRead:
+        cif = self._normalize_cif(data.cif)
+        data.cif = cif
+
+        if cif and self.repository.find_by_cif(cif):
             raise ValidationError("Bank with this CIF already exists")
-        return super().create(obj_in)
 
-    def update(self, db_obj: Bank, obj_in: BankUpdate) -> Bank:
-        if obj_in.cif and obj_in.cif != db_obj.cif:
-            existing = self.repository.find_by_cif(obj_in.cif)
-            if existing and existing.id != db_obj.id:
-                raise ValidationError("Bank with this CIF already exists")
-        return super().update(db_obj, obj_in)
+        return super().create(data)
 
+    def update(self, id: int, data: BankUpdate) -> BankRead:
+        existing = self.repository.get_by_id(id)
+        if not existing:
+            return None
+
+        if data.cif is not None:
+            normalized = self._normalize_cif(data.cif)
+            if normalized != existing.cif and self.repository.find_by_cif(normalized):
+                raise ValidationError("Another bank with this CIF already exists")
+            data.cif = normalized
+
+        return super().update(id, data)
