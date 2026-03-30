@@ -1,4 +1,5 @@
 import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import * as XLSX from 'xlsx';
@@ -30,7 +31,8 @@ import { MaterialModule } from '@utils/material.module';
 import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-excel-import',
-  imports: [TranslateModule, MaterialModule, FormsModule],
+  standalone: true,
+  imports: [CommonModule, TranslateModule, MaterialModule, FormsModule],
   templateUrl: './excel-import.component.html',
   styleUrl: './excel-import.component.scss',
 })
@@ -276,7 +278,7 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
         balance: this.utilsService.parseAmount(row[balanceIndex]),
         suggestedCategoryId: null,
         suggestedCategoryName: null,
-        source_id: this.selectedSource?.id ?? null,
+        source_id: this.sources[0]?.id ?? null,
         account_id: this.selectedAccount?.id ?? null,
         suggestedSourceId: null,
         suggestedAccountId: this.selectedAccount?.id ?? null,
