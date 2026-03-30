@@ -10,6 +10,8 @@ from typing import Sequence, Union
 
 from alembic import op
 import sqlalchemy as sa
+from sqlalchemy import inspect
+from sqlalchemy.dialects import postgresql
 
 
 # revision identifiers, used by Alembic.
@@ -20,16 +22,20 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
-    # Create enum type for transaction type
-    sa.Enum('expense', 'income', 'investment', name='transactionenum').create(op.get_bind(), checkfirst=True)
+    # Create enum type for transaction type (if not exists)
+    transaction_enum = postgresql.ENUM('expense', 'income', 'investment', name='transactionenum', create_type=False)
+    transaction_enum.create(op.get_bind(), checkfirst=True)
     
-    # Create category_rules table
-    op.create_table(
-        'category_rules',
+    # Create category_rules table if missing
+    conn = op.get_bind()
+    inspector = inspect(conn)
+    if 'category_rules' not in inspector.get_table_names():
+        op.create_table(
+            'category_rules',
         sa.Column('id', sa.Integer(), nullable=False, autoincrement=True),
         sa.Column('name', sa.String(255), nullable=False),
         sa.Column('pattern', sa.String(1000), nullable=False),
-        sa.Column('type', sa.Enum('expense', 'income', 'investment', name='transactionenum'), nullable=False),
+        sa.Column('type', transaction_enum, nullable=False),
         sa.Column('priority', sa.Integer(), nullable=False, server_default='100'),
         sa.Column('is_active', sa.Boolean(), nullable=False, server_default='true'),
         sa.Column('category_id', sa.Integer(), nullable=False),
@@ -44,4 +50,5 @@ def upgrade() -> None:
 
 def downgrade() -> None:
     op.drop_table('category_rules')
-    sa.Enum('expense', 'income', 'investment', name='transactionenum').drop(op.get_bind(), checkfirst=True)
+    transaction_enum = postgresql.ENUM('expense', 'income', 'investment', name='transactionenum', create_type=False)
+    transaction_enum.drop(op.get_bind(), checkfirst=True)

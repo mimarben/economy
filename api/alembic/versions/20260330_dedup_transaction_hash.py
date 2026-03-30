@@ -6,6 +6,7 @@ Create Date: 2026-03-30 12:00:00.000000
 """
 from alembic import op
 import sqlalchemy as sa
+from sqlalchemy import inspect
 from sqlalchemy.sql import text
 import hashlib
 from decimal import Decimal, ROUND_HALF_UP
@@ -41,13 +42,21 @@ def _dedup(account_id, dt, amount, description):
 
 
 def upgrade():
-    # Add dedup_hash columns as nullable initially
-    with op.batch_alter_table('expenses', schema=None) as batch_op:
-        batch_op.add_column(sa.Column('dedup_hash', sa.String(length=64), nullable=True))
-    with op.batch_alter_table('incomes', schema=None) as batch_op:
-        batch_op.add_column(sa.Column('dedup_hash', sa.String(length=64), nullable=True))
-    with op.batch_alter_table('investments', schema=None) as batch_op:
-        batch_op.add_column(sa.Column('dedup_hash', sa.String(length=64), nullable=True))
+    # Add dedup_hash columns as nullable initially (if missing)
+    conn = op.get_bind()
+    inspector = inspect(conn)
+
+    if 'dedup_hash' not in [c['name'] for c in inspector.get_columns('expenses')]:
+        with op.batch_alter_table('expenses', schema=None) as batch_op:
+            batch_op.add_column(sa.Column('dedup_hash', sa.String(length=64), nullable=True))
+
+    if 'dedup_hash' not in [c['name'] for c in inspector.get_columns('incomes')]:
+        with op.batch_alter_table('incomes', schema=None) as batch_op:
+            batch_op.add_column(sa.Column('dedup_hash', sa.String(length=64), nullable=True))
+
+    if 'dedup_hash' not in [c['name'] for c in inspector.get_columns('investments')]:
+        with op.batch_alter_table('investments', schema=None) as batch_op:
+            batch_op.add_column(sa.Column('dedup_hash', sa.String(length=64), nullable=True))
 
     conn = op.get_bind()
 
@@ -70,16 +79,21 @@ def upgrade():
         # Remove exact duplicates for existing data (keep first row by id)
         conn.execute(text(f"DELETE FROM {table} WHERE id NOT IN (SELECT min(id) FROM {table} GROUP BY account_id, dedup_hash)"))
 
-    # Make dedup_hash non-null and add unique constraints
-    with op.batch_alter_table('expenses', schema=None) as batch_op:
-        batch_op.alter_column('dedup_hash', nullable=False)
-        batch_op.create_unique_constraint('uq_expenses_account_dedup_hash', ['account_id', 'dedup_hash'])
-    with op.batch_alter_table('incomes', schema=None) as batch_op:
-        batch_op.alter_column('dedup_hash', nullable=False)
-        batch_op.create_unique_constraint('uq_incomes_account_dedup_hash', ['account_id', 'dedup_hash'])
-    with op.batch_alter_table('investments', schema=None) as batch_op:
-        batch_op.alter_column('dedup_hash', nullable=False)
-        batch_op.create_unique_constraint('uq_investments_account_dedup_hash', ['account_id', 'dedup_hash'])
+    # Make dedup_hash non-null and add unique constraints if missing
+    if 'uq_expenses_account_dedup_hash' not in [c['name'] for c in inspector.get_unique_constraints('expenses')]:
+        with op.batch_alter_table('expenses', schema=None) as batch_op:
+            batch_op.alter_column('dedup_hash', nullable=False)
+            batch_op.create_unique_constraint('uq_expenses_account_dedup_hash', ['account_id', 'dedup_hash'])
+
+    if 'uq_incomes_account_dedup_hash' not in [c['name'] for c in inspector.get_unique_constraints('incomes')]:
+        with op.batch_alter_table('incomes', schema=None) as batch_op:
+            batch_op.alter_column('dedup_hash', nullable=False)
+            batch_op.create_unique_constraint('uq_incomes_account_dedup_hash', ['account_id', 'dedup_hash'])
+
+    if 'uq_investments_account_dedup_hash' not in [c['name'] for c in inspector.get_unique_constraints('investments')]:
+        with op.batch_alter_table('investments', schema=None) as batch_op:
+            batch_op.alter_column('dedup_hash', nullable=False)
+            batch_op.create_unique_constraint('uq_investments_account_dedup_hash', ['account_id', 'dedup_hash'])
 
 
 def downgrade():
