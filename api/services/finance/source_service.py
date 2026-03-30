@@ -16,3 +16,15 @@ class SourceService(BaseService[Source, SourceRead, SourceCreate, SourceUpdate])
             repository=SourceRepository(db),
             read_schema=SourceRead
         )
+
+    def suggest_source(self, category_id: int, transaction_type: str):
+        """Return suggested source for given category/transaction type."""
+        # Default behavior: choose active source by source_type if available
+        # transaction_type expected: expense|income|investment
+        source = self.repository.get_active_by_type(transaction_type)
+
+        if source:
+            return source
+
+        # Fallback to first active source
+        return self.repository.get_first_active()

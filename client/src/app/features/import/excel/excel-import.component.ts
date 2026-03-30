@@ -1,7 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
 import * as XLSX from 'xlsx';
 
 import { ExpenseCategoryBase } from '@expenses_models/ExpenseCategoryBase';
+import { AccountBase as Account } from '@finance_models/AccountBase';
+import { AccountService } from '@finance_services/account.service';
+import { SourceBase as Source } from '@finance_models/SourceBase';
+import { SourceService } from '@finance_services/source.service';
 import { ExpenseCategoryService } from '@app/services/expenses/expense-category.service';
 import { IncomeCategoryBase } from '@incomes_models/IncomeCategoryBase';
 import { IncomeCategoryService } from '@incomes_services/income-category.service';
@@ -28,13 +34,23 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './excel-import.component.html',
   styleUrl: './excel-import.component.scss',
 })
-export class ExcelImportComponent implements OnInit {
+export class ExcelImportComponent implements OnInit, AfterViewInit {
   excelHeaders: string[] = [];
   excelRows: any[] = [];
+  @ViewChild(MatSort) sort!: MatSort;
+
   banks: Bank[] = [];
+  accounts: Account[] = [];
+  filteredAccounts: Account[] = [];
+  sources: Source[] = [];
+
   selectedBank: Bank | null = null;
+  selectedAccount: Account | null = null;
   selectedProfile: BankProfile | null = null;
+  sourceFilter: string = '';
+  accountFilter: string = '';
   transactions: ImportTransaction[] = [];
+  dataSource: MatTableDataSource<ImportTransaction> = new MatTableDataSource<ImportTransaction>([]);
   expenseCategories: ExpenseCategoryBase[] = [];
   incomeCategories: IncomeCategoryBase[] = [];
   isClassifying = false;
@@ -46,6 +62,8 @@ export class ExcelImportComponent implements OnInit {
     'amount',
     'balance',
     'category',
+    'source',
+    'account'
   ];
   constructor(
     private bankService: BankService,
@@ -56,7 +74,9 @@ export class ExcelImportComponent implements OnInit {
     private ruleCategorizerService: RuleCategorizerService,
     private utilsService: UtilsService,
     private transactionAiService: TransactionAiService,
-    private transactionImportService: TransactionImportService
+    private transactionImportService: TransactionImportService,
+    private accountService: AccountService,
+    private sourceService: SourceService
   ) { }
   ngOnInit(): void {
     this.bankService.getBanks().subscribe({
@@ -69,6 +89,30 @@ export class ExcelImportComponent implements OnInit {
         );
       },
     });
+
+    this.accountService.getAll().subscribe({
+      next: (res) => {
+        this.accounts = res.response;
+        this.filteredAccounts = this.accounts;
+      },
+      error: (error) => {
+        this.toastService.error(
+          this.translateService.translateKey('ERROR_LOAD_ACCOUNTS'),
+        );
+      },
+    });
+
+    this.sourceService.getAll().subscribe({
+      next: (res) => {
+        this.sources = res.response;
+      },
+      error: (error) => {
+        this.toastService.error(
+          this.translateService.translateKey('ERROR_LOAD_SOURCES'),
+        );
+      },
+    });
+
     this.incomeCategoyService.getAll().subscribe({
       next: (res) => {
         this.incomeCategories = res.response;
@@ -91,6 +135,10 @@ export class ExcelImportComponent implements OnInit {
     });
   }
 
+  ngAfterViewInit() {
+    this.dataSource.sort = this.sort;
+  }
+
   onBankSelected(bankId: number) {
     const id = Number(bankId);
     const bank = this.banks.find((b) => b.id === id);
@@ -102,6 +150,8 @@ export class ExcelImportComponent implements OnInit {
       return;
     }
     this.selectedBank = bank;
+    this.filterAccountsByBank(bank.id);
+    this.selectedAccount = null;
     console.log('Selected bank:', bank);
     // buscar profile
     const profile = BANK_PROFILES.find(
@@ -116,6 +166,23 @@ export class ExcelImportComponent implements OnInit {
     }
     this.selectedProfile = profile;
     console.log('Selected profile:', profile);
+  }
+
+  onAccountSelected(accountId: number) {
+    const id = Number(accountId);
+    const account = this.filteredAccounts.find((a) => a.id === id);
+    if (!account) {
+      console.warn('Account not found for selected bank');
+      return;
+    }
+    this.selectedAccount = account;
+
+    // Apply account to all selected transactions
+    this.transactions.forEach((t) => {
+      t.account_id = account.id;
+      t.suggestedAccountId = account.id;
+    });
+    this.updateDataSource();
   }
 
   findColumnIndex(headers: string[], keywords: string[]): number {
@@ -209,6 +276,10 @@ export class ExcelImportComponent implements OnInit {
         balance: this.utilsService.parseAmount(row[balanceIndex]),
         suggestedCategoryId: null,
         suggestedCategoryName: null,
+        source_id: this.selectedSource?.id ?? null,
+        account_id: this.selectedAccount?.id ?? null,
+        suggestedSourceId: null,
+        suggestedAccountId: this.selectedAccount?.id ?? null,
         selected: false,
       }));
 
@@ -225,6 +296,7 @@ export class ExcelImportComponent implements OnInit {
       console.log('Uncategorized transactions:', uncategorized);
 
       this.transactions = categorized;
+      this.updateDataSource();
       this.isClassifying = false;
 
 //      const payload: ClassifyPayload = {
@@ -271,6 +343,82 @@ export class ExcelImportComponent implements OnInit {
     return this.incomeCategories;
   }
 
+  onCategoryChange(transaction: ImportTransaction, categoryId: number) {
+    transaction.suggestedCategoryId = categoryId;
+    this.suggestSourceForTransaction(transaction, categoryId);
+  }
+
+  private suggestSourceForTransaction(transaction: ImportTransaction, categoryId: number) {
+    if (!categoryId) {
+      transaction.suggestedSourceId = null;
+      return;
+    }
+
+    const transactionType: 'expense' | 'income' | 'investment' = transaction.amount < 0 ? 'expense' : 'income';
+
+    this.sourceService.suggestSource(categoryId, transactionType).subscribe({
+      next: (res) => {
+        if (res && res.response && res.response.id) {
+          transaction.suggestedSourceId = res.response.id;
+          transaction.source_id = res.response.id;
+          this.updateDataSource();
+        } else {
+          this.applySourceFallback(transaction);
+        }
+      },
+      error: (err) => {
+        console.warn('Source suggestion endpoint not available or failed, using fallback', err);
+        this.applySourceFallback(transaction);
+      }
+    });
+  }
+
+  private applySourceFallback(transaction: ImportTransaction) {
+    if (this.sources.length > 0) {
+      transaction.suggestedSourceId = this.sources[0].id ?? null;
+      transaction.source_id = this.sources[0].id ?? null;
+    } else {
+      transaction.suggestedSourceId = null;
+      transaction.source_id = null;
+    }
+    this.updateDataSource();
+  }
+
+  private filterAccountsByBank(bankId: number): void {
+    this.filteredAccounts = this.accounts.filter((a) => a.bank_id === bankId);
+  }
+
+  private updateDataSource(): void {
+    this.dataSource.data = this.transactions;
+    this.applyTableFilter();
+    if (this.sort) {
+      this.dataSource.sort = this.sort;
+    }
+  }
+
+  applySourceFilter(value: string): void {
+    this.sourceFilter = value.trim().toLowerCase();
+    this.applyTableFilter();
+  }
+
+  applyAccountFilter(value: string): void {
+    this.accountFilter = value.trim().toLowerCase();
+    this.applyTableFilter();
+  }
+
+  private applyTableFilter(): void {
+    this.dataSource.filterPredicate = (data: ImportTransaction, filter: string) => {
+      const sourceId = data.source_id?.toString() ?? '';
+      const accountId = data.account_id?.toString() ?? '';
+      const sourceMatch = !this.sourceFilter || sourceId.includes(this.sourceFilter);
+      const accountMatch = !this.accountFilter || accountId.includes(this.accountFilter);
+      return sourceMatch && accountMatch;
+    };
+
+    // trigger filtering with artificial value
+    this.dataSource.filter = (this.sourceFilter || this.accountFilter).toLowerCase();
+  }
+
   toggleAll(checked: boolean) {
     this.transactions.forEach((t) => {
       t.selected = checked;
@@ -307,6 +455,8 @@ export class ExcelImportComponent implements OnInit {
       amount: Math.abs(Number(t.amount)),
       date: t.date,
       category_id: t.suggestedCategoryId,
+      source_id: t.source_id ?? t.suggestedSourceId,
+      account_id: t.account_id ?? this.selectedAccount?.id,
     }));
 
     const incomesDraftPayload = incomes.map((t) => ({
@@ -315,6 +465,8 @@ export class ExcelImportComponent implements OnInit {
       amount: Number(t.amount),
       date: t.date,
       category_id: t.suggestedCategoryId,
+      source_id: t.source_id ?? t.suggestedSourceId,
+      account_id: t.account_id ?? this.selectedAccount?.id,
     }));
 
     // IMPORTANTE:

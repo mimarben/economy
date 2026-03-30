@@ -64,6 +64,26 @@ def list_all():
     return Response._ok_data([r.model_dump() for r in results], _("SOURCE_LIST"), 200, name)
 
 
+@router.get("/sources/suggest")
+def suggest_source():
+    db: Session = next(get_db())
+    source_service = SourceService(db)
+
+    category_id = request.args.get('category_id', type=int)
+    transaction_type = request.args.get('type', type=str)
+
+    if not category_id or not transaction_type:
+        return Response._error(_("INVALID_PARAMETERS"), _("SOURCE_SUGGEST_INVALID_PARAMS"), 400, name)
+
+    try:
+        suggested = source_service.suggest_source(category_id, transaction_type)
+        if not suggested:
+            return Response._error(_("SOURCE_NOT_FOUND"), _("NONE"), 404, name)
+        return Response._ok_data(suggested.model_dump(), _("SOURCE_SUGGESTED"), 200, name)
+    except Exception as e:
+        return Response._error(_("DATABASE_ERROR"), str(e), 500, name)
+
+
 @router.patch("/sources/<int:id>")
 def update(id):
     db: Session = next(get_db())
