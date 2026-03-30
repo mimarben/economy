@@ -5,6 +5,7 @@ from schemas.core.audit_schema import AuditFields
 
 class BankBase(BaseModel):
     name: str
+    cif: Optional[str] = None
     description: Optional[str] = None
     active: bool = True
 class BankRead(BankBase, AuditFields):
@@ -18,6 +19,7 @@ class BankCreate(BankBase):
 
 class BankUpdate(BaseModel):
     name: Optional[str]
+    cif: Optional[str]
     description: Optional[str]
     active: Optional[bool]
 
