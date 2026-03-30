@@ -1,6 +1,6 @@
 import { Component, Output, Input, EventEmitter } from '@angular/core';
-import { MaterialModule } from '@app/utils/material.module';
-import { UtilsModule } from '@app/utils/utils.module';
+import { MATERIAL_IMPORTS } from '@app/utils/material.imports';
+import { SHARED_IMPORTS } from '@app/utils/shared.imports';
 import { AuthService } from '@services/auth/auth.service';
 import { Router } from '@angular/router';
 
@@ -8,8 +8,8 @@ import { Router } from '@angular/router';
   selector: 'app-header',
   standalone:true,
   imports: [
-    MaterialModule,
-    UtilsModule
+    ...MATERIAL_IMPORTS,
+    ...SHARED_IMPORTS
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'

@@ -3,13 +3,13 @@ import { CommonModule } from '@angular/common';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration } from 'chart.js';
 import { SummaryResponse } from '@app/services/summary.service';
-import { MaterialModule } from '@app/utils/material.module';
+import { MATERIAL_IMPORTS } from '@app/utils/material.imports';
 
 @Component({
   selector: 'app-expense-chart',
   templateUrl: './expense-chart.component.html',
   styleUrls: ['./expense-chart.component.scss'],
-  imports: [CommonModule, MaterialModule, BaseChartDirective],
+  imports: [CommonModule, ...MATERIAL_IMPORTS, BaseChartDirective],
   standalone: true
 })
 export class ExpenseChartComponent implements OnInit {
