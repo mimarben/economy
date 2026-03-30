@@ -18,6 +18,7 @@ export interface IncomeBase {
   amount: Amount;
   date: Date;
   currency: CurrencyEnum;
+  user_id: UserId;
   source_id: SourceId;
   category_id: CategoryId;
   account_id: AccountId;

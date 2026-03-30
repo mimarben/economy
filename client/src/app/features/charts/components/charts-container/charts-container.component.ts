@@ -96,7 +96,7 @@ export class ChartsContainerComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
-          this.summary = response.data;
+          this.summary = response.response;
           this.loading = false;
           this.error = null;
         },
@@ -113,7 +113,7 @@ export class ChartsContainerComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
-          this.summary = response.data;
+          this.summary = response.response;
           this.loading = false;
           this.error = null;
         },
@@ -130,7 +130,7 @@ export class ChartsContainerComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
-          this.summary = response.data;
+          this.summary = response.response;
           this.loading = false;
           this.error = null;
         },
@@ -147,7 +147,7 @@ export class ChartsContainerComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
-          this.summary = response.data;
+          this.summary = response.response;
           this.loading = false;
           this.error = null;
         },

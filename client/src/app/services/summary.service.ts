@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '@env/environment';
+import { ApiResponse } from '@core_models/apiResponse';
 
 export interface TotalByCategory {
   category_id: number;
@@ -46,32 +47,32 @@ export class SummaryService {
   /**
    * Get summary for a custom date range.
    */
-  getSummary(startDate: string, endDate: string): Observable<{ data: SummaryResponse }> {
+  getSummary(startDate: string, endDate: string): Observable<ApiResponse<SummaryResponse>> {
     let params = new HttpParams()
       .set('start_date', startDate)
       .set('end_date', endDate);
 
-    return this.http.get<{ data: SummaryResponse }>(this.apiUrl, { params });
+    return this.http.get<ApiResponse<SummaryResponse>>(this.apiUrl, { params });
   }
 
   /**
    * Get summary for current week.
    */
-  getWeekSummary(): Observable<{ data: SummaryResponse }> {
-    return this.http.get<{ data: SummaryResponse }>(`${this.apiUrl}/week`);
+  getWeekSummary(): Observable<ApiResponse<SummaryResponse>> {
+    return this.http.get<ApiResponse<SummaryResponse>>(`${this.apiUrl}/week`);
   }
 
   /**
    * Get summary for current month.
    */
-  getMonthSummary(): Observable<{ data: SummaryResponse }> {
-    return this.http.get<{ data: SummaryResponse }>(`${this.apiUrl}/month`);
+  getMonthSummary(): Observable<ApiResponse<SummaryResponse>> {
+    return this.http.get<ApiResponse<SummaryResponse>>(`${this.apiUrl}/month`);
   }
 
   /**
    * Get summary for current year.
    */
-  getYearSummary(): Observable<{ data: SummaryResponse }> {
-    return this.http.get<{ data: SummaryResponse }>(`${this.apiUrl}/year`);
+  getYearSummary(): Observable<ApiResponse<SummaryResponse>> {
+    return this.http.get<ApiResponse<SummaryResponse>>(`${this.apiUrl}/year`);
   }
 }

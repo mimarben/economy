@@ -24,4 +24,8 @@ export interface ExpenseBase {
   source_id: SourceId;
   account_id: AccountId;
   currency: CurrencyEnum;
+  user_id: UserId;
+  source_id: SourceId;
+  category_id: CategoryId;
+  account_id?: AccountId;
 }
