@@ -11,6 +11,9 @@ from sqlalchemy.orm import relationship
 
 from ..core.base import Base, TimestampMixin
 from ..core.enums import TransactionEnum
+from services.logs.logger_service import setup_logger
+
+logger = setup_logger("category_rules")
 
 
 class CategoryRule(TimestampMixin, Base):
@@ -58,8 +61,7 @@ class CategoryRule(TimestampMixin, Base):
         try:
             return bool(re.search(self.pattern, text, re.IGNORECASE))
         except re.error as e:
-            # Log invalid regex but don't crash
-            print(f"Invalid regex pattern in rule {self.id}: {e}")
+            logger.warning("Invalid regex pattern in rule %s: %s", self.id, e)
             return False
     
     def __repr__(self) -> str:

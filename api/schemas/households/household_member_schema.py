@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field
 from typing import Optional
 from models import RoleEnum
-from utils.schema_exporter import export_schema  # si guardas la función en otro archivo
+from utils.schema_exporter import export_schema
 from schemas.core.audit_schema import AuditFields
 class HouseholdMemberBase(BaseModel):
     role: RoleEnum

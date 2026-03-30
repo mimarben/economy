@@ -67,13 +67,20 @@ def init_db():
     if Config.DB_ENGINE == "sqlite":
         os.makedirs("db", exist_ok=True)
         database_exists = os.path.exists(DATABASE_URL)
+        if not database_exists:
+            Base.metadata.create_all(engine)
+            logger.info("SQLite database and tables created.")
     else:
-        database_exists = False
+        database_exists = True
 
-    if not database_exists or Config.DB_ENGINE == "postgres":
-        Base.metadata.create_all(engine)
+    if Config.DB_ENGINE == "sqlite" and not database_exists:
         with get_db_session() as db:
-           seed_admin(db)
-        logger.info("Database and tables created, with seed!")
+            seed_admin(db)
+        logger.info("Seed data created for SQLite.")
+    elif Config.DB_ENGINE == "postgres":
+        logger.info("Postgres detected: schema lifecycle managed by Alembic migrations.")
+        with get_db_session() as db:
+            seed_admin(db)
+        logger.info("Seed data verified for Postgres.")
     else:
         logger.info("Database already exists, skipping creation.")

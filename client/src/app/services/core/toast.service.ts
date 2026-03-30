@@ -7,7 +7,6 @@ import { ApiResponse } from '@core_models/apiResponse';
 export class ToastService {
   constructor(private toast: HotToastService) {}
 
-  // Método principal para mostrar el toast, ahora acepta ApiResponse<T>
   showToast<T>(
     message: ApiResponse<T>,
     type: 'success' | 'error' | 'info' | 'warning' = 'info',
@@ -104,7 +103,6 @@ export class ToastService {
     message: ApiResponse<T>,
     type: 'success' | 'error' | 'info' | 'warning'
   ): { response?: string; details?: string } {
-    // Si response es un string (típico en errores), usarlo directamente
     if (typeof message.response === 'string') {
       return {
         details: message.details, // Ej: "ERROR_DNI_DUPLICATED"
@@ -112,9 +110,8 @@ export class ToastService {
       };
     }
 
-    // Si response es un objeto (típico en éxito), generar un string representativo
     if (typeof message.response === 'object' && message.response !== null) {
-      const obj = message.response as any; // Usar any para acceder a propiedades dinámically
+      const obj = message.response as any;
       let responseMessage = 'Operation completed successfully';
 
       // Intentar extraer una propiedad representativa
@@ -127,7 +124,6 @@ export class ToastService {
       } else if (obj.email) {
         responseMessage = `Item with email ${obj.email} updated successfully`;
       } else {
-        // Fallback para objetos sin propiedades conocidas
         responseMessage = `Item updated successfully`;
       }
 
@@ -137,7 +133,6 @@ export class ToastService {
       };
     }
 
-    // Fallback para otros casos (response es null, undefined, etc.)
     return {
       details: message.details || 'UNKNOWN',
       response: 'Operation completed',

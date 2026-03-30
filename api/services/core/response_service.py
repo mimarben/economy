@@ -33,3 +33,12 @@ class Response:
             "response": response,
             "details": details
         }), status_code
+
+    @staticmethod
+    def _ok_message(details: str, status_code: int, name: str = None):
+        logger = setup_logger(name or "default_message_source")
+        logger.info(f"Response: {_(details)}")
+        return jsonify({
+            "response": None,
+            "details": details
+        }), status_code

@@ -1,5 +1,5 @@
 {
-  "name": "enconomy-app",
+  "name": "economy-app",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
@@ -35,7 +35,7 @@
     "zone.js": "~0.16.1"
   },
   "overrides": {
-    "loadsh": false,
+    "lodash": false,
     "inflight": false,
     "glob": "^10.3.10",
     "rimraf": "^4.4.1"

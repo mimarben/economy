@@ -1,7 +1,7 @@
 from pydantic import BaseModel, EmailStr, field_validator
 from typing import Optional, List
 import re
-from utils.schema_exporter import export_schema  # si guardas la función en otro archivo
+from utils.schema_exporter import export_schema
 from models import UserRoleEnum
 from schemas.core.audit_schema import AuditFields
 

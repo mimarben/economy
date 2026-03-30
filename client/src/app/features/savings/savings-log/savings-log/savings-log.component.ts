@@ -102,7 +102,6 @@ export class SavingsLogComponent implements OnInit {
   }
 
   openDialog(data?: SavingLog): void {
-    // 1. Cargar TODO en paralelo antes de abrir el diálogo
     forkJoin({
       savings: this.savingService.getAll(),
       sources: this.sourceService.getAll()
@@ -110,7 +109,6 @@ export class SavingsLogComponent implements OnInit {
       next: (responses) => {
         const baseConfig = this.formFactory.getFormConfig('saving_log');
 
-        // 2. Enriquecer directamente los campos con las opciones
         const enrichedConfig = baseConfig.map(field => {
           if (field.key === 'saving_id') {
             return {
@@ -135,7 +133,6 @@ export class SavingsLogComponent implements OnInit {
           return field;
         });
 
-        // 3. Abrir el diálogo SOLO cuando los datos estén listos
         const dialogRef = this.dialog.open(GenericDialogComponent, {
           data: {
             title: data ? 'Edit Household Member' : 'New Household Member',

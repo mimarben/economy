@@ -7,6 +7,7 @@ import { LanguageBase as Language } from '@core_models/LanguageBase';
 import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'app-home',
+  standalone: true,
   imports: [
     MaterialModule,
     CommonModule,
@@ -28,7 +29,7 @@ export class HomeComponent {
   }
 
   ngOnInit(): void {
-    // Filtrar solo los idiomas disponibles en la configuración
+    // Filter only languages configured as available
     const availableLanguages = this.translateService.getAvailableLanguages();
     this.languages = this.languages.filter(lang =>
       availableLanguages.includes(lang.code)

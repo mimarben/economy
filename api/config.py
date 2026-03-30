@@ -36,6 +36,7 @@ class Config:
     }
     BABEL_DEFAULT_LOCALE = 'en'
     BABEL_TRANSLATION_DIRECTORIES = 'i18n'
+    INIT_DB_ON_STARTUP = False
 
 
 class DevelopmentConfig(Config):
@@ -49,6 +50,7 @@ class DevelopmentConfig(Config):
         "methods": ["GET", "POST", "PUT", "PATCH", "DELETE"],
         "allow_headers": ["Content-Type", "Authorization"]
     }
+    INIT_DB_ON_STARTUP = True
 
 
 class TestingConfig(Config):

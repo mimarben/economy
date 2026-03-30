@@ -64,11 +64,8 @@ loadSavings() {
     const users$ = this.userService.getUsers();
     const accounts$ = this.accountService.getAll();
 
-    // 1. Usar forkJoin para esperar las tres llamadas simultáneamente
     forkJoin([savings$, users$, accounts$]).subscribe({
         next: ([savingsResponse, usersResponse, accountsResponse]: any) => {
-            // 2. Éxito: Los datos están disponibles en el orden del array
-
             // a) Asignar Ahorros (Savings)
             this.savings = savingsResponse.response || [];
 
@@ -87,9 +84,7 @@ loadSavings() {
                 accounts.map((a: Account) => [a.id, `${a.name}`])
             );
 
-            // 3. Finalizar la carga y forzar la detección de cambios
             this.isLoading = false;
-            // Si usas ChangeDetectionStrategy.OnPush, necesitarás esto:
             // this.cdr.detectChanges();
         },
         error: (err: any) => {
@@ -123,16 +118,13 @@ loadSavings() {
     });
   } */
   openDialog(data?: Saving): void {
-    // Cargar bancos y usuarios en paralelo
     forkJoin({
       users: this.userService.getUsers(),
       accounts: this.accountService.getAll(),
     }).subscribe({
       next: (responses) => {
-        // Obtener configuración base del formulario
         const baseConfig = this.formFactory.getFormConfig('saving');
 
-        // Enriquecer los campos select con las opciones
         const enrichedConfig = baseConfig.map((field: FormFieldConfig) => {
           if (field.key === 'user_id') {
             return {
