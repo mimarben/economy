@@ -2,7 +2,7 @@
 from typing import Optional, List
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-from models import Expense, User, Source, ExpensesCategory, Account
+from models import Expense, Source, ExpensesCategory, Account
 from repositories.core.base_repository import BaseRepository
 
 
@@ -37,11 +37,6 @@ class ExpenseRepository(BaseRepository[Expense]):
         return list(self.db.execute(stmt).scalars().all())
 
     # Validation methods
-    def user_exists(self, user_id: int) -> bool:
-        """Check if user exists."""
-        stmt = select(User).where(User.id == user_id)
-        return self.db.execute(stmt).scalar_one_or_none() is not None
-
     def source_exists(self, source_id: int) -> bool:
         """Check if source exists."""
         stmt = select(Source).where(Source.id == source_id)
@@ -54,8 +49,6 @@ class ExpenseRepository(BaseRepository[Expense]):
 
     def account_exists(self, account_id: int) -> bool:
         """Check if account exists."""
-        if account_id is None:
-            return True  # Account is optional
         stmt = select(Account).where(Account.id == account_id)
         return self.db.execute(stmt).scalar_one_or_none() is not None
 
@@ -67,14 +60,11 @@ class ExpenseRepository(BaseRepository[Expense]):
         )
         return self.db.execute(stmt).scalar_one_or_none() is not None
 
-    def validate_foreign_keys(self, user_id: int, source_id: int, category_id: int, account_id: Optional[int]) -> tuple[bool, Optional[str]]:
+    def validate_foreign_keys(self, source_id: int, category_id: int, account_id: int) -> tuple[bool, Optional[str]]:
         """
         Validate all foreign keys at once.
         Returns: (is_valid, error_message)
         """
-        if not self.user_exists(user_id):
-            return False, "USER_NOT_FOUND"
-
         if not self.source_exists(source_id):
             return False, "SOURCE_NOT_FOUND"
 

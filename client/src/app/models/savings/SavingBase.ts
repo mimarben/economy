@@ -4,8 +4,6 @@
  * DO NOT MODIFY IT BY HAND. Instead, modify the source JSONSchema file,
  * and run json-schema-to-typescript to regenerate this file.
  */
-
-export type Name = string;
 export type Description = string | null;
 export type Amount = number;
 export type Date = string;
@@ -25,17 +23,14 @@ export type CurrencyEnum =
   | "SOL"
   | "SHIB"
   | "TRX";
-export type UserId = number;
 export type AccountId = number;
 
 export interface SavingBase {
   id?: number;
-  name: Name;
-  description?: Description;
+  description: Description;
   amount: Amount;
   date: Date;
   currency: CurrencyEnum;
-  user_id: UserId;
   account_id: AccountId;
   created_at?: string;
   updated_at?: string;

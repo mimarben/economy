@@ -31,7 +31,6 @@ class ExpenseService(BaseService[Expense, ExpenseRead, ExpenseCreate, ExpenseUpd
     def create(self, data: ExpenseCreate) -> ExpenseRead:
         """Create a new expense with foreign key validation and dedup protection."""
         is_valid, error = self.repository.validate_foreign_keys(
-            user_id=data.user_id,
             source_id=data.source_id,
             category_id=data.category_id,
             account_id=data.account_id
@@ -67,7 +66,6 @@ class ExpenseService(BaseService[Expense, ExpenseRead, ExpenseCreate, ExpenseUpd
 
         for item in items:
             is_valid, error = self.repository.validate_foreign_keys(
-                user_id=item.user_id,
                 source_id=item.source_id,
                 category_id=item.category_id,
                 account_id=item.account_id
