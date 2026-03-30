@@ -7,7 +7,7 @@ import { CommonModule } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { MaterialModule } from '@app/utils/material.module';
+import { MATERIAL_IMPORTS } from '@app/utils/material.imports';
 import { FormFieldConfig } from '@shared/generic-form/form-config';
 import { GenericDialogComponent } from '@shared/generic-dialog/generic-dialog.component';
 
@@ -21,7 +21,7 @@ import { regexValidator } from '../../utils/validators/regex.validator';
 @Component({
   selector: 'app-category-rules',
   standalone: true,
-  imports: [CommonModule, MaterialModule, GenericTableComponent],
+  imports: [CommonModule, ...MATERIAL_IMPORTS, GenericTableComponent],
   templateUrl: './category-rules.component.html',
   styleUrls: ['./category-rules.component.scss'],
 })

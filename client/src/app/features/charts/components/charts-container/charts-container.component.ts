@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { SummaryService, SummaryResponse, PeriodType } from '@app/services/summary.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { MaterialModule } from '@app/utils/material.module';
+import { MATERIAL_IMPORTS } from '@app/utils/material.imports';
 import { ExpenseChartComponent } from '../expense-chart/expense-chart.component';
 import { IncomeChartComponent } from '../income-chart/income-chart.component';
 import { InvestmentChartComponent } from '../investment-chart/investment-chart.component';
@@ -17,7 +17,7 @@ import { ComparisonChartComponent } from '../comparison-chart/comparison-chart.c
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    MaterialModule,
+    ...MATERIAL_IMPORTS,
     ExpenseChartComponent,
     IncomeChartComponent,
     InvestmentChartComponent,

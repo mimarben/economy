@@ -12,6 +12,7 @@ import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 import { environment } from '../environments/environment';
 import { HttpInterceptorService } from '@core_services/http.interceptor';
 import { ErrorHandlerService } from '@core_services/error-handler.service';
+import { provideMaterialDateConfig } from '@app/utils/material.imports';
 
 
 export const appConfig: ApplicationConfig = {
@@ -31,6 +32,8 @@ export const appConfig: ApplicationConfig = {
     }),
 
     provideHotToastConfig(),
+
+    ...provideMaterialDateConfig(),
 
     // ✅ Register Global HTTP Interceptor
     {

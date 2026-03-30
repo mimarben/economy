@@ -2,7 +2,7 @@ import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MaterialModule } from '@app/utils/material.module';
+import { MATERIAL_IMPORTS } from '@app/utils/material.imports';
 
 
 import { UserBase as User, USER_ROLE_OPTIONS } from '@users_models/UserBase';
@@ -13,7 +13,7 @@ import { environment } from '@env/environment';
 @Component({
   selector: 'app-user-form-dialog',
   imports: [CommonModule,
-            MaterialModule,
+            ...MATERIAL_IMPORTS,
             ReactiveFormsModule],
   templateUrl: './user-form-dialog.component.html',
   styleUrl: './user-form-dialog.component.css'

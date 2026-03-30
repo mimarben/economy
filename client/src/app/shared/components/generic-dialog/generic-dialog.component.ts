@@ -4,12 +4,12 @@ import { MatDialogModule } from '@angular/material/dialog';
 
 import { FormFieldConfig } from '../generic-form/form-config';
 import { GenericFormComponent } from '../generic-form/generic-form.component';
-import { MaterialModule } from '@app/utils/material.module';
+import { MATERIAL_IMPORTS } from '@app/utils/material.imports';
 @Component({
   selector: 'app-generic-dialog',
   styleUrl: './generic-dialog.component.css',
   templateUrl: './generic-dialog.component.html',
-  imports: [GenericFormComponent, MatDialogModule, MaterialModule]
+  imports: [GenericFormComponent, MatDialogModule, ...MATERIAL_IMPORTS]
 })
 export class GenericDialogComponent {
   @ViewChild(GenericFormComponent) genericFormComponent!: GenericFormComponent;

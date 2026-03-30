@@ -3,13 +3,13 @@ import { CommonModule } from '@angular/common';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration } from 'chart.js';
 import { SummaryResponse } from '@app/services/summary.service';
-import { MaterialModule } from '@app/utils/material.module';
+import { MATERIAL_IMPORTS } from '@app/utils/material.imports';
 
 @Component({
   selector: 'app-comparison-chart',
   templateUrl: './comparison-chart.component.html',
   styleUrls: ['./comparison-chart.component.scss'],
-  imports: [CommonModule, MaterialModule, BaseChartDirective],
+  imports: [CommonModule, ...MATERIAL_IMPORTS, BaseChartDirective],
   standalone: true
 })
 export class ComparisonChartComponent implements OnInit {

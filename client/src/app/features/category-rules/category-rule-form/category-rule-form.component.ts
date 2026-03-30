@@ -10,7 +10,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatSliderModule } from '@angular/material/slider';
-import { MaterialModule } from '@app/utils/material.module';
+import { MATERIAL_IMPORTS } from '@app/utils/material.imports';
 
 import { CategoryRule } from '../../../services/category-rule/category-rule.service';
 import { regexValidator } from '../../../utils/validators/regex.validator';
@@ -27,7 +27,7 @@ interface DialogData {
     CommonModule,
     ReactiveFormsModule,
     FormsModule,
-    MaterialModule,
+    ...MATERIAL_IMPORTS,
     MatSliderModule,
   ],
   templateUrl: './category-rule-form.component.html',

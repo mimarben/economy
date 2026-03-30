@@ -27,12 +27,12 @@ import { ClassifyRequest, ClassifyResult, ClassifyPayload } from '@import_models
 
 import { AppTranslateService } from '@utils/app-translate.service';
 import { TranslateModule } from '@ngx-translate/core';
-import { MaterialModule } from '@utils/material.module';
+import { MATERIAL_IMPORTS } from '@utils/material.imports';
 import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-excel-import',
   standalone: true,
-  imports: [CommonModule, TranslateModule, MaterialModule, FormsModule],
+  imports: [CommonModule, TranslateModule, ...MATERIAL_IMPORTS, FormsModule],
   templateUrl: './excel-import.component.html',
   styleUrl: './excel-import.component.scss',
 })

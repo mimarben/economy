@@ -5,7 +5,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from '@auth_services/auth.service';
 
 import { CommonModule } from '@angular/common';
-import { MaterialModule } from '@app/utils/material.module';
+import { MATERIAL_IMPORTS } from '@app/utils/material.imports';
 
 import { AppTranslateService } from '@utils/app-translate.service';
 import { HotToastService } from '@ngxpert/hot-toast';
@@ -16,7 +16,7 @@ import { HotToastService } from '@ngxpert/hot-toast';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    MaterialModule,
+    ...MATERIAL_IMPORTS,
     TranslateModule
   ],
   templateUrl: './login.component.html',

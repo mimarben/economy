@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { MaterialModule } from '@app/utils/material.module';
+import { MATERIAL_IMPORTS } from '@app/utils/material.imports';
 
 interface MenuLink {
   label: string;
@@ -86,7 +86,7 @@ const BOTTOM_LINKS: MenuLink[] = [
 @Component({
   selector: 'app-side-menu',
   standalone: true,
-  imports: [CommonModule, RouterModule, MaterialModule],
+  imports: [CommonModule, RouterModule, ...MATERIAL_IMPORTS],
   templateUrl: './side-menu.component.html',
   styleUrls: ['./side-menu.component.scss']
 })
