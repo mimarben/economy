@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 import { HomeComponent } from './features/home/home.component';
 import { authGuard } from './core/guards/auth.guard';
 import { UsersComponent } from './features/users/users.component';
-import { ExpensesComponent } from './features/expenses/expeneses.component';
+import { ExpensesComponent } from './features/expenses/expenses.component';
 import { IncomesComponent } from  './features/incomes/incomes-component'
 import { IncomesCategoriesComponent } from './features/incomes/incomes-categories/incomes-categories.component';
 import { ExpensesCategoriesComponent } from './features/expenses/expenses-categories/expenses-categories.component';
@@ -24,22 +24,22 @@ import { LayoutComponent } from './layout/layout/layout.component';
 import { ChartsContainerComponent } from './features/charts/components/charts-container/charts-container.component';
 import { CategoryRulesComponent } from './features/category-rules/category-rules.component';
 export const routes: Routes = [
-  // Rutas SIN layout
+  // Routes without layout
   { path: 'login', component: LoginComponent, data: { title: 'login.title' } },
   { path: 'not_found', component: NotFoundComponent, data: { title: 'not_found.title' } },
 
-  // Rutas CON layout (header + footer + menu)
+  // Routes with layout (header + footer + menu)
   {
     path: '',
     component: LayoutComponent,
-    canActivate: [authGuard], // authGuard aquí una sola vez para todas
+    canActivate: [authGuard], // Single guard for all children
     children: [
       { path: '', component: HomeComponent, data: { title: 'home.title' } },
       { path: 'users', component: UsersComponent, data: { title: 'users.title' } },
       { path: 'banks', component: BanksComponent, data: { title: 'banks.title' } },
       { path: 'accounts', component: BanksAccountsComponent, data: { title: 'accounts.title' } },
       { path: 'households', component: HouseholdsComponent, data: { title: 'households.title' } },
-      { path: 'households_members', component: HouseholdmembersComponent, data: { title: 'households_members.title' } },
+      { path: 'household-members', component: HouseholdmembersComponent, data: { title: 'households_members.title' } },
       { path: 'savings', component: SavingsComponent, data: { title: 'savings.title' } },
       { path: 'savings_log', component: SavingsLogComponent, data: { title: 'savings_log.title' } },
       { path: 'sources', component: SourcesComponent, data: { title: 'sources.title' } },

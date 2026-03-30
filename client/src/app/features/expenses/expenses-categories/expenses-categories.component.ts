@@ -9,12 +9,11 @@ import { FormFieldConfig } from '@shared/generic-form/form-config';
 import { FormFactoryService } from '@app/core/factories/form-factory.service';
 import { ExpenseCategoryBase as ExpenseCategory } from '@expenses_models/ExpenseCategoryBase';
 import { ExpenseCategoryService } from '@expenses_services/expense-category.service';
-import { CommonModule } from '@angular/common'; // Asegúrate de tener CommonModule si usas Directivas
+import { CommonModule } from '@angular/common'; // Required when structural directives are used
 
 @Component({
   selector: 'app-expenses-categories',
-  // Es importante usar 'CommonModule' y 'GenericTableComponent' aquí.
-  // Tu código original solo tenía GenericTableComponent, si es un componente standalone.
+  // CommonModule and GenericTableComponent are required by this view.
   imports: [GenericTableComponent, CommonModule],
   templateUrl: './expenses-categories.component.html',
   styleUrl: './expenses-categories.component.css',
@@ -27,10 +26,10 @@ export class ExpensesCategoriesComponent implements OnInit {
   formFields: FormFieldConfig[] = [];
   columns: TableColumn<any>[] = [];
   isFormValid = false;
-  expensesCategoriesMap: Record<number, string> = {}; // Inicializar como objeto vacío
+  expensesCategoriesMap: Record<number, string> = {}; // Initialize as an empty object
 
   ngOnInit(): void {
-    // Nota: Es inusual obtener 'saving_log' aquí, pero mantengo tu código.
+    // NOTE: Keeping current form key to avoid behavioral changes.
     this.formFields = this.formFactory.getFormConfig('saving_log');
     this.columns = this.formFactory.getTableColumns<ExpenseCategory>('expense_category');
     this.loadExpensesCategories();
@@ -41,11 +40,11 @@ export class ExpensesCategoriesComponent implements OnInit {
     private dialog: MatDialog,
     private toastService: ToastService,
     private formFactory: FormFactoryService,
-    private expenseCategoryService: ExpenseCategoryService // Servicio de Gastos
+    private expenseCategoryService: ExpenseCategoryService // Expense categories service
   ) {}
 
   /**
-   * Carga la lista de categorías de gastos desde el servicio.
+   * Load expense categories from the service.
    */
   loadExpensesCategories() {
     this.isLoading = true;
@@ -62,8 +61,6 @@ export class ExpensesCategoriesComponent implements OnInit {
         console.log("Categories: ", this.expensesCategories);
   }
 
-  // ... el resto de tus métodos (edit, add, openDialog, update, create, applyFilter) ...
-
     edit(expensecategory: ExpenseCategory): void {
       this.openDialog(expensecategory);
     }
@@ -75,7 +72,6 @@ export class ExpensesCategoriesComponent implements OnInit {
     openDialog(data?: ExpenseCategory): void {
       const dialogRef = this.dialog.open(GenericDialogComponent, {
         data: {
-          // Nota: Corregí el título de 'Edit Icome Category' a 'Edit Expense Category'
           title: data ? 'Edit Expense Category' : 'New Expense Category',
           fields: this.formFactory.getFormConfig('expense_category'),
           initialData: data || {},
@@ -88,8 +84,6 @@ export class ExpensesCategoriesComponent implements OnInit {
         }
       });
     }
-
-    // ... (Los métodos update, create, applyFilter se mantienen sin cambios) ...
 
     update(expensecategory: ExpenseCategory): void {
           this.expenseCategoryService.update(expensecategory.id!, expensecategory).subscribe({

@@ -64,7 +64,7 @@ const SECTIONS: MenuSection[] = [
     icon: 'location_away',
     links: [
       { label: 'House Hold',        route: '/households' },
-      { label: 'HouseHold Members', route: '/households_members' }
+      { label: 'HouseHold Members', route: '/household-members' }
     ]
   },
   {

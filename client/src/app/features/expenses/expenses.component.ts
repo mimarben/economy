@@ -23,8 +23,8 @@ import { SourceService } from '@finance_services/source.service';
 @Component({
   selector: 'app-expenses-component',
   imports: [GenericTableComponent],
-  templateUrl: './expeneses.component.html',
-  styleUrl: './expeneses.component.html',
+  templateUrl: './expenses.component.html',
+  styleUrl: './expenses.component.css',
 })
 
 export class ExpensesComponent implements OnInit {
@@ -69,7 +69,7 @@ export class ExpensesComponent implements OnInit {
   loadExpenses() {
       this.isLoading = true;
       this.errorMessage = '';
-      // Observables correctos definidos por el usuario
+      // Load all required resources in parallel
       const expenses$ = this.expenseService.getAll();
       const users$ = this.userService.getUsers();
       const categories$ = this.expensecategoryService.getAll();
@@ -113,9 +113,8 @@ export class ExpensesComponent implements OnInit {
               this.cdr.detectChanges();
           },
           error: (err: any) => {
-              // 4. Error: Manejar cualquier fallo
-              console.error('Error al cargar datos:', err);
-              // Mensaje de error ajustado para reflejar las entidades cargadas
+              // Handle any failure during parallel loading
+              console.error('Error loading data:', err);
               this.errorMessage = 'Error loading expense data or related entities (Users, Categories, Sources, Accounts).';
               this.isLoading = false;
           },
@@ -125,25 +124,25 @@ export class ExpensesComponent implements OnInit {
   openDialog(data?: Expense): void {
   this.isLoading = true;
 
-  // Creamos los observables de todas las dependencias
+  // Build observables for all dependencies
   const users$ = this.userService.getUsers();
   const categories$ = this.expensecategoryService.getAll();
   const sources$ = this.sourceService.getAll();
   const accounts$ = this.accountService.getAll();
 
-  // Ejecutamos todas las llamadas en paralelo
+  // Execute all requests in parallel
   forkJoin([users$, categories$, sources$, accounts$]).subscribe({
     next: ([usersResponse, categoriesResponse, sourcesResponse, accountsResponse]) => {
-      // Extraemos los datos (response de cada servicio)
+      // Extract payloads from each service response
       const users = usersResponse?.response || [];
       const categories = categoriesResponse?.response || [];
       const sources = sourcesResponse?.response || [];
       const accounts = accountsResponse?.response || [];
 
-      // Obtenemos la configuración base del formulario
+      // Get base form configuration
       const baseConfig = this.formFactory.getFormConfig('expense');
 
-      // Enriquecemos los campos select con los datos cargados
+      // Populate select fields with loaded data
       const enrichedConfig = baseConfig.map((field: FormFieldConfig) => {
         switch (field.key) {
           case 'user_id':
@@ -183,7 +182,7 @@ export class ExpensesComponent implements OnInit {
         }
       });
 
-      // Abrimos el diálogo con los datos enriquecidos
+      // Open dialog using enriched config
       const dialogRef = this.dialog.open(GenericDialogComponent, {
         data: {
           title: data ? 'Edit Expense' : 'New Expense',
