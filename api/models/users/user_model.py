@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, Enum as SQLEnum
+from sqlalchemy import Column, Integer, String, Boolean, Enum as SQLEnum, UniqueConstraint
 from sqlalchemy.orm import relationship
 
 from ..core.base import Base, TimestampMixin
@@ -7,6 +7,9 @@ from ..core.enums import UserRoleEnum
 
 class User(TimestampMixin, Base):
     __tablename__ = 'users'
+    __table_args__ = (
+        UniqueConstraint('dni', name='uq_users_dni'),
+    )
     id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
     name = Column(String, nullable=False)
     surname1 = Column(String, nullable=False)

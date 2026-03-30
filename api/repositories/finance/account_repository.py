@@ -8,3 +8,7 @@ class AccountRepository(BaseRepository[Account]):
 
     def __init__(self, db):
         super().__init__(db, Account)
+
+    def find_by_iban(self, iban: str):
+        stmt = self._base_query().where(Account.iban == iban)
+        return self.db.execute(stmt).scalar_one_or_none()

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Numeric, Boolean, ForeignKey, Enum as SQLEnum
+from sqlalchemy import Column, Integer, String, Numeric, Boolean, ForeignKey, Enum as SQLEnum, UniqueConstraint
 from sqlalchemy.orm import relationship
 
 from ..core.base import Base, TimestampMixin
@@ -6,6 +6,9 @@ from ..core.enums import CurrencyEnum
 
 class Account(TimestampMixin, Base):
     __tablename__ = 'accounts'
+    __table_args__ = (
+        UniqueConstraint('iban', name='uq_accounts_iban'),
+    )
     id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
     name = Column(String, nullable=False)
     description = Column(String)

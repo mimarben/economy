@@ -8,3 +8,7 @@ class BankRepository(BaseRepository[Bank]):
 
     def __init__(self, db):
         super().__init__(db, Bank)
+
+    def find_by_cif(self, cif: str):
+        stmt = self._base_query().where(Bank.cif == cif)
+        return self.db.execute(stmt).scalar_one_or_none()

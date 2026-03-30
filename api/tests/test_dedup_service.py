@@ -42,3 +42,11 @@ def test_duplicate_detection_via_set():
 
     assert duplicates == 1
     assert len(seen) == 2
+
+
+def test_normalize_iban_before_unique_check():
+    from services.finance.account_service import AccountService
+
+    assert AccountService._normalize_iban(' es 12 345 678 901 234 567 ') == 'ES12345678901234567'
+    assert AccountService._normalize_iban('es12345678901234567') == 'ES12345678901234567'
+

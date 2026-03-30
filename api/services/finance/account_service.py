@@ -17,6 +17,34 @@ class AccountService(BaseService[Account, AccountRead, AccountCreate, AccountUpd
             read_schema=AccountRead
         )
 
+    @staticmethod
+    def _normalize_iban(iban: str | None) -> str | None:
+        if iban is None:
+            return None
+        return iban.replace(' ', '').upper()
+
+    def create(self, data: AccountCreate) -> AccountRead:
+        iban = self._normalize_iban(data.iban)
+        data.iban = iban
+
+        if iban and self.repository.find_by_iban(iban):
+            raise ValueError('Account with this IBAN already exists')
+
+        return super().create(data)
+
+    def update(self, id: int, data: AccountUpdate) -> AccountRead:
+        existing = self.repository.get_by_id(id)
+        if not existing:
+            return None
+
+        if data.iban is not None:
+            normalized = self._normalize_iban(data.iban)
+            if normalized != existing.iban and self.repository.find_by_iban(normalized):
+                raise ValueError('Another account with this IBAN already exists')
+            data.iban = normalized
+
+        return super().update(id, data)
+
     # ISearchService
     def search(self, **filters) -> list[AccountRead]:
         """Search accounts by filters."""
