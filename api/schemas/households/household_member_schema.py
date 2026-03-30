@@ -18,8 +18,8 @@ class HouseholdMemberCreate(HouseholdMemberBase):
 
 class HouseholdMemberUpdate(BaseModel):
     role: Optional[RoleEnum]
-    household_id: Optional[int] = Field(..., gt=0)
-    user_id:  Optional[int] = Field(..., gt=0)
-    active:  Optional[bool]
+    household_id: Optional[int] = Field(None, gt=0)
+    user_id: Optional[int] = Field(None, gt=0)
+    active: Optional[bool] = None
 
 export_schema(HouseholdMemberBase)
