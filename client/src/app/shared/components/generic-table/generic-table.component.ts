@@ -5,7 +5,7 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { TranslateModule } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 
-import { MaterialModule } from '@app/utils/material.module';
+import { MATERIAL_IMPORTS } from '@app/utils/material.imports';
 
 export interface TableColumn<T> {
   key: string;
@@ -19,7 +19,7 @@ export interface TableColumn<T> {
   standalone: true,
   imports: [
     CommonModule,
-    MaterialModule,
+    ...MATERIAL_IMPORTS,
     TranslateModule,
     MatPaginatorModule,
     MatTableModule,

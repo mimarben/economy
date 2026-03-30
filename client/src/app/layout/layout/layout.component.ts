@@ -3,7 +3,7 @@ import { RouterOutlet } from '@angular/router';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { filter, Subscription } from 'rxjs';
-import { MaterialModule } from '@utils_module/material.module';
+import { MATERIAL_IMPORTS } from '@utils_module/material.imports';
 import { HeaderComponent } from '../header/header.component';
 import { SideMenuComponent } from '../side-menu/side-menu.component';
 import { FooterComponent } from '../footer/footer.component';
@@ -18,7 +18,7 @@ import { FooterComponent } from '../footer/footer.component';
     HeaderComponent,
     SideMenuComponent,
     FooterComponent,
-    MaterialModule,
+    ...MATERIAL_IMPORTS,
   ],
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.scss',

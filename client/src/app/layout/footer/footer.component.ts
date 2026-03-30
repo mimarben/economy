@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MaterialModule } from '@app/utils/material.module';
+import { MATERIAL_IMPORTS } from '@app/utils/material.imports';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
@@ -8,7 +8,7 @@ import { TranslateModule } from '@ngx-translate/core';
   standalone: true,
   imports: [
     CommonModule,
-    MaterialModule,
+    ...MATERIAL_IMPORTS,
     TranslateModule
   ],
   templateUrl: './footer.component.html',

@@ -19,13 +19,11 @@ class Income(TimestampMixin, Base):
     dedup_hash = Column(String(64), nullable=False, index=True)
 
     # Foreign Keys
-    #user_id = Column(Integer, ForeignKey('users.id'), nullable=False, index=True)
     source_id = Column(Integer, ForeignKey('sources.id'), nullable=False, index=True)
     category_id = Column(Integer, ForeignKey('incomes_categories.id'), nullable=False, index=True)
     account_id = Column(Integer, ForeignKey('accounts.id'), nullable=False, index=True)
 
     # Relationships
-    #user = relationship('User', back_populates='incomes')
     source = relationship('Source', back_populates='incomes')
     category = relationship('IncomesCategory', back_populates='incomes')
     account = relationship('Account', back_populates='incomes')

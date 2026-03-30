@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { MaterialModule } from '@app/utils/material.module';
+import { MATERIAL_IMPORTS } from '@app/utils/material.imports';
 import { CommonModule } from '@angular/common';
 
 import { AppTranslateService } from '@app/utils/app-translate.service';
@@ -9,7 +9,7 @@ import { TranslateModule } from '@ngx-translate/core';
   selector: 'app-home',
   standalone: true,
   imports: [
-    MaterialModule,
+    ...MATERIAL_IMPORTS,
     CommonModule,
     TranslateModule
   ],

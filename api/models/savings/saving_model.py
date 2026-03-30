@@ -14,10 +14,8 @@ class Saving(TimestampMixin, Base):
     currency = Column(SQLEnum(CurrencyEnum), nullable=False)
 
     # Foreign Keys
-    #user_id = Column(Integer, ForeignKey('users.id'), nullable=False, index=True)
     account_id = Column(Integer, ForeignKey('accounts.id'), nullable=False, index=True)
 
     # Relationships
-    #user = relationship('User', back_populates='savings')
     account = relationship('Account', back_populates='savings')
     savings_logs = relationship("SavingLog", back_populates="saving")

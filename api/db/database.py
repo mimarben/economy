@@ -1,6 +1,6 @@
 import os
 from sqlalchemy import create_engine, event
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import scoped_session, sessionmaker
 from contextlib import contextmanager
 from models import Base, User, Account, Bank
 from config import Config
@@ -32,7 +32,8 @@ if Config.DB_ENGINE == "sqlite":
         cursor.close()
 
 
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+SessionFactory = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+SessionLocal = scoped_session(SessionFactory)
 
 
 def get_db():
@@ -44,8 +45,11 @@ def get_db():
         db.rollback()
         logger.error(f"Database session error: {e}")
         raise
-    finally:
-        db.close()
+
+
+def remove_db_session() -> None:
+    """Remove scoped session at the end of the request lifecycle."""
+    SessionLocal.remove()
 
 
 @contextmanager
@@ -64,23 +68,24 @@ def get_db_session():
 
 
 def init_db():
-    if Config.DB_ENGINE == "sqlite":
-        os.makedirs("db", exist_ok=True)
-        database_exists = os.path.exists(DATABASE_URL)
-        if not database_exists:
-            Base.metadata.create_all(engine)
-            logger.info("SQLite database and tables created.")
-    else:
-        database_exists = True
+    schema_strategy = getattr(Config, "SCHEMA_INIT_STRATEGY", "create_all")
 
-    if Config.DB_ENGINE == "sqlite" and not database_exists:
-        with get_db_session() as db:
-            seed_admin(db)
-        logger.info("Seed data created for SQLite.")
-    elif Config.DB_ENGINE == "postgres":
-        logger.info("Postgres detected: schema lifecycle managed by Alembic migrations.")
-        with get_db_session() as db:
-            seed_admin(db)
-        logger.info("Seed data verified for Postgres.")
+    if schema_strategy == "create_all":
+        if Config.DB_ENGINE == "sqlite":
+            os.makedirs("db", exist_ok=True)
+            database_exists = os.path.exists(DATABASE_URL)
+            if not database_exists:
+                Base.metadata.create_all(engine)
+                logger.info("SQLite database and tables created.")
+        else:
+            Base.metadata.create_all(engine)
+            logger.warning("create_all strategy enabled outside SQLite; prefer Alembic for managed environments.")
+    elif schema_strategy == "migrations":
+        logger.info("Schema lifecycle delegated to Alembic migrations.")
     else:
-        logger.info("Database already exists, skipping creation.")
+        raise ValueError(f"Invalid SCHEMA_INIT_STRATEGY: {schema_strategy}")
+
+    if getattr(Config, "SEED_DB_ON_STARTUP", False):
+        with get_db_session() as db:
+            seed_admin(db)
+        logger.info("Seed data verification completed.")

@@ -1,32 +1,11 @@
 import { Routes } from '@angular/router';
-import { HomeComponent } from './features/home/home.component';
 import { authGuard } from './core/guards/auth.guard';
-import { UsersComponent } from './features/users/users.component';
-import { ExpensesComponent } from './features/expenses/expenses.component';
-import { IncomesComponent } from  './features/incomes/incomes-component'
-import { IncomesCategoriesComponent } from './features/incomes/incomes-categories/incomes-categories.component';
-import { ExpensesCategoriesComponent } from './features/expenses/expenses-categories/expenses-categories.component';
-import { BanksComponent } from './features/banks/banks.component';
-import { BanksAccountsComponent } from './features/banks/banks-accounts/banks-accounts.component';
-import { HouseholdsComponent } from './features/households/households.component';
-import { HouseholdmembersComponent } from './features/households/household-members/household-members.component';
-import { SavingsComponent } from './features/savings/savings.component';
-import { SavingsLogComponent } from './features/savings/savings-log/savings-log/savings-log.component';
-import { SourcesComponent } from './features/sources/sources.component';
-import { InvestmentsComponent } from './features/investments/investments.component';
-import { InvestmentsLogComponent } from './features/investments/investments-log/investments-log.component';
-import { InvestmentsCategoriesComponent } from './features/investments/investments-categories/investments-categories.component';
-import { NotFoundComponent } from './features/not-found/not-found.component';
-import { SummaryComponent} from './features/financial/summary-component/summary-component';
-import { ExcelImportComponent } from './features/import/excel/excel-import.component';
-import { LoginComponent } from './features/auth/login/login.component';
 import { LayoutComponent } from './layout/layout/layout.component';
-import { ChartsContainerComponent } from './features/charts/components/charts-container/charts-container.component';
-import { CategoryRulesComponent } from './features/category-rules/category-rules.component';
+
 export const routes: Routes = [
   // Routes without layout
-  { path: 'login', component: LoginComponent, data: { title: 'login.title' } },
-  { path: 'not_found', component: NotFoundComponent, data: { title: 'not_found.title' } },
+  { path: 'login', loadComponent: () => import('./features/auth/login/login.component').then((m) => m.LoginComponent), data: { title: 'login.title' } },
+  { path: 'not_found', loadComponent: () => import('./features/not-found/not-found.component').then((m) => m.NotFoundComponent), data: { title: 'not_found.title' } },
 
   // Routes with layout (header + footer + menu)
   {
@@ -34,26 +13,26 @@ export const routes: Routes = [
     component: LayoutComponent,
     canActivate: [authGuard], // Single guard for all children
     children: [
-      { path: '', component: HomeComponent, data: { title: 'home.title' } },
-      { path: 'users', component: UsersComponent, data: { title: 'users.title' } },
-      { path: 'banks', component: BanksComponent, data: { title: 'banks.title' } },
-      { path: 'accounts', component: BanksAccountsComponent, data: { title: 'accounts.title' } },
-      { path: 'households', component: HouseholdsComponent, data: { title: 'households.title' } },
-      { path: 'household-members', component: HouseholdmembersComponent, data: { title: 'households_members.title' } },
-      { path: 'savings', component: SavingsComponent, data: { title: 'savings.title' } },
-      { path: 'savings_log', component: SavingsLogComponent, data: { title: 'savings_log.title' } },
-      { path: 'sources', component: SourcesComponent, data: { title: 'sources.title' } },
-      { path: 'expenses', component: ExpensesComponent, data: { title: 'expenses.title' } },
-      { path: 'expenses_categories', component: ExpensesCategoriesComponent, data: { title: 'expenses_categories.title' } },
-      { path: 'incomes', component: IncomesComponent, data: { title: 'incomes.title' } },
-      { path: 'incomes_categories', component: IncomesCategoriesComponent, data: { title: 'incomes_categories.title' } },
-      { path: 'investments', component: InvestmentsComponent, data: { title: 'investments.title' } },
-      { path: 'investments_categories', component: InvestmentsCategoriesComponent, data: { title: 'investments_categories.title' } },
-      { path: 'investments_log', component: InvestmentsLogComponent, data: { title: 'investments_log.title' } },
-      { path: 'financial_summary', component: SummaryComponent, data: { title: 'summary.title' } },
-      { path: 'excel_import', component: ExcelImportComponent, data: { title: 'excel_import.title' } },
-      { path: 'charts', component: ChartsContainerComponent, data: { title: 'charts.title' } },
-      { path: 'category_rules', component: CategoryRulesComponent, data: { title: 'category_rules.title' } },
+      { path: '', loadComponent: () => import('./features/home/home.component').then((m) => m.HomeComponent), data: { title: 'home.title' } },
+      { path: 'users', loadComponent: () => import('./features/users/users.component').then((m) => m.UsersComponent), data: { title: 'users.title' } },
+      { path: 'banks', loadComponent: () => import('./features/banks/banks.component').then((m) => m.BanksComponent), data: { title: 'banks.title' } },
+      { path: 'accounts', loadComponent: () => import('./features/banks/banks-accounts/banks-accounts.component').then((m) => m.BanksAccountsComponent), data: { title: 'accounts.title' } },
+      { path: 'households', loadComponent: () => import('./features/households/households.component').then((m) => m.HouseholdsComponent), data: { title: 'households.title' } },
+      { path: 'household-members', loadComponent: () => import('./features/households/household-members/household-members.component').then((m) => m.HouseholdmembersComponent), data: { title: 'households_members.title' } },
+      { path: 'savings', loadComponent: () => import('./features/savings/savings.component').then((m) => m.SavingsComponent), data: { title: 'savings.title' } },
+      { path: 'savings_log', loadComponent: () => import('./features/savings/savings-log/savings-log/savings-log.component').then((m) => m.SavingsLogComponent), data: { title: 'savings_log.title' } },
+      { path: 'sources', loadComponent: () => import('./features/sources/sources.component').then((m) => m.SourcesComponent), data: { title: 'sources.title' } },
+      { path: 'expenses', loadComponent: () => import('./features/expenses/expenses.component').then((m) => m.ExpensesComponent), data: { title: 'expenses.title' } },
+      { path: 'expenses_categories', loadComponent: () => import('./features/expenses/expenses-categories/expenses-categories.component').then((m) => m.ExpensesCategoriesComponent), data: { title: 'expenses_categories.title' } },
+      { path: 'incomes', loadComponent: () => import('./features/incomes/incomes-component').then((m) => m.IncomesComponent), data: { title: 'incomes.title' } },
+      { path: 'incomes_categories', loadComponent: () => import('./features/incomes/incomes-categories/incomes-categories.component').then((m) => m.IncomesCategoriesComponent), data: { title: 'incomes_categories.title' } },
+      { path: 'investments', loadComponent: () => import('./features/investments/investments.component').then((m) => m.InvestmentsComponent), data: { title: 'investments.title' } },
+      { path: 'investments_categories', loadComponent: () => import('./features/investments/investments-categories/investments-categories.component').then((m) => m.InvestmentsCategoriesComponent), data: { title: 'investments_categories.title' } },
+      { path: 'investments_log', loadComponent: () => import('./features/investments/investments-log/investments-log.component').then((m) => m.InvestmentsLogComponent), data: { title: 'investments_log.title' } },
+      { path: 'financial_summary', loadComponent: () => import('./features/financial/summary-component/summary-component').then((m) => m.SummaryComponent), data: { title: 'summary.title' } },
+      { path: 'excel_import', loadComponent: () => import('./features/import/excel/excel-import.component').then((m) => m.ExcelImportComponent), data: { title: 'excel_import.title' } },
+      { path: 'charts', loadComponent: () => import('./features/charts/components/charts-container/charts-container.component').then((m) => m.ChartsContainerComponent), data: { title: 'charts.title' } },
+      { path: 'category_rules', loadComponent: () => import('./features/category-rules/category-rules.component').then((m) => m.CategoryRulesComponent), data: { title: 'category_rules.title' } },
     ]
   },
 

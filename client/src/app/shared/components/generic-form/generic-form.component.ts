@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 
-import { MaterialModule } from '@app/utils/material.module';
+import { MATERIAL_IMPORTS } from '@app/utils/material.imports';
 import { FormFieldConfig } from './form-config';
 import { UtilsService } from '@app/utils/utils.service';
 @Component({
@@ -15,7 +15,7 @@ import { UtilsService } from '@app/utils/utils.service';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    MaterialModule,
+    ...MATERIAL_IMPORTS,
     MatSelectModule
   ]
 })

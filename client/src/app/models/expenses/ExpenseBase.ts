@@ -10,8 +10,9 @@ export type Name = string;
 export type Description = string | null;
 export type Amount = number;
 export type Date = string;
-export type CategoryId = number;
+export type DedupHash = string;
 export type SourceId = number;
+export type CategoryId = number;
 export type AccountId = number;
 
 export interface ExpenseBase {
@@ -20,12 +21,9 @@ export interface ExpenseBase {
   description?: Description;
   amount: Amount;
   date: Date;
-  category_id: CategoryId;
-  source_id: SourceId;
-  account_id: AccountId;
   currency: CurrencyEnum;
-  user_id: UserId;
+  dedup_hash: DedupHash;
   source_id: SourceId;
   category_id: CategoryId;
-  account_id?: AccountId;
+  account_id: AccountId;
 }
