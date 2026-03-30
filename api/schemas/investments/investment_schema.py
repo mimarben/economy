@@ -8,10 +8,10 @@ from schemas.core.audit_schema import AuditFields
 
 class InvestmentBase(BaseModel):
     """Base schema for Investment - format validation only."""
-    name: Optional[str] = None
+    description: str = Field(..., min_length=1, max_length=500)
+    amount: float = Field(..., gt=0)
     date: datetime
     currency: CurrencyEnum
-    user_id: int = Field(..., gt=0)
     account_id: int = Field(..., gt=0)
     category_id: int = Field(..., gt=0)
 
@@ -32,10 +32,10 @@ class InvestmentCreate(InvestmentBase):
 
 class InvestmentUpdate(BaseModel):
     """Schema for updating Investment - all fields optional."""
-    name: Optional[str] = None
+    description: Optional[str] = Field(None, min_length=1, max_length=500)
+    amount: Optional[float] = Field(None, gt=0)
     date: Optional[datetime] = None
     currency: Optional[CurrencyEnum] = None
-    user_id: Optional[int] = Field(None, gt=0)
     account_id: Optional[int] = Field(None, gt=0)
     category_id: Optional[int] = Field(None, gt=0)
 

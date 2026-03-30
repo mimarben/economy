@@ -11,8 +11,8 @@ export type Description = string | null;
 export type Amount = number;
 export type Date = string;
 export type CategoryId = number;
-export type PlaceId = number;
-export type UserId = number;
+export type SourceId = number;
+export type AccountId = number;
 
 export interface ExpenseBase {
   id?: number;
@@ -21,7 +21,7 @@ export interface ExpenseBase {
   amount: Amount;
   date: Date;
   category_id: CategoryId;
-  place_id: PlaceId;
-  user_id: UserId;
+  source_id: SourceId;
+  account_id: AccountId;
   currency: CurrencyEnum;
 }

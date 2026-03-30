@@ -15,10 +15,9 @@ class ExpenseBase(BaseModel):
     amount: float = Field(..., gt=0)  # Must be positive
     date: datetime
     currency: CurrencyEnum
-    user_id: int = Field(..., gt=0)
     source_id: int = Field(..., gt=0)
     category_id: int = Field(..., gt=0)
-    account_id: Optional[int] = Field(None, gt=0)  # Account is optional
+    account_id: int = Field(..., gt=0)
 
     @field_validator('amount')
     @classmethod
@@ -54,7 +53,6 @@ class ExpenseUpdate(BaseModel):
     amount: Optional[float] = Field(None, gt=0)
     date: Optional[datetime] = None
     currency: Optional[CurrencyEnum] = None
-    user_id: Optional[int] = Field(None, gt=0)
     source_id: Optional[int] = Field(None, gt=0)
     category_id: Optional[int] = Field(None, gt=0)
     account_id: Optional[int] = Field(None, gt=0)

@@ -8,11 +8,10 @@ from schemas.core.audit_schema import AuditFields
 
 class SavingBase(BaseModel):
     """Base schema for Saving - format validation only."""
-    description: Optional[str] = Field(None, max_length=500)
+    description: str = Field(..., min_length=1, max_length=500)
     amount: float = Field(..., gt=0)
     date: datetime
     currency: CurrencyEnum
-    user_id: int = Field(..., gt=0)
     account_id: int = Field(..., gt=0)
 
 
@@ -36,7 +35,6 @@ class SavingUpdate(BaseModel):
     amount: Optional[float] = Field(None, gt=0)
     date: Optional[datetime] = None
     currency: Optional[CurrencyEnum] = None
-    user_id: Optional[int] = Field(None, gt=0)
     account_id: Optional[int] = Field(None, gt=0)
 
 

@@ -19,9 +19,7 @@ class IncomeRepository(BaseRepository[Income]):
         stmt = select(IncomesCategory).where(IncomesCategory.id == category_id)
         return self.db.execute(stmt).scalar_one_or_none() is not None
 
-    def account_exists(self, account_id: Optional[int]) -> bool:
-        if account_id is None:
-            return True
+    def account_exists(self, account_id: int) -> bool:
         stmt = select(Account).where(Account.id == account_id)
         return self.db.execute(stmt).scalar_one_or_none() is not None
 
@@ -36,7 +34,7 @@ class IncomeRepository(BaseRepository[Income]):
         self,
         source_id: int,
         category_id: int,
-        account_id: Optional[int]
+        account_id: int
     ) -> tuple[bool, Optional[str]]:
         if not self.source_exists(source_id):
             return False, "SOURCE_NOT_FOUND"

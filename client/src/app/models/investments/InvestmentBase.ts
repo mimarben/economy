@@ -5,23 +5,18 @@
  * and run json-schema-to-typescript to regenerate this file.
  */
 import { CurrencyEnum } from "@core/const/currency.enum";
-export type Name = string;
+export type Description = string;
 export type Amount = number;
-export type Value = number;
 export type Date = string;
-
-export type UserId = number;
 export type AccountId = number;
 export type CategoryId = number;
 
 export interface InvestmentBase {
   id?: number;
-  name: Name;
+  description: Description;
   amount: Amount;
-  value: Value;
   date: Date;
   currency: CurrencyEnum;
-  user_id: UserId;
   account_id: AccountId;
   category_id: CategoryId;
 }
