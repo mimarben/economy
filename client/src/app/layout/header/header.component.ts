@@ -1,6 +1,6 @@
 import { Component, Output, Input, EventEmitter } from '@angular/core';
 import { MaterialModule } from '@app/utils/material.module';
-import { UtilsModule } from '@app/utils/utils.module';
+import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from '@services/auth/auth.service';
 import { Router } from '@angular/router';
 
@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
   standalone:true,
   imports: [
     MaterialModule,
-    UtilsModule
+    TranslateModule
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'
