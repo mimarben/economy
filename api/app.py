@@ -1,77 +1,74 @@
-# app.py
 from flask import Flask, request
-from flask_babel import Babel, gettext
-import os
+from flask_babel import Babel
 from dotenv import load_dotenv
-import sys
-from pathlib import Path
 from werkzeug.exceptions import HTTPException
 from flask_cors import CORS
 from sqlalchemy.exc import TimeoutError as SQLAlchemyTimeoutError
 from flask_jwt_extended import JWTManager, verify_jwt_in_request
 
-# Add current directory to Python path
-current_dir = str(Path(__file__).parent)
-if current_dir not in sys.path:
-    sys.path.insert(0, current_dir)
-
-load_dotenv()
-
 from db.database import init_db
-
-
 from routers import register_blueprints
 from config import DevelopmentConfig
-
-# Setup logging
 from services.logs.logger_service import setup_logger
+
+load_dotenv()
 logger = setup_logger("main")
 
 
-app = Flask(__name__)
-app.config.from_object(DevelopmentConfig)
-jwt = JWTManager(app)
-
-# Ensure schema/tables exist on service startup (especially for first Postgres run)
-init_db()
-
-@app.before_request
-def global_auth():
-    if request.path.startswith(f"{app.config['PREFIX']}/auth"):
-        return
-    if request.method == "OPTIONS":
-        return
-    verify_jwt_in_request()
-
-CORS(app,
-    origins=app.config['CORS']['origins'],
-    methods=app.config['CORS']['methods'],
-    allow_headers=app.config['CORS']['allow_headers'])
-
-# Define the locale selector function
-def get_locale():
-    # Dynamically select locale based on query parameter or browser preferences
-    return request.args.get('lang') or request.accept_languages.best_match(app.config['LANGUAGES'].keys())
-
-# Initialize Babel with locale_selector
-babel = Babel(app, locale_selector=get_locale)
-
-# Register route blueprint
-register_blueprints(app, url_prefix=app.config['PREFIX'])
-
-# Global error handler
-@app.errorhandler(Exception)
-def handle_exception(e):
-    logger.exception("Unhandled Exception: %s", str(e))
-    if isinstance(e, SQLAlchemyTimeoutError):
-        return {"error": "Database connection timed out."}, 500
-    if isinstance(e, HTTPException):
-        return {"error": e.description}, e.code
-    return {"error": "An internal error occurred."}, 500
+def _is_public_path(app: Flask, path: str) -> bool:
+    public_prefixes = (
+        f"{app.config['PREFIX']}/auth",
+        f"{app.config['PREFIX']}/system",
+    )
+    return path.startswith(public_prefixes)
 
 
-# Run app (optional if using a separate runner)
+def create_app(config_class=DevelopmentConfig) -> Flask:
+    app = Flask(__name__)
+    app.config.from_object(config_class)
+
+    JWTManager(app)
+
+    if app.config.get("INIT_DB_ON_STARTUP", False):
+        init_db()
+
+    @app.before_request
+    def global_auth():
+        if _is_public_path(app, request.path):
+            return
+        if request.method == "OPTIONS":
+            return
+        verify_jwt_in_request()
+
+    CORS(
+        app,
+        origins=app.config['CORS']['origins'],
+        methods=app.config['CORS']['methods'],
+        allow_headers=app.config['CORS']['allow_headers']
+    )
+
+    def get_locale():
+        return request.args.get('lang') or request.accept_languages.best_match(app.config['LANGUAGES'].keys())
+
+    Babel(app, locale_selector=get_locale)
+    register_blueprints(app, url_prefix=app.config['PREFIX'])
+
+    @app.errorhandler(Exception)
+    def handle_exception(e):
+        logger.exception("Unhandled Exception: %s", str(e))
+        if isinstance(e, SQLAlchemyTimeoutError):
+            return {"error": "Database connection timed out."}, 500
+        if isinstance(e, HTTPException):
+            return {"error": e.description}, e.code
+        return {"error": "An internal error occurred."}, 500
+
+    return app
+
+
+app = create_app()
+
+
 if __name__ == "__main__":
     logger.info("Starting the Flask app...")
-    logger.info(f"Configuration: {app.config}")
+    logger.info("Configuration loaded for %s:%s", app.config['HOST'], app.config['PORT'])
     app.run(debug=app.config['DEBUG'], host=app.config['HOST'], port=app.config['PORT'])
