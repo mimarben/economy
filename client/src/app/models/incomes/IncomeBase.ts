@@ -14,6 +14,7 @@ export type Date = string;
 export type UserId = number;
 export type SourceId = number;
 export type CategoryId = number;
+export type AccountId = number | null;
 
 export interface IncomeBase {
   id?: number;
@@ -22,7 +23,8 @@ export interface IncomeBase {
   amount: Amount;
   date: Date;
   currency: CurrencyEnum;
+  user_id: UserId;
   source_id: SourceId;
   category_id: CategoryId;
-
+  account_id?: AccountId;
 }
