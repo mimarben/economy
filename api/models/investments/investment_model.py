@@ -18,12 +18,10 @@ class Investment(TimestampMixin, Base):
     amount = Column(Numeric(12, 2), nullable=False)
     dedup_hash = Column(String(64), nullable=False, index=True)
     # Foreign Keys
-    #user_id = Column(Integer, ForeignKey('users.id'), nullable=False, index=True)
     account_id = Column(Integer, ForeignKey('accounts.id'), nullable=False, index=True)
     category_id = Column(Integer, ForeignKey('investments_categories.id'), nullable=False, index=True)
 
     # Relationships
-    #user = relationship('User', back_populates='investments')
     account = relationship('Account', back_populates='investments')
     category = relationship('InvestmentsCategory', back_populates='investments')
     investment_logs = relationship('InvestmentLog', back_populates='investment')
