@@ -1,17 +1,21 @@
-from pydantic import BaseModel, Field
+from datetime import date
+from decimal import Decimal
 from typing import Optional
-from datetime import datetime
+
+from pydantic import BaseModel, Field
+
 from models import ActionEnum
 from utils.schema_exporter import export_schema
 from schemas.core.audit_schema import AuditFields
 
 
 class InvestmentLogBase(BaseModel):
-    """Base schema for InvestmentLog - format validation only."""
-    date: datetime
-    current_value: float = Field(..., gt=0)
-    price_per_unit: Optional[float] = Field(None, gt=0)
-    units_bought: Optional[float] = Field(None, gt=0)
+    """Base schema for InvestmentLog aligned with ORM model."""
+
+    date: date
+    current_value: Decimal = Field(..., gt=0)
+    price_per_unit: Optional[Decimal] = Field(None, gt=0)
+    units_bought: Optional[Decimal] = Field(None, gt=0)
     action: ActionEnum
     note: Optional[str] = None
     investment_id: int = Field(..., gt=0)
@@ -26,17 +30,16 @@ class InvestmentLogRead(InvestmentLogBase, AuditFields):
 
 
 class InvestmentLogCreate(InvestmentLogBase):
-    """Schema for creating InvestmentLog - only format validation."""
-    pass
-    # ✅ NO FK validation here - moved to service layer
+    """Schema for creating InvestmentLog."""
 
 
 class InvestmentLogUpdate(BaseModel):
     """Schema for updating InvestmentLog - all fields optional."""
-    date: Optional[datetime] = None
-    current_value: Optional[float] = Field(None, gt=0)
-    price_per_unit: Optional[float] = Field(None, gt=0)
-    units_bought: Optional[float] = Field(None, gt=0)
+
+    date: Optional[date] = None
+    current_value: Optional[Decimal] = Field(None, gt=0)
+    price_per_unit: Optional[Decimal] = Field(None, gt=0)
+    units_bought: Optional[Decimal] = Field(None, gt=0)
     action: Optional[ActionEnum] = None
     note: Optional[str] = None
     investment_id: Optional[int] = Field(None, gt=0)
@@ -44,5 +47,6 @@ class InvestmentLogUpdate(BaseModel):
 
 class InvestmentLogDelete(BaseModel):
     pass
+
 
 export_schema(InvestmentLogBase)

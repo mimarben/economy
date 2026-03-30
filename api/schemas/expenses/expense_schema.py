@@ -1,29 +1,30 @@
-from pydantic import BaseModel, Field, field_validator
+from datetime import date
+from decimal import Decimal
 from typing import Optional
-from datetime import datetime
+
+from pydantic import BaseModel, Field, field_validator
+
 from models import CurrencyEnum
-from flask_babel import _
 from utils.schema_exporter import export_schema
 from schemas.core.audit_schema import AuditFields
 
 
 class ExpenseBase(BaseModel):
-    """Base schema for Expense - format validation only."""
+    """Base schema for Expense aligned with ORM model."""
 
     name: str = Field(..., min_length=1, max_length=255)
     description: Optional[str] = Field(None, max_length=500)
-    amount: float = Field(..., gt=0)  # Must be positive
-    date: datetime
+    amount: Decimal = Field(..., gt=0)
+    date: date
     currency: CurrencyEnum
-    user_id: int = Field(..., gt=0)
+    dedup_hash: str = Field(..., min_length=64, max_length=64)
     source_id: int = Field(..., gt=0)
     category_id: int = Field(..., gt=0)
-    account_id: Optional[int] = Field(None, gt=0)  # Account is optional
+    account_id: int = Field(..., gt=0)
 
     @field_validator('amount')
     @classmethod
-    def amount_must_be_positive(cls, v):
-        """Format validation only - no DB queries."""
+    def amount_must_be_positive(cls, v: Decimal) -> Decimal:
         if v <= 0:
             raise ValueError('amount must be greater than 0')
         return v
@@ -39,11 +40,7 @@ class ExpenseRead(ExpenseBase, AuditFields):
 
 
 class ExpenseCreate(ExpenseBase):
-    """Schema for creating Expense - only format validation."""
-
-    pass
-    # ✅ NO FK validation here - moved to service layer
-    # ✅ NO DB queries in validators
+    """Schema for creating Expense."""
 
 
 class ExpenseUpdate(BaseModel):
@@ -51,10 +48,10 @@ class ExpenseUpdate(BaseModel):
 
     name: Optional[str] = Field(None, min_length=1, max_length=255)
     description: Optional[str] = Field(None, max_length=500)
-    amount: Optional[float] = Field(None, gt=0)
-    date: Optional[datetime] = None
+    amount: Optional[Decimal] = Field(None, gt=0)
+    date: Optional[date] = None
     currency: Optional[CurrencyEnum] = None
-    user_id: Optional[int] = Field(None, gt=0)
+    dedup_hash: Optional[str] = Field(None, min_length=64, max_length=64)
     source_id: Optional[int] = Field(None, gt=0)
     category_id: Optional[int] = Field(None, gt=0)
     account_id: Optional[int] = Field(None, gt=0)
@@ -62,5 +59,6 @@ class ExpenseUpdate(BaseModel):
 
 class ExpenseDelete(BaseModel):
     pass
+
 
 export_schema(ExpenseBase)
