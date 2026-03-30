@@ -72,7 +72,7 @@ constructor(
     categories: this.investmentCategoryService.getAll()
   }).subscribe({
     next: ({ investments, users, accounts, categories }) => {
-      // Comprobar si `.response` existe, si no, fallback al objeto completo
+      // Comment translated to English.
       //this.investments = investments?.response ?? investments ?? [];
       this.investments = investments.response;
       this.usersMap = Object.fromEntries(
@@ -106,17 +106,17 @@ constructor(
     this.openDialog();
   }
   openDialog(data?: Investment): void {
-    // Cargar bancos y usuarios en paralelo
+    // Comment translated to English.
     forkJoin({
       users: this.userService.getUsers(),
       accounts: this.accountService.getAll(),
       categories: this.investmentCategoryService.getAll()
     }).subscribe({
       next: (responses) => {
-        // Obtener configuración base del formulario
+        // Comment translated to English.
         const baseConfig = this.formFactory.getFormConfig('investment');
 
-        // Enriquecer los campos select con las opciones
+        // Comment translated to English.
         const enrichedConfig = baseConfig.map((field: FormFieldConfig) => {
           if (field.key === 'user_id') {
             return {

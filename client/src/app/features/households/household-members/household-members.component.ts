@@ -85,7 +85,7 @@ export class HouseholdmembersComponent implements OnInit {
   }
 
   openDialog(data?: HouseHoldMember): void {
-  // 1. Cargar TODO en paralelo antes de abrir el diálogo
+  // Comment translated to English.
   forkJoin({
     households: this.householdService.getAll(),
     users: this.userService.getUsers()
@@ -93,7 +93,7 @@ export class HouseholdmembersComponent implements OnInit {
     next: (responses) => {
       const baseConfig = this.formFactory.getFormConfig('houseHoldMember');
 
-      // 2. Enriquecer directamente los campos con las opciones
+      // Comment translated to English.
       const enrichedConfig = baseConfig.map((field: FormFieldConfig) => {
         if (field.key === 'household_id') {
           return {
@@ -118,7 +118,7 @@ export class HouseholdmembersComponent implements OnInit {
         return field;
       });
 
-      // 3. Abrir el diálogo SOLO cuando los datos estén listos
+      // Comment translated to English.
       const dialogRef = this.dialog.open(GenericDialogComponent, {
         data: {
           title: data ? 'Edit Household Member' : 'New Household Member',

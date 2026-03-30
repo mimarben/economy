@@ -82,7 +82,7 @@
   padding-right: var(--space-lg) !important;
 }
 
-/* Columnas numéricas alineadas a la derecha */
+/* Comment translated to English. */
 .mat-column-price,
 .mat-column-amount,
 .mat-column-total,
@@ -93,7 +93,7 @@
   font-weight: 500;
 }
 
-/* Columnas de fecha con estilo especial */
+/* Comment translated to English. */
 .mat-column-date,
 .mat-column-created,
 .mat-column-updated {
@@ -134,7 +134,7 @@
    ELEMENTOS INTERNOS
 ========================================================= */
 
-/* Contenedor de botones de acción */
+/* Comment translated to English. */
 .mat-mdc-cell .actions {
   display: flex;
   gap: var(--space-sm);
@@ -196,7 +196,7 @@
    ESTADOS ESPECIALES
 ========================================================= */
 
-/* Tabla vacía */
+/* Comment translated to English. */
 .mat-mdc-table.empty {
   min-height: 300px;
   display: flex;
@@ -219,7 +219,7 @@
   margin-bottom: var(--space-md);
 }
 
-/* Estado de carga */
+/* Comment translated to English. */
 .mat-mdc-table.loading {
   opacity: 0.6;
   pointer-events: none;
@@ -243,7 +243,7 @@
 }
 
 @media (max-width: 768px) {
-  /* Reducir padding en pantallas pequeñas */
+  /* Comment translated to English. */
   .mat-mdc-cell,
   .mat-mdc-header-cell {
     padding: var(--space-sm) !important;
@@ -266,7 +266,7 @@
     padding: 0 4px;
   }
 
-  /* Stack acciones vertical en móvil */
+  /* Comment translated to English. */
   .mat-mdc-cell .actions {
     flex-direction: row;
     gap: 4px;

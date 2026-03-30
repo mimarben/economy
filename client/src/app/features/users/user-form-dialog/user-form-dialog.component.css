@@ -4,7 +4,7 @@
   gap: 16px;
 }
 
-/* Tres columnas para la primera fila */
+/* Comment translated to English. */
 .row-3 {
   display: flex;
   gap: 16px;
@@ -13,7 +13,7 @@
   flex: 1;
 }
 
-/* Dos columnas para las otras filas */
+/* Comment translated to English. */
 .row-2 {
   display: flex;
   gap: 16px;

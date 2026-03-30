@@ -15,22 +15,22 @@ export class AppTranslateService {
   }
 
   /**
-   * Inicializa el servicio de traducción
+   * Initialize translation service
    */
   initialize(): void {
-    // Establece idiomas disponibles
+    // Comment translated to English.
     this.translate.addLangs(this.availableLanguages);
 
-    // Establece el idioma por defecto
+    // Comment translated to English.
     this.translate.setDefaultLang(this.defaultLanguage);
 
-    // Intenta cargar idioma guardado previamente
+    // Comment translated to English.
     const savedLang = localStorage.getItem('preferredLanguage');
 
     if (savedLang && this.availableLanguages.includes(savedLang)) {
       this.translate.use(savedLang);
     } else {
-      // Intenta detectar el idioma del navegador
+      // Comment translated to English.
       const browserLang = this.translate.getBrowserLang();
       if (browserLang && this.availableLanguages.includes(browserLang)) {
         this.translate.use(browserLang);
@@ -41,40 +41,40 @@ export class AppTranslateService {
   }
 
   /**
-   * Cambia el idioma de la aplicación
-   * @param lang Código del idioma a utilizar
+   * Change application language
+   * @param lang Language code to use
    */
   setLanguage(lang: string): void {
     if (this.availableLanguages.includes(lang)) {
       this.translate.use(lang);
-      // Guardar preferencia en localStorage
+      // Persist preference in localStorage
       localStorage.setItem('preferredLanguage', lang);
     } else {
-      console.warn(`El idioma "${lang}" no está disponible`);
+      console.warn(`Language "${lang}" is not available`);
     }
   }
 
   /**
-   * Obtiene el idioma actual
-   * @returns Código del idioma actual
+   * Get current language
+   * @returns Current language code
    */
   getCurrentLanguage(): string {
     return this.translate.currentLang || this.defaultLanguage;
   }
 
   /**
-   * Obtiene todos los idiomas disponibles
-   * @returns Array con códigos de idiomas disponibles
+   * Get all available languages
+   * @returns Array with available language codes
    */
   getAvailableLanguages(): string[] {
     return this.availableLanguages;
   }
 
   /**
-   * Traduce una clave (sincrónico)
-   * @param key Clave de traducción
-   * @param params Parámetros para la traducción (opcional)
-   * @returns Texto traducido
+   * Translate a key (synchronous)
+   * @param key Translation key
+   * @param params Translation parameters (optional)
+   * @returns Translated text
    */
   translateKey(key: string, params?: object): string {
     if (!key){return 'error translation'}
@@ -82,28 +82,28 @@ export class AppTranslateService {
   }
 
   /**
-   * Traduce una clave (asincrónico)
-   * @param key Clave de traducción
-   * @param params Parámetros para la traducción (opcional)
-   * @returns Promesa con el texto traducido
+   * Translate a key (asynchronous)
+   * @param key Translation key
+   * @param params Translation parameters (optional)
+   * @returns Promise with translated text
    */
   async translateKeyAsync(key: string, params?: object): Promise<string> {
     return await firstValueFrom(this.translate.get(key, params));
   }
 
   /**
-   * Obtiene un observable para la traducción de una clave
-   * @param key Clave de traducción
-   * @param params Parámetros para la traducción (opcional)
-   * @returns Observable con el texto traducido
+   * Get an observable for key translation
+   * @param key Translation key
+   * @param params Translation parameters (optional)
+   * @returns Observable with translated text
    */
   getTranslation(key: string, params?: object): Observable<string> {
     return this.translate.get(key, params);
   }
 
   /**
-   * Suscribirse a cambios de idioma
-   * @returns Observable que emite cuando cambia el idioma
+   * Subscribe to language changes
+   * @returns Observable emitted on language changes
    */
   onLangChange(): Observable<any> {
     return this.translate.onLangChange;

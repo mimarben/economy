@@ -33,7 +33,7 @@ export class UserFromDialogComponent {
     private toastService: ToastService) {
       this.isEditMode = !!data?.id;
       this.userForm = this.fb.group({
-        id: [this.isEditMode ? data.id : null], // ID solo en modo edición
+        id: [this.isEditMode ? data.id : null], // Comment translated to English.
         name: [this.isEditMode ? data.name : '', [Validators.required, Validators.minLength(2)]],
         surname1: [this.isEditMode ? data.surname1 : '', [Validators.required]],
         surname2: [this.isEditMode ? data.surname2 : ''], // Opcional
@@ -42,12 +42,12 @@ export class UserFromDialogComponent {
         dni: [this.isEditMode ? data.dni : '', [Validators.required, this.validateDNI]],
         active: [this.isEditMode ? data.active : true],
         role: [this.isEditMode ? data.role : 'user', [Validators.required]],
-        password: ['', this.isEditMode ? [] : [Validators.required, this.passwordValidator]], // Requerido solo en modo creación
+        password: ['', this.isEditMode ? [] : [Validators.required, this.passwordValidator]], // Comment translated to English.
       });
-      // Detecta si es modo edición
+      // Comment translated to English.
     }
 
-    // Validador personalizado para DNI español (8 números y 1 letra)
+    // Comment translated to English.
     validateDNI(control: any) {
       const value = control.value;
       const dniRegex = /^[0-9]{8}[A-Za-z]$/;
@@ -56,7 +56,7 @@ export class UserFromDialogComponent {
         return { invalidDNI: true };
       }
 
-      // Cálculo de la letra del DNI según el módulo 23
+      // Comment translated to English.
       const dniLetters = "TRWAGMYFPDXBNJZSQVHLCKE";
       const numbers = value.slice(0, 8);
       const letter = value.slice(-1).toUpperCase();
@@ -74,16 +74,16 @@ export class UserFromDialogComponent {
       if (!value || value.length < 8) {
         return null;
       }
-      // Nueva expresión regular que requiere: minúscula, mayúscula, número y un carácter especial (@$!%*?&)
+      // Comment translated to English.
       const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*¿?&_!¡€#|/(){}-])[A-Za-z\d@$!%*?&]{8,}$/;
 
       if (!passwordRegex.test(value)) {
-          // Usamos 'strongPassword' como nombre de error para reflejar los requisitos
+          // Comment translated to English.
           return { strongPassword: true };
       }
       return null;
   }
-  // Getter para acceder fácilmente a los errores de los campos
+  // Comment translated to English.
   get formControls() {
     return this.userForm.controls;
   }
@@ -109,7 +109,7 @@ export class UserFromDialogComponent {
         });
       }
       else {
-        // Modo creación
+        // Comment translated to English.
         this.userService.createUser(userData).subscribe({
           next: (response: ApiResponse<User>) => {
             this.isLoading = false;

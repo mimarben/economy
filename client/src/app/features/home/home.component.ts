@@ -29,7 +29,7 @@ export class HomeComponent {
   }
 
   ngOnInit(): void {
-    // Filtrar solo los idiomas disponibles en la configuración
+    // Filter only languages configured as available
     const availableLanguages = this.translateService.getAvailableLanguages();
     this.languages = this.languages.filter(lang =>
       availableLanguages.includes(lang.code)

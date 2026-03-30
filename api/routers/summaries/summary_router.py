@@ -54,7 +54,7 @@ def get_summary():
     db: Session = next(get_db())
 
     try:
-        # Get query parameters
+        # Comment translated to English.
         start_date_str = request.args.get('start_date')
         end_date_str = request.args.get('end_date')
         

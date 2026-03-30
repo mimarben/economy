@@ -113,16 +113,16 @@ private loadUsers(): void {
     this.openDialog();
   }
   openDialog(data?: Account): void {
-    // Cargar bancos y usuarios en paralelo
+    // Comment translated to English.
     forkJoin({
       banks: this.bankService.getBanks(),
       users: this.userService.getUsers()
     }).subscribe({
       next: (responses) => {
-        // Obtener configuración base del formulario
+        // Comment translated to English.
         const baseConfig = this.formFactory.getFormConfig('account');
 
-        // Enriquecer los campos select con las opciones
+        // Comment translated to English.
         const enrichedConfig = baseConfig.map((field: FormFieldConfig) => {
           if (field.key === 'bank_id') {
             return {

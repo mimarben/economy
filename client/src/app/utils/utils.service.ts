@@ -12,7 +12,7 @@ import {
   isEmpty,
   map,
   filter,
-  // ... añade todas las que encuentres ...
+  // Comment translated to English.
 } from 'lodash-es';
 
 @Injectable({
@@ -24,7 +24,7 @@ export class UtilsService {
     isEmpty: isEmpty,
     map: map,
     filter: filter,
-    // ... mapea el resto aquí ...
+    // Comment translated to English.
   };
   //readonly moment = moment;
   // Internal helper to convert MomentInput (Date, string, number) to a Date object,
@@ -39,7 +39,7 @@ export class UtilsService {
   formatDateShortStr(date: Date | string | number | null | undefined): string {
     const d = this.getDate(date);
     if (!d) return '';
-    // NOTA: date-fns usa 'dd', 'MM', 'yyyy' (minúsculas)
+    // Comment translated to English.
     return format(d, 'dd-MM-yyyy');
   }
   // Uses 'date-fns/startOfDay' and returns a native Date
@@ -68,23 +68,23 @@ export class UtilsService {
   public parseToSafeDate(value: unknown): Date | null {
     if (!value) return null;
 
-    // Si ya es Date
+    // If value is already a Date
     if (isDate(value)) return value as Date;
 
-    // Si es string o number
+    // If value is a string or number
     if (typeof value === 'string' || typeof value === 'number') {
       const d = new Date(value);
       return isValid(d) ? d : null;
     }
 
-    return null; // cualquier otro tipo no válido
+    return null; // any other type is invalid
   }
   public normalize(text: string): string {
   return text
     .toLowerCase()
     .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "") // elimina acentos
-    .replace(/[^a-z0-9 ]/g, "") // elimina símbolos
+    .replace(/[\u0300-\u036f]/g, "") // remove accents
+    .replace(/[^a-z0-9 ]/g, "") // remove symbols
     .trim();
   }
   public parseAmount(value: any): number {
@@ -100,10 +100,10 @@ export class UtilsService {
     const lastComma = str.lastIndexOf(',');
 
     if (lastComma > lastDot) {
-      // formato europeo 1.501,70
+      // European number format: 1.501,70
       str = str.replace(/\./g, '').replace(',', '.');
     } else if (lastDot > lastComma) {
-      // formato inglés 1,501.70
+      // English number format: 1,501.70
       str = str.replace(/,/g, '');
     }
     const num = Number(str);

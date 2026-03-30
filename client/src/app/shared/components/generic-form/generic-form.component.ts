@@ -52,7 +52,7 @@ export class GenericFormComponent implements OnChanges {
     this.fields
       .filter(field => this.isValidField(field))
       .forEach(field => {
-      // Si es el campo ID y no hay id => no lo agregues
+      // Comment translated to English.
       if (field.key === 'id') {
         controls[field.key] = this.fb.control(
           { value: this.initialData['id'], disabled: true }

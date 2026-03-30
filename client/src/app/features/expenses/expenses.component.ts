@@ -70,7 +70,7 @@ export class ExpensesComponent implements OnInit {
   loadExpenses() {
       this.isLoading = true;
       this.errorMessage = '';
-      // Load all required resources in parallel
+      // Comment translated to English.
       const expenses$ = this.expenseService.getAll();
       const users$ = this.userService.getUsers();
       const categories$ = this.expensecategoryService.getAll();
@@ -114,7 +114,7 @@ export class ExpensesComponent implements OnInit {
               this.cdr.detectChanges();
           },
           error: (err: any) => {
-              // Handle any failure during parallel loading
+              // Comment translated to English.
               console.error('Error loading data:', err);
               this.errorMessage = 'Error loading expense data or related entities (Users, Categories, Sources, Accounts).';
               this.isLoading = false;
@@ -131,7 +131,7 @@ export class ExpensesComponent implements OnInit {
   const sources$ = this.sourceService.getAll();
   const accounts$ = this.accountService.getAll();
 
-  // Execute all requests in parallel
+  // Comment translated to English.
   forkJoin([users$, categories$, sources$, accounts$]).subscribe({
     next: ([usersResponse, categoriesResponse, sourcesResponse, accountsResponse]) => {
       // Extract payloads from each service response

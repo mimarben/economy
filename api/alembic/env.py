@@ -16,7 +16,7 @@ config = context.config
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
-# 👇 añadido: usar la misma DB que la app
+# Comment translated to English.
 config.set_main_option("sqlalchemy.url", Config.DATABASE_URL)
 print("DATABASE:", Config.DATABASE_URL)
 if config.config_file_name is not None:

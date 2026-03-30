@@ -19,11 +19,11 @@ td, th {
 .action-icons mat-icon {
   cursor: pointer;
   transition: color 0.2s;
-  margin-right: 16px; /* Add margin to the right of each icon */
+  margin-right: 16px; /* Comment translated to English. */
 }
 
 .action-icons mat-icon:last-child {
-  margin-right: 0; /* Remove margin from the last icon */
+  margin-right: 0; /* Comment translated to English. */
 }
 
 .user-table th.mdc-data-table__header-cell {

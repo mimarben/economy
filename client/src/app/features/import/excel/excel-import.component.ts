@@ -262,7 +262,7 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
       }
       const validRows = this.excelRows.filter((row) => {
         const amount = this.utilsService.parseAmount(row[amountIndex]);
-        // eliminar filas sin importe
+        // Drop rows without amount
         if (amount === null || amount === undefined || isNaN(amount) || amount === 0) {
           //console.log('Row without import:', row);
           return false;
@@ -310,7 +310,7 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
 //        })),
 //        rules: [] // Rules are now managed on the backend
 //      };
-//      this.isClassifying = true; // ← activa spinner
+//      this.isClassifying = true; // activates spinner
 //
 //      this.transactionAiService.publicclassify(payload).subscribe({
 //        next: res => {
@@ -324,12 +324,12 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
 //              tx.suggestedCategoryName = classification.category.suggested_new_category;
 //            }
 //          }
-//          this.transactions = categorized; // ← tabla aparece aquí
+//          this.transactions = categorized; // table is rendered here
 //          this.isClassifying = false;
 //        },
 //        error: err => {
-//          console.error('Error en classify:', err);
-//          this.transactions = categorized; // ← muestra igualmente si falla la IA
+//          console.error('Classification error:', err);
+//          this.transactions = categorized; // still render data if AI fails
 //          this.isClassifying = false;
 //        }
 //      });
@@ -471,11 +471,11 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
       account_id: t.account_id ?? this.selectedAccount?.id,
     }));
 
-    // IMPORTANTE:
-    // Hacer 2 llamadas separadas (/expenses/bulk y /incomes/bulk) NO garantiza atomicidad global.
-    // Para "todo o nada" real entre gastos+ingresos hace falta 1 endpoint backend único
-    // que envuelva ambas inserciones en la misma transacción.
-    // -> IMPLEMENTADO: Se llama al nuevo endpoint único y atómico.
+    // IMPORTANT:
+    // Comment translated to English.
+    // Real "all-or-nothing" behavior across expenses+incomes requires a single backend endpoint
+    // wrapping both insert operations in the same transaction.
+    // -> IMPLEMENTED: call the unified atomic endpoint.
 
     console.log('Expense bulk draft payload:', expensesDraftPayload);
     console.log('Income bulk draft payload:', incomesDraftPayload);

@@ -2,7 +2,7 @@
   width: 100%;
   background: #f5f5f5;
   color: #333;
-  padding: 6px 10px 10px; /* menos espacio arriba dentro del footer */
+  padding: 6px 10px 10px; /* less top space inside the footer */
   margin: 0;
   box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.05);
 
@@ -16,7 +16,7 @@
       h4 {
         font-size: 1rem;
         font-weight: 600;
-        margin: 0 0 8px 0; /* elimina margen superior y mantiene un poco de espacio abajo */
+        margin: 0 0 8px 0; /* remove top margin and keep slight spacing below */
         letter-spacing: 0.3px;
         color: #333;
       }
