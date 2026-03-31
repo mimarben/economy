@@ -12,8 +12,8 @@
     }
   </select>
 </mat-form-field>
-
-<mat-form-field *ngIf="selectedBank" style="margin-left: 16px; width: 240px;">
+@if (selectedBank) {
+<mat-form-field style="margin-left: 16px; width: 240px;">
   <mat-label>Cuenta</mat-label>
   <mat-select required [value]="selectedAccount?.id" (selectionChange)="onAccountSelected($event.value)">
     <mat-option [value]="null">Seleccionar cuenta</mat-option>
@@ -22,7 +22,7 @@
     }
   </mat-select>
 </mat-form-field>
-
+}
 <br><br>
 
 <!-- File upload Material style -->

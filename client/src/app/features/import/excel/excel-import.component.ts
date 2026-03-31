@@ -291,7 +291,9 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
         this.expenseCategories,
       );
       const uncategorized = categorized.filter(t => !t.suggestedCategoryId);
-
+      categorized
+        .filter(t => t.suggestedCategoryId)
+        .forEach(t => this.suggestSourceForTransaction(t, t.suggestedCategoryId!));
       console.log('Uncategorized transactions:', uncategorized);
 
       this.transactions = categorized;
@@ -444,10 +446,7 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
       account_id: t.account_id ?? this.selectedAccount?.id,
     }));
 
-    // IMPORTANT:
-    // Real "all-or-nothing" behavior across expenses+incomes requires a single backend endpoint
-    // wrapping both insert operations in the same transaction.
-    // -> IMPLEMENTED: call the unified atomic endpoint.
+  
 
     console.log('Expense bulk draft payload:', expensesDraftPayload);
     console.log('Income bulk draft payload:', incomesDraftPayload);
