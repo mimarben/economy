@@ -36,6 +36,7 @@ export class BanksAccountsComponent implements OnInit {
     { key: 'description', label: 'Description', sortable: false },
     { key: 'iban', label: 'IBAN', sortable: true },
     { key: 'balance', label: 'Balance', sortable: true },
+    { key: 'currency', label: 'Currency', sortable: true },
     { key: 'active', label: 'Active', sortable: true, formatter: (v) => v ? 'Yes' : 'No' },
     { key: 'bank_id', label: 'Bank-ID', sortable: true, formatter: (v: number) => this.getBankName(v) },
     { key: 'user_id', label: 'User-ID', sortable: true, formatter: (v: number) => this.getUserName(v) },

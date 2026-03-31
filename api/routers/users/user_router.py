@@ -44,21 +44,21 @@ def create_user():
     try:
         user_data = UserCreate.model_validate(request.json)
     except ValidationError as e:
-        return Response._error(_("VALIDATION_ERROR"), e.errors(), 400, name)
+        return Response.error(_("VALIDATION_ERROR"), e.errors(), 400, name)
 
     try:
         service: ICreateService = _get_create_service(db)
         result = service.create(user_data)
-        return Response._ok_data(
+        return Response.ok_data(
             result.model_dump(),
             _("USER_CREATED"),
             201,
             name
         )
     except ValueError as e:
-        return Response._error(_("INVALID_DATA"), str(e), 409, name)
+        return Response.error(_("INVALID_DATA"), str(e), 409, name)
     except Exception as e:
-        return Response._error(_("DATABASE_ERROR"), str(e), 500, name)
+        return Response.error(_("DATABASE_ERROR"), str(e), 500, name)
 
 
 @router.get("/users/<int:user_id>")
@@ -71,11 +71,11 @@ def get_user(user_id):
         result = service.get_by_id(user_id)
 
         if not result:
-            return Response._error(_("USER_NOT_FOUND"), _("USER_NOT_FOUND_DATABASE"), 404, name)
+            return Response.error(_("USER_NOT_FOUND"), _("USER_NOT_FOUND_DATABASE"), 404, name)
 
-        return Response._ok_data(result.model_dump(), _("USER_FOUND", id=user_id), 200, name)
+        return Response.ok_data(result.model_dump(), _("USER_FOUND", id=user_id), 200, name)
     except Exception as e:
-        return Response._error(_("DATABASE_ERROR"), str(e), 500, name)
+        return Response.error(_("DATABASE_ERROR"), str(e), 500, name)
 
 
 @router.get("/users")
@@ -87,14 +87,14 @@ def list_users():
         service: IReadService = _get_read_service(db)
         results = service.get_all()
 
-        return Response._ok_data(
+        return Response.ok_data(
             [r.model_dump() for r in results],
             _("USER_LIST"),
             200,
             name
         )
     except Exception as e:
-        return Response._error(_("DATABASE_ERROR"), str(e), 500, name)
+        return Response.error(_("DATABASE_ERROR"), str(e), 500, name)
 
 
 @router.patch("/users/<int:user_id>")
@@ -105,20 +105,20 @@ def update_user(user_id):
     try:
         user_data = UserUpdate.model_validate(request.json)
     except ValidationError as e:
-        return Response._error(_("VALIDATION_ERROR"), e.errors(), 400, name)
+        return Response.error(_("VALIDATION_ERROR"), e.errors(), 400, name)
 
     try:
         service: IUpdateService = _get_update_service(db)
         result = service.update(user_id, user_data)
 
         if not result:
-            return Response._error(_("USER_NOT_FOUND", id=user_id), _("USER_NOT_FOUND_DATABASE", id=user_id), 404, name)
+            return Response.error(_("USER_NOT_FOUND", id=user_id), _("USER_NOT_FOUND_DATABASE", id=user_id), 404, name)
 
-        return Response._ok_data(result.model_dump(), _("USER_UPDATED"), 200, name)
+        return Response.ok_data(result.model_dump(), _("USER_UPDATED"), 200, name)
     except ValueError as e:
-        return Response._error(_("INVALID_DATA"), str(e), 409, name)
+        return Response.error(_("INVALID_DATA"), str(e), 409, name)
     except Exception as e:
-        return Response._error(_("DATABASE_ERROR"), str(e), 500, name)
+        return Response.error(_("DATABASE_ERROR"), str(e), 500, name)
 
 
 @router.delete("/users/<int:user_id>")
@@ -131,8 +131,8 @@ def delete_user(user_id):
         success = service.delete(user_id)
 
         if not success:
-            return Response._error(_("USER_NOT_FOUND"), _("USER_NOT_FOUND_DATABASE"), 404, name)
+            return Response.error(_("USER_NOT_FOUND"), _("USER_NOT_FOUND_DATABASE"), 404, name)
 
-        return Response._ok_message(_("USER_DELETED"), 204, name)
+        return esponse.ok_message(_("USER_DELETED"), 204, name)
     except Exception as e:
-        return Response._error(_("DATABASE_ERROR"), str(e), 500, name)
+        return Response.error(_("DATABASE_ERROR"), str(e), 500, name)

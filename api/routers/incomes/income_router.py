@@ -37,38 +37,38 @@ def create():
     try:
         data = IncomeCreate.model_validate(request.json)
     except ValidationError as e:
-        return Response._error(_("VALIDATION_ERROR"), e.errors(), 400, name)
+        return Response.error(_("VALIDATION_ERROR"), e.errors(), 400, name)
     try:
         service: ICreateService = _get_create_service(db)
         result = service.create(data)
-        return Response._ok_data(result.model_dump(), _("INCOME_CREATED"), 201, name)
+        return Response.ok_data(result.model_dump(), _("INCOME_CREATED"), 201, name)
     except ValueError as e:
         if str(e) == "DUPLICATE_TRANSACTION":
-            return Response._error(_("DUPLICATE_TRANSACTION"), str(e), 409, name)
-        return Response._error(_("FK_ERROR"), str(e), 400, name)
+            return Response.error(_("DUPLICATE_TRANSACTION"), str(e), 409, name)
+        return Response.error(_("FK_ERROR"), str(e), 400, name)
     except Exception as e:
-        return Response._error(_("DATABASE_ERROR"), str(e), 500, name)
+        return Response.error(_("DATABASE_ERROR"), str(e), 500, name)
 
 @router.post("/incomes/bulk")
 def create_bulk():
     db: Session = next(get_db())
     if not isinstance(request.json, list):
-        return Response._error(_("VALIDATION_ERROR"), "Request body must be an array", 400, name)
+        return Response.error(_("VALIDATION_ERROR"), "Request body must be an array", 400, name)
 
     try:
         data = [IncomeCreate.model_validate(item) for item in request.json]
     except ValidationError as e:
-        return Response._error(_("VALIDATION_ERROR"), e.errors(), 400, name)
+        return Response.error(_("VALIDATION_ERROR"), e.errors(), 400, name)
 
     try:
         service = IncomeService(db)
         result = service.create_batch_atomic(data)
-        return Response._ok_data([r.model_dump() for r in result], _("INCOME_CREATED"), 201, name)
+        return Response.ok_data([r.model_dump() for r in result], _("INCOME_CREATED"), 201, name)
     except ValueError as e:
-        return Response._error(_("FK_ERROR"), str(e), 400, name)
+        return Response.error(_("FK_ERROR"), str(e), 400, name)
     except Exception as e:
         db.rollback()
-        return Response._error(_("DATABASE_ERROR"), str(e), 500, name)
+        return Response.error(_("DATABASE_ERROR"), str(e), 500, name)
 
 
 @router.get("/incomes/<int:id>")
@@ -77,8 +77,8 @@ def get_by_id(id):
     service: IReadService = _get_read_service(db)
     result = service.get_by_id(id)
     if not result:
-        return Response._error(_("INCOME_NOT_FOUND"), _("NONE"), 404, name)
-    return Response._ok_data(result.model_dump(), _("INCOME_FOUND"), 200, name)
+        return Response.error(_("INCOME_NOT_FOUND"), _("NONE"), 404, name)
+    return Response.ok_data(result.model_dump(), _("INCOME_FOUND"), 200, name)
 
 
 @router.get("/incomes")
@@ -86,7 +86,7 @@ def list_all():
     db: Session = next(get_db())
     service: IReadService = _get_read_service(db)
     results = service.get_all()
-    return Response._ok_data([r.model_dump() for r in results], _("INCOME_LIST"), 200, name)
+    return Response.ok_data([r.model_dump() for r in results], _("INCOME_LIST"), 200, name)
 
 
 @router.patch("/incomes/<int:id>")
@@ -95,15 +95,15 @@ def update(id):
     try:
         data = IncomeUpdate.model_validate(request.json)
     except ValidationError as e:
-        return Response._error(_("VALIDATION_ERROR"), e.errors(), 400, name)
+        return Response.error(_("VALIDATION_ERROR"), e.errors(), 400, name)
     try:
         service: IUpdateService = _get_update_service(db)
         result = service.update(id, data)
         if not result:
-            return Response._error(_("INCOME_NOT_FOUND"), _("NONE"), 404, name)
-        return Response._ok_data(result.model_dump(), _("INCOME_UPDATED"), 200, name)
+            return Response.error(_("INCOME_NOT_FOUND"), _("NONE"), 404, name)
+        return Response.ok_data(result.model_dump(), _("INCOME_UPDATED"), 200, name)
     except Exception as e:
-        return Response._error(_("DATABASE_ERROR"), str(e), 500, name)
+        return Response.error(_("DATABASE_ERROR"), str(e), 500, name)
 
 
 @router.delete("/incomes/<int:id>")
@@ -113,7 +113,7 @@ def delete(id):
         service: IDeleteService = _get_delete_service(db)
         success = service.delete(id)
         if not success:
-            return Response._error(_("INCOME_NOT_FOUND"), _("NONE"), 404, name)
-        return Response._ok_message(_("INCOME_DELETED"), 204, name)
+            return Response.error(_("INCOME_NOT_FOUND"), _("NONE"), 404, name)
+        return esponse.ok_message(_("INCOME_DELETED"), 204, name)
     except Exception as e:
-        return Response._error(_("DATABASE_ERROR"), str(e), 500, name)
+        return Response.error(_("DATABASE_ERROR"), str(e), 500, name)

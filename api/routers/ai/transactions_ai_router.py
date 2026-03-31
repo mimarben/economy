@@ -26,7 +26,7 @@ def classify():
 
         result = service.classify(transactions, rules)
 
-        return Response._ok_data(result, _("CLASSIFIED"), 200, name)
+        return Response.ok_data(result, _("CLASSIFIED"), 200, name)
 
     except Exception as e:
-        return Response._error(_("AI_ERROR"), str(e), 500, name)
+        return Response.error(_("AI_ERROR"), str(e), 500, name)

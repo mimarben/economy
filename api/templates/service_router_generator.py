@@ -114,16 +114,16 @@ def create_{entity_name}():
     try:
         data = {entity_class}Create.model_validate(request.json)
     except ValidationError as e:
-        return Response._error(_("VALIDATION_ERROR"), e.errors(), 400, name)
+        return Response.error(_("VALIDATION_ERROR"), e.errors(), 400, name)
 
     try:
         service: ICreateService = _get_create_service(db)
         result = service.create(data)
-        return Response._ok_data(result.model_dump(), _("{entity_upper}_CREATED"), 201, name)
+        return Response.ok_data(result.model_dump(), _("{entity_upper}_CREATED"), 201, name)
     except ValueError as e:
-        return Response._error(_("INVALID_DATA"), str(e), 400, name)
+        return Response.error(_("INVALID_DATA"), str(e), 400, name)
     except Exception as e:
-        return Response._error(_("DATABASE_ERROR"), str(e), 500, name)
+        return Response.error(_("DATABASE_ERROR"), str(e), 500, name)
 
 
 @router.get("/{entity_plural}/<int:{entity_name}_id>")
@@ -136,11 +136,11 @@ def get_{entity_name}({entity_name}_id):
         result = service.get_by_id({entity_name}_id)
 
         if not result:
-            return Response._error(_("{entity_upper}_NOT_FOUND"), _("NONE"), 404, name)
+            return Response.error(_("{entity_upper}_NOT_FOUND"), _("NONE"), 404, name)
 
-        return Response._ok_data(result.model_dump(), _("{entity_upper}_FOUND"), 200, name)
+        return Response.ok_data(result.model_dump(), _("{entity_upper}_FOUND"), 200, name)
     except Exception as e:
-        return Response._error(_("DATABASE_ERROR"), str(e), 500, name)
+        return Response.error(_("DATABASE_ERROR"), str(e), 500, name)
 
 
 @router.get("/{entity_plural}")
@@ -152,14 +152,14 @@ def list_{entity_plural}():
         service: IReadService = _get_read_service(db)
         results = service.get_all()
 
-        return Response._ok_data(
+        return Response.ok_data(
             [r.model_dump() for r in results],
             _("{entity_upper}_LIST"),
             200,
             name
         )
     except Exception as e:
-        return Response._error(_("DATABASE_ERROR"), str(e), 500, name)
+        return Response.error(_("DATABASE_ERROR"), str(e), 500, name)
 
 
 @router.patch("/{entity_plural}/<int:{entity_name}_id>")
@@ -170,18 +170,18 @@ def update_{entity_name}({entity_name}_id):
     try:
         data = {entity_class}Update.model_validate(request.json)
     except ValidationError as e:
-        return Response._error(_("VALIDATION_ERROR"), e.errors(), 400, name)
+        return Response.error(_("VALIDATION_ERROR"), e.errors(), 400, name)
 
     try:
         service: IUpdateService = _get_update_service(db)
         result = service.update({entity_name}_id, data)
 
         if not result:
-            return Response._error(_("{entity_upper}_NOT_FOUND"), _("NONE"), 404, name)
+            return Response.error(_("{entity_upper}_NOT_FOUND"), _("NONE"), 404, name)
 
-        return Response._ok_data(result.model_dump(), _("{entity_upper}_UPDATED"), 200, name)
+        return Response.ok_data(result.model_dump(), _("{entity_upper}_UPDATED"), 200, name)
     except Exception as e:
-        return Response._error(_("DATABASE_ERROR"), str(e), 500, name)
+        return Response.error(_("DATABASE_ERROR"), str(e), 500, name)
 
 
 @router.delete("/{entity_plural}/<int:{entity_name}_id>")
@@ -194,11 +194,11 @@ def delete_{entity_name}({entity_name}_id):
         success = service.delete({entity_name}_id)
 
         if not success:
-            return Response._error(_("{entity_upper}_NOT_FOUND"), _("NONE"), 404, name)
+            return Response.error(_("{entity_upper}_NOT_FOUND"), _("NONE"), 404, name)
 
-        return Response._ok_message(_("{entity_upper}_DELETED"), 204, name)
+        return esponse.ok_message(_("{entity_upper}_DELETED"), 204, name)
     except Exception as e:
-        return Response._error(_("DATABASE_ERROR"), str(e), 500, name)
+        return Response.error(_("DATABASE_ERROR"), str(e), 500, name)
 '''
 
 

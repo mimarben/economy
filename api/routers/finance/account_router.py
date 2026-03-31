@@ -5,14 +5,17 @@ from pydantic import ValidationError
 from flask_babel import _
 
 from schemas.finance.account_schema import AccountCreate, AccountUpdate
+
 from services.finance.account_service import AccountService
-from services.core.interfaces import IReadService, ICreateService, IUpdateService, IDeleteService
-from db.database import get_db
 from services.core.response_service import Response
+from services.core.interfaces import IReadService, ICreateService, IUpdateService, IDeleteService
+from services.logs.logger_service import setup_logger
+
+from db.database import get_db
 
 
 router = Blueprint("accounts", __name__)
-name = "accounts"
+NAME = "accounts"
 
 
 # Dependency Injection - Each endpoint depends only on what it needs (ISP)
@@ -44,16 +47,18 @@ def create():
     try:
         data = AccountCreate.model_validate(request.json)
     except ValidationError as e:
-        return Response._error(_("VALIDATION_ERROR"), e.errors(), 400, name)
+        return Response.error(_("VALIDATION_ERROR"), e.errors(), 400, NAME)
 
     try:
         service: ICreateService = _get_create_service(db)
         result = service.create(data)
-        return Response._ok_data(result.model_dump(), _("ACCOUNT_CREATED"), 201, name)
+        return Response.ok_data(result.model_dump(), _("ACCOUNT_CREATED"), 201, NAME)
     except ValueError as e:
-        return Response._error(_("INVALID_DATA"), str(e), 400, name)
+        return Response.error(_("INVALID_DATA"), str(e), 400, NAME)
     except Exception as e:
-        return Response._error(_("DATABASE_ERROR"), str(e), 500, name)
+        logger = setup_logger(NAME or "default_error_source")
+        logger.exception("Unhandled error in create %s: %s", NAME, str(e))
+        return Response.error(_("INTERNAL_ERROR"), _("UNEXPECTED_ERROR"), 500, NAME)
 
 
 @router.get("/accounts/<int:id>")
@@ -66,11 +71,13 @@ def get_by_id(id):
         result = service.get_by_id(id)
 
         if not result:
-            return Response._error(_("ACCOUNT_NOT_FOUND"), _("NONE"), 404, name)
+            return Response.error(_("ACCOUNT_NOT_FOUND"), _("NONE"), 404, NAME)
 
-        return Response._ok_data(result.model_dump(), _("ACCOUNT_FOUND"), 200, name)
+        return Response.ok_data(result.model_dump(), _("ACCOUNT_FOUND"), 200, NAME)
     except Exception as e:
-        return Response._error(_("DATABASE_ERROR"), str(e), 500, name)
+        logger = setup_logger(NAME or "default_error_source")
+        logger.exception("Unhandled error in create %s: %s", NAME, str(e))
+        return Response.error(_("INTERNAL_ERROR"), _("UNEXPECTED_ERROR"), 500, NAME)
 
 
 @router.get("/accounts")
@@ -82,14 +89,16 @@ def list_all():
         service: IReadService = _get_read_service(db)
         results = service.get_all()
 
-        return Response._ok_data(
+        return Response.ok_data(
             [r.model_dump() for r in results],
             _("ACCOUNT_LIST"),
             200,
-            name
+            NAME
         )
     except Exception as e:
-        return Response._error(_("DATABASE_ERROR"), str(e), 500, name)
+        logger = setup_logger(NAME or "default_error_source")
+        logger.exception("Unhandled error in create %s: %s", NAME, str(e))
+        return Response.error(_("INTERNAL_ERROR"), _("UNEXPECTED_ERROR"), 500, NAME)
 
 
 @router.patch("/accounts/<int:id>")
@@ -100,18 +109,20 @@ def update(id):
     try:
         data = AccountUpdate.model_validate(request.json)
     except ValidationError as e:
-        return Response._error(_("VALIDATION_ERROR"), e.errors(), 400, name)
+        return Response.error(_("VALIDATION_ERROR"), e.errors(), 400, NAME)
 
     try:
         service: IUpdateService = _get_update_service(db)
         result = service.update(id, data)
 
         if not result:
-            return Response._error(_("ACCOUNT_NOT_FOUND"), _("NONE"), 404, name)
+            return Response.error(_("ACCOUNT_NOT_FOUND"), _("NONE"), 404, NAME)
 
-        return Response._ok_data(result.model_dump(), _("ACCOUNT_UPDATED"), 200, name)
+        return Response.ok_data(result.model_dump(), _("ACCOUNT_UPDATED"), 200, NAME)
     except Exception as e:
-        return Response._error(_("DATABASE_ERROR"), str(e), 500, name)
+        logger = setup_logger(NAME or "default_error_source")
+        logger.exception("Unhandled error in create %s: %s", NAME, str(e))
+        return Response.error(_("INTERNAL_ERROR"), _("UNEXPECTED_ERROR"), 500, NAME)
 
 
 @router.delete("/accounts/<int:id>")
@@ -124,8 +135,10 @@ def delete(id):
         success = service.delete(id)
 
         if not success:
-            return Response._error(_("ACCOUNT_NOT_FOUND"), _("NONE"), 404, name)
+            return Response.error(_("ACCOUNT_NOT_FOUND"), _("NONE"), 404, NAME)
 
-        return Response._ok_message(_("ACCOUNT_DELETED"), 204, name)
+        return Response.ok_message(_("ACCOUNT_DELETED"), 204, NAME)
     except Exception as e:
-        return Response._error(_("DATABASE_ERROR"), str(e), 500, name)
+        logger = setup_logger(NAME or "default_error_source")
+        logger.exception("Unhandled error in create %s: %s", NAME, str(e))
+        return Response.error(_("INTERNAL_ERROR"), _("UNEXPECTED_ERROR"), 500, NAME)

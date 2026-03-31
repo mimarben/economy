@@ -15,6 +15,7 @@ export class FormFactoryService {
       { key: 'description', label: 'Description', type: 'text', maxLength: 200, minLength: 2 },
       { key: 'iban', label: 'IBAN', type: 'text', required: true, pattern: '^[A-Z0-9]{15,34}$', minLength: 24, maxLength: 24 },
       { key: 'balance', label: 'Balance', type: 'number', required: true, min: 0 },
+      { key: 'currency', label: 'Currency', type: 'select', required: true, options: this.getCurrencyOptions() },
       { key: 'active', label: 'Active', type: 'checkbox' },
       { key: 'bank_id', label: 'Bank ID', type: 'select', required: true },
       { key: 'user_id', label: 'User ID', type: 'select', required: true }

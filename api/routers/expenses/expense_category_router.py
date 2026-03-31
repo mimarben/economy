@@ -34,15 +34,15 @@ def create():
     try:
         data = ExpenseCategoryCreate.model_validate(request.json)
     except ValidationError as e:
-        return Response._error(_("VALIDATION_ERROR"), e.errors(), 400, name)
+        return Response.error(_("VALIDATION_ERROR"), e.errors(), 400, name)
     try:
         service: ICreateService = _get_create_service(db)
         result = service.create(data)
-        return Response._ok_data(result.model_dump(), _("EXPENSE_CATEGORY_CREATED"), 201, name)
+        return Response.ok_data(result.model_dump(), _("EXPENSE_CATEGORY_CREATED"), 201, name)
     except ValueError as e:
-        return Response._error(_("INVALID_DATA"), str(e), 400, name)
+        return Response.error(_("INVALID_DATA"), str(e), 400, name)
     except Exception as e:
-        return Response._error(_("DATABASE_ERROR"), str(e), 500, name)
+        return Response.error(_("DATABASE_ERROR"), str(e), 500, name)
 
 
 @router.get("/expenses_categories/<int:id>")
@@ -52,10 +52,10 @@ def get_by_id(id):
         service: IReadService = _get_read_service(db)
         result = service.get_by_id(id)
         if not result:
-            return Response._error(_("EXPENSE_CATEGORY_NOT_FOUND"), _("NONE"), 404, name)
-        return Response._ok_data(result.model_dump(), _("EXPENSE_CATEGORY_FOUND"), 200, name)
+            return Response.error(_("EXPENSE_CATEGORY_NOT_FOUND"), _("NONE"), 404, name)
+        return Response.ok_data(result.model_dump(), _("EXPENSE_CATEGORY_FOUND"), 200, name)
     except Exception as e:
-        return Response._error(_("DATABASE_ERROR"), str(e), 500, name)
+        return Response.error(_("DATABASE_ERROR"), str(e), 500, name)
 
 
 @router.get("/expenses_categories")
@@ -64,9 +64,9 @@ def list_all():
     try:
         service: IReadService = _get_read_service(db)
         results = service.get_all()
-        return Response._ok_data([r.model_dump() for r in results], _("EXPENSE_CATEGORY_LIST"), 200, name)
+        return Response.ok_data([r.model_dump() for r in results], _("EXPENSE_CATEGORY_LIST"), 200, name)
     except Exception as e:
-        return Response._error(_("DATABASE_ERROR"), str(e), 500, name)
+        return Response.error(_("DATABASE_ERROR"), str(e), 500, name)
 
 
 @router.patch("/expenses_categories/<int:id>")
@@ -75,15 +75,15 @@ def update(id):
     try:
         data = ExpenseCategoryUpdate.model_validate(request.json)
     except ValidationError as e:
-        return Response._error(_("VALIDATION_ERROR"), e.errors(), 400, name)
+        return Response.error(_("VALIDATION_ERROR"), e.errors(), 400, name)
     try:
         service: IUpdateService = _get_update_service(db)
         result = service.update(id, data)
         if not result:
-            return Response._error(_("EXPENSE_CATEGORY_NOT_FOUND"), _("NONE"), 404, name)
-        return Response._ok_data(result.model_dump(), _("EXPENSE_CATEGORY_UPDATED"), 200, name)
+            return Response.error(_("EXPENSE_CATEGORY_NOT_FOUND"), _("NONE"), 404, name)
+        return Response.ok_data(result.model_dump(), _("EXPENSE_CATEGORY_UPDATED"), 200, name)
     except Exception as e:
-        return Response._error(_("DATABASE_ERROR"), str(e), 500, name)
+        return Response.error(_("DATABASE_ERROR"), str(e), 500, name)
 
 
 @router.delete("/expenses_categories/<int:id>")
@@ -93,7 +93,7 @@ def delete(id):
         service: IDeleteService = _get_delete_service(db)
         success = service.delete(id)
         if not success:
-            return Response._error(_("EXPENSE_CATEGORY_NOT_FOUND"), _("NONE"), 404, name)
-        return Response._ok_message(_("EXPENSE_CATEGORY_DELETED"), 204, name)
+            return Response.error(_("EXPENSE_CATEGORY_NOT_FOUND"), _("NONE"), 404, name)
+        return esponse.ok_message(_("EXPENSE_CATEGORY_DELETED"), 204, name)
     except Exception as e:
-        return Response._error(_("DATABASE_ERROR"), str(e), 500, name)
+        return Response.error(_("DATABASE_ERROR"), str(e), 500, name)

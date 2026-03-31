@@ -1,35 +1,50 @@
+"""
+Logging utilities for the application.
+
+Provides a centralized logger configuration with:
+- Daily rotating file logs
+- Console output
+- Safe fallback if file logging fails
+
+All modules should use `setup_logger` to ensure consistent logging behavior.
+"""
+
 import os
 import logging
 from logging.handlers import TimedRotatingFileHandler
-from datetime import datetime
 
-def setup_logger(name=None):
+
+def setup_logger(name: str | None = None) -> logging.Logger:
     log_dir = "logs"
-    
     logger = logging.getLogger(name)
-    logger.setLevel(logging.DEBUG)
 
-    # Prevent duplicate handlers
-    if not logger.handlers:
-        log_formatter = logging.Formatter(
-            "[%(asctime)s] %(levelname)s in %(name)s: %(message)s"
+    if logger.hasHandlers():
+        return logger
+
+    level = os.getenv("LOG_LEVEL", "INFO").upper()
+    logger.setLevel(level)
+
+    formatter = logging.Formatter(
+        "[%(asctime)s] %(levelname)s in %(name)s: %(message)s"
+    )
+
+    try:
+        os.makedirs(log_dir, exist_ok=True)
+        log_file = os.path.join(log_dir, "app.log")
+
+        file_handler = TimedRotatingFileHandler(
+            log_file,
+            when="midnight",
+            interval=1,
+            backupCount=7
         )
-        
-        # Try to setup file handler with daily rotation
-        try:
-            os.makedirs(log_dir, exist_ok=True)
-            log_file = os.path.join(log_dir, f"app-{datetime.now().strftime('%Y-%m-%d')}.log")
-            file_handler = TimedRotatingFileHandler(log_file, when="midnight", interval=1)
-            file_handler.suffix = "%Y-%m-%d"
-            file_handler.setFormatter(log_formatter)
-            logger.addHandler(file_handler)
-        except (OSError, PermissionError) as e:
-            # If file logging fails due to permissions or other errors, continue with console only
-            print(f"Warning: Could not setup file logging: {e}")
+        file_handler.setFormatter(formatter)
+        logger.addHandler(file_handler)
 
-        # Console handler for all cases
-        console_handler = logging.StreamHandler()
-        console_handler.setFormatter(log_formatter)
-        logger.addHandler(console_handler)
+    except (OSError, PermissionError):
+        logging.basicConfig(level=level)
 
+    console_handler = logging.StreamHandler()
+    console_handler.setFormatter(formatter)
+    logger.addHandler(console_handler)
     return logger

@@ -39,15 +39,15 @@ def create():
     try:
         data = CategoryRuleCreate.model_validate(request.json)
     except ValidationError as e:
-        return Response._error(_("VALIDATION_ERROR"), e.errors(), 400, name)
+        return Response.error(_("VALIDATION_ERROR"), e.errors(), 400, name)
     try:
         service: ICreateService = _get_create_service(db)
         result = service.create(data)
-        return Response._ok_data(result.model_dump(), _("CATEGORY_RULE_CREATED"), 201, name)
+        return Response.ok_data(result.model_dump(), _("CATEGORY_RULE_CREATED"), 201, name)
     except ValueError as e:
-        return Response._error(_("INVALID_DATA"), str(e), 400, name)
+        return Response.error(_("INVALID_DATA"), str(e), 400, name)
     except Exception as e:
-        return Response._error(_("DATABASE_ERROR"), str(e), 500, name)
+        return Response.error(_("DATABASE_ERROR"), str(e), 500, name)
 
 
 @router.get("/category_rules/<int:id>")
@@ -58,10 +58,10 @@ def get_by_id(id):
         service: IReadService = _get_read_service(db)
         result = service.get_by_id(id)
         if not result:
-            return Response._error(_("CATEGORY_RULE_NOT_FOUND"), _("NONE"), 404, name)
-        return Response._ok_data(result.model_dump(), _("CATEGORY_RULE_FOUND"), 200, name)
+            return Response.error(_("CATEGORY_RULE_NOT_FOUND"), _("NONE"), 404, name)
+        return Response.ok_data(result.model_dump(), _("CATEGORY_RULE_FOUND"), 200, name)
     except Exception as e:
-        return Response._error(_("DATABASE_ERROR"), str(e), 500, name)
+        return Response.error(_("DATABASE_ERROR"), str(e), 500, name)
 
 
 @router.get("/category_rules")
@@ -71,9 +71,9 @@ def list_all():
     try:
         service: IReadService = _get_read_service(db)
         results = service.get_all()
-        return Response._ok_data([r.model_dump() for r in results], _("CATEGORY_RULE_LIST"), 200, name)
+        return Response.ok_data([r.model_dump() for r in results], _("CATEGORY_RULE_LIST"), 200, name)
     except Exception as e:
-        return Response._error(_("DATABASE_ERROR"), str(e), 500, name)
+        return Response.error(_("DATABASE_ERROR"), str(e), 500, name)
 
 
 @router.get("/category_rules/by_type/<string:transaction_type>")
@@ -83,11 +83,11 @@ def get_active_by_type(transaction_type: str):
     try:
         service = CategoryRuleService(db)
         results = service.get_active_by_type(transaction_type)
-        return Response._ok_data([r.model_dump() for r in results], _("CATEGORY_RULE_LIST"), 200, name)
+        return Response.ok_data([r.model_dump() for r in results], _("CATEGORY_RULE_LIST"), 200, name)
     except ValueError as e:
-        return Response._error(_("INVALID_DATA"), str(e), 400, name)
+        return Response.error(_("INVALID_DATA"), str(e), 400, name)
     except Exception as e:
-        return Response._error(_("DATABASE_ERROR"), str(e), 500, name)
+        return Response.error(_("DATABASE_ERROR"), str(e), 500, name)
 
 
 @router.patch("/category_rules/<int:id>")
@@ -97,17 +97,17 @@ def update(id):
     try:
         data = CategoryRuleUpdate.model_validate(request.json)
     except ValidationError as e:
-        return Response._error(_("VALIDATION_ERROR"), e.errors(), 400, name)
+        return Response.error(_("VALIDATION_ERROR"), e.errors(), 400, name)
     try:
         service: IUpdateService = _get_update_service(db)
         result = service.update(id, data)
         if not result:
-            return Response._error(_("CATEGORY_RULE_NOT_FOUND"), _("NONE"), 404, name)
-        return Response._ok_data(result.model_dump(), _("CATEGORY_RULE_UPDATED"), 200, name)
+            return Response.error(_("CATEGORY_RULE_NOT_FOUND"), _("NONE"), 404, name)
+        return Response.ok_data(result.model_dump(), _("CATEGORY_RULE_UPDATED"), 200, name)
     except ValueError as e:
-        return Response._error(_("INVALID_DATA"), str(e), 400, name)
+        return Response.error(_("INVALID_DATA"), str(e), 400, name)
     except Exception as e:
-        return Response._error(_("DATABASE_ERROR"), str(e), 500, name)
+        return Response.error(_("DATABASE_ERROR"), str(e), 500, name)
 
 
 @router.delete("/category_rules/<int:id>")
@@ -117,7 +117,7 @@ def delete(id):
     try:
         service: IDeleteService = _get_delete_service(db)
         if not service.delete(id):
-            return Response._error(_("CATEGORY_RULE_NOT_FOUND"), _("NONE"), 404, name)
-        return Response._ok_data(None, _("CATEGORY_RULE_DELETED"), 200, name)
+            return Response.error(_("CATEGORY_RULE_NOT_FOUND"), _("NONE"), 404, name)
+        return Response.ok_data(None, _("CATEGORY_RULE_DELETED"), 200, name)
     except Exception as e:
-        return Response._error(_("DATABASE_ERROR"), str(e), 500, name)
+        return Response.error(_("DATABASE_ERROR"), str(e), 500, name)

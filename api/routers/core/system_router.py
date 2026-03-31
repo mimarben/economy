@@ -30,7 +30,7 @@ def get_db_info():
         else:
             version = "Unknown"
 
-        return Response._ok_data(
+        return Response.ok_data(
             {
                 "dialect": dialect,
                 "driver": engine.dialect.driver,
@@ -42,7 +42,7 @@ def get_db_info():
         )
 
     except Exception as e:
-        return Response._error(
+        return Response.error(
             _("DATABASE_ERROR"),
             str(e),
             500,

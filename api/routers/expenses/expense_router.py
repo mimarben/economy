@@ -48,13 +48,13 @@ def create_expense():
         # ✅ Only validate format, not DB constraints
         expense_data = ExpenseCreate.model_validate(request.json)
     except ValidationError as e:
-        return Response._error(_("VALIDATION_ERROR"), e.errors(), 400, name)
+        return Response.error(_("VALIDATION_ERROR"), e.errors(), 400, name)
 
     try:
         # ✅ Depend only on create interface
         service: ICreateService = _get_create_service(db)
         result = service.create(expense_data)
-        return Response._ok_data(
+        return Response.ok_data(
             result.model_dump(),
             _("EXPENSE_CREATED"),
             201,
@@ -62,11 +62,11 @@ def create_expense():
         )
     except ValueError as e:
         if str(e) == "DUPLICATE_TRANSACTION":
-            return Response._error(_("DUPLICATE_TRANSACTION"), str(e), 409, name)
+            return Response.error(_("DUPLICATE_TRANSACTION"), str(e), 409, name)
         # ForeignKey validation errors from service
-        return Response._error(_("FK_ERROR"), str(e), 400, name)
+        return Response.error(_("FK_ERROR"), str(e), 400, name)
     except Exception as e:
-        return Response._error(_("DATABASE_ERROR"), str(e), 500, name)
+        return Response.error(_("DATABASE_ERROR"), str(e), 500, name)
 
 
 @router.post("/expenses/bulk")
@@ -79,27 +79,27 @@ def create_expenses_bulk():
     db: Session = next(get_db())
 
     if not isinstance(request.json, list):
-        return Response._error(_("VALIDATION_ERROR"), "Request body must be an array", 400, name)
+        return Response.error(_("VALIDATION_ERROR"), "Request body must be an array", 400, name)
 
     try:
         expenses_data = [ExpenseCreate.model_validate(item) for item in request.json]
     except ValidationError as e:
-        return Response._error(_("VALIDATION_ERROR"), e.errors(), 400, name)
+        return Response.error(_("VALIDATION_ERROR"), e.errors(), 400, name)
 
     try:
         service = ExpenseService(db)
         result = service.create_batch_atomic(expenses_data)
-        return Response._ok_data(
+        return Response.ok_data(
             [item.model_dump() for item in result],
             _("EXPENSE_CREATED"),
             201,
             name
         )
     except ValueError as e:
-        return Response._error(_("FK_ERROR"), str(e), 400, name)
+        return Response.error(_("FK_ERROR"), str(e), 400, name)
     except Exception as e:
         db.rollback()
-        return Response._error(_("DATABASE_ERROR"), str(e), 500, name)
+        return Response.error(_("DATABASE_ERROR"), str(e), 500, name)
 
 
 @router.get("/expenses/<int:expense_id>")
@@ -112,9 +112,9 @@ def get_expense(expense_id):
     result = service.get_by_id(expense_id)
 
     if not result:
-        return Response._error(_("EXPENSE_NOT_FOUND"), _("NONE"), 404, name)
+        return Response.error(_("EXPENSE_NOT_FOUND"), _("NONE"), 404, name)
 
-    return Response._ok_data(result.model_dump(), _("EXPENSE_FOUND"), 200, name)
+    return Response.ok_data(result.model_dump(), _("EXPENSE_FOUND"), 200, name)
 
 
 @router.get("/expenses")
@@ -125,7 +125,7 @@ def list_expenses():
     service: IReadService = _get_read_service(db)
     results = service.get_all()
 
-    return Response._ok_data(
+    return Response.ok_data(
         [exp.model_dump() for exp in results],
         _("EXPENSE_LIST"),
         200,
@@ -141,7 +141,7 @@ def update_expense(expense_id):
     try:
         expense_data = ExpenseUpdate.model_validate(request.json)
     except ValidationError as e:
-        return Response._error(_("VALIDATION_ERROR"), e.errors(), 400, name)
+        return Response.error(_("VALIDATION_ERROR"), e.errors(), 400, name)
 
     try:
         # Depend only on update interface
@@ -149,11 +149,11 @@ def update_expense(expense_id):
         result = service.update(expense_id, expense_data)
 
         if not result:
-            return Response._error(_("EXPENSE_NOT_FOUND"), _("NONE"), 404, name)
+            return Response.error(_("EXPENSE_NOT_FOUND"), _("NONE"), 404, name)
 
-        return Response._ok_data(result.model_dump(), _("EXPENSE_UPDATED"), 200, name)
+        return Response.ok_data(result.model_dump(), _("EXPENSE_UPDATED"), 200, name)
     except Exception as e:
-        return Response._error(_("DATABASE_ERROR"), str(e), 500, name)
+        return Response.error(_("DATABASE_ERROR"), str(e), 500, name)
 
 
 @router.delete("/expenses/<int:expense_id>")
@@ -167,11 +167,11 @@ def delete_expense(expense_id):
         success = service.delete(expense_id)
 
         if not success:
-            return Response._error(_("EXPENSE_NOT_FOUND"), _("NONE"), 404, name)
+            return Response.error(_("EXPENSE_NOT_FOUND"), _("NONE"), 404, name)
 
-        return Response._ok_message(_("EXPENSE_DELETED"), 204, name)
+        return esponse.ok_message(_("EXPENSE_DELETED"), 204, name)
     except Exception as e:
-        return Response._error(_("DATABASE_ERROR"), str(e), 500, name)
+        return Response.error(_("DATABASE_ERROR"), str(e), 500, name)
 
 
 @router.get("/expenses/user/<int:user_id>")
@@ -185,13 +185,13 @@ def get_user_expenses(user_id):
         results = service.get_by_user(user_id)
 
         if not results:
-            return Response._error(_("EXPENSE_NOT_FOUND"), _("NONE"), 404, name)
+            return Response.error(_("EXPENSE_NOT_FOUND"), _("NONE"), 404, name)
 
-        return Response._ok_data(
+        return Response.ok_data(
             [r.model_dump() for r in results],
             _("EXPENSE_FOUND"),
             200,
             name
         )
     except Exception as e:
-        return Response._error(_("DATABASE_ERROR"), str(e), 500, name)
+        return Response.error(_("DATABASE_ERROR"), str(e), 500, name)

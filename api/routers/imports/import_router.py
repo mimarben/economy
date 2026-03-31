@@ -25,19 +25,19 @@ def import_transactions_bulk():
     try:
         data = BulkImportRequest.model_validate(request.json)
     except ValidationError as e:
-        return Response._error(_("VALIDATION_ERROR"), e.errors(), 400, name)
+        return Response.error(_("VALIDATION_ERROR"), e.errors(), 400, name)
 
     try:
         service = ImportService(db)
         result = service.import_transactions_atomic(data)
-        return Response._ok_data(
+        return Response.ok_data(
             result,
             _("TRANSACTIONS_IMPORTED", default="Transactions imported successfully"),
             201,
             name
         )
     except ValueError as e:
-        return Response._error(_("FK_ERROR"), str(e), 400, name)
+        return Response.error(_("FK_ERROR"), str(e), 400, name)
     except Exception as e:
         db.rollback()
-        return Response._error(_("DATABASE_ERROR"), str(e), 500, name)
+        return Response.error(_("DATABASE_ERROR"), str(e), 500, name)

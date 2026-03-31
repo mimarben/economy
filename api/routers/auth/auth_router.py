@@ -22,21 +22,21 @@ def register():
     try:
         data = RegisterRequest.model_validate(request.json)
     except ValidationError as e:
-        return Response._error(_("VALIDATION_ERROR"), e.errors(), 400, name)
+        return Response.error(_("VALIDATION_ERROR"), e.errors(), 400, name)
 
     try:
         service = AuthService(db)
         user = service.register(data)
-        return Response._ok_data(
+        return Response.ok_data(
             user.model_dump(),
             _("USER_REGISTERED"),
             201,
             name
         )
     except ValueError as e:
-        return Response._error(_("REGISTRATION_ERROR"), str(e), 409, name)
+        return Response.error(_("REGISTRATION_ERROR"), str(e), 409, name)
     except Exception as e:
-        return Response._error(_("DATABASE_ERROR"), str(e), 500, name)
+        return Response.error(_("DATABASE_ERROR"), str(e), 500, name)
 
 
 @router.post("/auth/login")
@@ -47,28 +47,28 @@ def login():
     try:
         data = LoginRequest.model_validate(request.json)
     except ValidationError as e:
-        return Response._error(_("VALIDATION_ERROR"), e.errors(), 400, name)
+        return Response.error(_("VALIDATION_ERROR"), e.errors(), 400, name)
 
     try:
         service = AuthService(db)
         result = service.login(data)
 
         if not result:
-            return Response._error(
+            return Response.error(
                 _("AUTH_FAILED"),
                 _("INVALID_CREDENTIALS"),
                 401,
                 name
             )
 
-        return Response._ok_data(
+        return Response.ok_data(
             result.model_dump(),
             _("LOGIN_SUCCESS"),
             200,
             name
         )
     except Exception as e:
-        return Response._error(_("DATABASE_ERROR"), str(e), 500, name)
+        return Response.error(_("DATABASE_ERROR"), str(e), 500, name)
 
 
 @router.post("/auth/refresh")
@@ -82,16 +82,16 @@ def refresh():
         service = AuthService(db)
         result = service.refresh(current_user_id)
 
-        return Response._ok_data(
+        return Response.ok_data(
             result.model_dump(),
             _("TOKEN_REFRESHED"),
             200,
             name
         )
     except ValueError as e:
-        return Response._error(_("AUTH_ERROR"), str(e), 404, name)
+        return Response.error(_("AUTH_ERROR"), str(e), 404, name)
     except Exception as e:
-        return Response._error(_("DATABASE_ERROR"), str(e), 500, name)
+        return Response.error(_("DATABASE_ERROR"), str(e), 500, name)
 
 
 @router.get("/auth/me")
@@ -106,13 +106,13 @@ def me():
         user = service.get_current_user(current_user_id)
 
         if not user:
-            return Response._error(_("USER_NOT_FOUND"), _("USER_NOT_FOUND"), 404, name)
+            return Response.error(_("USER_NOT_FOUND"), _("USER_NOT_FOUND"), 404, name)
 
-        return Response._ok_data(
+        return Response.ok_data(
             user.model_dump(),
             _("USER_FOUND"),
             200,
             name
         )
     except Exception as e:
-        return Response._error(_("DATABASE_ERROR"), str(e), 500, name)
+        return Response.error(_("DATABASE_ERROR"), str(e), 500, name)

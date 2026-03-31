@@ -71,7 +71,7 @@ def get_summary():
             result = service.get_year_summary()
         else:  # custom range
             if not start_date_str or not end_date_str:
-                return Response._error(
+                return Response.error(
                     "VALIDATION_ERROR",
                     "start_date and end_date are required for custom period",
                     400,
@@ -82,7 +82,7 @@ def get_summary():
                 start_date = date.fromisoformat(start_date_str)
                 end_date = date.fromisoformat(end_date_str)
             except ValueError as e:
-                return Response._error(
+                return Response.error(
                     "VALIDATION_ERROR",
                     f"Invalid date format. Use YYYY-MM-DD: {str(e)}",
                     400,
@@ -91,12 +91,12 @@ def get_summary():
 
             result = service.get_summary(start_date, end_date)
 
-        return Response._ok_data(result.model_dump(), "SUMMARY_FOUND", 200, name)
+        return Response.ok_data(result.model_dump(), "SUMMARY_FOUND", 200, name)
 
     except ValueError as e:
-        return Response._error("VALIDATION_ERROR", str(e), 400, name)
+        return Response.error("VALIDATION_ERROR", str(e), 400, name)
     except Exception as e:
-        return Response._error("DATABASE_ERROR", f"Internal server error: {str(e)}", 500, name)
+        return Response.error("DATABASE_ERROR", f"Internal server error: {str(e)}", 500, name)
 
 
 @router.get("/summary/week")
@@ -109,9 +109,9 @@ def get_week_summary():
     try:
         service = SummaryService(db)
         result = service.get_week_summary()
-        return Response._ok_data(result.model_dump(), "SUMMARY_FOUND", 200, name)
+        return Response.ok_data(result.model_dump(), "SUMMARY_FOUND", 200, name)
     except Exception as e:
-        return Response._error("DATABASE_ERROR", f"Internal server error: {str(e)}", 500, name)
+        return Response.error("DATABASE_ERROR", f"Internal server error: {str(e)}", 500, name)
 
 
 @router.get("/summary/month")
@@ -124,9 +124,9 @@ def get_month_summary():
     try:
         service = SummaryService(db)
         result = service.get_month_summary()
-        return Response._ok_data(result.model_dump(), "SUMMARY_FOUND", 200, name)
+        return Response.ok_data(result.model_dump(), "SUMMARY_FOUND", 200, name)
     except Exception as e:
-        return Response._error("DATABASE_ERROR", f"Internal server error: {str(e)}", 500, name)
+        return Response.error("DATABASE_ERROR", f"Internal server error: {str(e)}", 500, name)
 
 
 @router.get("/summary/year")
@@ -139,6 +139,6 @@ def get_year_summary():
     try:
         service = SummaryService(db)
         result = service.get_year_summary()
-        return Response._ok_data(result.model_dump(), "SUMMARY_FOUND", 200, name)
+        return Response.ok_data(result.model_dump(), "SUMMARY_FOUND", 200, name)
     except Exception as e:
-        return Response._error("DATABASE_ERROR", f"Internal server error: {str(e)}", 500, name)
+        return Response.error("DATABASE_ERROR", f"Internal server error: {str(e)}", 500, name)
