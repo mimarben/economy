@@ -5,7 +5,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { GenericTableComponent, TableColumn } from '@shared/generic-table/generic-table.component';
 import { UserService } from '@users_services/user.service';
 import { UserBase as User } from '@users_models/UserBase';
-import { ApiResponse } from '@core_models/apiResponse';
+import { ApiResponse } from '@app/models/core/APIResponse';
 import { UserFromDialogComponent } from './user-form-dialog/user-form-dialog.component';
 
 @Component({

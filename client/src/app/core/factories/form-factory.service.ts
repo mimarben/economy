@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { FormFieldConfig } from '@shared/generic-form/form-config';
 import { TableColumn } from '@shared/generic-table/generic-table.component';
-import { RoleEnum } from '@households_models/HouseholdMemberBase';
-import { CurrencyEnum } from '@savings_models/SavingBase';
-import { ActionEnum } from '@investments_models/InvestmentLogBase';
-type ModelType = 'account' | 'bank' | "houseHold" | 'houseHoldMember' | 'source' | 'saving_log' | "saving" | 'investment' | 'investment_category' | 'investment_log' |'income' |'income_category' | 'expense' | 'expense_category';
+import { RoleEnum } from '@core/const/Role.enum';
+import { CurrencyEnum } from '@core/const/Currency.enum';
+import { ActionEnum } from '@core/const/Action.enum';
+import { SourceEnum } from '@core/const/Source.enum';
+type ModelType = 'account' | 'bank' | "houseHold" | 'houseHoldMember' | 'saving_log' | "source" | "saving" | 'investment' | 'investment_category' | 'investment_log' |'income' |'income_category' | 'expense' | 'expense_category';
 
 @Injectable({ providedIn: 'root' })
 export class FormFactoryService {
@@ -40,12 +41,14 @@ export class FormFactoryService {
       { key: 'user_id', label: 'User', type: 'select',required: true},
       { key: 'active', label: 'Active', type: 'checkbox' },
     ],
-    source:[
-      { key: 'id', label: 'Id', type: 'number' },
-      { key: 'name', label: 'Source Name', type: 'text', required: true },
-      { key: 'description', label: 'Description', type: 'text' },
-      { key: 'active', label: 'Active', type: 'checkbox' }
-    ],
+    source: [],
+   //source:[
+   //  { key: 'id', label: 'Id', type: 'number' },
+   //  { key: 'name', label: 'Source Name', type: 'text', required: true },
+   //  { key: 'description', label: 'Description', type: 'text' },
+   //  { key: 'type', label: 'Type', type: 'select', required: true, options: this.getSourceOptions() },
+   //  { key: 'active', label: 'Active', type: 'checkbox' }
+   //],
     saving_log:[
       { key: 'id', label: 'Id', type: 'number' },
       { key: 'date', label: 'Date', type: 'date', required: true},
@@ -140,7 +143,7 @@ export class FormFactoryService {
           sortable: this.isSortable(field.key, modelType),
           formatter:
             externalFormatters?.[field.key] ??
-            this.getFormatter(field.key, field.type, modelType)
+            this.getFormatter(field.key, field.type, field.options)
         } as TableColumn<T>;
       });
   }
@@ -188,17 +191,29 @@ export class FormFactoryService {
 
     return !nonSortableFields[modelType].includes(key);
   }
-  private getFormatter(key: string, type: string, modelType: ModelType): ((value: any) => string) | undefined {
-    // Define custom formatters for specific fields
-    if (type === 'checkbox') {
-      return (value: boolean) => value ? 'Yes' : 'No';
-    }
-    // Add more custom formatters as needed for different field types
-    if (key === 'balance' && modelType === 'account') {
-      return (value: number) => `$${value.toFixed(2)}`;
-    }
-    return undefined;
+private getFormatter(
+  key: string,
+  type: string,
+  options?: { value: any; label: string }[]
+): ((value: any) => string) | undefined {
+  
+  if (type === 'checkbox') {
+    return (value: boolean) => value ? 'Yes' : 'No';
   }
+
+  if (type === 'number') {
+    return (value: number) => value?.toString();
+  }
+
+  if (type === 'select' && options) {
+    return (value: any) => {
+      const match = options.find(o => o.value === value);
+      return match ? match.label : value;
+    };
+  }
+
+  return undefined;
+}
 
   getFormConfig(modelType: ModelType): FormFieldConfig[] {
     return this.formConfigMap[modelType] ?? [];
@@ -206,14 +221,35 @@ export class FormFactoryService {
 
    // Method to generate Role options
   getRoleOptions() {
-    const roles: RoleEnum[] = ['husband', 'wife', 'child', 'other'];
+    const roles: RoleEnum[] = [
+    RoleEnum.HUSBAND,
+    RoleEnum.WIFE,
+    RoleEnum.CHILD,
+    RoleEnum.OTHER
+  ];
     return roles.map(role => ({
       value: role,
       label: role.charAt(0).toUpperCase() + role.slice(1),  // Capitalizing first letter for display
     }));
   }
   getCurrencyOptions(){
-    const currencies: CurrencyEnum[] = ["€","$","¥","₿","Ξ","USDC","DOGE","LTC","XRP","XLM","ADA","DOT","SOL","SHIB","TRX"];
+    const currencies: CurrencyEnum[] = [
+      CurrencyEnum.EUR,
+      CurrencyEnum.USD,
+      CurrencyEnum.JPY,
+      CurrencyEnum.BTC,
+      CurrencyEnum.ETH,
+      CurrencyEnum.USDC,
+      CurrencyEnum.DOGE,
+      CurrencyEnum.LTC,
+      CurrencyEnum.XRP,
+      CurrencyEnum.XLM,
+      CurrencyEnum.ADA,
+      CurrencyEnum.DOT,
+      CurrencyEnum.SOL,
+      CurrencyEnum.SHIB,
+      CurrencyEnum.TRX
+    ];
     return currencies.map(currencies => ({
       value: currencies,
       label: currencies.charAt(0).toUpperCase() + currencies.slice(1),  // Capitalizing first letter for display
@@ -221,10 +257,39 @@ export class FormFactoryService {
   }
 
   getActionsOptions(){
-    const actions: ActionEnum[] = ["buy", "sell", "transfer", "deposit", "withdraw", "hold"];
+    const actions: ActionEnum[] = [
+      ActionEnum.BUY,
+      ActionEnum.SELL,
+      ActionEnum.TRANSFER,
+      ActionEnum.DEPOSIT,
+      ActionEnum.WITHDRAW,
+      ActionEnum.HOLD
+    ];
     return actions.map(actions => ({
       value: actions,
       label: actions.charAt(0).toUpperCase() + actions.slice(1),
     }));
   }
+  getSourceOptions(){
+    const sources: SourceEnum[] = [
+      SourceEnum.INCOME,
+      SourceEnum.SAVING,
+      SourceEnum.INVESTMENT,
+      SourceEnum.EXPENSE,
+      SourceEnum.OTHER
+    ];
+    return sources.map(sources => ({
+      value: sources,
+      label: sources.charAt(0).toUpperCase() + sources.slice(1),
+    }));
+  }
+
+  getTableColumnsFromMetadata<T>(fields: FormFieldConfig[]): TableColumn<T>[] {
+  return fields.map(field => ({
+    key: field.key,
+    label: field.label,
+    sortable: true,
+    formatter: this.getFormatter(field.key, field.type, field.options)
+  }));
+}
 }

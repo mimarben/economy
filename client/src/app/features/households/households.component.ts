@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { GenericDialogComponent } from '@shared/generic-dialog/generic-dialog.component';
 import { HouseholdBase as Household } from '@households_models/HouseholdBase';
 import { GenericTableComponent, TableColumn } from "@shared/generic-table/generic-table.component";
-import { ApiResponse } from '@core_models/apiResponse';
+import { ApiResponse } from '@app/models/core/APIResponse';
 import { FormFactoryService } from '@app/core/factories/form-factory.service';
 import { FormFieldConfig } from '@shared/generic-form/form-config';
 import { ToastService } from '@core_services/toast.service';

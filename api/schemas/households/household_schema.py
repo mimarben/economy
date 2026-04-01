@@ -1,8 +1,5 @@
 from typing import Optional
-
 from pydantic import BaseModel
-
-from utils.schema_exporter import export_schema
 from schemas.core.audit_schema import AuditFields
 
 
@@ -30,5 +27,3 @@ class HouseholdUpdate(BaseModel):
     description: Optional[str] = None
     active: Optional[bool] = None
 
-
-export_schema(HouseholdBase)

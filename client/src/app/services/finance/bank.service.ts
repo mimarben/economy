@@ -8,7 +8,7 @@ import { HttpClient } from '@angular/common/http';
 import { BaseCrudService } from '@core_services/base-crud.service';
 import { BankBase as Bank } from '@finance_models/BankBase';
 import { Observable } from 'rxjs';
-import { ApiResponse } from '@core_models/apiResponse';
+import { ApiResponse } from '@app/models/core/APIResponse';
 
 @Injectable({
   providedIn: 'root',

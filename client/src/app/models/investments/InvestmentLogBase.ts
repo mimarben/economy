@@ -4,12 +4,11 @@
  * DO NOT MODIFY IT BY HAND. Instead, modify the source JSONSchema file,
  * and run json-schema-to-typescript to regenerate this file.
  */
-
+import { ActionEnum } from '@core/const/Action.enum';
 export type Date = string;
 export type Currentvalue = number;
 export type Priceperunit = number;
 export type Unitsbought = number;
-export type ActionEnum = "buy" | "sell" | "transfer" | "deposit" | "withdraw" | "hold";
 export type Note = string;
 export type InvestmentId = number;
 

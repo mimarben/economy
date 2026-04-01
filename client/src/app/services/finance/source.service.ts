@@ -11,7 +11,7 @@ import { BaseCrudService } from '@core_services/base-crud.service';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '@env/environment';
-import { ApiResponse } from '@core_models/apiResponse';
+import { ApiResponse } from '@app/models/core/APIResponse';
 import { SourceBase as Source } from '@finance_models/SourceBase';
 
 @Injectable({

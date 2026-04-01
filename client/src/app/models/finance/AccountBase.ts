@@ -5,7 +5,7 @@
  * and run json-schema-to-typescript to regenerate this file.
  */
 
-import { CurrencyEnum } from "../core/CurrencyBase";
+import { CurrencyEnum } from "@core/const/Currency.enum";
 
 export type Name = string;
 export type Description = string | null;

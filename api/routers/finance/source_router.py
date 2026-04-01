@@ -4,11 +4,12 @@ from sqlalchemy.orm import Session
 from pydantic import ValidationError
 from flask_babel import _
 
-from schemas.finance.source_schema import SourceCreate, SourceUpdate
+from schemas.finance.source_schema import SourceBase, SourceCreate, SourceUpdate
 from services.finance.source_service import SourceService
 from services.core.interfaces import IReadService, ICreateService, IUpdateService, IDeleteService
 from services.core.response_service import Response
 from services.logs.logger_service import setup_logger
+from utils.export_schema import export_schema
 
 from db.database import get_db
 
@@ -50,11 +51,11 @@ def create():
         return Response.error(_("INTERNAL_ERROR"), _("UNEXPECTED_ERROR"), 500, NAME)
 
 
-@router.get("/sources/<int:id>")
-def get_by_id(id):
+@router.get("/sources/<int:source_id>")
+def get_by_id(source_id: int):
     db: Session = next(get_db())
     service: IReadService = _get_read_service(db)
-    result = service.get_by_id(id)
+    result = service.get_by_id(source_id)
     if not result:
         return Response.error(_("SOURCE_NOT_FOUND"), _("NONE"), 404, NAME)
     return Response.ok_data(result.model_dump(), _("SOURCE_FOUND"), 200, NAME)
@@ -90,8 +91,8 @@ def suggest_source():
         return Response.error(_("INTERNAL_ERROR"), _("UNEXPECTED_ERROR"), 500, NAME)
 
 
-@router.patch("/sources/<int:id>")
-def update(id):
+@router.patch("/sources/<int:source_id>")
+def update(source_id: int):
     db: Session = next(get_db())
     try:
         data = SourceUpdate.model_validate(request.json)
@@ -99,7 +100,7 @@ def update(id):
         return Response.error(_("VALIDATION_ERROR"), e.errors(), 400, NAME)
     try:
         service: IUpdateService = _get_update_service(db)
-        result = service.update(id, data)
+        result = service.update(source_id, data)
         if not result:
             return Response.error(_("SOURCE_NOT_FOUND"), _("NONE"), 404, NAME)
         return Response.ok_data(result.model_dump(), _("SOURCE_UPDATED"), 200, NAME)
@@ -110,11 +111,11 @@ def update(id):
 
 
 @router.delete("/sources/<int:id>")
-def delete(id):
+def delete(source_id: int):
     db: Session = next(get_db())
     try:
         service: IDeleteService = _get_delete_service(db)
-        success = service.delete(id)
+        success = service.delete(source_id)
         if not success:
             return Response.error(_("SOURCE_NOT_FOUND"), _("NONE"), 404, NAME)
         return Response.ok_message(_("SOURCE_DELETED"), 204, NAME)
@@ -122,3 +123,7 @@ def delete(id):
         logger = setup_logger(NAME or "default_error_source")
         logger.exception("Unhandled error in delete %s: %s", NAME, str(e))
         return Response.error(_("INTERNAL_ERROR"), _("UNEXPECTED_ERROR"), 500, NAME)
+
+@router.get("/meta/source")
+def get_source_meta():
+    return export_schema(SourceBase)

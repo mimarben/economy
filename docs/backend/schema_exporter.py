@@ -5,7 +5,7 @@ from pathlib import Path
 from pydantic import BaseModel
 from typing import Type
 
-def export_schema(model: Type[BaseModel], generate_ts: bool = False):
+def schema_exporter(model: Type[BaseModel], generate_ts: bool = False):
     """Exporta el esquema JSON del modelo y genera el modelo TypeScript con json2ts."""
     schema = model.model_json_schema()
     file_name = f"{model.__name__}_schema.json"

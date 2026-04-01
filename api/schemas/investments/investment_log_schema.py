@@ -1,23 +1,21 @@
-from datetime import date
-from decimal import Decimal
 from typing import Optional
+from datetime import date as DateType
 
+from decimal import Decimal
 from pydantic import BaseModel, Field
-
-from models import ActionEnum
-from utils.schema_exporter import export_schema
+from models.core.enums import ActionEnum
 from schemas.core.audit_schema import AuditFields
 
 
 class InvestmentLogBase(BaseModel):
     """Base schema for InvestmentLog aligned with ORM model."""
 
-    date: date
+    date: DateType = Field(...)
     current_value: Decimal = Field(..., gt=0)
     price_per_unit: Optional[Decimal] = Field(None, gt=0)
     units_bought: Optional[Decimal] = Field(None, gt=0)
-    action: ActionEnum
-    note: Optional[str] = None
+    action: ActionEnum = Field(...)
+    note: Optional[str] = Field(None)
     investment_id: int = Field(..., gt=0)
 
 
@@ -36,17 +34,14 @@ class InvestmentLogCreate(InvestmentLogBase):
 class InvestmentLogUpdate(BaseModel):
     """Schema for updating InvestmentLog - all fields optional."""
 
-    date: Optional[date] = None
+    date: Optional[DateType] = Field(None)
     current_value: Optional[Decimal] = Field(None, gt=0)
     price_per_unit: Optional[Decimal] = Field(None, gt=0)
     units_bought: Optional[Decimal] = Field(None, gt=0)
-    action: Optional[ActionEnum] = None
-    note: Optional[str] = None
+    action: Optional[ActionEnum] = Field(None)
+    note: Optional[str] = Field(None)
     investment_id: Optional[int] = Field(None, gt=0)
 
 
 class InvestmentLogDelete(BaseModel):
     pass
-
-
-export_schema(InvestmentLogBase)

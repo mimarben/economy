@@ -3,10 +3,11 @@ import { MatDialog } from '@angular/material/dialog';
 import { GenericDialogComponent } from '@shared/generic-dialog/generic-dialog.component';
 import { SourceBase as Source } from '@finance_models/SourceBase';
 import { GenericTableComponent, TableColumn } from "@shared/generic-table/generic-table.component";
-import { ApiResponse } from '@core_models/apiResponse';
+import { ApiResponse } from '@app/models/core/APIResponse';
 import { FormFactoryService } from '@app/core/factories/form-factory.service';
 import { FormFieldConfig } from '@shared/generic-form/form-config';
 import { ToastService } from '@core_services/toast.service';
+import { MetaService } from '@core_services/meta.service';
 import { environment } from '@env/environment';
 import { SourceService } from '@finance_services/source.service';
 @Component({
@@ -29,13 +30,20 @@ constructor(
           private cdr: ChangeDetectorRef,
           private dialog: MatDialog,
           private toastService: ToastService,
-          private formFactory: FormFactoryService
+          private formFactory: FormFactoryService,
+          private metaService: MetaService
           ){}
 ngOnInit(): void {
-    this.formFields = this.formFactory.getFormConfig('source');
-    this.columns = this.formFactory.getTableColumns<Source>('source');
+  this.metaService.getMeta('source').subscribe(meta => {
+    this.formFields = meta.fields;
+    this.columns = [
+      { key: 'id', label: 'Id', sortable: true }, // opcional pero recomendable
+      ...this.formFactory.getTableColumnsFromMetadata(meta.fields)
+    ];
+    console.log(this.columns);
     this.loadSources();
-  }
+  });
+}
 loadSources(){
 this.isLoading = true;
     this.sourceService.getAll().subscribe({
@@ -59,7 +67,7 @@ openDialog(data?: Source): void {
     const dialogRef = this.dialog.open(GenericDialogComponent, {
       data: {
         title: data ? 'Edit Source' : 'New Source',
-        fields: this.formFactory.getFormConfig('source'),
+        fields: this.formFields,
         initialData: data || {},
       },
     });

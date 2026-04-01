@@ -1,10 +1,7 @@
 import re
 from typing import Optional
-
 from pydantic import BaseModel, EmailStr, field_validator
-
-from models import UserRoleEnum
-from utils.schema_exporter import export_schema
+from models.core.enums import UserRoleEnum
 from schemas.core.audit_schema import AuditFields
 
 
@@ -97,6 +94,3 @@ class UserUpdate(BaseModel):
         if value is None:
             return value
         return check_password(value)
-
-
-export_schema(UserBase)

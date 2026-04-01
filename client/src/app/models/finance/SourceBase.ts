@@ -8,11 +8,12 @@
 export type Name = string;
 export type Description = string | null;
 export type Active = boolean;
-
+import { SourceEnum } from "@core/const/Source.enum";
 export interface SourceBase {
   id?: number;
   name: Name;
   description?: Description;
+  type: SourceEnum;
   active?: Active;
   created_at?: string;
   updated_at?: string;

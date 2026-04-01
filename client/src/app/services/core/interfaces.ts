@@ -4,8 +4,8 @@
  */
 
 import { Observable } from 'rxjs';
-import { ApiResponse } from '@core_models/apiResponse';
-import { WithAuditFields } from '@core_models/auditable';
+import { ApiResponse } from '@app/models/core/APIResponse';
+import { WithAuditFields } from '@app/models/core/Auditable';
 
 /**
  * Interface for read operations only

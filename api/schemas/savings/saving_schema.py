@@ -1,11 +1,9 @@
-from datetime import date
-from decimal import Decimal
 from typing import Optional
+from datetime import date as DateType
 
+from decimal import Decimal
 from pydantic import BaseModel, Field
-
-from models import CurrencyEnum
-from utils.schema_exporter import export_schema
+from models.core.enums import CurrencyEnum
 from schemas.core.audit_schema import AuditFields
 
 
@@ -14,7 +12,7 @@ class SavingBase(BaseModel):
 
     description: str = Field(..., min_length=1, max_length=500)
     amount: Decimal = Field(..., gt=0)
-    date: date
+    date: DateType = Field(...)
     currency: CurrencyEnum
     account_id: int = Field(..., gt=0)
 
@@ -36,13 +34,10 @@ class SavingUpdate(BaseModel):
 
     description: Optional[str] = Field(None, min_length=1, max_length=500)
     amount: Optional[Decimal] = Field(None, gt=0)
-    date: Optional[date] = None
+    date: Optional[DateType] = Field(None)
     currency: Optional[CurrencyEnum] = None
     account_id: Optional[int] = Field(None, gt=0)
 
 
 class SavingDelete(BaseModel):
     pass
-
-
-export_schema(SavingBase)

@@ -6,8 +6,9 @@ from flask_babel import _
 from schemas.expenses.expense_schema import ExpenseCreate, ExpenseUpdate
 from services.expenses.expense_service import ExpenseService
 from services.core.interfaces import ICreateService, IReadService, IUpdateService, IDeleteService
-from db.database import get_db
 from services.core.response_service import Response
+
+from db.database import get_db
 
 
 router = Blueprint('expenses', __name__)

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HotToastService, ToastOptions } from '@ngxpert/hot-toast';
 import { environment } from '@env/environment';
-import { ApiResponse } from '@core_models/apiResponse';
+import { ApiResponse } from '@app/models/core/APIResponse';
 
 @Injectable({ providedIn: 'root' })
 export class ToastService {

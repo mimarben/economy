@@ -5,7 +5,7 @@ import { GenericTableComponent, TableColumn } from '@shared/generic-table/generi
 import { GenericDialogComponent } from '@shared/generic-dialog/generic-dialog.component';
 import { ToastService } from '@core_services/toast.service';
 import { environment } from '@env/environment';
-import { ApiResponse } from '@core_models/apiResponse';
+import { ApiResponse } from '@app/models/core/APIResponse';
 import { IncomeBase as Income } from '@incomes_models/IncomeBase';
 import { UserBase as User } from '@users_models/UserBase';
 import { IncomeCategoryBase as IncomeCategory } from '@incomes_models/IncomeCategoryBase';

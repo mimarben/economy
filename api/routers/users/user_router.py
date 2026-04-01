@@ -133,6 +133,6 @@ def delete_user(user_id):
         if not success:
             return Response.error(_("USER_NOT_FOUND"), _("USER_NOT_FOUND_DATABASE"), 404, name)
 
-        return esponse.ok_message(_("USER_DELETED"), 204, name)
+        return Response.ok_message(_("USER_DELETED"), 204, name)
     except Exception as e:
         return Response.error(_("DATABASE_ERROR"), str(e), 500, name)

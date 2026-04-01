@@ -7,22 +7,7 @@
 export type Description = string | null;
 export type Amount = number;
 export type Date = string;
-export type CurrencyEnum =
-  | "€"
-  | "$"
-  | "¥"
-  | "₿"
-  | "Ξ"
-  | "USDC"
-  | "DOGE"
-  | "LTC"
-  | "XRP"
-  | "XLM"
-  | "ADA"
-  | "DOT"
-  | "SOL"
-  | "SHIB"
-  | "TRX";
+import { CurrencyEnum } from '@core/const/Currency.enum';
 export type AccountId = number;
 
 export interface SavingBase {

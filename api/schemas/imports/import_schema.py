@@ -1,8 +1,7 @@
-from pydantic import BaseModel, Field
 from typing import List, Optional
-from schemas.expenses.expense_schema import ExpenseCreate
-from schemas.incomes.income_schema import IncomeCreate
-from utils.schema_exporter import export_schema
+from pydantic import BaseModel, Field
+
+
 
 
 class ExpenseImportCreate(BaseModel):
@@ -36,6 +35,3 @@ class BulkImportRequest(BaseModel):
     incomes: List[IncomeImportCreate] = Field(default_factory=list)
     # Option: auto_categorize transactions if category_id is null
     auto_categorize: bool = Field(default=True)
-
-
-export_schema(BulkImportRequest)

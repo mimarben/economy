@@ -14,7 +14,7 @@
   },
   "properties": {
     "name": {
-      "title": "Name",
+      "title": "Source Name",
       "type": "string"
     },
     "description": {
@@ -35,7 +35,8 @@
       "type": "boolean"
     },
     "type": {
-      "$ref": "#/$defs/SourceTypeEnum"
+      "$ref": "#/$defs/SourceTypeEnum",
+      "title": "Type"
     }
   },
   "required": [

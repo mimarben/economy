@@ -1,6 +1,5 @@
-from pydantic import BaseModel
 from typing import Optional
-from utils.schema_exporter import export_schema
+from pydantic import BaseModel
 from schemas.core.audit_schema import AuditFields
 class PlaceBase(BaseModel):
     name: str
@@ -19,4 +18,3 @@ class PlaceCreate(PlaceBase):
 class PlaceUpdate(PlaceBase):
     pass
 
-export_schema(PlaceBase)

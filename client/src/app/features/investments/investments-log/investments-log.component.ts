@@ -5,7 +5,7 @@ import { GenericTableComponent } from '@shared/generic-table/generic-table.compo
 import { TableColumn } from '@shared/generic-table/generic-table.component';
 import { ToastService } from '@core_services/toast.service';
 import { environment } from '@env/environment';
-import { ApiResponse } from '@core_models/apiResponse';
+import { ApiResponse } from '@app/models/core/APIResponse';
 import { InvestmentLogBase as InvestmentLog } from '@investments_models/InvestmentLogBase';
 import { FormFieldConfig } from '@shared/generic-form/form-config';
 import { InvestmentLogService } from '@investments_services/investment-log.service';

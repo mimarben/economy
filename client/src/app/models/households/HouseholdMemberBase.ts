@@ -5,7 +5,7 @@
  * and run json-schema-to-typescript to regenerate this file.
  */
 
-export type RoleEnum = "husband" | "wife" | "child" | "other";
+import { RoleEnum } from '@core/const/Role.enum';
 export type HouseholdId = number;
 export type UserId = number;
 export type Active = boolean;

@@ -1,11 +1,10 @@
-from pydantic import BaseModel
 from typing import Optional
-from utils.schema_exporter import export_schema
+from pydantic import BaseModel, Field
 from schemas.core.audit_schema import AuditFields
 class IncomeCategoryBase(BaseModel):
-    name: str
-    description: Optional[str] = None
-    active: bool = True
+    name: Optional[str] = Field(None, min_length=1, max_length=255)
+    description: Optional[str] = Field(None, max_length=500)
+    active: Optional[bool] = None
 class IncomeCategoryRead(IncomeCategoryBase, AuditFields):
     id: int
 
@@ -16,8 +15,6 @@ class IncomeCategoryCreate(IncomeCategoryBase):
     pass
 
 class IncomeCategoryUpdate(BaseModel):
-    name: Optional[str]
-    description: Optional[str]
-    active: Optional[bool]
-
-export_schema(IncomeCategoryBase)
+    name: Optional[str] = Field(None, min_length=1, max_length=255)
+    description: Optional[str] = Field(None, max_length=500)
+    active: Optional[bool] = None

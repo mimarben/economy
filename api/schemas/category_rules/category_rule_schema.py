@@ -5,7 +5,7 @@ from typing import Optional
 
 from pydantic import BaseModel, field_validator
 
-from models import TransactionEnum
+from models.core.enums import TransactionEnum
 from schemas.core.audit_schema import AuditFields
 
 

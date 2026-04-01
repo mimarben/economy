@@ -7,7 +7,7 @@ import { MATERIAL_IMPORTS } from '@app/utils/material.imports';
 
 import { UserBase as User, USER_ROLE_OPTIONS } from '@users_models/UserBase';
 import { UserService } from '@users_services/user.service';
-import { ApiResponse } from '@core_models/apiResponse';
+import { ApiResponse } from '@app/models/core/APIResponse';
 import { ToastService } from '@core_services/toast.service';
 import { environment } from '@env/environment';
 @Component({

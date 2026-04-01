@@ -1,6 +1,5 @@
-from pydantic import BaseModel
 from typing import Optional
-from utils.schema_exporter import export_schema
+from pydantic import BaseModel
 from schemas.core.audit_schema import AuditFields
 
 class BankBase(BaseModel):
@@ -22,5 +21,3 @@ class BankUpdate(BaseModel):
     cif: Optional[str]
     description: Optional[str]
     active: Optional[bool]
-
-export_schema(BankBase)

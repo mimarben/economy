@@ -1,10 +1,7 @@
-from decimal import Decimal
 from typing import Optional
-
+from decimal import Decimal
 from pydantic import BaseModel, Field
-
-from models import CurrencyEnum
-from utils.schema_exporter import export_schema
+from models.core.enums import CurrencyEnum
 from schemas.core.audit_schema import AuditFields
 
 
@@ -40,5 +37,3 @@ class AccountUpdate(BaseModel):
     bank_id: Optional[int] = Field(None, gt=0)
     user_id: Optional[int] = Field(None, gt=0)
 
-
-export_schema(AccountBase)
