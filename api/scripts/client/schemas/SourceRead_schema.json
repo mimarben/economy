@@ -13,6 +13,29 @@
     }
   },
   "properties": {
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "updated_at": {
+      "format": "date-time",
+      "title": "Updated At",
+      "type": "string"
+    },
+    "deleted_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Deleted At"
+    },
     "name": {
       "title": "Source Name",
       "type": "string"
@@ -37,12 +60,19 @@
     "type": {
       "$ref": "#/$defs/SourceTypeEnum",
       "title": "Type"
+    },
+    "id": {
+      "title": "Id",
+      "type": "integer"
     }
   },
   "required": [
+    "created_at",
+    "updated_at",
     "name",
-    "type"
+    "type",
+    "id"
   ],
-  "title": "SourceBase",
+  "title": "SourceRead",
   "type": "object"
 }

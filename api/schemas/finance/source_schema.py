@@ -2,6 +2,7 @@ from typing import Optional
 from pydantic import BaseModel, Field
 from models.core.enums import SourceTypeEnum
 from schemas.core.audit_schema import AuditFields
+from scripts.export_models import schema_exporter
 class SourceBase(BaseModel):
     name: str = Field(..., title="Source Name")
     description: Optional[str] = Field(None, title="Description")
@@ -21,3 +22,5 @@ class SourceUpdate(BaseModel):
     description: Optional[str] = Field(None, title="Description")
     active: Optional[bool] = Field(None, title="Active")
     type: Optional[SourceTypeEnum] = Field(None, title="Type")
+
+schema_exporter(SourceRead, generate_ts=True)

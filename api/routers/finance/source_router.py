@@ -9,7 +9,7 @@ from services.finance.source_service import SourceService
 from services.core.interfaces import IReadService, ICreateService, IUpdateService, IDeleteService
 from services.core.response_service import Response
 from services.logs.logger_service import setup_logger
-from utils.export_schema import export_schema
+from schemas.core.export_schema import export_schema
 
 from db.database import get_db
 
