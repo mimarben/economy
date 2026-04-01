@@ -1,6 +1,7 @@
 """Repository for Source entity following segregated interfaces."""
 from repositories.core.base_repository import BaseRepository
 from models import Source
+from models.core.enums import SourceTypeEnum
 
 
 class SourceRepository(BaseRepository[Source]):
@@ -11,7 +12,12 @@ class SourceRepository(BaseRepository[Source]):
 
     def get_active_by_type(self, source_type: str):
         """Return first active source of given type (enum value)."""
-        stmt = self._base_query().where(Source.type == source_type, Source.active.is_(True))
+        try:
+            source_enum = SourceTypeEnum(source_type)
+        except ValueError:
+            return None
+
+        stmt = self._base_query().where(Source.type == source_enum, Source.active.is_(True)).order_by(Source.id)
         return self.db.execute(stmt).scalars().first()
 
     def get_first_active(self):
