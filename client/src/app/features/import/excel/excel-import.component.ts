@@ -275,7 +275,7 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
         balance: this.utilsService.parseAmount(row[balanceIndex]),
         suggestedCategoryId: null,
         suggestedCategoryName: null,
-        source_id: this.sources[0]?.id ?? null,
+        source_id: null,
         account_id: this.selectedAccount?.id ?? null,
         suggestedSourceId: null,
         suggestedAccountId: this.selectedAccount?.id ?? null,
@@ -355,6 +355,14 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
       return;
     }
 
+    const sourceByDescription = this.findSourceByDescription(transaction);
+    if (sourceByDescription?.id) {
+      transaction.suggestedSourceId = sourceByDescription.id;
+      transaction.source_id = sourceByDescription.id;
+      this.updateDataSource();
+      return;
+    }
+
     const transactionType: 'expense' | 'income' | 'investment' = transaction.amount < 0 ? 'expense' : 'income';
 
     this.sourceService.suggestSource(categoryId, transactionType).subscribe({
@@ -374,14 +382,33 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
     });
   }
 
+  private findSourceByDescription(transaction: ImportTransaction): Source | null {
+    const description = this.utilsService.normalize(String(transaction.description ?? ''));
+    if (!description) return null;
+
+    const expectedType = transaction.amount < 0 ? 'expense' : 'income';
+    const candidates = this.sources.filter((s) => s.type === expectedType);
+    if (!candidates.length) return null;
+
+    const sortedByNameLength = [...candidates].sort(
+      (a, b) => (b.name?.length ?? 0) - (a.name?.length ?? 0)
+    );
+
+    return (
+      sortedByNameLength.find((source) => {
+        const sourceName = this.utilsService.normalize(String(source.name ?? ''));
+        return !!sourceName && description.includes(sourceName);
+      }) ?? null
+    );
+  }
+
   private applySourceFallback(transaction: ImportTransaction) {
-    if (this.sources.length > 0) {
-      transaction.suggestedSourceId = this.sources[0].id ?? null;
-      transaction.source_id = this.sources[0].id ?? null;
-    } else {
-      transaction.suggestedSourceId = null;
-      transaction.source_id = null;
-    }
+    const expectedType = transaction.amount < 0 ? 'expense' : 'income';
+    const sourceByType = this.sources.find((s) => s.type === expectedType);
+    const fallbackSource = sourceByType ?? this.sources[0];
+
+    transaction.suggestedSourceId = fallbackSource?.id ?? null;
+    transaction.source_id = fallbackSource?.id ?? null;
     this.updateDataSource();
   }
 
