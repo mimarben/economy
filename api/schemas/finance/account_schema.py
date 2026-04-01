@@ -1,24 +1,44 @@
-from typing import Optional
+from typing import List, Optional
 from decimal import Decimal
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
+
 from models.core.enums import CurrencyEnum
 from schemas.core.audit_schema import AuditFields
-
+from schemas.cards.card_schema import CardRead
 
 class AccountBase(BaseModel):
     name: str
     description: Optional[str] = None
     iban: Optional[str] = None
-    currency: CurrencyEnum
-    balance: Optional[Decimal] = None
-    active: bool = True
+    currency: CurrencyEnum = Field(...)
+    initial_balance: Decimal = Field(
+        default=0,
+        max_digits=12,
+        decimal_places=2
+    )
+    balance: Optional[Decimal] = Field(
+        default=None,
+        max_digits=12,
+        decimal_places=2
+    )
+    active: bool = Field(default=True)
     bank_id: int = Field(..., gt=0)
     user_id: int = Field(..., gt=0)
 
+    @field_validator("balance")
+    @classmethod
+    def validate_balance(cls, v):
+        return v  # no restrinjas (puede ser negativo en cuentas reales)
 
+    @field_validator("iban")
+    @classmethod
+    def validate_iban(cls, v):
+        if v and len(v) < 15:
+            raise ValueError("Invalid IBAN")
+        return v
 class AccountRead(AccountBase, AuditFields):
     id: int
-
+    cards: List[CardRead] = []
     class Config:
         from_attributes = True
 

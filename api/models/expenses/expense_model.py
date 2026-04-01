@@ -1,4 +1,14 @@
-from sqlalchemy import Column, Integer, String, Numeric, Date, ForeignKey, Enum as SQLEnum, UniqueConstraint
+from sqlalchemy import (
+    Boolean,
+    Column,
+    Integer,
+    String,
+    Numeric,
+    Date,
+    ForeignKey,
+    Enum as SQLEnum,
+    UniqueConstraint
+)
 from sqlalchemy.orm import relationship
 
 from ..core.base import Base, TimestampMixin
@@ -17,14 +27,17 @@ class Expense(TimestampMixin, Base):
     amount = Column(Numeric(12, 2), nullable=False)
     date = Column(Date, nullable=False)
     currency = Column(SQLEnum(CurrencyEnum), nullable=False)
+    ignore_in_analysis = Column(Boolean, default=False, nullable=False)
     dedup_hash = Column(String(64), nullable=False, index=True)
 
     # Foreign Keys
     source_id = Column(Integer, ForeignKey('sources.id'), nullable=False, index=True)
     category_id = Column(Integer, ForeignKey('expenses_categories.id'), nullable=False, index=True)
     account_id = Column(Integer, ForeignKey('accounts.id'), nullable=False, index=True)
-
+    card_id = Column(Integer, ForeignKey("cards.id"), nullable=True)
+    
     # Relationships
     source = relationship('Source', back_populates='expenses')
     category = relationship('ExpensesCategory', back_populates='expenses')
     account = relationship('Account', back_populates='expenses')
+    card = relationship("Card",  back_populates='expenses')

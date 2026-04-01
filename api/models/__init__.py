@@ -34,6 +34,8 @@ from .households import Household, HouseholdMember
 # Category Rules
 from .category_rules import CategoryRule
 
+from .cards import Card
+
 __all__ = [
     'Base',
     'TimestampMixin',
@@ -60,4 +62,5 @@ __all__ = [
     'Household',
     'HouseholdMember',
     'CategoryRule',
+    'Card',
 ]

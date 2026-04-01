@@ -8,7 +8,15 @@ from alembic import context
 
 from models import Base  # Import your Base class here
 
+import models  # 🔥 IMPORTANTE: carga todos los modelos
+
+
 from config import Config
+
+print("TABLES:", Base.metadata.tables.keys())
+
+target_metadata = Base.metadata
+
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

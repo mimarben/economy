@@ -16,6 +16,7 @@ class Account(TimestampMixin, Base):
     currency = Column(SQLEnum(CurrencyEnum), nullable=False)
     active = Column(Boolean, default=True, nullable=False)
     balance = Column(Numeric(12, 2), nullable=True)
+    
     # Foreign Keys
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False, index=True)
     bank_id = Column(Integer, ForeignKey('banks.id'), nullable=False, index=True)
@@ -28,3 +29,4 @@ class Account(TimestampMixin, Base):
     investments = relationship('Investment', back_populates='account')
     expenses = relationship('Expense', back_populates='account')
     incomes = relationship('Income', back_populates='account')
+    cards = relationship('Card', back_populates='account')

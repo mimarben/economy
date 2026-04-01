@@ -12,10 +12,13 @@ class ExpenseBase(BaseModel):
     amount: Decimal = Field(..., gt=0)
     date: DateType = Field(...)
     currency: CurrencyEnum = Field(...)
-    dedup_hash: str = Field(..., min_length=64, max_length=64)
+    #dedup_hash: str = Field(..., min_length=64, max_length=64)
     source_id: int = Field(..., gt=0)
     category_id: int = Field(..., gt=0)
     account_id: int = Field(..., gt=0)
+    
+    card_id: Optional[int] = Field(None, gt=0)
+    #ignore_in_analysis: bool = Field(default=False, exclude=True)
 
     @field_validator('amount')
     @classmethod
@@ -24,11 +27,19 @@ class ExpenseBase(BaseModel):
             raise ValueError('amount must be greater than 0')
         return v
 
-
+    @field_validator("card_id")
+    @classmethod
+    def validate_card(cls, v, info):
+        if v is not None:
+            account_id = info.data.get("account_id")
+            if not account_id:
+                raise ValueError("card_id requires account_id")
+        return v
 class ExpenseRead(ExpenseBase, AuditFields):
     """Response schema for Expense."""
-
     id: int
+    dedup_hash: str
+    ignore_in_analysis: bool
 
     class Config:
         from_attributes = True
@@ -49,6 +60,8 @@ class ExpenseUpdate(BaseModel):
     category_id: Optional[int] = Field(None, gt=0)
     account_id: Optional[int] = Field(None, gt=0)
 
+    card_id: Optional[int] = Field(None, gt=0)
+    ignore_in_analysis: Optional[bool] = None
 
 class ExpenseDelete(BaseModel):
     pass

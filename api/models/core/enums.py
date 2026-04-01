@@ -55,3 +55,8 @@ class TransactionEnum(str, enum.Enum):
     expense = "expense"
     income = "income"
     investment = "investment"
+
+class CardTypeEnum(str, enum.Enum):
+    credit = "credit"
+    debit = "debit"
+    revolving = "revolving"
