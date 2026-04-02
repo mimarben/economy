@@ -3,8 +3,7 @@ from flask import Blueprint, request
 from sqlalchemy.orm import Session
 from pydantic import ValidationError
 from flask_babel import _
-
-from schemas.cards.card_schema import CardBase, CardCreate, CardUpdate, CardRead
+from schemas.cards.card_schema import CardBase, CardCreate, CardUpdate
 from schemas.core.export_schema import export_schema
 
 from services.cards.card_service import CardService
@@ -68,12 +67,12 @@ def list_all():
     db: Session = next(get_db())
     service: IReadService = _get_read_service(db)
 
-    account_id = request.args.get("account_id", type=int)
+    filters = request.args.to_dict()
 
-    if account_id:
-        results = service.get_by_account(account_id)  # 🔥 útil para tu caso
-    else:
-        results = service.get_all()
+    if "account_id" in filters:
+        filters["account_id"] = int(filters["account_id"])
+
+    results = service.search(**filters) if filters else service.get_all()
 
     return Response.ok_data([r.model_dump() for r in results], _("CARD_LIST"), 200, NAME)
 
