@@ -8,8 +8,14 @@ class CardBase(BaseModel):
     last4: Optional[str] = Field(None, min_length=4, max_length=4)
     type: CardTypeEnum
     active: bool = True
-
-    account_id: int = Field(..., gt=0)
+    account_id: int = Field(
+        ...,
+        gt=0,
+        json_schema_extra={
+            "ui_type": "select",
+            "relation": "account"
+        }
+    )
     
     @field_validator("last4")
     @classmethod

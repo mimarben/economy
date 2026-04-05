@@ -1,0 +1,85 @@
+{
+  "$defs": {
+    "CardTypeEnum": {
+      "enum": [
+        "credit",
+        "debit",
+        "revolving"
+      ],
+      "title": "CardTypeEnum",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "updated_at": {
+      "format": "date-time",
+      "title": "Updated At",
+      "type": "string"
+    },
+    "deleted_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Deleted At"
+    },
+    "name": {
+      "maxLength": 255,
+      "minLength": 1,
+      "title": "Name",
+      "type": "string"
+    },
+    "last4": {
+      "anyOf": [
+        {
+          "maxLength": 4,
+          "minLength": 4,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Last4"
+    },
+    "type": {
+      "$ref": "#/$defs/CardTypeEnum"
+    },
+    "active": {
+      "default": true,
+      "title": "Active",
+      "type": "boolean"
+    },
+    "account_id": {
+      "exclusiveMinimum": 0,
+      "title": "Account Id",
+      "type": "integer"
+    },
+    "id": {
+      "title": "Id",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "created_at",
+    "updated_at",
+    "name",
+    "type",
+    "account_id",
+    "id"
+  ],
+  "title": "CardRead",
+  "type": "object"
+}

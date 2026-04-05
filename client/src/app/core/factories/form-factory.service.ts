@@ -5,7 +5,7 @@ import { RoleEnum } from '@core/const/Role.enum';
 import { CurrencyEnum } from '@core/const/Currency.enum';
 import { ActionEnum } from '@core/const/Action.enum';
 import { SourceEnum } from '@core/const/Source.enum';
-type ModelType = 'account' | 'bank' | "houseHold" | 'houseHoldMember' | 'saving_log' | "source" | "saving" | 'investment' | 'investment_category' | 'investment_log' |'income' |'income_category' | 'expense' | 'expense_category';
+type ModelType = 'account' | 'bank' | 'card' | "houseHold" | 'houseHoldMember' | 'saving_log' | "source" | "saving" | 'investment' | 'investment_category' | 'investment_log' |'income' |'income_category' | 'expense' | 'expense_category';
 
 @Injectable({ providedIn: 'root' })
 export class FormFactoryService {
@@ -49,6 +49,7 @@ export class FormFactoryService {
    //  { key: 'type', label: 'Type', type: 'select', required: true, options: this.getSourceOptions() },
    //  { key: 'active', label: 'Active', type: 'checkbox' }
    //],
+   card: [],
     saving_log:[
       { key: 'id', label: 'Id', type: 'number' },
       { key: 'date', label: 'Date', type: 'date', required: true},
@@ -164,7 +165,8 @@ export class FormFactoryService {
       income_category:[],
       income:[],
       expense:[],
-      expense_category:[]
+      expense_category:[],
+      card: []
     };
 
     return !excludedFields[modelType].includes(field.key);
@@ -186,7 +188,8 @@ export class FormFactoryService {
       income_category:[],
       income:[],
       expense:[],
-      expense_category:[]
+      expense_category:[],
+      card: []
     };
 
     return !nonSortableFields[modelType].includes(key);

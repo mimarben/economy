@@ -29,16 +29,19 @@ def export_schema(model: type[BaseModel]):
     for name, field in model.model_fields.items():
         annotation = resolve_type(field.annotation)
         field_type = map_type(annotation)
-
         field_dict = {
             "key": name,
             "label": field.title or name.replace("_", " ").title(),
             "type": field_type,
             "required": field.is_required()
         }
+        if field.json_schema_extra:
+            field_dict.update(field.json_schema_extra)
+            if field.json_schema_extra.get("ui_type") == "select":
+                field_dict["type"] = "select"
 
         # ENUM → options
-        if field_type == "select" and isinstance(annotation, type) and issubclass(annotation, Enum):
+        if field_dict["type"] == "select" and isinstance(annotation, type) and issubclass(annotation, Enum):
             field_dict["options"] = [
                 {"value": e.value, "label": str(e.value).capitalize()}
                 for e in annotation

@@ -1,0 +1,156 @@
+[2026-04-02 07:38:27,937] INFO in database: Database URL: postgresql+psycopg2://miguel:tu_password@postgres:5432/economy
+[2026-04-02 07:38:27,937] INFO in database: Database Engine: postgres
+[2026-04-02 07:38:28,410] WARNING in database: create_all strategy enabled outside SQLite; prefer Alembic for managed environments.
+[2026-04-02 07:38:28,441] INFO in main: Starting the Flask app...
+[2026-04-02 07:38:28,441] INFO in main: Configuration loaded for 0.0.0.0:5001
+[2026-04-02 07:38:28,801] INFO in database: Database URL: postgresql+psycopg2://miguel:tu_password@postgres:5432/economy
+[2026-04-02 07:38:28,801] INFO in database: Database Engine: postgres
+[2026-04-02 07:38:28,997] WARNING in database: create_all strategy enabled outside SQLite; prefer Alembic for managed environments.
+[2026-04-02 07:38:29,030] INFO in main: Starting the Flask app...
+[2026-04-02 07:38:29,030] INFO in main: Configuration loaded for 0.0.0.0:5001
+[2026-04-02 07:39:02,222] INFO in auth: User logged in successfully: admin@economy.com
+[2026-04-02 07:39:02,223] INFO in auth: Response: LOGIN_SUCCESS
+[2026-04-02 07:39:31,757] ERROR in main: Unhandled Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.13/site-packages/flask/app.py", line 891, in dispatch_request
+    self.raise_routing_exception(req)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/usr/local/lib/python3.13/site-packages/flask/app.py", line 500, in raise_routing_exception
+    raise request.routing_exception  # type: ignore[misc]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/site-packages/flask/ctx.py", line 362, in match_request
+    result = self.url_adapter.match(return_rule=True)  # type: ignore
+  File "/usr/local/lib/python3.13/site-packages/werkzeug/routing/map.py", line 629, in match
+    raise NotFound() from None
+werkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+[2026-04-02 07:39:52,104] ERROR in main: Unhandled Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.13/site-packages/flask/app.py", line 891, in dispatch_request
+    self.raise_routing_exception(req)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/usr/local/lib/python3.13/site-packages/flask/app.py", line 500, in raise_routing_exception
+    raise request.routing_exception  # type: ignore[misc]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/site-packages/flask/ctx.py", line 362, in match_request
+    result = self.url_adapter.match(return_rule=True)  # type: ignore
+  File "/usr/local/lib/python3.13/site-packages/werkzeug/routing/map.py", line 629, in match
+    raise NotFound() from None
+werkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+[2026-04-02 07:40:34,754] INFO in database: Database URL: postgresql+psycopg2://miguel:tu_password@postgres:5432/economy
+[2026-04-02 07:40:34,754] INFO in database: Database Engine: postgres
+[2026-04-02 07:41:46,095] INFO in database: Database URL: postgresql+psycopg2://miguel:tu_password@postgres:5432/economy
+[2026-04-02 07:41:46,095] INFO in database: Database Engine: postgres
+[2026-04-02 07:41:46,298] WARNING in database: create_all strategy enabled outside SQLite; prefer Alembic for managed environments.
+[2026-04-02 07:41:46,328] INFO in main: Starting the Flask app...
+[2026-04-02 07:41:46,328] INFO in main: Configuration loaded for 0.0.0.0:5001
+[2026-04-02 07:41:46,616] INFO in database: Database URL: postgresql+psycopg2://miguel:tu_password@postgres:5432/economy
+[2026-04-02 07:41:46,616] INFO in database: Database Engine: postgres
+[2026-04-02 07:41:46,820] WARNING in database: create_all strategy enabled outside SQLite; prefer Alembic for managed environments.
+[2026-04-02 07:41:46,851] INFO in main: Starting the Flask app...
+[2026-04-02 07:41:46,851] INFO in main: Configuration loaded for 0.0.0.0:5001
+[2026-04-02 07:41:59,206] INFO in database: Database URL: postgresql+psycopg2://miguel:tu_password@postgres:5432/economy
+[2026-04-02 07:41:59,206] INFO in database: Database Engine: postgres
+[2026-04-02 07:41:59,410] WARNING in database: create_all strategy enabled outside SQLite; prefer Alembic for managed environments.
+[2026-04-02 07:41:59,438] INFO in main: Starting the Flask app...
+[2026-04-02 07:41:59,439] INFO in main: Configuration loaded for 0.0.0.0:5001
+[2026-04-02 07:41:59,765] INFO in database: Database URL: postgresql+psycopg2://miguel:tu_password@postgres:5432/economy
+[2026-04-02 07:41:59,766] INFO in database: Database Engine: postgres
+[2026-04-02 07:41:59,976] WARNING in database: create_all strategy enabled outside SQLite; prefer Alembic for managed environments.
+[2026-04-02 07:42:00,008] INFO in main: Starting the Flask app...
+[2026-04-02 07:42:00,009] INFO in main: Configuration loaded for 0.0.0.0:5001
+[2026-04-02 07:42:03,557] INFO in database: Database URL: postgresql+psycopg2://miguel:tu_password@postgres:5432/economy
+[2026-04-02 07:42:03,557] INFO in database: Database Engine: postgres
+[2026-04-02 07:42:03,757] WARNING in database: create_all strategy enabled outside SQLite; prefer Alembic for managed environments.
+[2026-04-02 07:42:03,785] INFO in main: Starting the Flask app...
+[2026-04-02 07:42:03,785] INFO in main: Configuration loaded for 0.0.0.0:5001
+[2026-04-02 07:42:05,470] ERROR in cards: Error: VALIDATION_ERROR, Details: [{'type': 'enum', 'loc': ('type',), 'msg': "Input should be 'credit', 'debit' or 'revolving'", 'input': 'expense', 'ctx': {'expected': "'credit', 'debit' or 'revolving'"}, 'url': 'https://errors.pydantic.dev/2.11/v/enum'}, {'type': 'missing', 'loc': ('account_id',), 'msg': 'Field required', 'input': {'active': True, 'description': 'Seguro de salud', 'name': 'DKV', 'type': 'expense'}, 'url': 'https://errors.pydantic.dev/2.11/v/missing'}]
+[2026-04-02 07:42:45,781] ERROR in main: Unhandled Exception: 'CardService' object has no attribute 'get_all'
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.13/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/app/routers/cards/card_router.py", line 76, in list_all
+    results = service.get_all()
+              ^^^^^^^^^^^^^^^
+AttributeError: 'CardService' object has no attribute 'get_all'
+[2026-04-02 07:44:48,567] INFO in database: Database URL: postgresql+psycopg2://miguel:tu_password@postgres:5432/economy
+[2026-04-02 07:44:48,567] INFO in database: Database Engine: postgres
+[2026-04-02 07:44:48,765] WARNING in database: create_all strategy enabled outside SQLite; prefer Alembic for managed environments.
+[2026-04-02 07:44:48,796] INFO in main: Starting the Flask app...
+[2026-04-02 07:44:48,796] INFO in main: Configuration loaded for 0.0.0.0:5001
+[2026-04-02 07:45:51,376] INFO in database: Database URL: postgresql+psycopg2://miguel:tu_password@postgres:5432/economy
+[2026-04-02 07:45:51,376] INFO in database: Database Engine: postgres
+[2026-04-02 07:45:51,560] WARNING in database: create_all strategy enabled outside SQLite; prefer Alembic for managed environments.
+[2026-04-02 07:45:51,587] INFO in main: Starting the Flask app...
+[2026-04-02 07:45:51,587] INFO in main: Configuration loaded for 0.0.0.0:5001
+[2026-04-02 07:48:54,323] INFO in database: Database URL: postgresql+psycopg2://miguel:tu_password@postgres:5432/economy
+[2026-04-02 07:48:54,323] INFO in database: Database Engine: postgres
+[2026-04-02 07:48:54,514] WARNING in database: create_all strategy enabled outside SQLite; prefer Alembic for managed environments.
+[2026-04-02 07:48:54,546] INFO in main: Starting the Flask app...
+[2026-04-02 07:48:54,546] INFO in main: Configuration loaded for 0.0.0.0:5001
+[2026-04-02 07:49:40,064] INFO in database: Database URL: postgresql+psycopg2://miguel:tu_password@postgres:5432/economy
+[2026-04-02 07:49:40,064] INFO in database: Database Engine: postgres
+[2026-04-02 08:02:11,374] INFO in database: Database URL: postgresql+psycopg2://miguel:tu_password@postgres:5432/economy
+[2026-04-02 08:02:11,374] INFO in database: Database Engine: postgres
+[2026-04-02 08:02:11,559] WARNING in database: create_all strategy enabled outside SQLite; prefer Alembic for managed environments.
+[2026-04-02 08:02:11,586] INFO in main: Starting the Flask app...
+[2026-04-02 08:02:11,586] INFO in main: Configuration loaded for 0.0.0.0:5001
+[2026-04-02 08:02:11,872] INFO in database: Database URL: postgresql+psycopg2://miguel:tu_password@postgres:5432/economy
+[2026-04-02 08:02:11,872] INFO in database: Database Engine: postgres
+[2026-04-02 08:02:12,051] WARNING in database: create_all strategy enabled outside SQLite; prefer Alembic for managed environments.
+[2026-04-02 08:02:12,077] INFO in main: Starting the Flask app...
+[2026-04-02 08:02:12,078] INFO in main: Configuration loaded for 0.0.0.0:5001
+[2026-04-02 08:02:28,014] INFO in auth: User logged in successfully: admin@economy.com
+[2026-04-02 08:02:28,015] INFO in auth: Response: LOGIN_SUCCESS
+[2026-04-02 08:02:35,222] INFO in cards: Response: CARD_LIST
+[2026-04-02 08:13:34,651] INFO in database: Database URL: postgresql+psycopg2://miguel:tu_password@postgres:5432/economy
+[2026-04-02 08:13:34,651] INFO in database: Database Engine: postgres
+[2026-04-02 08:13:34,846] WARNING in database: create_all strategy enabled outside SQLite; prefer Alembic for managed environments.
+[2026-04-02 08:13:34,883] INFO in main: Starting the Flask app...
+[2026-04-02 08:13:34,883] INFO in main: Configuration loaded for 0.0.0.0:5001
+[2026-04-02 08:14:58,543] INFO in database: Database URL: postgresql+psycopg2://miguel:tu_password@postgres:5432/economy
+[2026-04-02 08:14:58,544] INFO in database: Database Engine: postgres
+[2026-04-02 08:14:58,742] WARNING in database: create_all strategy enabled outside SQLite; prefer Alembic for managed environments.
+[2026-04-02 08:14:58,768] INFO in main: Starting the Flask app...
+[2026-04-02 08:14:58,768] INFO in main: Configuration loaded for 0.0.0.0:5001
+[2026-04-02 08:19:20,639] INFO in database: Database URL: postgresql+psycopg2://miguel:tu_password@postgres:5432/economy
+[2026-04-02 08:19:20,639] INFO in database: Database Engine: postgres
+[2026-04-02 08:19:20,851] WARNING in database: create_all strategy enabled outside SQLite; prefer Alembic for managed environments.
+[2026-04-02 08:19:20,884] INFO in main: Starting the Flask app...
+[2026-04-02 08:19:20,884] INFO in main: Configuration loaded for 0.0.0.0:5001
+[2026-04-02 08:19:45,522] INFO in auth: User logged in successfully: admin@economy.com
+[2026-04-02 08:19:45,523] INFO in auth: Response: LOGIN_SUCCESS
+[2026-04-02 08:19:56,244] INFO in cards: Response: CARD_LIST
+[2026-04-02 08:20:21,741] ERROR in cards: Error: CARD_NOT_FOUND, Details: NONE
+[2026-04-02 08:21:41,365] INFO in cards: Response: CARD_LIST
+[2026-04-02 08:21:53,698] ERROR in cards: Error: VALIDATION_ERROR, Details: [{'type': 'string_type', 'loc': ('last4',), 'msg': 'Input should be a valid string', 'input': 1234, 'url': 'https://errors.pydantic.dev/2.11/v/string_type'}, {'type': 'missing', 'loc': ('account_id',), 'msg': 'Field required', 'input': {'active': True, 'last4': 1234, 'name': 'Test card', 'type': 'debit'}, 'url': 'https://errors.pydantic.dev/2.11/v/missing'}]
+[2026-04-02 08:22:15,874] ERROR in cards: Error: VALIDATION_ERROR, Details: [{'type': 'missing', 'loc': ('account_id',), 'msg': 'Field required', 'input': {'active': True, 'last4': '1234', 'name': 'Test card', 'type': 'debit'}, 'url': 'https://errors.pydantic.dev/2.11/v/missing'}]
+[2026-04-02 08:22:58,302] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-02 08:23:12,123] INFO in cards: Response: CARD_CREATED
+[2026-04-02 08:23:24,098] INFO in cards: Response: CARD_CREATED
+[2026-04-02 08:26:00,280] INFO in cards: Response: CARD_LIST
+[2026-04-02 08:26:13,868] INFO in cards: Response: CARD_FOUND
+[2026-04-02 08:26:33,145] ERROR in main: Unhandled Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.13/site-packages/flask/app.py", line 891, in dispatch_request
+    self.raise_routing_exception(req)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/usr/local/lib/python3.13/site-packages/flask/app.py", line 500, in raise_routing_exception
+    raise request.routing_exception  # type: ignore[misc]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/site-packages/flask/ctx.py", line 362, in match_request
+    result = self.url_adapter.match(return_rule=True)  # type: ignore
+  File "/usr/local/lib/python3.13/site-packages/werkzeug/routing/map.py", line 629, in match
+    raise NotFound() from None
+werkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+[2026-04-02 08:27:15,042] INFO in cards: Response: CARD_LIST
+[2026-04-02 08:27:29,058] INFO in cards: Response: CARD_FOUND
+[2026-04-02 08:27:57,949] INFO in cards: Response: CARD_LIST

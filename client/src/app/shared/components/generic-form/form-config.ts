@@ -15,5 +15,7 @@ export interface FormFieldConfig {
   pattern?: string; // For text/email fields
   min?: number; // For number fields
   max?: number; // For number fields
+  relation?: string; // For fields that represent a relation to another entity
+  ui_type?: 'select' | string; // For custom UI components
 }
 

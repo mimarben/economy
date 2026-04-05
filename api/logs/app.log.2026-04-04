@@ -1,0 +1,98 @@
+[2026-04-04 15:01:43,823] INFO in database: Database URL: postgresql+psycopg2://miguel:tu_password@postgres:5432/economy
+[2026-04-04 15:01:43,823] INFO in database: Database Engine: postgres
+[2026-04-04 15:01:44,335] WARNING in database: create_all strategy enabled outside SQLite; prefer Alembic for managed environments.
+[2026-04-04 15:01:44,368] INFO in main: Starting the Flask app...
+[2026-04-04 15:01:44,368] INFO in main: Configuration loaded for 0.0.0.0:5001
+[2026-04-04 15:01:44,698] INFO in database: Database URL: postgresql+psycopg2://miguel:tu_password@postgres:5432/economy
+[2026-04-04 15:01:44,698] INFO in database: Database Engine: postgres
+[2026-04-04 15:01:44,892] WARNING in database: create_all strategy enabled outside SQLite; prefer Alembic for managed environments.
+[2026-04-04 15:01:44,921] INFO in main: Starting the Flask app...
+[2026-04-04 15:01:44,921] INFO in main: Configuration loaded for 0.0.0.0:5001
+[2026-04-04 15:04:06,786] INFO in auth: User logged in successfully: admin@economy.com
+[2026-04-04 15:04:06,787] INFO in auth: Response: LOGIN_SUCCESS
+[2026-04-04 15:04:18,297] ERROR in main: Unhandled Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.13/site-packages/flask/app.py", line 891, in dispatch_request
+    self.raise_routing_exception(req)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/usr/local/lib/python3.13/site-packages/flask/app.py", line 500, in raise_routing_exception
+    raise request.routing_exception  # type: ignore[misc]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/site-packages/flask/ctx.py", line 362, in match_request
+    result = self.url_adapter.match(return_rule=True)  # type: ignore
+  File "/usr/local/lib/python3.13/site-packages/werkzeug/routing/map.py", line 629, in match
+    raise NotFound() from None
+werkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+[2026-04-04 15:04:25,137] INFO in cards: Response: CARD_LIST
+[2026-04-04 15:11:06,289] INFO in cards: Response: CARD_LIST
+[2026-04-04 15:21:24,960] INFO in auth: Response: TOKEN_REFRESHED
+[2026-04-04 15:21:24,971] INFO in expenses_categories: Response: EXPENSE_CATEGORY_LIST
+[2026-04-04 15:21:24,978] INFO in investment_categories: Response: INVESTMENT_CATEGORY_LIST
+[2026-04-04 15:21:24,980] INFO in category_rules: Response: CATEGORY_RULE_LIST
+[2026-04-04 15:21:24,982] INFO in income_categories: Response: INCOME_CATEGORY_LIST
+[2026-04-04 15:46:28,692] INFO in auth: Response: TOKEN_REFRESHED
+[2026-04-04 15:46:28,699] INFO in cards: Response: CARD_LIST
+[2026-04-04 15:52:20,237] INFO in cards: Response: CARD_LIST
+[2026-04-04 15:54:46,464] INFO in database: Database URL: postgresql+psycopg2://miguel:tu_password@postgres:5432/economy
+[2026-04-04 15:54:46,464] INFO in database: Database Engine: postgres
+[2026-04-04 15:54:46,655] WARNING in database: create_all strategy enabled outside SQLite; prefer Alembic for managed environments.
+[2026-04-04 15:54:46,686] INFO in main: Starting the Flask app...
+[2026-04-04 15:54:46,686] INFO in main: Configuration loaded for 0.0.0.0:5001
+[2026-04-04 15:54:58,245] INFO in database: Database URL: postgresql+psycopg2://miguel:tu_password@postgres:5432/economy
+[2026-04-04 15:54:58,245] INFO in database: Database Engine: postgres
+[2026-04-04 15:54:58,433] WARNING in database: create_all strategy enabled outside SQLite; prefer Alembic for managed environments.
+[2026-04-04 15:54:58,465] INFO in main: Starting the Flask app...
+[2026-04-04 15:54:58,465] INFO in main: Configuration loaded for 0.0.0.0:5001
+[2026-04-04 15:57:54,900] INFO in cards: Response: CARD_LIST
+[2026-04-04 15:59:14,815] INFO in cards: Response: CARD_LIST
+[2026-04-04 15:59:53,447] INFO in cards: Response: CARD_LIST
+[2026-04-04 15:59:56,783] INFO in cards: Response: CARD_LIST
+[2026-04-04 16:03:57,677] INFO in auth: Response: TOKEN_REFRESHED
+[2026-04-04 16:03:57,697] INFO in cards: Response: CARD_LIST
+[2026-04-04 16:06:11,632] INFO in cards: Response: CARD_LIST
+[2026-04-04 16:06:11,664] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-04 16:06:27,971] INFO in cards: Response: CARD_LIST
+[2026-04-04 16:06:27,974] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-04 16:08:44,701] INFO in cards: Response: CARD_LIST
+[2026-04-04 16:08:44,705] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-04 16:08:50,655] INFO in cards: Response: CARD_LIST
+[2026-04-04 16:08:50,660] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-04 16:09:12,379] INFO in cards: Response: CARD_LIST
+[2026-04-04 16:09:12,390] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-04 16:10:53,238] INFO in cards: Response: CARD_LIST
+[2026-04-04 16:10:53,241] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-04 16:14:31,737] INFO in cards: Response: CARD_LIST
+[2026-04-04 16:14:31,741] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-04 16:14:43,785] INFO in cards: Response: CARD_LIST
+[2026-04-04 16:14:43,789] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-04 16:15:10,488] INFO in cards: Response: CARD_LIST
+[2026-04-04 16:15:10,491] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-04 16:15:51,627] INFO in cards: Response: CARD_LIST
+[2026-04-04 16:15:51,630] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-04 16:20:22,762] INFO in auth: Response: TOKEN_REFRESHED
+[2026-04-04 16:20:22,792] INFO in cards: Response: CARD_LIST
+[2026-04-04 16:20:22,795] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-04 16:20:59,189] INFO in cards: Response: CARD_LIST
+[2026-04-04 16:20:59,191] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-04 16:22:12,689] INFO in cards: Response: CARD_LIST
+[2026-04-04 16:22:12,693] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-04 16:23:42,841] INFO in cards: Response: CARD_LIST
+[2026-04-04 16:23:42,845] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-04 16:26:43,220] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-04 16:26:43,333] INFO in cards: Response: CARD_LIST
+[2026-04-04 16:26:46,745] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-04 16:26:46,832] INFO in cards: Response: CARD_LIST
+[2026-04-04 16:27:27,367] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-04 16:27:27,476] INFO in cards: Response: CARD_LIST
+[2026-04-04 16:28:45,357] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-04 16:28:45,537] INFO in cards: Response: CARD_LIST
+[2026-04-04 16:28:54,432] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-04 16:28:54,543] INFO in cards: Response: CARD_LIST
+[2026-04-04 16:28:57,596] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-04 16:28:57,685] INFO in cards: Response: CARD_LIST
+[2026-04-04 16:30:04,900] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-04 16:30:04,985] INFO in cards: Response: CARD_LIST
+[2026-04-04 16:30:05,859] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-04 16:30:05,945] INFO in cards: Response: CARD_LIST

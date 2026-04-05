@@ -114,7 +114,7 @@ def schema_exporter(
 # ─────────────────────────────────────────────
 if __name__ == "__main__":
     from schemas.finance.source_schema import SourceRead
-    #from schemas.finance.account_schema import AccountRead
+    from schemas.cards.card_schema import CardRead
     #from schemas.finance.bank_schema import BankRead
     #from schemas.expenses.expense_schema import ExpenseRead
     #from schemas.expenses.expense_category_schema import ExpenseCategoryRead
@@ -123,6 +123,7 @@ if __name__ == "__main__":
 
     models = [
         SourceRead,
+        CardRead,
         #AccountRead,
         #BankRead,
         #ExpenseRead,

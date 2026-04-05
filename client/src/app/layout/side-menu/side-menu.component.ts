@@ -80,7 +80,8 @@ const SECTIONS: MenuSection[] = [
 const BOTTOM_LINKS: MenuLink[] = [
   { label: 'Financial Summary', route: '/financial_summary', icon: 'assignment' },
   { label: 'Charts',            route: '/charts',            icon: 'bar_chart' },
-  { label: 'Category Rules',    route: '/category_rules',    icon: 'rule' }
+  { label: 'Category Rules',    route: '/category_rules',    icon: 'rule' },
+  { label: 'cards',            route: '/cards',             icon: 'credit_card' }
 ];
 
 @Component({

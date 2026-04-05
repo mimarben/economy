@@ -1,0 +1,16 @@
+<app-generic-table
+  [data]="cards"
+  [columns]="columns"
+  [isLoading]="isLoading"
+  [errorMessage]="errorMessage"
+  [title]="'Cards Management'"
+  [subtitle]="'Manage your credit cards'"
+  [addButtonLabel]="'New Card'"
+  [noDataMessage]="'No cards found. Create one to get started.'"
+  [showDeleteAction]="false"
+  [showRefreshAction]="true"
+  (add)="addCard()"
+  (edit)="editCard($event)"
+  (refresh)="loadInitialData()"
+>
+</app-generic-table>

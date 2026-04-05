@@ -7,16 +7,16 @@ import { CommonModule } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { MATERIAL_IMPORTS } from '@app/utils/material.imports';
+import { MATERIAL_IMPORTS } from '@utils/material.imports';
 import { FormFieldConfig } from '@shared/generic-form/form-config';
 import { GenericDialogComponent } from '@shared/generic-dialog/generic-dialog.component';
 
-import { CategoryRuleService, CategoryRule } from '../../services/category-rule/category-rule.service';
-import { ExpenseCategoryService } from '../../services/expenses/expense-category.service';
-import { IncomeCategoryService } from '../../services/incomes/income-category.service';
-import { InvestmentCategoryService } from '../../services/investments/investment-category.service';
-import { GenericTableComponent, TableColumn } from '../../shared/components/generic-table/generic-table.component';
-import { regexValidator } from '../../utils/validators/regex.validator';
+import { CategoryRuleService, CategoryRule } from '@services/category-rule/category-rule.service';
+import { ExpenseCategoryService } from '@services/expenses/expense-category.service';
+import { IncomeCategoryService } from '@services/incomes/income-category.service';
+import { InvestmentCategoryService } from '@services/investments/investment-category.service';
+import { GenericTableComponent, TableColumn } from '@shared/generic-table/generic-table.component';
+import { regexValidator } from '@utils/validators/regex.validator';
 
 @Component({
   selector: 'app-category-rules',

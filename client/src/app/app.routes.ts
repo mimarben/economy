@@ -33,6 +33,7 @@ export const routes: Routes = [
       { path: 'excel_import', loadComponent: () => import('./features/import/excel/excel-import.component').then((m) => m.ExcelImportComponent), data: { title: 'excel_import.title' } },
       { path: 'charts', loadComponent: () => import('./features/charts/components/charts-container/charts-container.component').then((m) => m.ChartsContainerComponent), data: { title: 'charts.title' } },
       { path: 'category_rules', loadComponent: () => import('./features/category-rules/category-rules.component').then((m) => m.CategoryRulesComponent), data: { title: 'category_rules.title' } },
+      { path: 'cards', loadComponent: () => import('./features/cards/cards.component').then((m) => m.CardsComponent), data: { title: 'cards.title' } },
     ]
   },
 
