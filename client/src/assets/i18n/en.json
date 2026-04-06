@@ -89,5 +89,19 @@
   },
    "BANK": {
     "NOT_FOUND": "Bank not found"
+  },
+  "import_profiles": {
+    "title": "Import Profiles",
+    "create": "Create Profile",
+    "name": "Name",
+    "origin": "Origin",
+    "mappings": "Mappings",
+    "header_row_guess": "Header Row",
+    "active": "Active",
+    "actions": "Actions",
+    "columns": "Columns (JSON)"
+  },
+  "import_origins": {
+    "title": "Import Origins"
   }
 }

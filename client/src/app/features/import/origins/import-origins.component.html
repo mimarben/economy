@@ -1,0 +1,14 @@
+<app-generic-table
+  [filter]="filterValue"
+  [data]="origins"
+  [columns]="columns"
+  [isLoading]="isLoading"
+  [errorMessage]="errorMessage"
+  [title]="'Import Origins'"
+  [addButtonLabel]="'Add Origin'"
+  [showDeleteAction]="true"
+  (edit)="editOrigin($event)"
+  (add)="addOrigin()"
+  (delete)="deleteOrigin($event)"
+  (refresh)="loadInitialData()">
+</app-generic-table>

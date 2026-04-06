@@ -83,6 +83,20 @@
   },
    "BANK": {
     "NOT_FOUND": "Banco no encontrado"
+  },
+  "import_profiles": {
+    "title": "Perfiles de Importación",
+    "create": "Crear Perfil",
+    "name": "Nombre",
+    "origin": "Origen",
+    "mappings": "Mapeos",
+    "header_row_guess": "Fila de Cabecera",
+    "active": "Activo",
+    "actions": "Acciones",
+    "columns": "Columnas (JSON)"
+  },
+  "import_origins": {
+    "title": "Orígenes de Importación"
   }
   
   

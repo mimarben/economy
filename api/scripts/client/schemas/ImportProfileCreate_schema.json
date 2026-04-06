@@ -1,0 +1,39 @@
+{
+  "properties": {
+    "origin_id": {
+      "title": "Origin Id",
+      "type": "integer"
+    },
+    "name": {
+      "title": "Name",
+      "type": "string"
+    },
+    "header_row_guess": {
+      "default": 1,
+      "title": "Header Row Guess",
+      "type": "integer"
+    },
+    "columns": {
+      "additionalProperties": {
+        "items": {
+          "type": "string"
+        },
+        "type": "array"
+      },
+      "title": "Columns",
+      "type": "object"
+    },
+    "active": {
+      "default": true,
+      "title": "Active",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "origin_id",
+    "name",
+    "columns"
+  ],
+  "title": "ImportProfileCreate",
+  "type": "object"
+}

@@ -131,6 +131,6 @@ def delete(origin_id: int):
         return handle_exception(e, "delete")
 
 
-@router.get("/meta/import-profile")
+@router.get("/meta/import-origins")
 def get_meta():
     return export_schema(ImportOriginBase)

@@ -1,15 +1,4 @@
 {
-  "$defs": {
-    "CardTypeEnum": {
-      "enum": [
-        "credit",
-        "debit",
-        "revolving"
-      ],
-      "title": "CardTypeEnum",
-      "type": "string"
-    }
-  },
   "properties": {
     "created_at": {
       "format": "date-time",
@@ -34,40 +23,18 @@
       "default": null,
       "title": "Deleted At"
     },
-    "name": {
-      "maxLength": 255,
-      "minLength": 1,
-      "title": "Name",
+    "code": {
+      "title": "Code",
       "type": "string"
     },
-    "last4": {
-      "anyOf": [
-        {
-          "maxLength": 4,
-          "minLength": 4,
-          "type": "string"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null,
-      "title": "Last4"
-    },
-    "type": {
-      "$ref": "#/$defs/CardTypeEnum"
+    "name": {
+      "title": "Name",
+      "type": "string"
     },
     "active": {
       "default": true,
       "title": "Active",
       "type": "boolean"
-    },
-    "account_id": {
-      "exclusiveMinimum": 0,
-      "relation": "account",
-      "title": "Account Id",
-      "type": "integer",
-      "ui_type": "select"
     },
     "id": {
       "title": "Id",
@@ -77,11 +44,10 @@
   "required": [
     "created_at",
     "updated_at",
+    "code",
     "name",
-    "type",
-    "account_id",
     "id"
   ],
-  "title": "CardRead",
+  "title": "ImportOriginRead",
   "type": "object"
 }

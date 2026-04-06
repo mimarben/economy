@@ -1,0 +1,14 @@
+<app-generic-table
+  [filter]="filterValue"
+  [data]="profiles"
+  [columns]="columns"
+  [isLoading]="isLoading"
+  [errorMessage]="errorMessage"
+  [title]="'Import Profiles'"
+  [addButtonLabel]="'Add Profile'"
+  [showDeleteAction]="true"
+  (edit)="editProfile($event)"
+  (add)="addProfile()"
+  (delete)="deleteProfile($event)"
+  (refresh)="loadInitialData()">
+</app-generic-table>

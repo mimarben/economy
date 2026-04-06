@@ -18,11 +18,19 @@ interface MenuSection {
 
 const TOP_LINKS: MenuLink[] = [
   { label: 'Home',   route: '/',            icon: 'home',   exact: true },
-  { label: 'Users',  route: '/users',       icon: 'person' },
-  { label: 'Import', route: '/excel_import', icon: 'upload' }
+  { label: 'Users',  route: '/users',       icon: 'person' }
 ];
 
 const SECTIONS: MenuSection[] = [
+  {
+    title: 'Import',
+    icon: 'upload',
+    links: [
+      { label: 'Excel Import', route: '/excel_import' },
+      { label: 'Import Origins', route: '/import_origins' },
+      { label: 'Import Profiles', route: '/import_profiles' }
+    ]
+  },
   {
     title: 'Expenses',
     icon: 'credit_card',
