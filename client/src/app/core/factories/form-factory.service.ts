@@ -295,4 +295,26 @@ private getFormatter(
     formatter: this.getFormatter(field.key, field.type, field.options)
   }));
 }
+
+  enrichMetadataFields(
+    fields: FormFieldConfig[],
+    relationOptions: Record<string, { value: string | number; label: string }[]> = {},
+  ): FormFieldConfig[] {
+    return fields.map((field) => {
+      const relationKey = field.relation ?? field.key;
+      const options = relationOptions[relationKey];
+      const isRelationSelect =
+        field.ui_type === 'select' || !!field.relation || field.key.endsWith('_id');
+
+      if (!isRelationSelect || !options) {
+        return field;
+      }
+
+      return {
+        ...field,
+        type: 'select',
+        options,
+      };
+    });
+  }
 }

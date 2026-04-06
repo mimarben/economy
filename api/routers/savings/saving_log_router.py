@@ -4,7 +4,9 @@ from sqlalchemy.orm import Session
 from pydantic import ValidationError
 from flask_babel import _
 
-from schemas.savings.saving_log_schema import SavingLogCreate, SavingLogUpdate
+from schemas.savings.saving_log_schema import SavingLogBase, SavingLogCreate, SavingLogUpdate
+from schemas.core.export_schema import export_schema
+
 from services.savings.saving_log_service import SavingLogService
 from services.core.interfaces import IReadService, ICreateService, IUpdateService, IDeleteService
 from db.database import get_db
@@ -92,3 +94,8 @@ def delete(id):
         return esponse.ok_message(_("SAVING_LOG_DELETED"), 204, name)
     except Exception as e:
         return Response.error(_("DATABASE_ERROR"), str(e), 500, name)
+
+
+@router.get("/meta/saving-log")
+def get_meta():
+    return export_schema(SavingLogBase)

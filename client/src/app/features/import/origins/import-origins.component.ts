@@ -50,7 +50,7 @@ export class ImportOriginsComponent implements OnInit {
     this.isLoading = true;
     forkJoin({
       origins: this.importOriginsService.getOrigins(),
-      meta: this.metaService.getMeta('import-origins'),
+      meta: this.metaService.getMeta('import-origin'),
     }).subscribe({
       next: ({ origins, meta }) => {
         this.origins = origins.response;

@@ -4,7 +4,9 @@ from sqlalchemy.orm import Session
 from pydantic import ValidationError
 from flask_babel import _
 
-from schemas.households.household_schema import HouseholdCreate, HouseholdUpdate
+from schemas.households.household_schema import HouseholdBase, HouseholdCreate, HouseholdUpdate
+from schemas.core.export_schema import export_schema
+
 from services.households.household_service import HouseholdService
 from services.core.interfaces import IReadService, ICreateService, IUpdateService, IDeleteService
 from db.database import get_db
@@ -93,3 +95,8 @@ def delete(id):
     except Exception as e:
         return Response.error(_("DATABASE_ERROR"), str(e), 500, name)
 
+
+
+@router.get("/meta/household")
+def get_meta():
+    return export_schema(HouseholdBase)

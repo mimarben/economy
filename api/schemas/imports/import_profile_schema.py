@@ -1,10 +1,17 @@
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, Field, field_validator
 from typing import Dict, List, Optional
 from schemas.core.audit_schema import AuditFields
 
 
 class ImportProfileBase(BaseModel):
-    origin_id: int
+    origin_id: int = Field(
+        ...,
+        gt=0,
+        json_schema_extra={
+            "ui_type": "select",
+            "relation": "origin",
+        },
+    )
     name: str
     header_row_guess: int = 1
     columns: Dict[str, List[str]]

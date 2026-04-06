@@ -53,7 +53,16 @@ export class ImportProfilesComponent implements OnInit {
       next: ({ profiles, origins, meta }) => {
         this.profiles = profiles.response;
         this.origins = origins.response;
-        this.formFields = meta.fields;
+        this.formFields = this.formFactory.enrichMetadataFields(meta.fields, {
+          origin: this.origins.map((origin) => ({
+            value: origin.id,
+            label: origin.name,
+          })),
+          origin_id: this.origins.map((origin) => ({
+            value: origin.id,
+            label: origin.name,
+          })),
+        });
 
         this.columns = this.formFactory.getTableColumnsFromMetadata<ImportProfile>(
           this.formFields,
@@ -104,24 +113,10 @@ export class ImportProfilesComponent implements OnInit {
   }
 
   openDialog(data?: ImportProfile): void {
-    // Update form fields with origin options
-    const fieldsWithOptions = this.formFields.map(field => {
-      if (field.key === 'origin_id') {
-        return {
-          ...field,
-          options: this.origins.map(origin => ({
-            value: origin.id,
-            label: origin.name,
-          })),
-        };
-      }
-      return field;
-    });
-
     const dialogRef = this.dialog.open(GenericDialogComponent, {
       data: {
         title: data ? 'Edit Profile' : 'New Profile',
-        fields: fieldsWithOptions,
+        fields: this.formFields,
         initialData: data || {},
       },
     });

@@ -4,7 +4,9 @@ from sqlalchemy.orm import Session
 from pydantic import ValidationError
 from flask_babel import _
 
-from schemas.investments.investment_schema import InvestmentCreate, InvestmentUpdate
+from schemas.investments.investment_schema import InvestmentBase, InvestmentCreate, InvestmentUpdate
+from schemas.core.export_schema import export_schema
+
 from services.investments.investment_service import InvestmentService
 from services.core.interfaces import IReadService, ICreateService, IUpdateService, IDeleteService
 from db.database import get_db
@@ -96,3 +98,8 @@ def delete(id):
         return esponse.ok_message(_("INVESTMENT_DELETED"), 204, name)
     except Exception as e:
         return Response.error(_("DATABASE_ERROR"), str(e), 500, name)
+
+
+@router.get("/meta/investment")
+def get_meta():
+    return export_schema(InvestmentBase)

@@ -4,7 +4,9 @@ from sqlalchemy.orm import Session
 from pydantic import ValidationError
 from flask_babel import _
 
-from schemas.finance.account_schema import AccountCreate, AccountUpdate
+from schemas.finance.account_schema import AccountBase, AccountCreate, AccountUpdate
+
+from schemas.core.export_schema import export_schema
 
 from services.finance.account_service import AccountService
 from services.core.response_service import Response
@@ -142,3 +144,8 @@ def delete(id):
         logger = setup_logger(NAME or "default_error_source")
         logger.exception("Unhandled error in create %s: %s", NAME, str(e))
         return Response.error(_("INTERNAL_ERROR"), _("UNEXPECTED_ERROR"), 500, NAME)
+
+
+@router.get("/meta/account")
+def get_meta():
+    return export_schema(AccountBase)

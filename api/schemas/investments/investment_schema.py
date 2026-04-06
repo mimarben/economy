@@ -15,8 +15,8 @@ class InvestmentBase(BaseModel):
     currency: CurrencyEnum = Field(...)
     amount: Decimal = Field(..., gt=0)
     dedup_hash: str = Field(..., min_length=64, max_length=64)
-    account_id: int = Field(..., gt=0)
-    category_id: int = Field(..., gt=0)
+    account_id: int = Field(..., gt=0, json_schema_extra={"ui_type": "select", "relation": "account"})
+    category_id: int = Field(..., gt=0, json_schema_extra={"ui_type": "select", "relation": "investment-category"})
 
 
 class InvestmentRead(InvestmentBase, AuditFields):
