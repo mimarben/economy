@@ -19,6 +19,8 @@ class Card(TimestampMixin, Base):
     
     # Foreign Keys
     account_id = Column(Integer, ForeignKey("accounts.id"), nullable=False)
+    import_origin_id = Column(Integer, ForeignKey("import_origins.id"))
     # relaciones
     expenses = relationship("Expense", back_populates="card")
     account = relationship("Account", back_populates="cards") 
+    import_origin = relationship("ImportOrigin", back_populates="cards")

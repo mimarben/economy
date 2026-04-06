@@ -1,7 +1,7 @@
 <mat-form-field>
   <mat-label>{{"BANK.BANKS"|translate}}</mat-label>
   <select matNativeControl required #bankSelect (change)="onBankSelected(+bankSelect.value)">
-    <option value="">Seleccionar banco</option>
+    <option value="">{{"BANK.SELECT"|translate}}</option>
 
     @for (bank of banks; track bank.id) {
 
@@ -14,7 +14,7 @@
 </mat-form-field>
 @if (selectedBank) {
 <mat-form-field style="margin-left: 16px; width: 240px;">
-  <mat-label>Cuenta</mat-label>
+  <mat-label>{{"ACCOUNT.ACCOUNTS"|translate}}</mat-label>
   <mat-select required [value]="selectedAccount?.id" (selectionChange)="onAccountSelected($event.value)">
     <mat-option [value]="null">Seleccionar cuenta</mat-option>
     @for (account of filteredAccounts; track account.id) {
@@ -22,6 +22,24 @@
     }
   </mat-select>
 </mat-form-field>
+}
+
+@if (filteredCards.length > 0) {
+  <mat-form-field>
+    <mat-label>{{"CARD.CARDS"|translate}}</mat-label>
+
+    <mat-select [(ngModel)]="selectedCard">
+      <mat-option [value]="null">
+        Cuenta (sin tarjeta)
+      </mat-option>
+
+      @for (c of filteredCards; track c.id) {
+        <mat-option [value]="c">
+          {{ c.name }}
+        </mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
 }
 <br><br>
 

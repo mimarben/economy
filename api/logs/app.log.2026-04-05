@@ -1,0 +1,515 @@
+[2026-04-05 05:58:26,473] INFO in database: Database URL: postgresql+psycopg2://miguel:tu_password@postgres:5432/economy
+[2026-04-05 05:58:26,473] INFO in database: Database Engine: postgres
+[2026-04-05 05:58:26,937] WARNING in database: create_all strategy enabled outside SQLite; prefer Alembic for managed environments.
+[2026-04-05 05:58:26,971] INFO in main: Starting the Flask app...
+[2026-04-05 05:58:26,971] INFO in main: Configuration loaded for 0.0.0.0:5001
+[2026-04-05 05:58:27,275] INFO in database: Database URL: postgresql+psycopg2://miguel:tu_password@postgres:5432/economy
+[2026-04-05 05:58:27,275] INFO in database: Database Engine: postgres
+[2026-04-05 05:58:27,468] WARNING in database: create_all strategy enabled outside SQLite; prefer Alembic for managed environments.
+[2026-04-05 05:58:27,496] INFO in main: Starting the Flask app...
+[2026-04-05 05:58:27,496] INFO in main: Configuration loaded for 0.0.0.0:5001
+[2026-04-05 05:58:42,553] INFO in auth: Response: TOKEN_REFRESHED
+[2026-04-05 05:58:42,568] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 05:58:42,575] INFO in cards: Response: CARD_LIST
+[2026-04-05 05:59:06,659] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 05:59:06,702] INFO in cards: Response: CARD_LIST
+[2026-04-05 05:59:21,336] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 05:59:21,376] INFO in cards: Response: CARD_LIST
+[2026-04-05 05:59:42,205] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 05:59:42,246] INFO in cards: Response: CARD_LIST
+[2026-04-05 05:59:44,658] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 05:59:44,764] INFO in cards: Response: CARD_LIST
+[2026-04-05 05:59:57,849] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 05:59:57,950] INFO in cards: Response: CARD_LIST
+[2026-04-05 06:00:17,665] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 06:00:17,765] INFO in cards: Response: CARD_LIST
+[2026-04-05 06:01:09,489] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 06:01:09,578] INFO in cards: Response: CARD_LIST
+[2026-04-05 06:07:10,433] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 06:07:10,593] INFO in cards: Response: CARD_LIST
+[2026-04-05 06:07:39,195] INFO in cards: Response: CARD_LIST
+[2026-04-05 06:07:39,205] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 06:07:40,358] INFO in cards: Response: CARD_LIST
+[2026-04-05 06:07:40,369] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 13:27:22,130] INFO in database: Database URL: postgresql+psycopg2://miguel:tu_password@postgres:5432/economy
+[2026-04-05 13:27:22,131] INFO in database: Database Engine: postgres
+[2026-04-05 13:27:22,532] WARNING in database: create_all strategy enabled outside SQLite; prefer Alembic for managed environments.
+[2026-04-05 13:27:22,564] INFO in main: Starting the Flask app...
+[2026-04-05 13:27:22,564] INFO in main: Configuration loaded for 0.0.0.0:5001
+[2026-04-05 13:27:22,881] INFO in database: Database URL: postgresql+psycopg2://miguel:tu_password@postgres:5432/economy
+[2026-04-05 13:27:22,881] INFO in database: Database Engine: postgres
+[2026-04-05 13:27:23,091] WARNING in database: create_all strategy enabled outside SQLite; prefer Alembic for managed environments.
+[2026-04-05 13:27:23,123] INFO in main: Starting the Flask app...
+[2026-04-05 13:27:23,123] INFO in main: Configuration loaded for 0.0.0.0:5001
+[2026-04-05 13:27:32,235] INFO in auth: Response: TOKEN_REFRESHED
+[2026-04-05 13:27:32,245] INFO in cards: Response: CARD_LIST
+[2026-04-05 13:27:32,257] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 13:28:56,047] INFO in cards: Response: CARD_LIST
+[2026-04-05 13:28:56,050] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 13:29:31,997] INFO in cards: Response: CARD_LIST
+[2026-04-05 13:29:32,006] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 13:29:33,823] INFO in cards: Response: CARD_LIST
+[2026-04-05 13:29:33,830] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 13:29:45,588] INFO in cards: Response: CARD_LIST
+[2026-04-05 13:29:45,600] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 13:29:55,818] INFO in cards: Response: CARD_LIST
+[2026-04-05 13:29:55,825] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 13:29:55,941] INFO in cards: Response: CARD_LIST
+[2026-04-05 13:29:55,943] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 13:30:01,281] INFO in cards: Response: CARD_LIST
+[2026-04-05 13:30:01,294] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 13:30:01,555] INFO in cards: Response: CARD_LIST
+[2026-04-05 13:30:01,558] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 13:30:24,495] INFO in cards: Response: CARD_LIST
+[2026-04-05 13:30:24,498] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 13:30:24,557] INFO in cards: Response: CARD_LIST
+[2026-04-05 13:30:24,568] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 13:30:31,600] INFO in cards: Response: CARD_LIST
+[2026-04-05 13:30:31,606] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 13:30:32,222] INFO in cards: Response: CARD_LIST
+[2026-04-05 13:30:32,225] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 13:31:01,980] INFO in cards: Response: CARD_LIST
+[2026-04-05 13:31:02,002] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 13:31:02,246] INFO in cards: Response: CARD_LIST
+[2026-04-05 13:31:02,249] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 13:31:16,463] INFO in cards: Response: CARD_LIST
+[2026-04-05 13:31:16,467] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 13:31:16,580] INFO in cards: Response: CARD_LIST
+[2026-04-05 13:31:16,599] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 13:31:30,399] INFO in cards: Response: CARD_LIST
+[2026-04-05 13:31:30,402] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 13:31:30,480] INFO in cards: Response: CARD_LIST
+[2026-04-05 13:31:30,511] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 13:36:01,827] INFO in cards: Response: CARD_LIST
+[2026-04-05 13:36:01,832] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 13:43:36,621] INFO in auth: Response: TOKEN_REFRESHED
+[2026-04-05 13:43:36,653] INFO in banks: Response: BANK_LIST
+[2026-04-05 13:43:36,656] INFO in banks: Response: BANK_LIST
+[2026-04-05 13:43:44,116] INFO in banks: Response: BANK_LIST
+[2026-04-05 13:43:44,116] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 13:43:44,131] INFO in users: Response: USER_LIST
+[2026-04-05 13:46:15,709] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 13:46:15,709] INFO in banks: Response: BANK_LIST
+[2026-04-05 13:46:15,717] INFO in users: Response: USER_LIST
+[2026-04-05 13:51:58,553] INFO in banks: Response: BANK_LIST
+[2026-04-05 13:51:58,554] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 13:51:58,561] INFO in users: Response: USER_LIST
+[2026-04-05 13:51:59,419] INFO in cards: Response: CARD_LIST
+[2026-04-05 13:51:59,431] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 13:55:10,756] INFO in cards: Response: CARD_LIST
+[2026-04-05 13:55:10,791] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 13:57:20,752] INFO in cards: Response: CARD_LIST
+[2026-04-05 13:57:20,759] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 13:58:16,884] INFO in cards: Response: CARD_LIST
+[2026-04-05 13:58:16,892] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 13:59:19,576] INFO in auth: Response: TOKEN_REFRESHED
+[2026-04-05 13:59:19,587] INFO in cards: Response: CARD_LIST
+[2026-04-05 13:59:19,588] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 13:59:32,522] INFO in auth: User logged in successfully: mimarben@gmail.com
+[2026-04-05 13:59:32,523] INFO in auth: Response: LOGIN_SUCCESS
+[2026-04-05 13:59:34,574] INFO in cards: Response: CARD_LIST
+[2026-04-05 13:59:34,581] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 13:59:38,820] INFO in cards: Response: CARD_LIST
+[2026-04-05 13:59:38,827] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 13:59:46,324] INFO in cards: Response: CARD_LIST
+[2026-04-05 13:59:46,333] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 13:59:57,036] INFO in cards: Response: CARD_LIST
+[2026-04-05 13:59:57,040] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 13:59:59,791] INFO in cards: Response: CARD_LIST
+[2026-04-05 13:59:59,802] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 14:01:22,160] INFO in cards: Response: CARD_LIST
+[2026-04-05 14:01:22,162] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 14:05:52,735] INFO in cards: Response: CARD_LIST
+[2026-04-05 14:05:52,735] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 14:12:08,430] INFO in cards: Response: CARD_LIST
+[2026-04-05 14:12:08,439] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 14:12:27,112] INFO in category_rules: Response: CATEGORY_RULE_LIST
+[2026-04-05 14:12:27,118] INFO in expenses_categories: Response: EXPENSE_CATEGORY_LIST
+[2026-04-05 14:12:27,120] INFO in income_categories: Response: INCOME_CATEGORY_LIST
+[2026-04-05 14:12:27,130] INFO in investment_categories: Response: INVESTMENT_CATEGORY_LIST
+[2026-04-05 14:12:29,243] INFO in cards: Response: CARD_LIST
+[2026-04-05 14:12:29,246] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 14:14:21,902] INFO in cards: Response: CARD_LIST
+[2026-04-05 14:14:21,915] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 14:14:34,809] INFO in auth: Response: TOKEN_REFRESHED
+[2026-04-05 14:14:34,820] INFO in cards: Response: CARD_LIST
+[2026-04-05 14:14:34,820] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 14:14:50,399] INFO in auth: User logged in successfully: mimarben@gmail.com
+[2026-04-05 14:14:50,399] INFO in auth: Response: LOGIN_SUCCESS
+[2026-04-05 14:14:52,280] INFO in cards: Response: CARD_LIST
+[2026-04-05 14:14:52,282] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 14:15:01,831] INFO in category_rules: Response: CATEGORY_RULE_LIST
+[2026-04-05 14:15:01,839] INFO in expenses_categories: Response: EXPENSE_CATEGORY_LIST
+[2026-04-05 14:15:01,839] INFO in income_categories: Response: INCOME_CATEGORY_LIST
+[2026-04-05 14:15:01,842] INFO in investment_categories: Response: INVESTMENT_CATEGORY_LIST
+[2026-04-05 14:15:02,819] INFO in cards: Response: CARD_LIST
+[2026-04-05 14:15:02,825] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 14:15:04,968] INFO in category_rules: Response: CATEGORY_RULE_LIST
+[2026-04-05 14:15:04,972] INFO in expenses_categories: Response: EXPENSE_CATEGORY_LIST
+[2026-04-05 14:15:04,976] INFO in income_categories: Response: INCOME_CATEGORY_LIST
+[2026-04-05 14:15:04,976] INFO in investment_categories: Response: INVESTMENT_CATEGORY_LIST
+[2026-04-05 14:15:05,623] INFO in cards: Response: CARD_LIST
+[2026-04-05 14:15:05,625] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 14:15:09,105] INFO in category_rules: Response: CATEGORY_RULE_LIST
+[2026-04-05 14:15:09,113] INFO in expenses_categories: Response: EXPENSE_CATEGORY_LIST
+[2026-04-05 14:15:09,113] INFO in income_categories: Response: INCOME_CATEGORY_LIST
+[2026-04-05 14:15:09,113] INFO in investment_categories: Response: INVESTMENT_CATEGORY_LIST
+[2026-04-05 14:15:10,593] INFO in cards: Response: CARD_LIST
+[2026-04-05 14:15:10,600] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 14:16:36,462] INFO in cards: Response: CARD_LIST
+[2026-04-05 14:16:36,471] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 14:17:11,173] INFO in cards: Response: CARD_LIST
+[2026-04-05 14:17:11,177] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 14:17:32,892] INFO in cards: Response: CARD_LIST
+[2026-04-05 14:17:32,895] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 14:17:50,165] INFO in cards: Response: CARD_CREATED
+[2026-04-05 14:17:53,846] INFO in cards: Response: CARD_LIST
+[2026-04-05 14:17:53,854] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 14:18:47,969] INFO in cards: Response: CARD_LIST
+[2026-04-05 14:18:47,977] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 14:18:56,307] INFO in cards: Response: CARD_LIST
+[2026-04-05 14:18:56,313] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 14:19:05,453] INFO in cards: Response: CARD_LIST
+[2026-04-05 14:19:05,456] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 14:19:29,024] INFO in cards: Response: CARD_CREATED
+[2026-04-05 14:21:43,620] INFO in cards: Response: CARD_LIST
+[2026-04-05 14:21:43,667] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 14:21:52,278] INFO in cards: Response: CARD_CREATED
+[2026-04-05 14:26:02,735] INFO in cards: Response: CARD_LIST
+[2026-04-05 14:26:02,739] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 14:26:14,579] INFO in cards: Response: CARD_LIST
+[2026-04-05 14:26:14,599] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 14:26:27,399] INFO in cards: Response: CARD_UPDATED
+[2026-04-05 14:26:59,478] INFO in cards: Response: CARD_LIST
+[2026-04-05 14:26:59,485] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 14:28:16,181] ERROR in main: Unhandled Exception: 400 Bad Request: Failed to decode JSON object: Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/site-packages/werkzeug/wrappers/request.py", line 611, in get_json
+    rv = self.json_module.loads(data)
+  File "/usr/local/lib/python3.13/site-packages/flask/json/provider.py", line 187, in loads
+    return json.loads(s, **kwargs)
+           ~~~~~~~~~~^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/json/__init__.py", line 352, in loads
+    return _default_decoder.decode(s)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "/usr/local/lib/python3.13/json/decoder.py", line 345, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/json/decoder.py", line 363, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.13/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/app/routers/cards/card_router.py", line 39, in create
+    data = CardCreate.model_validate(request.json)
+                                     ^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/site-packages/werkzeug/wrappers/request.py", line 560, in json
+    return self.get_json()
+           ~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/site-packages/werkzeug/wrappers/request.py", line 620, in get_json
+    rv = self.on_json_loading_failed(e)
+  File "/usr/local/lib/python3.13/site-packages/flask/wrappers.py", line 214, in on_json_loading_failed
+    return super().on_json_loading_failed(e)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "/usr/local/lib/python3.13/site-packages/werkzeug/wrappers/request.py", line 645, in on_json_loading_failed
+    raise BadRequest(f"Failed to decode JSON object: {e}")
+werkzeug.exceptions.BadRequest: 400 Bad Request: Failed to decode JSON object: Expecting value: line 1 column 1 (char 0)
+[2026-04-05 14:28:21,919] INFO in cards: Response: CARD_UPDATED
+[2026-04-05 14:29:56,664] INFO in auth: Response: TOKEN_REFRESHED
+[2026-04-05 14:29:56,696] INFO in cards: Response: CARD_LIST
+[2026-04-05 14:29:56,698] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 14:29:59,838] INFO in cards: Response: CARD_LIST
+[2026-04-05 14:29:59,846] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 14:30:07,896] ERROR in main: Unhandled Exception: 400 Bad Request: Failed to decode JSON object: Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/site-packages/werkzeug/wrappers/request.py", line 611, in get_json
+    rv = self.json_module.loads(data)
+  File "/usr/local/lib/python3.13/site-packages/flask/json/provider.py", line 187, in loads
+    return json.loads(s, **kwargs)
+           ~~~~~~~~~~^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/json/__init__.py", line 352, in loads
+    return _default_decoder.decode(s)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "/usr/local/lib/python3.13/json/decoder.py", line 345, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/json/decoder.py", line 363, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.13/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/app/routers/cards/card_router.py", line 39, in create
+    data = CardCreate.model_validate(request.json)
+                                     ^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/site-packages/werkzeug/wrappers/request.py", line 560, in json
+    return self.get_json()
+           ~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/site-packages/werkzeug/wrappers/request.py", line 620, in get_json
+    rv = self.on_json_loading_failed(e)
+  File "/usr/local/lib/python3.13/site-packages/flask/wrappers.py", line 214, in on_json_loading_failed
+    return super().on_json_loading_failed(e)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "/usr/local/lib/python3.13/site-packages/werkzeug/wrappers/request.py", line 645, in on_json_loading_failed
+    raise BadRequest(f"Failed to decode JSON object: {e}")
+werkzeug.exceptions.BadRequest: 400 Bad Request: Failed to decode JSON object: Expecting value: line 1 column 1 (char 0)
+[2026-04-05 14:30:11,459] INFO in cards: Response: CARD_UPDATED
+[2026-04-05 14:30:40,502] INFO in cards: Response: CARD_LIST
+[2026-04-05 14:30:40,506] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 14:32:20,651] INFO in cards: Response: CARD_LIST
+[2026-04-05 14:32:20,659] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 14:33:02,444] INFO in cards: Response: CARD_LIST
+[2026-04-05 14:33:02,454] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 14:38:36,624] INFO in database: Database URL: postgresql+psycopg2://miguel:tu_password@postgres:5432/economy
+[2026-04-05 14:38:36,624] INFO in database: Database Engine: postgres
+[2026-04-05 14:38:36,807] WARNING in database: create_all strategy enabled outside SQLite; prefer Alembic for managed environments.
+[2026-04-05 14:38:36,836] INFO in main: Starting the Flask app...
+[2026-04-05 14:38:36,836] INFO in main: Configuration loaded for 0.0.0.0:5001
+[2026-04-05 14:38:40,300] INFO in database: Database URL: postgresql+psycopg2://miguel:tu_password@postgres:5432/economy
+[2026-04-05 14:38:40,300] INFO in database: Database Engine: postgres
+[2026-04-05 14:38:40,490] WARNING in database: create_all strategy enabled outside SQLite; prefer Alembic for managed environments.
+[2026-04-05 14:38:40,518] INFO in main: Starting the Flask app...
+[2026-04-05 14:38:40,518] INFO in main: Configuration loaded for 0.0.0.0:5001
+[2026-04-05 14:38:46,974] INFO in database: Database URL: postgresql+psycopg2://miguel:tu_password@postgres:5432/economy
+[2026-04-05 14:38:46,974] INFO in database: Database Engine: postgres
+[2026-04-05 14:38:47,161] WARNING in database: create_all strategy enabled outside SQLite; prefer Alembic for managed environments.
+[2026-04-05 14:38:47,188] INFO in main: Starting the Flask app...
+[2026-04-05 14:38:47,188] INFO in main: Configuration loaded for 0.0.0.0:5001
+[2026-04-05 14:38:53,703] INFO in database: Database URL: postgresql+psycopg2://miguel:tu_password@postgres:5432/economy
+[2026-04-05 14:38:53,703] INFO in database: Database Engine: postgres
+[2026-04-05 14:38:53,895] WARNING in database: create_all strategy enabled outside SQLite; prefer Alembic for managed environments.
+[2026-04-05 14:38:53,923] INFO in main: Starting the Flask app...
+[2026-04-05 14:38:53,923] INFO in main: Configuration loaded for 0.0.0.0:5001
+[2026-04-05 14:38:57,397] INFO in database: Database URL: postgresql+psycopg2://miguel:tu_password@postgres:5432/economy
+[2026-04-05 14:38:57,397] INFO in database: Database Engine: postgres
+[2026-04-05 14:38:57,581] WARNING in database: create_all strategy enabled outside SQLite; prefer Alembic for managed environments.
+[2026-04-05 14:38:57,608] INFO in main: Starting the Flask app...
+[2026-04-05 14:38:57,608] INFO in main: Configuration loaded for 0.0.0.0:5001
+[2026-04-05 14:39:00,051] INFO in database: Database URL: postgresql+psycopg2://miguel:tu_password@postgres:5432/economy
+[2026-04-05 14:39:00,051] INFO in database: Database Engine: postgres
+[2026-04-05 14:39:00,238] WARNING in database: create_all strategy enabled outside SQLite; prefer Alembic for managed environments.
+[2026-04-05 14:39:00,269] INFO in main: Starting the Flask app...
+[2026-04-05 14:39:00,269] INFO in main: Configuration loaded for 0.0.0.0:5001
+[2026-04-05 14:40:01,880] ERROR in main: Unhandled Exception: 400 Bad Request: Failed to decode JSON object: Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/site-packages/werkzeug/wrappers/request.py", line 611, in get_json
+    rv = self.json_module.loads(data)
+  File "/usr/local/lib/python3.13/site-packages/flask/json/provider.py", line 187, in loads
+    return json.loads(s, **kwargs)
+           ~~~~~~~~~~^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/json/__init__.py", line 352, in loads
+    return _default_decoder.decode(s)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "/usr/local/lib/python3.13/json/decoder.py", line 345, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/json/decoder.py", line 363, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.13/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/app/routers/cards/card_router.py", line 39, in create
+    data = CardCreate.model_validate(request.json)
+                                     ^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/site-packages/werkzeug/wrappers/request.py", line 560, in json
+    return self.get_json()
+           ~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/site-packages/werkzeug/wrappers/request.py", line 620, in get_json
+    rv = self.on_json_loading_failed(e)
+  File "/usr/local/lib/python3.13/site-packages/flask/wrappers.py", line 214, in on_json_loading_failed
+    return super().on_json_loading_failed(e)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "/usr/local/lib/python3.13/site-packages/werkzeug/wrappers/request.py", line 645, in on_json_loading_failed
+    raise BadRequest(f"Failed to decode JSON object: {e}")
+werkzeug.exceptions.BadRequest: 400 Bad Request: Failed to decode JSON object: Expecting value: line 1 column 1 (char 0)
+[2026-04-05 14:40:05,039] INFO in cards: Response: CARD_LIST
+[2026-04-05 14:40:05,047] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 14:40:22,341] INFO in cards: Response: CARD_LIST
+[2026-04-05 14:40:22,344] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 14:40:36,237] INFO in cards: Response: CARD_LIST
+[2026-04-05 14:40:36,249] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 14:41:35,437] INFO in auth: User logged in successfully: admin@economy.com
+[2026-04-05 14:41:35,438] INFO in auth: Response: LOGIN_SUCCESS
+[2026-04-05 14:42:13,762] ERROR in main: Unhandled Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.13/site-packages/flask/app.py", line 891, in dispatch_request
+    self.raise_routing_exception(req)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/usr/local/lib/python3.13/site-packages/flask/app.py", line 500, in raise_routing_exception
+    raise request.routing_exception  # type: ignore[misc]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/site-packages/flask/ctx.py", line 362, in match_request
+    result = self.url_adapter.match(return_rule=True)  # type: ignore
+  File "/usr/local/lib/python3.13/site-packages/werkzeug/routing/map.py", line 629, in match
+    raise NotFound() from None
+werkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+[2026-04-05 14:42:29,726] ERROR in main: Unhandled Exception: 405 Method Not Allowed: The method is not allowed for the requested URL.
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.13/site-packages/flask/app.py", line 891, in dispatch_request
+    self.raise_routing_exception(req)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/usr/local/lib/python3.13/site-packages/flask/app.py", line 500, in raise_routing_exception
+    raise request.routing_exception  # type: ignore[misc]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/site-packages/flask/ctx.py", line 362, in match_request
+    result = self.url_adapter.match(return_rule=True)  # type: ignore
+  File "/usr/local/lib/python3.13/site-packages/werkzeug/routing/map.py", line 624, in match
+    raise MethodNotAllowed(valid_methods=list(e.have_match_for)) from None
+werkzeug.exceptions.MethodNotAllowed: 405 Method Not Allowed: The method is not allowed for the requested URL.
+[2026-04-05 14:44:55,302] INFO in database: Database URL: postgresql+psycopg2://miguel:tu_password@postgres:5432/economy
+[2026-04-05 14:44:55,302] INFO in database: Database Engine: postgres
+[2026-04-05 14:44:55,494] WARNING in database: create_all strategy enabled outside SQLite; prefer Alembic for managed environments.
+[2026-04-05 14:44:55,521] INFO in main: Starting the Flask app...
+[2026-04-05 14:44:55,521] INFO in main: Configuration loaded for 0.0.0.0:5001
+[2026-04-05 14:45:06,916] INFO in auth: Response: TOKEN_REFRESHED
+[2026-04-05 14:45:06,926] ERROR in main: Unhandled Exception: name 'field_info' is not defined
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.13/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/app/routers/cards/card_router.py", line 123, in get_card_meta
+    return export_schema(CardBase)
+  File "/app/schemas/core/export_schema.py", line 31, in export_schema
+    field_info.update(field.json_schema_extra)
+    ^^^^^^^^^^
+NameError: name 'field_info' is not defined
+[2026-04-05 14:45:06,935] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 14:45:06,938] INFO in cards: Response: CARD_LIST
+[2026-04-05 14:47:22,216] INFO in database: Database URL: postgresql+psycopg2://miguel:tu_password@postgres:5432/economy
+[2026-04-05 14:47:22,216] INFO in database: Database Engine: postgres
+[2026-04-05 14:47:22,403] WARNING in database: create_all strategy enabled outside SQLite; prefer Alembic for managed environments.
+[2026-04-05 14:47:22,430] INFO in main: Starting the Flask app...
+[2026-04-05 14:47:22,430] INFO in main: Configuration loaded for 0.0.0.0:5001
+[2026-04-05 14:50:40,193] INFO in database: Database URL: postgresql+psycopg2://miguel:tu_password@postgres:5432/economy
+[2026-04-05 14:50:40,193] INFO in database: Database Engine: postgres
+[2026-04-05 14:50:40,379] WARNING in database: create_all strategy enabled outside SQLite; prefer Alembic for managed environments.
+[2026-04-05 14:50:40,412] INFO in main: Starting the Flask app...
+[2026-04-05 14:50:40,412] INFO in main: Configuration loaded for 0.0.0.0:5001
+[2026-04-05 14:51:03,930] INFO in database: Database URL: postgresql+psycopg2://miguel:tu_password@postgres:5432/economy
+[2026-04-05 14:51:03,930] INFO in database: Database Engine: postgres
+[2026-04-05 14:51:04,127] WARNING in database: create_all strategy enabled outside SQLite; prefer Alembic for managed environments.
+[2026-04-05 14:51:04,154] INFO in main: Starting the Flask app...
+[2026-04-05 14:51:04,154] INFO in main: Configuration loaded for 0.0.0.0:5001
+[2026-04-05 14:51:20,656] INFO in database: Database URL: postgresql+psycopg2://miguel:tu_password@postgres:5432/economy
+[2026-04-05 14:51:20,656] INFO in database: Database Engine: postgres
+[2026-04-05 14:51:20,864] WARNING in database: create_all strategy enabled outside SQLite; prefer Alembic for managed environments.
+[2026-04-05 14:51:20,896] INFO in main: Starting the Flask app...
+[2026-04-05 14:51:20,896] INFO in main: Configuration loaded for 0.0.0.0:5001
+[2026-04-05 14:52:37,466] INFO in database: Database URL: postgresql+psycopg2://miguel:tu_password@postgres:5432/economy
+[2026-04-05 14:52:37,466] INFO in database: Database Engine: postgres
+[2026-04-05 14:52:37,681] WARNING in database: create_all strategy enabled outside SQLite; prefer Alembic for managed environments.
+[2026-04-05 14:52:37,709] INFO in main: Starting the Flask app...
+[2026-04-05 14:52:37,709] INFO in main: Configuration loaded for 0.0.0.0:5001
+[2026-04-05 14:53:06,929] INFO in cards: Response: CARD_LIST
+[2026-04-05 14:53:06,932] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 14:56:03,621] INFO in cards: Response: CARD_LIST
+[2026-04-05 14:56:03,710] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 14:56:30,590] INFO in cards: Response: CARD_LIST
+[2026-04-05 14:56:30,592] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 14:56:37,129] INFO in cards: Response: CARD_UPDATED
+[2026-04-05 14:56:46,592] INFO in banks: Response: BANK_LIST
+[2026-04-05 14:56:46,598] INFO in banks: Response: BANK_LIST
+[2026-04-05 14:56:48,236] INFO in cards: Response: CARD_LIST
+[2026-04-05 14:56:48,238] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 14:57:17,101] INFO in cards: Response: CARD_LIST
+[2026-04-05 14:57:17,134] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 14:58:06,495] INFO in category_rules: Response: CATEGORY_RULE_LIST
+[2026-04-05 14:58:06,503] INFO in banks: Response: BANK_LIST
+[2026-04-05 14:58:06,514] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 14:58:06,515] INFO in income_categories: Response: INCOME_CATEGORY_LIST
+[2026-04-05 14:58:06,520] INFO in expenses_categories: Response: EXPENSE_CATEGORY_LIST
+[2026-04-05 14:58:06,542] INFO in sources: Response: SOURCE_LIST
+[2026-04-05 15:01:24,164] INFO in database: Database URL: postgresql+psycopg2://miguel:tu_password@postgres:5432/economy
+[2026-04-05 15:01:24,164] INFO in database: Database Engine: postgres
+[2026-04-05 15:01:24,358] WARNING in database: create_all strategy enabled outside SQLite; prefer Alembic for managed environments.
+[2026-04-05 15:01:24,387] INFO in main: Starting the Flask app...
+[2026-04-05 15:01:24,387] INFO in main: Configuration loaded for 0.0.0.0:5001
+[2026-04-05 15:01:47,586] INFO in auth: Response: TOKEN_REFRESHED
+[2026-04-05 15:01:47,598] INFO in banks: Response: BANK_LIST
+[2026-04-05 15:01:47,613] INFO in category_rules: Response: CATEGORY_RULE_LIST
+[2026-04-05 15:01:47,615] INFO in expenses_categories: Response: EXPENSE_CATEGORY_LIST
+[2026-04-05 15:01:47,615] INFO in income_categories: Response: INCOME_CATEGORY_LIST
+[2026-04-05 15:01:47,616] INFO in sources: Response: SOURCE_LIST
+[2026-04-05 15:01:47,617] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 15:10:05,072] INFO in category_rules: Response: CATEGORY_RULE_LIST
+[2026-04-05 15:10:05,079] INFO in banks: Response: BANK_LIST
+[2026-04-05 15:10:05,083] INFO in sources: Response: SOURCE_LIST
+[2026-04-05 15:10:05,084] INFO in expenses_categories: Response: EXPENSE_CATEGORY_LIST
+[2026-04-05 15:10:05,084] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 15:10:05,084] INFO in income_categories: Response: INCOME_CATEGORY_LIST
+[2026-04-05 15:11:31,252] INFO in category_rules: Response: CATEGORY_RULE_LIST
+[2026-04-05 15:11:31,259] INFO in banks: Response: BANK_LIST
+[2026-04-05 15:11:31,264] INFO in sources: Response: SOURCE_LIST
+[2026-04-05 15:11:31,264] INFO in income_categories: Response: INCOME_CATEGORY_LIST
+[2026-04-05 15:11:31,268] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 15:11:31,269] INFO in expenses_categories: Response: EXPENSE_CATEGORY_LIST
+[2026-04-05 15:11:31,273] INFO in cards: Response: CARD_LIST
+[2026-04-05 15:12:06,259] INFO in category_rules: Response: CATEGORY_RULE_LIST
+[2026-04-05 15:12:06,267] INFO in banks: Response: BANK_LIST
+[2026-04-05 15:12:06,270] INFO in income_categories: Response: INCOME_CATEGORY_LIST
+[2026-04-05 15:12:06,272] INFO in sources: Response: SOURCE_LIST
+[2026-04-05 15:12:06,273] INFO in expenses_categories: Response: EXPENSE_CATEGORY_LIST
+[2026-04-05 15:12:06,273] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 15:12:06,273] INFO in cards: Response: CARD_LIST
+[2026-04-05 15:12:55,379] INFO in category_rules: Response: CATEGORY_RULE_LIST
+[2026-04-05 15:12:55,386] INFO in banks: Response: BANK_LIST
+[2026-04-05 15:12:55,388] INFO in income_categories: Response: INCOME_CATEGORY_LIST
+[2026-04-05 15:12:55,388] INFO in sources: Response: SOURCE_LIST
+[2026-04-05 15:12:55,390] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 15:12:55,390] INFO in expenses_categories: Response: EXPENSE_CATEGORY_LIST
+[2026-04-05 15:12:55,393] INFO in cards: Response: CARD_LIST
+[2026-04-05 15:14:19,201] INFO in category_rules: Response: CATEGORY_RULE_LIST
+[2026-04-05 15:14:19,207] INFO in banks: Response: BANK_LIST
+[2026-04-05 15:14:19,209] INFO in sources: Response: SOURCE_LIST
+[2026-04-05 15:14:19,211] INFO in income_categories: Response: INCOME_CATEGORY_LIST
+[2026-04-05 15:14:19,211] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 15:14:19,214] INFO in expenses_categories: Response: EXPENSE_CATEGORY_LIST
+[2026-04-05 15:14:19,215] INFO in cards: Response: CARD_LIST
+[2026-04-05 15:18:50,616] INFO in auth: Response: TOKEN_REFRESHED
+[2026-04-05 15:18:50,636] INFO in banks: Response: BANK_LIST
+[2026-04-05 15:18:50,637] INFO in sources: Response: SOURCE_LIST
+[2026-04-05 15:18:50,638] INFO in income_categories: Response: INCOME_CATEGORY_LIST
+[2026-04-05 15:18:50,640] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 15:18:50,642] INFO in expenses_categories: Response: EXPENSE_CATEGORY_LIST
+[2026-04-05 15:18:50,643] INFO in cards: Response: CARD_LIST
+[2026-04-05 15:18:50,645] INFO in category_rules: Response: CATEGORY_RULE_LIST
+[2026-04-05 15:19:14,283] INFO in category_rules: Response: CATEGORY_RULE_LIST
+[2026-04-05 15:19:14,286] INFO in banks: Response: BANK_LIST
+[2026-04-05 15:19:14,290] INFO in sources: Response: SOURCE_LIST
+[2026-04-05 15:19:14,292] INFO in income_categories: Response: INCOME_CATEGORY_LIST
+[2026-04-05 15:19:14,293] INFO in expenses_categories: Response: EXPENSE_CATEGORY_LIST
+[2026-04-05 15:19:14,296] INFO in cards: Response: CARD_LIST
+[2026-04-05 15:19:14,296] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 15:23:45,524] INFO in category_rules: Response: CATEGORY_RULE_LIST
+[2026-04-05 15:23:45,545] INFO in banks: Response: BANK_LIST
+[2026-04-05 15:23:45,548] INFO in sources: Response: SOURCE_LIST
+[2026-04-05 15:23:45,548] INFO in income_categories: Response: INCOME_CATEGORY_LIST
+[2026-04-05 15:23:45,550] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-05 15:23:45,551] INFO in expenses_categories: Response: EXPENSE_CATEGORY_LIST
+[2026-04-05 15:23:45,553] INFO in cards: Response: CARD_LIST

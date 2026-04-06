@@ -12,7 +12,7 @@ export type Last4 = string | null;
 export type CardTypeEnum = CardEnum;
 export type Active = boolean;
 export type AccountId = number;
-
+export type ImportSourceCode = string | null;
 export interface CardBase {
   id?: Id;
   name: Name;
@@ -20,4 +20,5 @@ export interface CardBase {
   type: CardTypeEnum;
   active?: Active;
   account_id: AccountId;
+  import_source_code?: string;
 }

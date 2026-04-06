@@ -16,7 +16,7 @@ class ExpenseBase(BaseModel):
     source_id: int = Field(..., gt=0)
     category_id: int = Field(..., gt=0)
     account_id: int = Field(..., gt=0)
-    
+    ignore_in_analysis: Optional[bool] = None
     card_id: Optional[int] = Field(None, gt=0)
     #ignore_in_analysis: bool = Field(default=False, exclude=True)
 

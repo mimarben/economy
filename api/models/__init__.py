@@ -36,6 +36,8 @@ from .category_rules import CategoryRule
 
 from .cards import Card
 
+from .imports import ImportOrigin, ImportProfile
+
 __all__ = [
     'Base',
     'TimestampMixin',
@@ -63,4 +65,6 @@ __all__ = [
     'HouseholdMember',
     'CategoryRule',
     'Card',
+    'ImportOrigin',
+    'ImportProfile',
 ]

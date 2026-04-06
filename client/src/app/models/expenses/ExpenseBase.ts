@@ -14,6 +14,8 @@ export type DedupHash = string;
 export type SourceId = number;
 export type CategoryId = number;
 export type AccountId = number;
+export type ignore_in_analysis = boolean | null;
+export type CardId = number | null;
 
 export interface ExpenseBase {
   id?: number;
@@ -26,4 +28,6 @@ export interface ExpenseBase {
   source_id: SourceId;
   category_id: CategoryId;
   account_id: AccountId;
+  ignore_in_analysis?: ignore_in_analysis;
+  card_id?: CardId;
 }

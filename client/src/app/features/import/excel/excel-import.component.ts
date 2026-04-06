@@ -6,8 +6,9 @@ import * as XLSX from 'xlsx';
 
 import { ExpenseCategoryBase } from '@expenses_models/ExpenseCategoryBase';
 import { AccountBase as Account } from '@finance_models/AccountBase';
-import { AccountService } from '@finance_services/account.service';
 import { SourceBase as Source } from '@finance_models/SourceBase';
+import { CardBase as Card } from '@cards_models/CardBase';
+import { AccountService } from '@finance_services/account.service';
 import { SourceService } from '@finance_services/source.service';
 import { ExpenseCategoryService } from '@app/services/expenses/expense-category.service';
 import { IncomeCategoryBase } from '@incomes_models/IncomeCategoryBase';
@@ -17,6 +18,7 @@ import { TransactionAiService } from '@services/ai/transaction-ai.service';
 import { RuleCategorizerService } from '@import_services/rule-categorizer.service';
 import { ToastService } from '@core_services/toast.service';
 import { TransactionImportService } from '@app/services/import/transaction-import.service';
+import { CardService } from '@app/services/cards/cards.service';
 
 import { BankProfile } from '@import_models/BankProfile';
 import { BANK_PROFILES } from '@app/core/import/bank-profiles.const';
@@ -45,11 +47,18 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
   accounts: Account[] = [];
   filteredAccounts: Account[] = [];
   sources: Source[] = [];
+  cards: Card[] = [];
+  filteredCards: Card[] = [];
+  selectedCard: Card | null = null;
 
   selectedBank: Bank | null = null;
+  
   selectedAccount: Account | null = null;
+  
   selectedProfile: BankProfile | null = null;
+  
   transactions: ImportTransaction[] = [];
+  
   dataSource: MatTableDataSource<ImportTransaction> = new MatTableDataSource<ImportTransaction>([]);
   expenseCategories: ExpenseCategoryBase[] = [];
   incomeCategories: IncomeCategoryBase[] = [];
@@ -76,7 +85,8 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
     private transactionAiService: TransactionAiService,
     private transactionImportService: TransactionImportService,
     private accountService: AccountService,
-    private sourceService: SourceService
+    private sourceService: SourceService,
+    private cardService: CardService,
   ) { }
   ngOnInit(): void {
     this.bankService.getBanks().subscribe({
@@ -132,6 +142,16 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
         );
       },
     });
+    this.cardService.getAll().subscribe({
+      next: (res) => {
+        this.cards = res.response;
+      },
+      error: (error) => {
+        this.toastService.error(
+          this.translateService.translateKey('ERROR_LOAD_CARDS'),
+        );
+      },
+    });
   }
 
   ngAfterViewInit() {
@@ -157,7 +177,6 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
       (p) => p.name.toLowerCase() === bank.name.toLowerCase(),
     );
     if (!profile) {
-      console.warn('Import profile not found for bank', bank.name);
       this.toastService.error(
         this.translateService.translateKey('BANK.PROFILE_NOT_FOUND'),
       );
@@ -175,7 +194,8 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
       return;
     }
     this.selectedAccount = account;
-
+    this.filterCardsByAccount(accountId);
+    this.selectedCard = null;
     // Apply account to all selected transactions
     this.transactions.forEach((t) => {
       t.account_id = account.id;
@@ -191,6 +211,10 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
 
       return keywords.some((k) => header.includes(k));
     });
+  }
+
+  private filterCardsByAccount(accountId: number) {
+    this.filteredCards = this.cards.filter(c => c.account_id === accountId);
   }
 
   async onFileChange(event: Event) {
