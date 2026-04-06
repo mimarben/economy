@@ -7,7 +7,7 @@ class ImportOrigin(TimestampMixin, Base):
     __tablename__ = "import_origins"
 
     id = Column(Integer, primary_key=True, index=True)
-    code = Column(String(50), unique=True, nullable=False)  # ING, AMEX
+    code = Column(String(50), unique=True, nullable=False, index=True)# ING, AMEX
     name = Column(String(100), nullable=False)
     active = Column(Boolean, default=True)
      

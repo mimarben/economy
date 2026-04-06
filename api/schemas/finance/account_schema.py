@@ -24,7 +24,9 @@ class AccountBase(BaseModel):
     active: bool = Field(default=True)
     bank_id: int = Field(..., gt=0)
     user_id: int = Field(..., gt=0)
-
+    import_origin_id: Optional[int] = Field(None, gt=0)
+    import_profile_id: Optional[int] = Field(None, gt=0)
+    
     @field_validator("balance")
     @classmethod
     def validate_balance(cls, v):
@@ -33,12 +35,11 @@ class AccountBase(BaseModel):
     @field_validator("iban")
     @classmethod
     def validate_iban(cls, v):
-        if v and len(v) < 15:
+        if v and len(v.replace(" ", "")) < 15:
             raise ValueError("Invalid IBAN")
-        return v
 class AccountRead(AccountBase, AuditFields):
     id: int
-    cards: List[CardRead] = []
+    cards: List[CardRead] = Field(default_factory=list)
     class Config:
         from_attributes = True
 
@@ -56,4 +57,5 @@ class AccountUpdate(BaseModel):
     active: Optional[bool] = None
     bank_id: Optional[int] = Field(None, gt=0)
     user_id: Optional[int] = Field(None, gt=0)
-
+    import_origin_id: Optional[int] = Field(None, gt=0)
+    import_profile_id: Optional[int] = Field(None, gt=0)

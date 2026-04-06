@@ -4,6 +4,12 @@ from sqlalchemy.orm import relationship
 from ..core.base import Base, TimestampMixin
 from ..core.enums import CurrencyEnum
 
+from sqlalchemy import Column, Integer, String, Numeric, Boolean, ForeignKey, Enum as SQLEnum, UniqueConstraint
+from sqlalchemy.orm import relationship
+
+from ..core.base import Base, TimestampMixin
+from ..core.enums import CurrencyEnum
+
 class Account(TimestampMixin, Base):
     __tablename__ = 'accounts'
     __table_args__ = (
@@ -21,7 +27,7 @@ class Account(TimestampMixin, Base):
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False, index=True)
     bank_id = Column(Integer, ForeignKey('banks.id'), nullable=False, index=True)
     import_origin_id = Column(Integer, ForeignKey("import_origins.id"))
-    
+    import_profile_id = Column(Integer,ForeignKey("import_profiles.id"),nullable=True)
     # Relationships
     user = relationship('User', back_populates='accounts')
     bank = relationship('Bank', back_populates='accounts')    
@@ -31,3 +37,4 @@ class Account(TimestampMixin, Base):
     incomes = relationship('Income', back_populates='account')
     cards = relationship('Card', back_populates='account')
     import_origin = relationship("ImportOrigin", back_populates="accounts")
+    import_profile = relationship("ImportProfile")
