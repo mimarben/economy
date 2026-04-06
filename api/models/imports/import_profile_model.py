@@ -1,8 +1,8 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, Boolean
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
-from db.database import Base
-from models.core.base import TimestampMixin
+from ..core.base import Base, TimestampMixin
+
 
 class ImportProfile(TimestampMixin, Base):
     __tablename__ = "import_profiles"

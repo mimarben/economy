@@ -20,6 +20,8 @@ from .imports.import_router import router as import_router
 from .category_rules.category_rules_router import router as category_rules_router
 from .summaries.summary_router import router as summary_router
 from .cards.card_router import router as card_router
+from .imports.import_origin_router import router as import_origin_router
+from .imports.import_profile_router import router as import_profile_router
 
 def register_blueprints(app, url_prefix=""):
     blueprints = [
@@ -28,7 +30,7 @@ def register_blueprints(app, url_prefix=""):
         income_router, source_router, saving_router, account_router, investment_router,
         investment_category_router, bank_router, saving_log_router, investment_log_router,
         transactions_ai_router, core_router, auth_router, import_router, category_rules_router,
-        summary_router, card_router
+        summary_router, card_router, import_origin_router, import_profile_router
     ]
     for bp in blueprints:
         app.register_blueprint(bp, url_prefix=url_prefix)

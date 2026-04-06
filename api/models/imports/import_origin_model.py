@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, Boolean
 from sqlalchemy.orm import relationship
-from db.database import Base
-from models.core.base import TimestampMixin
+from ..core.base import Base, TimestampMixin
+
 
 class ImportOrigin(TimestampMixin, Base):
     __tablename__ = "import_origins"

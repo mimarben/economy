@@ -6,10 +6,9 @@ from sqlalchemy import pool
 
 from alembic import context
 
-from models import Base  # Import your Base class here
+from models.core.base import Base
 
-import models  # 🔥 IMPORTANTE: carga todos los modelos
-
+from models import * # 🔥 IMPORTANTE: carga todos los modelos
 
 from config import Config
 
