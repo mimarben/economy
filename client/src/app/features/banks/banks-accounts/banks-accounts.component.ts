@@ -14,6 +14,7 @@ import { UserService } from '@users_services/user.service';
 import { FormFieldConfig } from '@shared/generic-form/form-config';
 import { ToastService } from '@core_services/toast.service';
 import { environment } from '@env/environment';
+import { MetaService } from '@core_services/meta.service';
 
 @Component({
   selector: 'app-banks-accounts',
@@ -30,17 +31,7 @@ export class BanksAccountsComponent implements OnInit {
   isFormValid = false;
   banks: Bank[] = [];
   users: User[] = [];
-  columns: TableColumn<Account>[] = [
-    { key: 'id', label: 'ID', sortable: true },
-    { key: 'name', label: 'Name', sortable: true },
-    { key: 'description', label: 'Description', sortable: false },
-    { key: 'iban', label: 'IBAN', sortable: true },
-    { key: 'balance', label: 'Balance', sortable: true },
-    { key: 'currency', label: 'Currency', sortable: true },
-    { key: 'active', label: 'Active', sortable: true, formatter: (v) => v ? 'Yes' : 'No' },
-    { key: 'bank_id', label: 'Bank-ID', sortable: true, formatter: (v: number) => this.getBankName(v) },
-    { key: 'user_id', label: 'User-ID', sortable: true, formatter: (v: number) => this.getUserName(v) },
-  ];
+  columns: TableColumn<Account>[] = [];
 
   constructor(
     private accountService: AccountService,
@@ -49,22 +40,55 @@ export class BanksAccountsComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private dialog: MatDialog,
     private toastService: ToastService,
-    private formFactory: FormFactoryService
+    private formFactory: FormFactoryService,
+    private metaService: MetaService,
   ) {}
 
   ngOnInit() {
-    this.loadAccounts();
-    this.loadFormFields();
+    this.loadInitialData();
   }
 
-  loadAccounts() {
+  private loadInitialData(): void {
     this.isLoading = true;
-    this.accountService.getAll().subscribe({
-      next: (data: ApiResponse<Account[]>) => {
-        this.accounts = data.response;
+    forkJoin({
+      accounts: this.accountService.getAll(),
+      banks: this.bankService.getBanks(),
+      users: this.userService.getUsers(),
+      meta: this.metaService.getMeta('account'),
+    }).subscribe({
+      next: ({ accounts, banks, users, meta }) => {
+        this.accounts = accounts.response;
+        this.banks = banks.response;
+        this.users = users.response;
+
+        this.formFields = this.formFactory.enrichMetadataFields(meta.fields, {
+          bank: this.banks.map((bank) => ({ value: bank.id!, label: bank.name })),
+          bank_id: this.banks.map((bank) => ({ value: bank.id!, label: bank.name })),
+          user: this.users.map((user) => ({ value: user.id!, label: `${user.name} (${user.email})` })),
+          user_id: this.users.map((user) => ({ value: user.id!, label: `${user.name} (${user.email})` })),
+        });
+
+        this.columns = this.formFactory.getTableColumnsFromMetadata<Account>(this.formFields).map((column) => {
+          if (column.key === 'bank_id') {
+            return {
+              ...column,
+              formatter: (value: number) => this.getBankName(value),
+            };
+          }
+
+          if (column.key === 'user_id') {
+            return {
+              ...column,
+              formatter: (value: number) => this.getUserName(value),
+            };
+          }
+
+          return column;
+        });
+
         this.isLoading = false;
       },
-      error: (err: any) => {
+      error: () => {
         this.errorMessage = 'Error loading accounts';
         this.isLoading = false;
       },
@@ -78,33 +102,6 @@ export class BanksAccountsComponent implements OnInit {
   const user = this.users.find(u => u.id === userId);
   return user ? `${user.name} ${user.surname1} ${user.surname2}` : 'Unknown User';
   }
-  private loadFormFields(): void {
-    this.formFields = this.formFactory.getFormConfig('account');
-    this.loadBanks();
-    this.loadUsers();
-  }
-
-private loadBanks(): void {
-  this.bankService.getBanks().subscribe({
-    next: (res: ApiResponse<Bank[]>) => {
-      this.banks = res.response; // Store banks
-      // ... existing form field update code
-      this.accounts = [...this.accounts]; // Refresh table
-    },
-    // ... error handling
-  });
-}
-
-private loadUsers(): void {
-  this.userService.getUsers().subscribe({
-    next: (res: ApiResponse<User[]>) => {
-      this.users = res.response; // Store users
-      // ... existing form field update code
-      this.accounts = [...this.accounts]; // Refresh table
-    },
-    // ... error handling
-  });
-}
 
   editAccount(account: Account): void {
     this.openDialog(account);
@@ -114,52 +111,17 @@ private loadUsers(): void {
     this.openDialog();
   }
   openDialog(data?: Account): void {
-    forkJoin({
-      banks: this.bankService.getBanks(),
-      users: this.userService.getUsers()
-    }).subscribe({
-      next: (responses) => {
-        const baseConfig = this.formFactory.getFormConfig('account');
+    const dialogRef = this.dialog.open(GenericDialogComponent, {
+      data: {
+        title: data ? 'Edit Account' : 'New Account',
+        fields: this.formFields,
+        initialData: data || {}
+      }
+    });
 
-        const enrichedConfig = baseConfig.map((field: FormFieldConfig) => {
-          if (field.key === 'bank_id') {
-            return {
-              ...field,
-              options: responses.banks.response.map((bank: Bank) => ({
-                value: bank.id,
-                label: bank.name
-              }))
-            };
-          }
-
-          if (field.key === 'user_id') {
-            return {
-              ...field,
-              options: responses.users.response.map((user: User) => ({
-                value: user.id,
-                label: `${user.name} (${user.email})`
-              }))
-            };
-          }
-          return field;
-        });
-        const dialogRef = this.dialog.open(GenericDialogComponent, {
-          data: {
-            title: data ? 'Edit Account' : 'New Account',
-            fields: enrichedConfig,
-            initialData: data || {}
-          }
-        });
-
-        dialogRef.afterClosed().subscribe(result => {
-          if (result) {
-            result.id ? this.updateAccount(result) : this.createAccount(result);
-          }
-        });
-      },
-      error: (error: any) => {
-        console.error('Error loading banks and users:', error);
-        // Opcional: Mostrar un snackbar o mensaje de error
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        result.id ? this.updateAccount(result) : this.createAccount(result);
       }
     });
   }
