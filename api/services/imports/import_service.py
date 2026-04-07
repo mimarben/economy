@@ -126,6 +126,8 @@ class ImportService:
                 source_id=item.source_id,
                 category_id=item.category_id,
                 account_id=item.account_id,
+                card_id=item.card_id,
+                ignore_in_analysis=bool(item.ignore_in_analysis),
                 dedup_hash=dedup_hash
             )
 
@@ -181,4 +183,3 @@ class ImportService:
             "duplicates": duplicates,
             "total": total
         }
-
