@@ -39,3 +39,27 @@ mat-select {
 mat-option:hover {
   background-color: rgba(0, 0, 0, 0.04); /* Light hover effect */
 }
+
+.columns-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: -8px;
+  margin-bottom: 12px;
+}
+
+.columns-grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.columns-grid-header {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: -6px;
+}
+
+.columns-input {
+  margin-bottom: 0;
+}

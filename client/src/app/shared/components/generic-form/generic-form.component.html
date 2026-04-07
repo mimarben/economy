@@ -2,7 +2,10 @@
   <div *ngFor="let field of fields" class="field-container">
 
     <!-- Text, Number, or Email Field -->
-    <mat-form-field appearance="outline" *ngIf="field.type === 'text' || field.type === 'number' || field.type === 'email'" class="full-width">
+    <mat-form-field
+      appearance="outline"
+      *ngIf="(field.type === 'text' || field.type === 'number' || field.type === 'email') && !isColumnsField(field)"
+      class="full-width">
       <mat-label>{{ field.label }}</mat-label>
       <input matInput [type]="field.type" [formControlName]="field.key" [id]="field.key"
         [attr.aria-describedby]="field.key + '-error'" [placeholder]="field.label">
@@ -10,6 +13,49 @@
         {{ getErrorMessage(field) }}
       </mat-error>
     </mat-form-field>
+
+    <mat-form-field appearance="outline" *ngIf="isColumnsField(field)" class="full-width">
+      <mat-label>{{ field.label }}</mat-label>
+      <div class="columns-grid">
+        <div class="columns-grid-header">Campo</div>
+        <div class="columns-grid-header">Sinónimos (separados por comas)</div>
+        <div></div>
+
+        <ng-container *ngFor="let row of columnsRows; let i = index">
+          <mat-form-field appearance="outline" class="columns-input">
+            <input
+              matInput
+              [(ngModel)]="row.key"
+              [ngModelOptions]="{ standalone: true }"
+              (ngModelChange)="onColumnsRowChange()"
+              placeholder="date">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="columns-input">
+            <input
+              matInput
+              [(ngModel)]="row.aliases"
+              [ngModelOptions]="{ standalone: true }"
+              (ngModelChange)="onColumnsRowChange()"
+              placeholder="valor, fecha">
+          </mat-form-field>
+
+          <button
+            mat-icon-button
+            color="warn"
+            type="button"
+            (click)="removeColumnsMappingLine(i)"
+            [disabled]="columnsRows.length === 1">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </ng-container>
+      </div>
+    </mat-form-field>
+    <div *ngIf="isColumnsField(field)" class="columns-actions">
+      <button mat-stroked-button type="button" (click)="addColumnsMappingLine()">
+        Añadir línea
+      </button>
+    </div>
 
     <!-- Select Field -->
     <mat-form-field appearance="outline" *ngIf="field.type === 'select'" class="full-width">

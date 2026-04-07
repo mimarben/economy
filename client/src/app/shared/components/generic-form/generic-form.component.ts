@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, ValidatorFn } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 
 import { MATERIAL_IMPORTS } from '@app/utils/material.imports';
@@ -14,6 +14,7 @@ import { UtilsService } from '@app/utils/utils.service';
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     ReactiveFormsModule,
     ...MATERIAL_IMPORTS,
     MatSelectModule
@@ -26,6 +27,7 @@ export class GenericFormComponent implements OnChanges {
   @Output() formValidity = new EventEmitter<boolean>();
   @Output() formDirty = new EventEmitter<boolean>();
   form: FormGroup;
+  columnsRows: Array<{ key: string; aliases: string }> = [];
 
   constructor(private fb: FormBuilder,  private utilsService: UtilsService) {
     this.form = this.fb.group({});
@@ -72,6 +74,7 @@ export class GenericFormComponent implements OnChanges {
     });
 
     this.emitFormValidity();
+    this.initColumnsRows();
   }
 
   /**
@@ -202,5 +205,82 @@ export class GenericFormComponent implements OnChanges {
         ...(field.validators ? field.validators.map(v => v.name || 'custom') : [])
       ]
     }));
+  }
+
+  isColumnsField(field: FormFieldConfig): boolean {
+    return field.key === 'columns';
+  }
+
+  addColumnsMappingLine(): void {
+    this.columnsRows = [...this.columnsRows, { key: '', aliases: '' }];
+    this.syncColumnsControlFromRows();
+  }
+
+  removeColumnsMappingLine(index: number): void {
+    this.columnsRows = this.columnsRows.filter((_, i) => i !== index);
+    this.syncColumnsControlFromRows();
+  }
+
+  onColumnsRowChange(): void {
+    this.syncColumnsControlFromRows();
+  }
+
+  private initColumnsRows(): void {
+    const control = this.form.get('columns');
+    if (!control) return;
+
+    const parsed = this.parseColumnsValue(control.value);
+    const entries = Object.entries(parsed);
+    this.columnsRows = entries.length
+      ? entries.map(([key, aliases]) => ({
+          key,
+          aliases: aliases.join(', '),
+        }))
+      : [{ key: '', aliases: '' }];
+    this.syncColumnsControlFromRows();
+  }
+
+  private syncColumnsControlFromRows(): void {
+    const control = this.form.get('columns');
+    if (!control) return;
+
+    const normalized = Object.fromEntries(
+      this.columnsRows
+        .map((row) => ({
+          key: row.key.trim(),
+          aliases: row.aliases
+            .split(',')
+            .map((item) => item.trim())
+            .filter(Boolean),
+        }))
+        .filter((row) => row.key.length > 0)
+        .map((row) => [row.key, row.aliases]),
+    );
+
+    control.setValue(normalized, { emitEvent: false });
+  }
+
+  private parseColumnsValue(value: unknown): Record<string, string[]> {
+    if (!value) return {};
+
+    if (typeof value === 'string') {
+      try {
+        const parsed = JSON.parse(value);
+        return this.parseColumnsValue(parsed);
+      } catch {
+        return {};
+      }
+    }
+
+    if (typeof value === 'object' && !Array.isArray(value)) {
+      return Object.fromEntries(
+        Object.entries(value as Record<string, unknown>).map(([key, aliases]) => [
+          key,
+          Array.isArray(aliases) ? aliases.map((item) => String(item)) : [],
+        ]),
+      );
+    }
+
+    return {};
   }
 }
