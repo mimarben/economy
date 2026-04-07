@@ -16,6 +16,22 @@ class CardBase(BaseModel):
             "relation": "account"
         }
     )
+    import_origin_id: Optional[int] = Field(
+        None,
+        gt=0,
+        json_schema_extra={
+            "ui_type": "select",
+            "relation": "import-origin"
+        }
+    )
+    import_profile_id: Optional[int] = Field(
+        None,
+        gt=0,
+        json_schema_extra={
+            "ui_type": "select",
+            "relation": "import-profile"
+        }
+    )
     
     @field_validator("last4")
     @classmethod
@@ -39,3 +55,5 @@ class CardUpdate(BaseModel):
     type: Optional[CardTypeEnum] = None
     active: Optional[bool] = None
     account_id: Optional[int] = Field(None, gt=0)
+    import_origin_id: Optional[int] = Field(None, gt=0)
+    import_profile_id: Optional[int] = Field(None, gt=0)

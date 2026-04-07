@@ -15,6 +15,8 @@ export type Balance = number;
 export type Active = boolean;
 export type BankId = number;
 export type UserId = number;
+export type ImportOriginId = number;
+export type ImportProfileId = number;
 
 export interface AccountBase {
   id?: Id;
@@ -26,4 +28,6 @@ export interface AccountBase {
   active?: Active;
   bank_id: BankId;
   user_id: UserId;
+  import_origin_id?: ImportOriginId;
+  import_profile_id?: ImportProfileId;
 }
