@@ -16,6 +16,9 @@ import { ApiResponse } from '@app/models/core/APIResponse';
 import { environment } from '@env/environment';
 import { MetaService } from '@core_services/meta.service';
 import { forkJoin } from 'rxjs';
+import { ImportOriginBase as ImportOrigin } from '@import_models/import-originBase';
+import { ImportProfileBase as ImportProfile } from '@import_models/import-profileBase';
+import { ImportOriginsService, ImportProfilesService } from '@import_services/import-profiles.service';
 
 @Component({
   standalone: true,
@@ -27,6 +30,8 @@ import { forkJoin } from 'rxjs';
 export class CardsComponent {
   cards: Card[] = [];
   accounts: Account[] = [];
+  origins: ImportOrigin[] = [];
+  profiles: ImportProfile[] = [];
   filterValue = '';
   isLoading = false;
   errorMessage = '';
@@ -42,6 +47,8 @@ export class CardsComponent {
     private formFactory: FormFactoryService,
     private accountService: AccountService,
     private metaService: MetaService,
+    private importOriginsService: ImportOriginsService,
+    private importProfilesService: ImportProfilesService,
   ) {}
 
   ngOnInit(): void {
@@ -53,15 +60,39 @@ export class CardsComponent {
     forkJoin({
       cards: this.cardService.getAll(),
       accounts: this.accountService.getAll(),
+      origins: this.importOriginsService.getOrigins(),
+      profiles: this.importProfilesService.getProfiles(),
       meta: this.metaService.getMeta('card'),
     }).subscribe({
-      next: ({ cards, accounts, meta }) => {
+      next: ({ cards, accounts, origins, profiles, meta }) => {
         this.cards = cards.response;
         this.accounts = accounts.response;
+        this.origins = origins.response;
+        this.profiles = profiles.response;
         this.formFields = this.formFactory.enrichMetadataFields(meta.fields, {
           account: this.accounts.map((a) => ({
             value: a.id!,
             label: a.name,
+          })),
+          account_id: this.accounts.map((a) => ({
+            value: a.id!,
+            label: a.name,
+          })),
+          'import-origin': this.origins.map((origin) => ({
+            value: origin.id,
+            label: origin.name,
+          })),
+          import_origin_id: this.origins.map((origin) => ({
+            value: origin.id,
+            label: origin.name,
+          })),
+          'import-profile': this.profiles.map((profile) => ({
+            value: profile.id,
+            label: profile.name,
+          })),
+          import_profile_id: this.profiles.map((profile) => ({
+            value: profile.id,
+            label: profile.name,
           })),
         });
         console.log('META FIELDS', this.formFields);
