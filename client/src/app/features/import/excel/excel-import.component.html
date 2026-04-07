@@ -12,6 +12,24 @@
     }
   </select>
 </mat-form-field>
+<mat-form-field style="margin-left: 16px; width: 240px;">
+  <mat-label>Origen importación</mat-label>
+  <mat-select [value]="selectedOrigin?.id" (selectionChange)="onOriginSelected($event.value)">
+    <mat-option [value]="null">Seleccionar origen</mat-option>
+    @for (origin of importOrigins; track origin.id) {
+      <mat-option [value]="origin.id">{{ origin.name }}</mat-option>
+    }
+  </mat-select>
+</mat-form-field>
+<mat-form-field style="margin-left: 16px; width: 280px;">
+  <mat-label>Perfil importación</mat-label>
+  <mat-select [value]="selectedProfile?.id" [disabled]="!selectedOrigin" (selectionChange)="onProfileSelected($event.value)">
+    <mat-option [value]="null">Seleccionar perfil</mat-option>
+    @for (profile of filteredProfiles; track profile.id) {
+      <mat-option [value]="profile.id">{{ profile.name }}</mat-option>
+    }
+  </mat-select>
+</mat-form-field>
 @if (selectedBank) {
 <mat-form-field style="margin-left: 16px; width: 240px;">
   <mat-label>{{"ACCOUNT.ACCOUNTS"|translate}}</mat-label>
@@ -46,7 +64,7 @@
 <!-- File upload Material style -->
 
 
-<button matFab extended (click)="fileInput.click()" [disabled]="!bankSelect.value">
+<button matFab extended (click)="fileInput.click()" [disabled]="!selectedProfile">
   <mat-icon>upload</mat-icon>
   {{"SELECT_EXCEL"|translate}}
 </button>
@@ -106,6 +124,12 @@
     <th mat-header-cell *matHeaderCellDef> Type </th>
     <td mat-cell *matCellDef="let t">
       {{ t.amount < 0 ? 'expense' : 'income' }}
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="analysis">
+    <th mat-header-cell *matHeaderCellDef> Analizable </th>
+    <td mat-cell *matCellDef="let t">
+      {{ t.ignore_in_analysis ? 'No' : 'Sí' }}
     </td>
   </ng-container>
 

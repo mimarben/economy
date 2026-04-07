@@ -19,13 +19,13 @@ import { RuleCategorizerService } from '@import_services/rule-categorizer.servic
 import { ToastService } from '@core_services/toast.service';
 import { TransactionImportService } from '@app/services/import/transaction-import.service';
 import { CardService } from '@app/services/cards/cards.service';
-
-import { BankProfile } from '@import_models/BankProfile';
-import { BANK_PROFILES } from '@app/core/import/bank-profiles.const';
+import { ImportProfilesService, ImportOriginsService } from '@import_services/import-profiles.service';
 import { BankService } from '@finance_services/bank.service';
 import { BankBase as Bank } from '@finance_models/BankBase';
 import { ImportTransaction } from '@import_models/import-transaction.model';
 import { ClassifyRequest, ClassifyResult, ClassifyPayload } from '@import_models/classify-request-ai';
+import { ImportOriginBase as ImportOrigin } from '@app/models/import/import-originBase';
+import { ImportProfileBase as ImportProfile } from '@app/models/import/import-profileBase';
 
 import { AppTranslateService } from '@utils/app-translate.service';
 import { TranslateModule } from '@ngx-translate/core';
@@ -50,12 +50,16 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
   cards: Card[] = [];
   filteredCards: Card[] = [];
   selectedCard: Card | null = null;
+  importOrigins: ImportOrigin[] = [];
+  importProfiles: ImportProfile[] = [];
+  filteredProfiles: ImportProfile[] = [];
+  selectedOrigin: ImportOrigin | null = null;
 
   selectedBank: Bank | null = null;
   
   selectedAccount: Account | null = null;
   
-  selectedProfile: BankProfile | null = null;
+  selectedProfile: ImportProfile | null = null;
   
   transactions: ImportTransaction[] = [];
   
@@ -68,6 +72,7 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
     'date',
     'description',
     'type',
+    'analysis',
     'amount',
     'balance',
     'category',
@@ -87,6 +92,8 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
     private accountService: AccountService,
     private sourceService: SourceService,
     private cardService: CardService,
+    private importOriginsService: ImportOriginsService,
+    private importProfilesService: ImportProfilesService,
   ) { }
   ngOnInit(): void {
     this.bankService.getBanks().subscribe({
@@ -152,6 +159,22 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
         );
       },
     });
+    this.importOriginsService.getOrigins().subscribe({
+      next: (res) => {
+        this.importOrigins = (res.response ?? []).filter((origin) => origin.active !== false);
+      },
+      error: () => {
+        this.toastService.error('No se pudieron cargar los orígenes de importación');
+      },
+    });
+    this.importProfilesService.getProfiles().subscribe({
+      next: (res) => {
+        this.importProfiles = (res.response ?? []).filter((profile) => profile.active !== false);
+      },
+      error: () => {
+        this.toastService.error('No se pudieron cargar los perfiles de importación');
+      },
+    });
   }
 
   ngAfterViewInit() {
@@ -171,19 +194,30 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
     this.selectedBank = bank;
     this.filterAccountsByBank(bank.id);
     this.selectedAccount = null;
-    console.log('Selected bank:', bank);
-    // buscar profile
-    const profile = BANK_PROFILES.find(
-      (p) => p.name.toLowerCase() === bank.name.toLowerCase(),
-    );
-    if (!profile) {
-      this.toastService.error(
-        this.translateService.translateKey('BANK.PROFILE_NOT_FOUND'),
-      );
+    this.selectedCard = null;
+  }
+
+  onOriginSelected(originId: number | null) {
+    const id = Number(originId);
+    if (!originId || Number.isNaN(id)) {
+      this.selectedOrigin = null;
+      this.filteredProfiles = [];
+      this.selectedProfile = null;
       return;
     }
-    this.selectedProfile = profile;
-    console.log('Selected profile:', profile);
+
+    this.selectedOrigin = this.importOrigins.find((origin) => origin.id === id) ?? null;
+    this.filteredProfiles = this.importProfiles.filter((profile) => profile.origin_id === id);
+    this.selectedProfile = null;
+  }
+
+  onProfileSelected(profileId: number | null) {
+    const id = Number(profileId);
+    if (!profileId || Number.isNaN(id)) {
+      this.selectedProfile = null;
+      return;
+    }
+    this.selectedProfile = this.filteredProfiles.find((profile) => profile.id === id) ?? null;
   }
 
   onAccountSelected(accountId: number) {
@@ -250,7 +284,7 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
         raw: false,
       });
 
-      const headerRow = this.selectedProfile!.headerRowGuess ?? 1;
+      const headerRow = this.selectedProfile!.header_row_guess ?? 1;
       const headerIndex = headerRow - 1;
 
       this.excelHeaders = (rows[headerIndex] as any[]).map((h) =>
@@ -260,20 +294,20 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
 
       const dateIndex = this.findColumnIndex(
         this.excelHeaders,
-        this.selectedProfile!.columns.date,
+        this.selectedProfile!.columns['date'] ?? [],
       );
       const descriptionIndex = this.findColumnIndex(
         this.excelHeaders,
-        this.selectedProfile!.columns.description,
+        this.selectedProfile!.columns['description'] ?? [],
       );
 
       const amountIndex = this.findColumnIndex(
         this.excelHeaders,
-        this.selectedProfile!.columns.amount,
+        this.selectedProfile!.columns['amount'] ?? [],
       );
       const balanceIndex = this.findColumnIndex(
         this.excelHeaders,
-        this.selectedProfile!.columns.balance,
+        this.selectedProfile!.columns['balance'] ?? [],
       );
 
       if (dateIndex === -1 || descriptionIndex === -1 || amountIndex === -1) {
@@ -303,6 +337,8 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
         account_id: this.selectedAccount?.id ?? null,
         suggestedSourceId: null,
         suggestedAccountId: this.selectedAccount?.id ?? null,
+        card_id: this.selectedCard?.id ?? null,
+        ignore_in_analysis: !!this.selectedCard && this.utilsService.parseAmount(row[amountIndex]) < 0,
         selected: false,
       }));
 
@@ -485,6 +521,8 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
       category_id: t.suggestedCategoryId,
       source_id: t.source_id ?? t.suggestedSourceId,
       account_id: t.account_id ?? this.selectedAccount?.id,
+      card_id: t.card_id ?? this.selectedCard?.id ?? null,
+      ignore_in_analysis: t.ignore_in_analysis ?? false,
     }));
 
     const incomesDraftPayload = incomes.map((t) => ({
