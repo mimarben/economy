@@ -9,6 +9,8 @@ import { BankService } from '@finance_services/bank.service';
 import { FormFieldConfig } from '@shared/generic-form/form-config';
 import { ToastService } from '@core_services/toast.service';
 import { environment } from '@env/environment';
+import { MetaService } from '@core_services/meta.service';
+import { forkJoin } from 'rxjs';
 
 
 @Component({
@@ -25,12 +27,7 @@ export class BanksComponent implements OnInit {
   formFields: FormFieldConfig[] = [];
   isFormValid = false;
 
-  columns: TableColumn<Bank>[] = [
-    { key: 'id', label: 'ID', sortable: true },
-    { key: 'name', label: 'Name', sortable: true },
-    { key: 'description', label: 'Description', sortable: false },
-    { key: 'active',label: 'Active',sortable: true,formatter: (v) => (v ? 'Yes' : 'No')},
-  ];
+  columns: TableColumn<Bank>[] = [];
 
 
   constructor(
@@ -38,27 +35,27 @@ export class BanksComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private dialog: MatDialog,
     private toastService: ToastService,
-    private formFactory: FormFactoryService
+    private formFactory: FormFactoryService,
+    private metaService: MetaService,
   ) {}
 
   ngOnInit() {
-    this.loadBanks();
-    this.loadFormFields();
+    this.loadInitialData();
   }
 
-  private loadFormFields(): void {
-    this.formFields = this.formFactory.getFormConfig('bank');
-    this.loadBanks();
-  }
-
-  loadBanks() {
+  private loadInitialData(): void {
     this.isLoading = true;
-    this.bankService.getBanks().subscribe({
-      next: (data: ApiResponse<Bank[]>) => {
-        this.banks = data.response;
+    forkJoin({
+      banks: this.bankService.getBanks(),
+      meta: this.metaService.getMeta('bank'),
+    }).subscribe({
+      next: ({ banks, meta }) => {
+        this.banks = banks.response;
+        this.formFields = this.formFactory.enrichMetadataFields(meta.fields);
+        this.columns = this.formFactory.getTableColumnsFromMetadata<Bank>(this.formFields);
         this.isLoading = false;
       },
-      error: (err: any) => {
+      error: () => {
         this.errorMessage = 'Error loading banks';
         this.isLoading = false;
       },
@@ -77,7 +74,7 @@ export class BanksComponent implements OnInit {
     const dialogRef = this.dialog.open(GenericDialogComponent, {
       data: {
         title: data ? 'Edit Bank' : 'New Bank',
-        fields: this.formFactory.getFormConfig('bank'),
+        fields: this.formFields,
         initialData: data || {},
       },
     });
