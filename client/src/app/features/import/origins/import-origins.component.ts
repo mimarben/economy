@@ -5,7 +5,11 @@ import { GenericTableComponent, TableColumn } from '@shared/generic-table/generi
 import { ApiResponse } from '@app/models/core/APIResponse';
 import { GenericDialogComponent } from '@shared/generic-dialog/generic-dialog.component';
 import { FormFactoryService } from '@app/core/factories/form-factory.service';
-import { ImportOriginsService, ImportOriginCreate } from '@import_services/import-profiles.service';
+import {
+  ImportOriginsService,
+  ImportOriginCreate,
+  ImportOriginUpdate,
+} from '@import_services/import-profiles.service';
 import { FormFieldConfig } from '@shared/generic-form/form-config';
 import { ToastService } from '@core_services/toast.service';
 import { environment } from '@env/environment';
@@ -88,13 +92,21 @@ export class ImportOriginsComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        result.id ? this.updateOrigin(result) : this.createOrigin(result);
+        result.id ? this.updateOrigin(result.id, result) : this.createOrigin(result);
       }
     });
   }
 
-  createOrigin(origin: ImportOriginCreate): void {
-    this.importOriginsService.createOrigin(origin).subscribe({
+  private toOriginPayload(origin: Partial<ImportOrigin>): ImportOriginCreate {
+    return {
+      code: origin.code ?? '',
+      name: origin.name ?? '',
+      active: origin.active ?? true,
+    };
+  }
+
+  createOrigin(origin: Partial<ImportOrigin>): void {
+    this.importOriginsService.createOrigin(this.toOriginPayload(origin)).subscribe({
       next: (response) => {
         this.toastService.showToast(response, environment.toastType.Success);
         this.loadInitialData();
@@ -105,8 +117,9 @@ export class ImportOriginsComponent implements OnInit {
     });
   }
 
-  updateOrigin(origin: ImportOrigin): void {
-    this.importOriginsService.updateOrigin(origin.id, origin).subscribe({
+  updateOrigin(id: number, origin: Partial<ImportOrigin>): void {
+    const payload: ImportOriginUpdate = this.toOriginPayload(origin);
+    this.importOriginsService.updateOrigin(id, payload).subscribe({
       next: (response) => {
         this.toastService.showToast(response, environment.toastType.Success);
         this.loadInitialData();
