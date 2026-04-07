@@ -12,6 +12,7 @@ export interface TableColumn<T> {
   label: string;
   sortable?: boolean;
   formatter?: (value: any, row: T) => string;
+  tooltipFormatter?: (value: any, row: T) => string;
 }
 
 @Component({

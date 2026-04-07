@@ -41,7 +41,11 @@
             <th mat-header-cell *matHeaderCellDef mat-sort-header [disabled]="!col.sortable">
               {{ col.label }}
             </th>
-            <td mat-cell *matCellDef="let row">
+            <td
+              mat-cell
+              *matCellDef="let row"
+              [matTooltip]="col.tooltipFormatter ? col.tooltipFormatter(row[col.key], row) : ''"
+              matTooltipPosition="above">
               {{ col.formatter ? col.formatter(row[col.key], row) : row[col.key] }}
             </td>
           </ng-container>

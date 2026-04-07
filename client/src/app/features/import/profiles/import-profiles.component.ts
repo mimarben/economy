@@ -67,7 +67,11 @@ export class ImportProfilesComponent implements OnInit {
             value: origin.id,
             label: origin.name,
           })),
-        });
+        }).map((field) =>
+          field.key === 'columns'
+            ? { ...field, type: 'text', label: 'Column mappings' }
+            : field,
+        );
 
         this.columns = this.formFactory.getTableColumnsFromMetadata<ImportProfile>(
           this.formFields,
@@ -103,7 +107,8 @@ export class ImportProfilesComponent implements OnInit {
         return {
           ...col,
           label: 'Mappings',
-          formatter: (value: any) => Object.keys(value || {}).length + ' fields',
+          formatter: (value: any) => this.getColumnsPreview(value),
+          tooltipFormatter: (value: any) => this.getColumnsTooltip(value),
         };
       }
       if (col.key.endsWith('_id') && selectOptionsMap[col.key]) {
@@ -136,7 +141,9 @@ export class ImportProfilesComponent implements OnInit {
       data: {
         title: data ? 'Edit Profile' : 'New Profile',
         fields: this.formFields,
-        initialData: data || {},
+        initialData: data
+          ? { ...data, columns: data.columns ?? {} }
+          : { columns: {} },
       },
     });
 
@@ -147,18 +154,26 @@ export class ImportProfilesComponent implements OnInit {
     });
   }
 
-  private toProfilePayload(profile: Partial<ImportProfile>): ImportProfileCreate {
+  private toProfilePayload(profile: Partial<ImportProfile>): ImportProfileCreate | null {
+    const parsedColumns = this.parseColumns(profile.columns);
+    if (!parsedColumns) {
+      return null;
+    }
+
     return {
       origin_id: Number(profile.origin_id),
       name: profile.name ?? '',
       header_row_guess: profile.header_row_guess ?? 1,
-      columns: profile.columns ?? {},
+      columns: parsedColumns,
       active: profile.active ?? true,
     };
   }
 
   createProfile(profile: Partial<ImportProfile>): void {
-    this.importProfilesService.createProfile(this.toProfilePayload(profile)).subscribe({
+    const payload = this.toProfilePayload(profile);
+    if (!payload) return;
+
+    this.importProfilesService.createProfile(payload).subscribe({
       next: (response) => {
         this.toastService.showToast(response, environment.toastType.Success);
         this.loadInitialData();
@@ -170,8 +185,11 @@ export class ImportProfilesComponent implements OnInit {
   }
 
   updateProfile(id: number, profile: Partial<ImportProfile>): void {
-    const payload: ImportProfileUpdate = this.toProfilePayload(profile);
-    this.importProfilesService.updateProfile(id, payload).subscribe({
+    const payload = this.toProfilePayload(profile);
+    if (!payload) return;
+
+    const updatePayload: ImportProfileUpdate = payload;
+    this.importProfilesService.updateProfile(id, updatePayload).subscribe({
       next: (response) => {
         this.toastService.showToast(response, environment.toastType.Success);
         this.loadInitialData();
@@ -193,6 +211,52 @@ export class ImportProfilesComponent implements OnInit {
           this.toastService.showToast(error.error as ApiResponse<string>, environment.toastType.Error);
         }
       });
+    }
+  }
+
+  private getColumnsPreview(value: unknown): string {
+    const columns = this.parseColumns(value, false);
+    if (!columns) return 'Invalid format';
+    const keys = Object.keys(columns);
+    if (!keys.length) return 'No mappings';
+
+    return keys.slice(0, 4).join(', ');
+  }
+
+  private getColumnsTooltip(value: unknown): string {
+    const columns = this.parseColumns(value, false);
+    if (!columns) return 'Invalid columns JSON';
+
+    return Object.entries(columns)
+      .map(([key, aliases]) => `${key}: ${(aliases || []).join(', ')}`)
+      .join('\n');
+  }
+
+  private parseColumns(
+    value: unknown,
+    showError = true,
+  ): Record<string, string[]> | null {
+    try {
+      const parsed =
+        typeof value === 'string'
+          ? JSON.parse(value || '{}')
+          : (value ?? {});
+
+      if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+        throw new Error('Columns must be a JSON object');
+      }
+
+      return Object.fromEntries(
+        Object.entries(parsed as Record<string, unknown>).map(([key, aliases]) => [
+          key,
+          Array.isArray(aliases) ? aliases.map((item) => String(item)) : [],
+        ]),
+      );
+    } catch (error) {
+      if (showError) {
+        this.toastService.error('Columns JSON is not valid. Example: { "date": ["fecha"] }');
+      }
+      return null;
     }
   }
 }
