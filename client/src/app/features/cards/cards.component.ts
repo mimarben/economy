@@ -94,6 +94,7 @@ export class CardsComponent {
             value: profile.id,
             label: profile.name,
           })),
+        });
         }).map((field) =>
           field.key === 'import_origin_id' || field.key === 'import_profile_id'
             ? { ...field, required: true }
