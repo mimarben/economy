@@ -84,9 +84,9 @@ export class FormFactoryService {
   private isSortable(key: string, modelType: ModelType): boolean {
     // Define non-sortable fields (if any)
     const nonSortableFields: Record<ModelType, string[]> = {
-      account: ['description'],
-      bank: ['description'],
-      houseHold: ['description'],
+      account: [],
+      bank: [],
+      houseHold: [],
       houseHoldMember: [],
       source:[],
       saving_log: [],
