@@ -95,6 +95,11 @@ export class CardsComponent {
             label: profile.name,
           })),
         });
+        }).map((field) =>
+          field.key === 'import_origin_id' || field.key === 'import_profile_id'
+            ? { ...field, required: true }
+            : field,
+        );
         console.log('META FIELDS', this.formFields);
         this.accountMap = this.accounts.reduce(
           (acc, account) => {
