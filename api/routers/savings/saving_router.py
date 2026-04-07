@@ -4,7 +4,9 @@ from sqlalchemy.orm import Session
 from pydantic import ValidationError
 from flask_babel import _
 
-from schemas.savings.saving_schema import SavingCreate, SavingUpdate
+from schemas.savings.saving_schema import SavingBase, SavingCreate, SavingUpdate
+from schemas.core.export_schema import export_schema
+
 from services.savings.saving_service import SavingService
 from services.core.interfaces import IReadService, ICreateService, IUpdateService, IDeleteService
 from services.core.response_service import Response
@@ -93,3 +95,8 @@ def delete(saving_id):
         return Response.ok_message(_("SAVING_DELETED"), 204, NAME)
     except Exception as e:
         return Response.error(_("DATABASE_ERROR"), str(e), 500, NAME)
+
+
+@router.get("/meta/saving")
+def get_meta():
+    return export_schema(SavingBase)

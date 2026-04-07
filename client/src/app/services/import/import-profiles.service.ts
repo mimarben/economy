@@ -6,9 +6,13 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/internal/Observable';
 import { ApiResponse } from '@app/models/core/APIResponse';
 
-// Create types with optional id for create operations
-export type ImportOriginCreate = Omit<ImportOrigin, 'id'>;
-export type ImportProfileCreate = Omit<ImportProfile, 'id'>;
+export type ImportOriginCreate = Pick<ImportOrigin, 'code' | 'name' | 'active'>;
+export type ImportOriginUpdate = Partial<ImportOriginCreate>;
+export type ImportProfileCreate = Pick<
+  ImportProfile,
+  'origin_id' | 'name' | 'header_row_guess' | 'columns' | 'active'
+>;
+export type ImportProfileUpdate = Partial<ImportProfileCreate>;
 
 @Injectable({
   providedIn: 'root',
@@ -35,8 +39,8 @@ export class ImportOriginsService extends BaseCrudService<ImportOrigin> {
   /**
    * Alias for update() - Update an existing import origin
    */
-  updateOrigin(id: number, origin: ImportOrigin): Observable<ApiResponse<ImportOrigin>> {
-    return this.update(id, origin);
+  updateOrigin(id: number, origin: ImportOriginUpdate): Observable<ApiResponse<ImportOrigin>> {
+    return this.update(id, origin as ImportOrigin);
   }
 
   /**
@@ -79,8 +83,8 @@ export class ImportProfilesService extends BaseCrudService<ImportProfile> {
   /**
    * Alias for update() - Update an existing import profile
    */
-  updateProfile(id: number, profile: ImportProfile): Observable<ApiResponse<ImportProfile>> {
-    return this.update(id, profile);
+  updateProfile(id: number, profile: ImportProfileUpdate): Observable<ApiResponse<ImportProfile>> {
+    return this.update(id, profile as ImportProfile);
   }
 
   /**

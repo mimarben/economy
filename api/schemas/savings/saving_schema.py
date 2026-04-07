@@ -14,7 +14,7 @@ class SavingBase(BaseModel):
     amount: Decimal = Field(..., gt=0)
     date: DateType = Field(...)
     currency: CurrencyEnum
-    account_id: int = Field(..., gt=0)
+    account_id: int = Field(..., gt=0, json_schema_extra={"ui_type": "select", "relation": "account"})
 
 
 class SavingRead(SavingBase, AuditFields):

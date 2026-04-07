@@ -6,7 +6,12 @@ import { GenericTableComponent, TableColumn } from '@shared/generic-table/generi
 import { ApiResponse } from '@app/models/core/APIResponse';
 import { GenericDialogComponent } from '@shared/generic-dialog/generic-dialog.component';
 import { FormFactoryService } from '@app/core/factories/form-factory.service';
-import { ImportProfilesService, ImportOriginsService, ImportProfileCreate } from '@import_services/import-profiles.service';
+import {
+  ImportProfilesService,
+  ImportOriginsService,
+  ImportProfileCreate,
+  ImportProfileUpdate,
+} from '@import_services/import-profiles.service';
 import { FormFieldConfig } from '@shared/generic-form/form-config';
 import { ToastService } from '@core_services/toast.service';
 import { environment } from '@env/environment';
@@ -53,7 +58,16 @@ export class ImportProfilesComponent implements OnInit {
       next: ({ profiles, origins, meta }) => {
         this.profiles = profiles.response;
         this.origins = origins.response;
-        this.formFields = meta.fields;
+        this.formFields = this.formFactory.enrichMetadataFields(meta.fields, {
+          origin: this.origins.map((origin) => ({
+            value: origin.id,
+            label: origin.name,
+          })),
+          origin_id: this.origins.map((origin) => ({
+            value: origin.id,
+            label: origin.name,
+          })),
+        });
 
         this.columns = this.formFactory.getTableColumnsFromMetadata<ImportProfile>(
           this.formFields,
@@ -72,6 +86,12 @@ export class ImportProfilesComponent implements OnInit {
 
   private enrichColumns() {
     if (!this.columns || this.columns.length === 0) return;
+    const selectOptionsMap = Object.fromEntries(
+      this.formFields
+        .filter((field) => field.type === 'select' && field.options?.length)
+        .map((field) => [field.key, field.options ?? []]),
+    ) as Record<string, { value: string | number; label: string }[]>;
+
     this.columns = this.columns.map((col) => {
       if (col.key === 'origin_id') {
         return {
@@ -84,6 +104,14 @@ export class ImportProfilesComponent implements OnInit {
           ...col,
           label: 'Mappings',
           formatter: (value: any) => Object.keys(value || {}).length + ' fields',
+        };
+      }
+      if (col.key.endsWith('_id') && selectOptionsMap[col.key]) {
+        return {
+          ...col,
+          formatter: (value: string | number) =>
+            selectOptionsMap[col.key].find((opt) => opt.value === value)?.label ??
+            String(value ?? '—'),
         };
       }
       return col;
@@ -104,37 +132,33 @@ export class ImportProfilesComponent implements OnInit {
   }
 
   openDialog(data?: ImportProfile): void {
-    // Update form fields with origin options
-    const fieldsWithOptions = this.formFields.map(field => {
-      if (field.key === 'origin_id') {
-        return {
-          ...field,
-          options: this.origins.map(origin => ({
-            value: origin.id,
-            label: origin.name,
-          })),
-        };
-      }
-      return field;
-    });
-
     const dialogRef = this.dialog.open(GenericDialogComponent, {
       data: {
         title: data ? 'Edit Profile' : 'New Profile',
-        fields: fieldsWithOptions,
+        fields: this.formFields,
         initialData: data || {},
       },
     });
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        result.id ? this.updateProfile(result) : this.createProfile(result);
+        result.id ? this.updateProfile(result.id, result) : this.createProfile(result);
       }
     });
   }
 
-  createProfile(profile: ImportProfileCreate): void {
-    this.importProfilesService.createProfile(profile).subscribe({
+  private toProfilePayload(profile: Partial<ImportProfile>): ImportProfileCreate {
+    return {
+      origin_id: Number(profile.origin_id),
+      name: profile.name ?? '',
+      header_row_guess: profile.header_row_guess ?? 1,
+      columns: profile.columns ?? {},
+      active: profile.active ?? true,
+    };
+  }
+
+  createProfile(profile: Partial<ImportProfile>): void {
+    this.importProfilesService.createProfile(this.toProfilePayload(profile)).subscribe({
       next: (response) => {
         this.toastService.showToast(response, environment.toastType.Success);
         this.loadInitialData();
@@ -145,8 +169,9 @@ export class ImportProfilesComponent implements OnInit {
     });
   }
 
-  updateProfile(profile: ImportProfile): void {
-    this.importProfilesService.updateProfile(profile.id, profile).subscribe({
+  updateProfile(id: number, profile: Partial<ImportProfile>): void {
+    const payload: ImportProfileUpdate = this.toProfilePayload(profile);
+    this.importProfilesService.updateProfile(id, payload).subscribe({
       next: (response) => {
         this.toastService.showToast(response, environment.toastType.Success);
         this.loadInitialData();

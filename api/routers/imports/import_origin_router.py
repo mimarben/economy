@@ -134,3 +134,8 @@ def delete(origin_id: int):
 @router.get("/meta/import-origins")
 def get_meta():
     return export_schema(ImportOriginBase)
+
+
+@router.get("/meta/import-origin")
+def get_meta_alias():
+    return export_schema(ImportOriginBase)

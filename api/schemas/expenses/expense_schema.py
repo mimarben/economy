@@ -13,11 +13,11 @@ class ExpenseBase(BaseModel):
     date: DateType = Field(...)
     currency: CurrencyEnum = Field(...)
     #dedup_hash: str = Field(..., min_length=64, max_length=64)
-    source_id: int = Field(..., gt=0)
-    category_id: int = Field(..., gt=0)
-    account_id: int = Field(..., gt=0)
+    source_id: int = Field(..., gt=0, json_schema_extra={"ui_type": "select", "relation": "source"})
+    category_id: int = Field(..., gt=0, json_schema_extra={"ui_type": "select", "relation": "expense-category"})
+    account_id: int = Field(..., gt=0, json_schema_extra={"ui_type": "select", "relation": "account"})
     ignore_in_analysis: Optional[bool] = None
-    card_id: Optional[int] = Field(None, gt=0)
+    card_id: Optional[int] = Field(None, gt=0, json_schema_extra={"ui_type": "select", "relation": "card"})
     #ignore_in_analysis: bool = Field(default=False, exclude=True)
 
     @field_validator('amount')

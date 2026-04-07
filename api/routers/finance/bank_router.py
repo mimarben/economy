@@ -4,7 +4,9 @@ from sqlalchemy.orm import Session
 from pydantic import ValidationError
 from flask_babel import _
 
-from schemas.finance.bank_schema import BankCreate, BankUpdate
+from schemas.finance.bank_schema import BankBase, BankCreate, BankUpdate
+
+from schemas.core.export_schema import export_schema
 
 from services.finance.bank_service import BankService
 from services.logs.logger_service import setup_logger
@@ -143,3 +145,8 @@ def delete(bank_id: int):
         logger = setup_logger(NAME or "default_error_source")
         logger.exception("Unhandled error in delete %s: %s", NAME, str(e))
         return Response.error(_("INTERNAL_ERROR"), _("UNEXPECTED_ERROR"), 500, NAME)
+
+
+@router.get("/meta/bank")
+def get_meta():
+    return export_schema(BankBase)

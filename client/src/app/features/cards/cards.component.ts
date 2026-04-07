@@ -58,7 +58,12 @@ export class CardsComponent {
       next: ({ cards, accounts, meta }) => {
         this.cards = cards.response;
         this.accounts = accounts.response;
-        this.formFields = meta.fields;
+        this.formFields = this.formFactory.enrichMetadataFields(meta.fields, {
+          account: this.accounts.map((a) => ({
+            value: a.id!,
+            label: a.name,
+          })),
+        });
         console.log('META FIELDS', this.formFields);
         this.accountMap = this.accounts.reduce(
           (acc, account) => {
@@ -106,24 +111,10 @@ export class CardsComponent {
   }
 
   openDialog(data?: Card): void {
-    const enrichedFields = this.formFields.map((field) => {
-      if (field.relation === 'account') {
-        return {
-          ...field,
-          options: this.accounts.map((a) => ({
-            value: a.id,
-            label: a.name,
-          })),
-        };
-      }
-
-      return field;
-    });
-    console.log('ENRICHED FIELDS', enrichedFields);
     const dialogRef = this.dialog.open(GenericDialogComponent, {
       data: {
         title: data ? 'Edit Card' : 'New Card',
-        fields: enrichedFields,
+        fields: this.formFields,
         initialData: data || {},
       },
     });

@@ -3,7 +3,9 @@ from sqlalchemy.orm import Session
 from pydantic import ValidationError
 from flask_babel import _
 
-from schemas.expenses.expense_schema import ExpenseCreate, ExpenseUpdate
+from schemas.expenses.expense_schema import ExpenseBase, ExpenseCreate, ExpenseUpdate
+from schemas.core.export_schema import export_schema
+
 from services.expenses.expense_service import ExpenseService
 from services.core.interfaces import ICreateService, IReadService, IUpdateService, IDeleteService
 from services.core.response_service import Response
@@ -196,3 +198,8 @@ def get_user_expenses(user_id):
         )
     except Exception as e:
         return Response.error(_("DATABASE_ERROR"), str(e), 500, name)
+
+
+@router.get("/meta/expense")
+def get_meta():
+    return export_schema(ExpenseBase)

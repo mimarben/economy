@@ -22,10 +22,10 @@ class AccountBase(BaseModel):
         decimal_places=2
     )
     active: bool = Field(default=True)
-    bank_id: int = Field(..., gt=0)
-    user_id: int = Field(..., gt=0)
-    import_origin_id: Optional[int] = Field(None, gt=0)
-    import_profile_id: Optional[int] = Field(None, gt=0)
+    bank_id: int = Field(..., gt=0, json_schema_extra={"ui_type": "select", "relation": "bank"})
+    user_id: int = Field(..., gt=0, json_schema_extra={"ui_type": "select", "relation": "user"})
+    import_origin_id: Optional[int] = Field(None, gt=0, json_schema_extra={"ui_type": "select", "relation": "import-origin"})
+    import_profile_id: Optional[int] = Field(None, gt=0, json_schema_extra={"ui_type": "select", "relation": "import-profile"})
     
     @field_validator("balance")
     @classmethod

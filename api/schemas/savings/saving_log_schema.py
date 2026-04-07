@@ -13,8 +13,8 @@ class SavingLogBase(BaseModel):
     amount: Decimal = Field(..., gt=0)
     total_amount: Optional[Decimal] = Field(None, ge=0)
     note: Optional[str] = None
-    saving_id: int = Field(..., gt=0)
-    source_id: int = Field(..., gt=0)
+    saving_id: int = Field(..., gt=0, json_schema_extra={"ui_type": "select", "relation": "saving"})
+    source_id: int = Field(..., gt=0, json_schema_extra={"ui_type": "select", "relation": "source"})
 
 
 class SavingLogRead(SavingLogBase, AuditFields):

@@ -16,7 +16,7 @@ class InvestmentLogBase(BaseModel):
     units_bought: Optional[Decimal] = Field(None, gt=0)
     action: ActionEnum = Field(...)
     note: Optional[str] = Field(None)
-    investment_id: int = Field(..., gt=0)
+    investment_id: int = Field(..., gt=0, json_schema_extra={"ui_type": "select", "relation": "investment"})
 
 
 class InvestmentLogRead(InvestmentLogBase, AuditFields):
