@@ -1,8 +1,10 @@
-import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, ValidatorFn } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 import { MATERIAL_IMPORTS } from '@app/utils/material.imports';
 import { FormFieldConfig } from './form-config';
@@ -20,18 +22,26 @@ import { UtilsService } from '@app/utils/utils.service';
     MatSelectModule
   ]
 })
-export class GenericFormComponent implements OnChanges {
+export class GenericFormComponent implements OnChanges, OnDestroy {
   @Input() fields: FormFieldConfig[] = [];
   @Input() initialData: Record<string, any> = {};
   @Output() formSubmit = new EventEmitter<Record<string, any>>();
   @Output() formValidity = new EventEmitter<boolean>();
   @Output() formDirty = new EventEmitter<boolean>();
   form: FormGroup;
-  columnsRows: Array<{ key: string; aliases: string }> = [];
+  columnsRows: Array<{ id: number; key: string; aliases: string }> = [];
+  private columnRowIdCounter = 0;
+  private destroy$ = new Subject<void>();
 
-  constructor(private fb: FormBuilder,  private utilsService: UtilsService) {
+  constructor(private fb: FormBuilder, private utilsService: UtilsService, private cdr: ChangeDetectorRef) {
     this.form = this.fb.group({});
   }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   private emitFormValidity(): void {
   this.form.statusChanges.subscribe(() => {
     this.formValidity.emit(this.form.valid);
@@ -155,6 +165,9 @@ export class GenericFormComponent implements OnChanges {
    * Handles form submission, emitting valid data or marking fields as touched.
    */
   submitForm(): void {
+    // Sincronizar columnas antes de enviar
+    this.syncColumnsControlFromRows();
+    
     if (this.form.valid) {
       this.formSubmit.emit(this.form.value);
     } else {
@@ -211,18 +224,34 @@ export class GenericFormComponent implements OnChanges {
     return field.key === 'columns';
   }
 
+  trackByColumnRowIndex(_index: number, row: { id: number }): number {
+    return row.id;
+  }
+
   addColumnsMappingLine(): void {
-    this.columnsRows = [...this.columnsRows, { key: '', aliases: '' }];
-    this.syncColumnsControlFromRows();
+    this.columnsRows = [...this.columnsRows, { id: this.columnRowIdCounter++, key: '', aliases: '' }];
+    
+    // Detectar cambios y luego hacer focus
+    this.cdr.detectChanges();
+    
+    setTimeout(() => {
+      const inputs = document.querySelectorAll('.columns-grid input');
+      if (inputs.length >= 2) {
+        const lastKeyInput = inputs[inputs.length - 2] as HTMLInputElement;
+        if (lastKeyInput) {
+          lastKeyInput.focus();
+          lastKeyInput.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      }
+    }, 100);
   }
 
   removeColumnsMappingLine(index: number): void {
     this.columnsRows = this.columnsRows.filter((_, i) => i !== index);
-    this.syncColumnsControlFromRows();
   }
 
   onColumnsRowChange(): void {
-    this.syncColumnsControlFromRows();
+    // Este método ya no hace nada - la sincronización ocurre en submitForm
   }
 
   private initColumnsRows(): void {
@@ -233,10 +262,11 @@ export class GenericFormComponent implements OnChanges {
     const entries = Object.entries(parsed);
     this.columnsRows = entries.length
       ? entries.map(([key, aliases]) => ({
+          id: this.columnRowIdCounter++,
           key,
           aliases: aliases.join(', '),
         }))
-      : [{ key: '', aliases: '' }];
+      : [{ id: this.columnRowIdCounter++, key: '', aliases: '' }];
     this.syncColumnsControlFromRows();
   }
 

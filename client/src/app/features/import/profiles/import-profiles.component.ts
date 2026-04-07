@@ -137,36 +137,50 @@ export class ImportProfilesComponent implements OnInit {
   }
 
   openDialog(data?: ImportProfile): void {
+    const isEditing = !!data?.id;
     const dialogRef = this.dialog.open(GenericDialogComponent, {
+      width: '800px',
       data: {
         title: data ? 'Edit Profile' : 'New Profile',
         fields: this.formFields,
         initialData: data
-          ? { ...data, columns: data.columns ?? {} }
+          ? {
+              ...data,
+              columns: typeof data.columns === 'string'
+                ? JSON.parse(data.columns || '{}')
+                : (data.columns ?? {}),
+            }
           : { columns: {} },
       },
     });
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        result.id ? this.updateProfile(result.id, result) : this.createProfile(result);
+        isEditing ? this.updateProfile(data!.id, result) : this.createProfile(result);
       }
     });
   }
 
   private toProfilePayload(profile: Partial<ImportProfile>): ImportProfileCreate | null {
     const parsedColumns = this.parseColumns(profile.columns);
-    if (!parsedColumns) {
+    if (parsedColumns === null) {
       return null;
     }
 
-    return {
+    const payload: ImportProfileCreate = {
       origin_id: Number(profile.origin_id),
       name: profile.name ?? '',
       header_row_guess: profile.header_row_guess ?? 1,
       columns: parsedColumns,
       active: profile.active ?? true,
     };
+
+    // Solo incluir file_type si existe
+    if (profile['file_type']) {
+      (payload as any)['file_type'] = profile['file_type'];
+    }
+
+    return payload;
   }
 
   createProfile(profile: Partial<ImportProfile>): void {
@@ -237,9 +251,14 @@ export class ImportProfilesComponent implements OnInit {
     showError = true,
   ): Record<string, string[]> | null {
     try {
+      // Si está vacío, retornar un objeto vacío
+      if (!value || (typeof value === 'string' && value.trim() === '')) {
+        return {};
+      }
+
       const parsed =
         typeof value === 'string'
-          ? JSON.parse(value || '{}')
+          ? JSON.parse(value)
           : (value ?? {});
 
       if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {

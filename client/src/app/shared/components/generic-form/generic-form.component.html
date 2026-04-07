@@ -21,13 +21,12 @@
         <div class="columns-grid-header">Sinónimos (separados por comas)</div>
         <div></div>
 
-        <ng-container *ngFor="let row of columnsRows; let i = index">
+        <ng-container *ngFor="let row of columnsRows; let i = index; trackBy: trackByColumnRowIndex">
           <mat-form-field appearance="outline" class="columns-input">
             <input
               matInput
               [(ngModel)]="row.key"
-              [ngModelOptions]="{ standalone: true }"
-              (ngModelChange)="onColumnsRowChange()"
+              [ngModelOptions]="{ standalone: true, updateOn: 'blur' }"
               placeholder="date">
           </mat-form-field>
 
@@ -35,8 +34,7 @@
             <input
               matInput
               [(ngModel)]="row.aliases"
-              [ngModelOptions]="{ standalone: true }"
-              (ngModelChange)="onColumnsRowChange()"
+              [ngModelOptions]="{ standalone: true, updateOn: 'blur' }"
               placeholder="valor, fecha">
           </mat-form-field>
 
