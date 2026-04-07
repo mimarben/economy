@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { FormFieldConfig } from '@shared/generic-form/form-config';
 import { GenericDialogComponent } from '@shared/generic-dialog/generic-dialog.component';
@@ -27,7 +27,7 @@ import { ImportOriginsService, ImportProfilesService } from '@import_services/im
   templateUrl: './cards.component.html',
   styleUrl: './cards.component.scss',
 })
-export class CardsComponent {
+export class CardsComponent implements OnInit {
   cards: Card[] = [];
   accounts: Account[] = [];
   origins: ImportOrigin[] = [];
@@ -38,7 +38,11 @@ export class CardsComponent {
   formFields: FormFieldConfig[] = [];
   isFormValid = false;
   columns: TableColumn<Card>[] = [];
+
   accountMap: Record<number, string> = {};
+  originMap:  Record<number, string> = {};
+  profileMap: Record<number, string> = {};
+
   constructor(
     private cardService: CardService,
     private cdr: ChangeDetectorRef,
@@ -65,55 +69,41 @@ export class CardsComponent {
       meta: this.metaService.getMeta('card'),
     }).subscribe({
       next: ({ cards, accounts, origins, profiles, meta }) => {
-        this.cards = cards.response;
+        this.cards    = cards.response;
         this.accounts = accounts.response;
-        this.origins = origins.response;
+        this.origins  = origins.response;
         this.profiles = profiles.response;
+
+        // lookup maps para formatear la tabla
+        this.accountMap = this.accounts.reduce(
+          (acc, a) => ({ ...acc, [a.id!]: a.name }), {} as Record<number, string>,
+        );
+        this.originMap = this.origins.reduce(
+          (acc, o) => ({ ...acc, [o.id]: o.name }), {} as Record<number, string>,
+        );
+        this.profileMap = this.profiles.reduce(
+          (acc, p) => ({ ...acc, [p.id]: p.name }), {} as Record<number, string>,
+        );
+
+        // mismo patrón que BanksAccountsComponent
         this.formFields = this.formFactory.enrichMetadataFields(meta.fields, {
-          account: this.accounts.map((a) => ({
-            value: a.id!,
-            label: a.name,
-          })),
-          account_id: this.accounts.map((a) => ({
-            value: a.id!,
-            label: a.name,
-          })),
-          'import-origin': this.origins.map((origin) => ({
-            value: origin.id,
-            label: origin.name,
-          })),
-          import_origin_id: this.origins.map((origin) => ({
-            value: origin.id,
-            label: origin.name,
-          })),
-          'import-profile': this.profiles.map((profile) => ({
-            value: profile.id,
-            label: profile.name,
-          })),
-          import_profile_id: this.profiles.map((profile) => ({
-            value: profile.id,
-            label: profile.name,
-          })),
+          account: this.accounts.map((a) => ({ value: a.id!, label: a.name })),
+          account_id: this.accounts.map((a) => ({ value: a.id!, label: a.name })),
+          'import-origin': this.origins.map((o) => ({ value: o.id, label: o.name })),
+          import_origin_id: this.origins.map((o) => ({ value: o.id, label: o.name })),
+          'import-profile': this.profiles.map((p) => ({ value: p.id, label: p.name })),
+          import_profile_id: this.profiles.map((p) => ({ value: p.id, label: p.name })),
         });
-        }).map((field) =>
+
+        // required por separado, sin romper la asignación anterior
+        this.formFields = this.formFields.map((field) =>
           field.key === 'import_origin_id' || field.key === 'import_profile_id'
             ? { ...field, required: true }
             : field,
         );
-        console.log('META FIELDS', this.formFields);
-        this.accountMap = this.accounts.reduce(
-          (acc, account) => {
-            acc[account.id!] = account.name;
-            return acc;
-          },
-          {} as Record<number, string>,
-        );
 
-        this.columns = this.formFactory.getTableColumnsFromMetadata<Card>(
-          this.formFields,
-        );
-
-        this.enrichColumns(); // 👈 se queda por ahora
+        this.columns = this.formFactory.getTableColumnsFromMetadata<Card>(this.formFields);
+        this.enrichColumns();
 
         this.isLoading = false;
       },
@@ -123,18 +113,20 @@ export class CardsComponent {
       },
     });
   }
-  private enrichColumns() {
-    if (!this.columns || this.columns.length === 0) return;
+
+  private enrichColumns(): void {
+    if (!this.columns?.length) return;
     this.columns = this.columns.map((col) => {
-      if (col.key === 'account_id') {
-        return {
-          ...col,
-          formatter: (value: number) => {
-            return this.accountMap[value] || '—';
-          },
-        };
+      switch (col.key) {
+        case 'account_id':
+          return { ...col, formatter: (v: number) => this.accountMap[v]  || '—' };
+        case 'import_origin_id':
+          return { ...col, formatter: (v: number) => this.originMap[v]   || '—' };
+        case 'import_profile_id':
+          return { ...col, formatter: (v: number) => this.profileMap[v]  || '—' };
+        default:
+          return col;
       }
-      return col;
     });
   }
 
@@ -151,16 +143,13 @@ export class CardsComponent {
       data: {
         title: data ? 'Edit Card' : 'New Card',
         fields: this.formFields,
-        initialData: data || {},
+        initialData: data ?? {},
       },
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      if (data) {
-        this.updateCard({ ...data, ...result });
-      } else {
-        this.createCard(result);
-      }
+      if (!result) return;
+      data ? this.updateCard({ ...data, ...result }) : this.createCard(result);
     });
   }
 
@@ -168,27 +157,18 @@ export class CardsComponent {
     this.cardService.updateCard(card.id!, card).subscribe({
       next: (response: ApiResponse<Card>) => {
         this.isLoading = false;
-        this.toastService.showToast(
-          response,
-          environment.toastType.Success,
-          {},
-        );
-        const updatedCard = response.response;
-        const index = this.cards.findIndex((acc) => acc.id === updatedCard.id);
-        if (index !== -1) {
-          this.cards[index] = updatedCard;
+        this.toastService.showToast(response, environment.toastType.Success, {});
+        const updated = response.response;
+        const idx = this.cards.findIndex((c) => c.id === updated.id);
+        if (idx !== -1) {
+          this.cards[idx] = updated;
           this.cards = [...this.cards];
         }
         this.cdr.detectChanges();
       },
       error: (error: any) => {
-        console.error('Error updating account:', error.error);
         this.isLoading = false;
-        this.toastService.showToast(
-          error.error as ApiResponse<string>,
-          environment.toastType.Error,
-          {},
-        );
+        this.toastService.showToast(error.error as ApiResponse<string>, environment.toastType.Error, {});
       },
     });
   }
@@ -197,32 +177,18 @@ export class CardsComponent {
     this.cardService.createCard(card).subscribe({
       next: (response: ApiResponse<Card>) => {
         this.isLoading = false;
-        this.toastService.showToast(
-          response,
-          environment.toastType.Success,
-          {},
-        );
-        const newCard = response.response;
-        this.cards.push(newCard); // Add the new card to the array
-        this.cards = [...this.cards]; // Reassign to trigger change detection
+        this.toastService.showToast(response, environment.toastType.Success, {});
+        this.cards = [...this.cards, response.response];
         this.cdr.detectChanges();
       },
       error: (error: any) => {
-        console.error('Error creating card:', error.error);
         this.isLoading = false;
-        this.errorMessage = 'Failed to create card.';
-        this.toastService.showToast(
-          error.error as ApiResponse<string>,
-          environment.toastType.Error,
-          {},
-        );
+        this.toastService.showToast(error.error as ApiResponse<string>, environment.toastType.Error, {});
       },
     });
   }
 
   applyFilter(event: Event) {
-    this.filterValue = (event.target as HTMLInputElement).value
-      .trim()
-      .toLowerCase();
+    this.filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
   }
 }

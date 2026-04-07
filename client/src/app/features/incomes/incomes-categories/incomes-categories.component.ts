@@ -7,6 +7,7 @@ import { environment } from '@env/environment';
 import { ApiResponse } from '@app/models/core/APIResponse';
 import { FormFieldConfig } from '@shared/generic-form/form-config';
 import { FormFactoryService } from '@app/core/factories/form-factory.service';
+import { MetaService } from '@core_services/meta.service';
 import { IncomeCategoryBase as IncomeCategory } from '@incomes_models/IncomeCategoryBase';
 import { IncomeCategoryService } from '@incomes_services/income-category.service';
 @Component({
@@ -25,15 +26,21 @@ export class IncomesCategoriesComponent implements OnInit {
   isFormValid = false;
   incomesCategoriesMap: Record<number, string> = [];
   ngOnInit(): void {
-    this.formFields = this.formFactory.getFormConfig('saving_log');
-    this.columns = this.formFactory.getTableColumns<IncomeCategory>('income_category');
-    this.loadIncomesCategories();
+    this.metaService.getMeta('income-category').subscribe(meta => {
+      this.formFields = meta.fields;
+      this.columns = [
+        { key: 'id', label: 'Id', sortable: true },
+        ...this.formFactory.getTableColumnsFromMetadata(meta.fields)
+      ];
+      this.loadIncomesCategories();
+    });
   }
   constructor(
     private cdr: ChangeDetectorRef,
     private dialog: MatDialog,
     private toastService: ToastService,
     private formFactory: FormFactoryService,
+    private metaService: MetaService,
     private incomeCategoryService: IncomeCategoryService
   ) {}
 
@@ -60,8 +67,8 @@ export class IncomesCategoriesComponent implements OnInit {
   openDialog(data?: IncomeCategory): void {
       const dialogRef = this.dialog.open(GenericDialogComponent, {
         data: {
-          title: data ? 'Edit Icome Category' : 'New Income Category',
-          fields: this.formFactory.getFormConfig('income_category'),
+          title: data ? 'Edit Income Category' : 'New Income Category',
+          fields: this.formFields,
           initialData: data || {},
         },
       });

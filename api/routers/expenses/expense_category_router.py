@@ -96,7 +96,7 @@ def delete(id):
         success = service.delete(id)
         if not success:
             return Response.error(_("EXPENSE_CATEGORY_NOT_FOUND"), _("NONE"), 404, name)
-        return esponse.ok_message(_("EXPENSE_CATEGORY_DELETED"), 204, name)
+        return Response.ok_message(_("EXPENSE_CATEGORY_DELETED"), 204, name)
     except Exception as e:
         return Response.error(_("DATABASE_ERROR"), str(e), 500, name)
 

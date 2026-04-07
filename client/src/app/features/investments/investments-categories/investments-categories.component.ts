@@ -9,6 +9,7 @@ import { ApiResponse } from '@app/models/core/APIResponse';
 import { FormFactoryService } from '@app/core/factories/form-factory.service';
 import { FormFieldConfig } from '@shared/generic-form/form-config';
 import { ToastService } from '@core_services/toast.service';
+import { MetaService } from '@core_services/meta.service';
 import { environment } from '@env/environment';
 import { InvestmentCategoryBase as InvestmentCategory } from '@investments_models/InvestmentCategoryBase';
 import { InvestmentCategoryService } from '@investments_services/investment-category.service';
@@ -38,15 +39,19 @@ constructor(
   private cdr: ChangeDetectorRef,
   private dialog: MatDialog,
   private toastService: ToastService,
-  private formFactory: FormFactoryService
+  private formFactory: FormFactoryService,
+  private metaService: MetaService
 ){}
 
   ngOnInit(): void {
-    this.formFields = this.formFactory.getFormConfig('investment_category');
-    this.columns = this.formFactory.getTableColumns<InvestmentCategory>('investment_category',
-      {user_id:  (value: number) => this.usersMap[value] ?? value,
-      date: (value: string) => this.utilsService.formatDateLong(value)});
-    this.loadInvestments();
+    this.metaService.getMeta('investment-category').subscribe(meta => {
+      this.formFields = meta.fields;
+      this.columns = [
+        { key: 'id', label: 'Id', sortable: true },
+        ...this.formFactory.getTableColumnsFromMetadata(meta.fields)
+      ];
+      this.loadInvestments();
+    });
   }
 
   loadInvestments() {
@@ -81,7 +86,7 @@ constructor(
       const dialogRef = this.dialog.open(GenericDialogComponent, {
         data: {
           title: data ? 'Edit Investment Category' : 'New Investment Category',
-          fields: this.formFactory.getFormConfig('investment_category'),
+          fields: this.formFields,
           initialData: data || {},
         },
       });

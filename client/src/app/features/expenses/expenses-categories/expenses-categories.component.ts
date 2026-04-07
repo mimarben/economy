@@ -7,6 +7,7 @@ import { environment } from '@env/environment';
 import { ApiResponse } from '@app/models/core/APIResponse';
 import { FormFieldConfig } from '@shared/generic-form/form-config';
 import { FormFactoryService } from '@app/core/factories/form-factory.service';
+import { MetaService } from '@core_services/meta.service';
 import { ExpenseCategoryBase as ExpenseCategory } from '@expenses_models/ExpenseCategoryBase';
 import { ExpenseCategoryService } from '@expenses_services/expense-category.service';
 import { CommonModule } from '@angular/common'; // Required when structural directives are used
@@ -30,10 +31,14 @@ export class ExpensesCategoriesComponent implements OnInit {
   expensesCategoriesMap: Record<number, string> = {}; // Initialize as an empty object
 
   ngOnInit(): void {
-    // NOTE: Keeping current form key to avoid behavioral changes.
-    this.formFields = this.formFactory.getFormConfig('saving_log');
-    this.columns = this.formFactory.getTableColumns<ExpenseCategory>('expense_category');
-    this.loadExpensesCategories();
+    this.metaService.getMeta('expense-category').subscribe(meta => {
+      this.formFields = meta.fields;
+      this.columns = [
+        { key: 'id', label: 'Id', sortable: true },
+        ...this.formFactory.getTableColumnsFromMetadata(meta.fields)
+      ];
+      this.loadExpensesCategories();
+    });
   }
 
   constructor(
@@ -41,6 +46,7 @@ export class ExpensesCategoriesComponent implements OnInit {
     private dialog: MatDialog,
     private toastService: ToastService,
     private formFactory: FormFactoryService,
+    private metaService: MetaService,
     private expenseCategoryService: ExpenseCategoryService // Expense categories service
   ) {}
 
@@ -74,7 +80,7 @@ export class ExpensesCategoriesComponent implements OnInit {
       const dialogRef = this.dialog.open(GenericDialogComponent, {
         data: {
           title: data ? 'Edit Expense Category' : 'New Expense Category',
-          fields: this.formFactory.getFormConfig('expense_category'),
+          fields: this.formFields,
           initialData: data || {},
         },
       });
