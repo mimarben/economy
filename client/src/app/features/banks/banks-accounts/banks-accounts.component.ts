@@ -15,9 +15,6 @@ import { FormFieldConfig } from '@shared/generic-form/form-config';
 import { ToastService } from '@core_services/toast.service';
 import { environment } from '@env/environment';
 import { MetaService } from '@core_services/meta.service';
-import { ImportOriginBase as ImportOrigin } from '@import_models/import-originBase';
-import { ImportProfileBase as ImportProfile } from '@import_models/import-profileBase';
-import { ImportOriginsService, ImportProfilesService } from '@import_services/import-profiles.service';
 
 @Component({
   selector: 'app-banks-accounts',
@@ -34,8 +31,6 @@ export class BanksAccountsComponent implements OnInit {
   isFormValid = false;
   banks: Bank[] = [];
   users: User[] = [];
-  origins: ImportOrigin[] = [];
-  profiles: ImportProfile[] = [];
   columns: TableColumn<Account>[] = [];
 
   constructor(
@@ -47,8 +42,6 @@ export class BanksAccountsComponent implements OnInit {
     private toastService: ToastService,
     private formFactory: FormFactoryService,
     private metaService: MetaService,
-    private importOriginsService: ImportOriginsService,
-    private importProfilesService: ImportProfilesService,
   ) {}
 
   ngOnInit() {
@@ -61,31 +54,19 @@ export class BanksAccountsComponent implements OnInit {
       accounts: this.accountService.getAll(),
       banks: this.bankService.getBanks(),
       users: this.userService.getUsers(),
-      origins: this.importOriginsService.getOrigins(),
-      profiles: this.importProfilesService.getProfiles(),
       meta: this.metaService.getMeta('account'),
     }).subscribe({
-      next: ({ accounts, banks, users, origins, profiles, meta }) => {
+      next: ({ accounts, banks, users, meta }) => {
         this.accounts = accounts.response;
         this.banks = banks.response;
         this.users = users.response;
-        this.origins = origins.response;
-        this.profiles = profiles.response;
 
         this.formFields = this.formFactory.enrichMetadataFields(meta.fields, {
           bank: this.banks.map((bank) => ({ value: bank.id!, label: bank.name })),
           bank_id: this.banks.map((bank) => ({ value: bank.id!, label: bank.name })),
           user: this.users.map((user) => ({ value: user.id!, label: `${user.name} (${user.email})` })),
           user_id: this.users.map((user) => ({ value: user.id!, label: `${user.name} (${user.email})` })),
-          'import-origin': this.origins.map((origin) => ({ value: origin.id, label: origin.name })),
-          import_origin_id: this.origins.map((origin) => ({ value: origin.id, label: origin.name })),
-          'import-profile': this.profiles.map((profile) => ({ value: profile.id, label: profile.name })),
-          import_profile_id: this.profiles.map((profile) => ({ value: profile.id, label: profile.name })),
-        }).map((field) =>
-          field.key === 'import_origin_id' || field.key === 'import_profile_id'
-            ? { ...field, required: true }
-            : field,
-        );
+        });
 
         this.columns = this.formFactory.getTableColumnsFromMetadata<Account>(this.formFields).map((column) => {
           if (column.key === 'bank_id') {
