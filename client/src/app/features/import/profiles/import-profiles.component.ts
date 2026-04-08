@@ -240,7 +240,6 @@ export class ImportProfilesComponent implements OnInit {
   private getColumnsTooltip(value: unknown): string {
     const columns = this.parseColumns(value, false);
     if (!columns) return 'Invalid columns JSON';
-
     return Object.entries(columns)
       .map(([key, aliases]) => `${key}: ${(aliases || []).join(', ')}`)
       .join('\n');

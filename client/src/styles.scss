@@ -164,3 +164,14 @@ body.theme-economy {
   font-size: 12px;
   border-radius: 4px;
 }
+
+.tooltip-multiline {
+  white-space: pre-wrap !important;
+  word-wrap: normal !important;
+  word-break: normal !important;
+  overflow-wrap: normal !important;
+  max-width: none !important;
+  min-width: 300px !important;
+  line-height: 1.4 !important;
+  padding: 10px !important;
+}

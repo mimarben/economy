@@ -1,0 +1,1438 @@
+[2026-04-07 13:55:51,834] INFO in database: Database URL: postgresql+psycopg2://miguel:tu_password@postgres:5432/economy
+[2026-04-07 13:55:51,834] INFO in database: Database Engine: postgres
+[2026-04-07 13:55:52,204] WARNING in database: create_all strategy enabled outside SQLite; prefer Alembic for managed environments.
+[2026-04-07 13:55:52,246] INFO in main: Starting the Flask app...
+[2026-04-07 13:55:52,246] INFO in main: Configuration loaded for 0.0.0.0:5001
+[2026-04-07 13:55:52,598] INFO in database: Database URL: postgresql+psycopg2://miguel:tu_password@postgres:5432/economy
+[2026-04-07 13:55:52,598] INFO in database: Database Engine: postgres
+[2026-04-07 13:55:52,778] WARNING in database: create_all strategy enabled outside SQLite; prefer Alembic for managed environments.
+[2026-04-07 13:55:52,812] INFO in main: Starting the Flask app...
+[2026-04-07 13:55:52,812] INFO in main: Configuration loaded for 0.0.0.0:5001
+[2026-04-07 13:59:13,010] INFO in auth: Response: TOKEN_REFRESHED
+[2026-04-07 13:59:13,025] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 13:59:15,004] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 13:59:15,012] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 13:59:17,988] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 13:59:51,451] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 13:59:51,452] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 14:05:57,343] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 14:05:57,344] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 14:12:58,313] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 14:12:58,314] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 14:14:35,234] INFO in auth: Response: TOKEN_REFRESHED
+[2026-04-07 14:14:35,243] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 14:14:35,243] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 14:14:55,024] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 14:14:55,026] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 14:15:40,229] INFO in auth: User logged in successfully: admin@economy.com
+[2026-04-07 14:15:40,229] INFO in auth: Response: LOGIN_SUCCESS
+[2026-04-07 14:16:07,224] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 14:30:56,395] INFO in auth: Response: TOKEN_REFRESHED
+[2026-04-07 14:30:56,404] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 14:30:56,405] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 14:33:14,226] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 14:33:14,227] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 14:34:00,201] INFO in expenses_categories: Response: EXPENSE_CATEGORY_LIST
+[2026-04-07 14:34:00,201] INFO in expenses: Response: EXPENSE_LIST
+[2026-04-07 14:34:00,214] INFO in users: Response: USER_LIST
+[2026-04-07 14:34:00,214] INFO in sources: Response: SOURCE_LIST
+[2026-04-07 14:34:00,218] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-07 14:34:01,683] INFO in expenses_categories: Response: EXPENSE_CATEGORY_LIST
+[2026-04-07 14:34:02,213] INFO in sources: Response: SOURCE_LIST
+[2026-04-07 14:34:03,478] INFO in users: Response: USER_LIST
+[2026-04-07 14:34:03,478] INFO in sources: Response: SOURCE_LIST
+[2026-04-07 14:34:03,481] INFO in incomes: Response: INCOME_LIST
+[2026-04-07 14:34:03,489] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-07 14:34:03,496] INFO in income_categories: Response: INCOME_CATEGORY_LIST
+[2026-04-07 14:34:03,913] INFO in income_categories: Response: INCOME_CATEGORY_LIST
+[2026-04-07 14:34:06,517] INFO in income_categories: Response: INCOME_CATEGORY_LIST
+[2026-04-07 14:34:09,577] INFO in users: Response: USER_LIST
+[2026-04-07 14:34:09,579] INFO in investments: Response: INVESTMENT_LIST
+[2026-04-07 14:34:09,580] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-07 14:34:09,581] INFO in investment_categories: Response: INVESTMENT_CATEGORY_LIST
+[2026-04-07 14:34:10,412] INFO in investment_categories: Response: INVESTMENT_CATEGORY_LIST
+[2026-04-07 14:34:10,412] INFO in users: Response: USER_LIST
+[2026-04-07 14:34:11,325] INFO in investments: Response: INVESTMENT_LIST
+[2026-04-07 14:34:11,329] INFO in investments: Response: INVESTMENT_LIST
+[2026-04-07 14:34:11,321] ERROR in main: Unhandled Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.13/site-packages/flask/app.py", line 891, in dispatch_request
+    self.raise_routing_exception(req)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/usr/local/lib/python3.13/site-packages/flask/app.py", line 500, in raise_routing_exception
+    raise request.routing_exception  # type: ignore[misc]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/site-packages/flask/ctx.py", line 362, in match_request
+    result = self.url_adapter.match(return_rule=True)  # type: ignore
+  File "/usr/local/lib/python3.13/site-packages/werkzeug/routing/map.py", line 629, in match
+    raise NotFound() from None
+werkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+[2026-04-07 14:34:15,056] INFO in banks: Response: BANK_LIST
+[2026-04-07 14:34:15,061] INFO in banks: Response: BANK_LIST
+[2026-04-07 14:34:16,394] INFO in users: Response: USER_LIST
+[2026-04-07 14:34:16,395] INFO in banks: Response: BANK_LIST
+[2026-04-07 14:34:16,397] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-07 14:34:18,160] INFO in banks: Response: BANK_LIST
+[2026-04-07 14:34:18,164] INFO in banks: Response: BANK_LIST
+[2026-04-07 14:34:25,033] ERROR in summaries: Error: DATABASE_ERROR, Details: Internal server error: function missing required argument 'year' (pos 1)
+[2026-04-07 14:34:25,941] INFO in expenses_categories: Response: EXPENSE_CATEGORY_LIST
+[2026-04-07 14:34:25,943] INFO in income_categories: Response: INCOME_CATEGORY_LIST
+[2026-04-07 14:34:25,943] INFO in category_rules: Response: CATEGORY_RULE_LIST
+[2026-04-07 14:34:25,944] INFO in investment_categories: Response: INVESTMENT_CATEGORY_LIST
+[2026-04-07 14:34:27,761] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-07 14:34:27,761] INFO in cards: Response: CARD_LIST
+[2026-04-07 14:34:41,335] ERROR in main: Unhandled Exception: 400 Bad Request: Failed to decode JSON object: Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/site-packages/werkzeug/wrappers/request.py", line 611, in get_json
+    rv = self.json_module.loads(data)
+  File "/usr/local/lib/python3.13/site-packages/flask/json/provider.py", line 187, in loads
+    return json.loads(s, **kwargs)
+           ~~~~~~~~~~^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/json/__init__.py", line 352, in loads
+    return _default_decoder.decode(s)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "/usr/local/lib/python3.13/json/decoder.py", line 345, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/json/decoder.py", line 363, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.13/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/app/routers/cards/card_router.py", line 39, in create
+    data = CardCreate.model_validate(request.json)
+                                     ^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/site-packages/werkzeug/wrappers/request.py", line 560, in json
+    return self.get_json()
+           ~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/site-packages/werkzeug/wrappers/request.py", line 620, in get_json
+    rv = self.on_json_loading_failed(e)
+  File "/usr/local/lib/python3.13/site-packages/flask/wrappers.py", line 214, in on_json_loading_failed
+    return super().on_json_loading_failed(e)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "/usr/local/lib/python3.13/site-packages/werkzeug/wrappers/request.py", line 645, in on_json_loading_failed
+    raise BadRequest(f"Failed to decode JSON object: {e}")
+werkzeug.exceptions.BadRequest: 400 Bad Request: Failed to decode JSON object: Expecting value: line 1 column 1 (char 0)
+[2026-04-07 14:34:42,473] INFO in banks: Response: BANK_LIST
+[2026-04-07 14:34:42,477] INFO in banks: Response: BANK_LIST
+[2026-04-07 14:34:44,238] INFO in banks: Response: BANK_LIST
+[2026-04-07 14:34:44,238] INFO in users: Response: USER_LIST
+[2026-04-07 14:34:44,239] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-07 14:34:47,419] INFO in banks: Response: BANK_LIST
+[2026-04-07 14:34:47,419] INFO in users: Response: USER_LIST
+[2026-04-07 14:34:50,933] INFO in banks: Response: BANK_LIST
+[2026-04-07 14:34:50,934] INFO in users: Response: USER_LIST
+[2026-04-07 14:35:02,311] INFO in cards: Response: CARD_LIST
+[2026-04-07 14:35:02,313] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-07 14:35:08,778] ERROR in main: Unhandled Exception: 400 Bad Request: Failed to decode JSON object: Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/site-packages/werkzeug/wrappers/request.py", line 611, in get_json
+    rv = self.json_module.loads(data)
+  File "/usr/local/lib/python3.13/site-packages/flask/json/provider.py", line 187, in loads
+    return json.loads(s, **kwargs)
+           ~~~~~~~~~~^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/json/__init__.py", line 352, in loads
+    return _default_decoder.decode(s)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "/usr/local/lib/python3.13/json/decoder.py", line 345, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/json/decoder.py", line 363, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.13/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/app/routers/cards/card_router.py", line 39, in create
+    data = CardCreate.model_validate(request.json)
+                                     ^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/site-packages/werkzeug/wrappers/request.py", line 560, in json
+    return self.get_json()
+           ~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/site-packages/werkzeug/wrappers/request.py", line 620, in get_json
+    rv = self.on_json_loading_failed(e)
+  File "/usr/local/lib/python3.13/site-packages/flask/wrappers.py", line 214, in on_json_loading_failed
+    return super().on_json_loading_failed(e)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "/usr/local/lib/python3.13/site-packages/werkzeug/wrappers/request.py", line 645, in on_json_loading_failed
+    raise BadRequest(f"Failed to decode JSON object: {e}")
+werkzeug.exceptions.BadRequest: 400 Bad Request: Failed to decode JSON object: Expecting value: line 1 column 1 (char 0)
+[2026-04-07 14:35:10,439] INFO in banks: Response: BANK_LIST
+[2026-04-07 14:35:10,442] INFO in banks: Response: BANK_LIST
+[2026-04-07 14:35:56,713] INFO in banks: Response: BANK_LIST
+[2026-04-07 14:35:56,716] INFO in users: Response: USER_LIST
+[2026-04-07 14:35:56,718] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-07 14:36:03,781] INFO in banks: Response: BANK_LIST
+[2026-04-07 14:36:03,781] INFO in users: Response: USER_LIST
+[2026-04-07 14:36:08,312] INFO in category_rules: Response: CATEGORY_RULE_LIST
+[2026-04-07 14:36:08,318] INFO in income_categories: Response: INCOME_CATEGORY_LIST
+[2026-04-07 14:36:08,319] INFO in expenses_categories: Response: EXPENSE_CATEGORY_LIST
+[2026-04-07 14:36:08,321] INFO in investment_categories: Response: INVESTMENT_CATEGORY_LIST
+[2026-04-07 14:36:14,341] INFO in cards: Response: CARD_LIST
+[2026-04-07 14:36:14,343] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-07 14:36:16,313] ERROR in main: Unhandled Exception: 400 Bad Request: Failed to decode JSON object: Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/site-packages/werkzeug/wrappers/request.py", line 611, in get_json
+    rv = self.json_module.loads(data)
+  File "/usr/local/lib/python3.13/site-packages/flask/json/provider.py", line 187, in loads
+    return json.loads(s, **kwargs)
+           ~~~~~~~~~~^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/json/__init__.py", line 352, in loads
+    return _default_decoder.decode(s)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "/usr/local/lib/python3.13/json/decoder.py", line 345, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/json/decoder.py", line 363, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.13/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/app/routers/cards/card_router.py", line 39, in create
+    data = CardCreate.model_validate(request.json)
+                                     ^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/site-packages/werkzeug/wrappers/request.py", line 560, in json
+    return self.get_json()
+           ~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/site-packages/werkzeug/wrappers/request.py", line 620, in get_json
+    rv = self.on_json_loading_failed(e)
+  File "/usr/local/lib/python3.13/site-packages/flask/wrappers.py", line 214, in on_json_loading_failed
+    return super().on_json_loading_failed(e)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "/usr/local/lib/python3.13/site-packages/werkzeug/wrappers/request.py", line 645, in on_json_loading_failed
+    raise BadRequest(f"Failed to decode JSON object: {e}")
+werkzeug.exceptions.BadRequest: 400 Bad Request: Failed to decode JSON object: Expecting value: line 1 column 1 (char 0)
+[2026-04-07 14:36:36,458] INFO in sources: Response: SOURCE_LIST
+[2026-04-07 14:41:52,334] INFO in sources: Response: SOURCE_LIST
+[2026-04-07 14:41:55,594] INFO in banks: Response: BANK_LIST
+[2026-04-07 14:41:56,990] INFO in banks: Response: BANK_LIST
+[2026-04-07 14:41:56,994] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-07 14:41:56,995] INFO in users: Response: USER_LIST
+[2026-04-07 14:42:14,534] INFO in cards: Response: CARD_LIST
+[2026-04-07 14:42:14,536] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-07 14:42:19,324] ERROR in main: Unhandled Exception: 400 Bad Request: Failed to decode JSON object: Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/site-packages/werkzeug/wrappers/request.py", line 611, in get_json
+    rv = self.json_module.loads(data)
+  File "/usr/local/lib/python3.13/site-packages/flask/json/provider.py", line 187, in loads
+    return json.loads(s, **kwargs)
+           ~~~~~~~~~~^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/json/__init__.py", line 352, in loads
+    return _default_decoder.decode(s)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "/usr/local/lib/python3.13/json/decoder.py", line 345, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/json/decoder.py", line 363, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.13/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/app/routers/cards/card_router.py", line 39, in create
+    data = CardCreate.model_validate(request.json)
+                                     ^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/site-packages/werkzeug/wrappers/request.py", line 560, in json
+    return self.get_json()
+           ~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/site-packages/werkzeug/wrappers/request.py", line 620, in get_json
+    rv = self.on_json_loading_failed(e)
+  File "/usr/local/lib/python3.13/site-packages/flask/wrappers.py", line 214, in on_json_loading_failed
+    return super().on_json_loading_failed(e)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "/usr/local/lib/python3.13/site-packages/werkzeug/wrappers/request.py", line 645, in on_json_loading_failed
+    raise BadRequest(f"Failed to decode JSON object: {e}")
+werkzeug.exceptions.BadRequest: 400 Bad Request: Failed to decode JSON object: Expecting value: line 1 column 1 (char 0)
+[2026-04-07 14:58:15,891] INFO in auth: Response: TOKEN_REFRESHED
+[2026-04-07 14:58:15,901] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-07 14:58:15,902] INFO in cards: Response: CARD_LIST
+[2026-04-07 15:02:46,296] INFO in cards: Response: CARD_LIST
+[2026-04-07 15:02:46,298] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-07 15:04:04,203] INFO in cards: Response: CARD_LIST
+[2026-04-07 15:04:04,205] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-07 15:04:14,533] INFO in cards: Response: CARD_LIST
+[2026-04-07 15:04:14,534] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-07 15:04:23,612] ERROR in main: Unhandled Exception: 400 Bad Request: Failed to decode JSON object: Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/site-packages/werkzeug/wrappers/request.py", line 611, in get_json
+    rv = self.json_module.loads(data)
+  File "/usr/local/lib/python3.13/site-packages/flask/json/provider.py", line 187, in loads
+    return json.loads(s, **kwargs)
+           ~~~~~~~~~~^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/json/__init__.py", line 352, in loads
+    return _default_decoder.decode(s)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "/usr/local/lib/python3.13/json/decoder.py", line 345, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/json/decoder.py", line 363, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.13/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/app/routers/cards/card_router.py", line 39, in create
+    data = CardCreate.model_validate(request.json)
+                                     ^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/site-packages/werkzeug/wrappers/request.py", line 560, in json
+    return self.get_json()
+           ~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/site-packages/werkzeug/wrappers/request.py", line 620, in get_json
+    rv = self.on_json_loading_failed(e)
+  File "/usr/local/lib/python3.13/site-packages/flask/wrappers.py", line 214, in on_json_loading_failed
+    return super().on_json_loading_failed(e)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "/usr/local/lib/python3.13/site-packages/werkzeug/wrappers/request.py", line 645, in on_json_loading_failed
+    raise BadRequest(f"Failed to decode JSON object: {e}")
+werkzeug.exceptions.BadRequest: 400 Bad Request: Failed to decode JSON object: Expecting value: line 1 column 1 (char 0)
+[2026-04-07 15:13:00,289] INFO in database: Database URL: postgresql+psycopg2://miguel:tu_password@postgres:5432/economy
+[2026-04-07 15:13:00,289] INFO in database: Database Engine: postgres
+[2026-04-07 15:13:00,463] WARNING in database: create_all strategy enabled outside SQLite; prefer Alembic for managed environments.
+[2026-04-07 15:13:00,497] INFO in main: Starting the Flask app...
+[2026-04-07 15:13:00,497] INFO in main: Configuration loaded for 0.0.0.0:5001
+[2026-04-07 15:13:04,815] INFO in cards: Response: CARD_LIST
+[2026-04-07 15:13:04,818] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-07 15:13:15,198] INFO in auth: Response: TOKEN_REFRESHED
+[2026-04-07 15:13:15,202] ERROR in main: Unhandled Exception: 400 Bad Request: Failed to decode JSON object: Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/site-packages/werkzeug/wrappers/request.py", line 611, in get_json
+    rv = self.json_module.loads(data)
+  File "/usr/local/lib/python3.13/site-packages/flask/json/provider.py", line 187, in loads
+    return json.loads(s, **kwargs)
+           ~~~~~~~~~~^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/json/__init__.py", line 352, in loads
+    return _default_decoder.decode(s)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "/usr/local/lib/python3.13/json/decoder.py", line 345, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/json/decoder.py", line 363, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.13/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/app/routers/cards/card_router.py", line 39, in create
+    data = CardCreate.model_validate(request.json)
+                                     ^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/site-packages/werkzeug/wrappers/request.py", line 560, in json
+    return self.get_json()
+           ~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/site-packages/werkzeug/wrappers/request.py", line 620, in get_json
+    rv = self.on_json_loading_failed(e)
+  File "/usr/local/lib/python3.13/site-packages/flask/wrappers.py", line 214, in on_json_loading_failed
+    return super().on_json_loading_failed(e)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "/usr/local/lib/python3.13/site-packages/werkzeug/wrappers/request.py", line 645, in on_json_loading_failed
+    raise BadRequest(f"Failed to decode JSON object: {e}")
+werkzeug.exceptions.BadRequest: 400 Bad Request: Failed to decode JSON object: Expecting value: line 1 column 1 (char 0)
+[2026-04-07 15:13:22,437] INFO in auth: User logged in successfully: mimarben@gmail.com
+[2026-04-07 15:13:22,437] INFO in auth: Response: LOGIN_SUCCESS
+[2026-04-07 15:13:24,854] INFO in cards: Response: CARD_LIST
+[2026-04-07 15:13:24,856] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-07 15:17:19,256] INFO in cards: Response: CARD_LIST
+[2026-04-07 15:17:19,258] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-07 15:17:19,265] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 15:17:19,266] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 15:21:50,597] INFO in cards: Response: CARD_LIST
+[2026-04-07 15:21:50,600] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-07 15:21:50,603] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 15:21:50,604] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 15:26:07,601] INFO in cards: Response: CARD_LIST
+[2026-04-07 15:26:07,608] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-07 15:26:07,609] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 15:26:07,612] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 15:26:16,367] INFO in cards: Response: CARD_LIST
+[2026-04-07 15:26:16,408] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 15:26:16,408] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 15:26:16,409] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-07 15:27:58,942] INFO in cards: Response: CARD_LIST
+[2026-04-07 15:27:58,946] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 15:27:58,946] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-07 15:27:58,950] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 15:28:26,885] INFO in auth: Response: TOKEN_REFRESHED
+[2026-04-07 15:28:26,900] ERROR in summaries: Error: DATABASE_ERROR, Details: Internal server error: function missing required argument 'year' (pos 1)
+[2026-04-07 15:28:41,228] INFO in auth: User logged in successfully: mimarben@gmail.com
+[2026-04-07 15:28:41,228] INFO in auth: Response: LOGIN_SUCCESS
+[2026-04-07 15:28:42,883] ERROR in summaries: Error: DATABASE_ERROR, Details: Internal server error: function missing required argument 'year' (pos 1)
+[2026-04-07 15:28:45,185] INFO in cards: Response: CARD_LIST
+[2026-04-07 15:28:45,187] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 15:28:45,188] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 15:28:45,190] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-07 15:28:51,545] INFO in banks: Response: BANK_LIST
+[2026-04-07 15:28:57,022] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-07 15:28:57,022] INFO in banks: Response: BANK_LIST
+[2026-04-07 15:28:57,027] INFO in users: Response: USER_LIST
+[2026-04-07 15:28:57,031] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 15:28:57,034] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 15:31:03,470] INFO in banks: Response: BANK_LIST
+[2026-04-07 15:31:03,470] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-07 15:31:03,474] INFO in users: Response: USER_LIST
+[2026-04-07 15:31:03,477] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 15:31:03,479] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 15:31:05,720] INFO in cards: Response: CARD_LIST
+[2026-04-07 15:31:05,724] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-07 15:31:05,727] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 15:31:05,729] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 15:31:22,911] INFO in incomes: Response: INCOME_LIST
+[2026-04-07 15:31:22,915] INFO in users: Response: USER_LIST
+[2026-04-07 15:31:22,925] INFO in sources: Response: SOURCE_LIST
+[2026-04-07 15:31:22,925] INFO in income_categories: Response: INCOME_CATEGORY_LIST
+[2026-04-07 15:31:22,928] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-07 15:31:29,027] INFO in users: Response: USER_LIST
+[2026-04-07 15:31:29,030] INFO in sources: Response: SOURCE_LIST
+[2026-04-07 15:31:29,031] INFO in expenses: Response: EXPENSE_LIST
+[2026-04-07 15:31:29,032] INFO in expenses_categories: Response: EXPENSE_CATEGORY_LIST
+[2026-04-07 15:31:29,042] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-07 15:31:29,852] INFO in expenses_categories: Response: EXPENSE_CATEGORY_LIST
+[2026-04-07 15:35:30,749] INFO in expenses_categories: Response: EXPENSE_CATEGORY_LIST
+[2026-04-07 15:35:35,667] INFO in expenses_categories: Response: EXPENSE_CATEGORY_LIST
+[2026-04-07 15:40:06,722] INFO in expenses_categories: Response: EXPENSE_CATEGORY_LIST
+[2026-04-07 15:48:39,645] INFO in auth: Response: TOKEN_REFRESHED
+[2026-04-07 15:48:39,660] INFO in expenses_categories: Response: EXPENSE_CATEGORY_LIST
+[2026-04-07 15:48:46,092] INFO in sources: Response: SOURCE_LIST
+[2026-04-07 15:48:47,052] INFO in expenses_categories: Response: EXPENSE_CATEGORY_LIST
+[2026-04-07 15:48:51,765] INFO in income_categories: Response: INCOME_CATEGORY_LIST
+[2026-04-07 15:49:03,702] INFO in database: Database URL: postgresql+psycopg2://miguel:tu_password@postgres:5432/economy
+[2026-04-07 15:49:03,702] INFO in database: Database Engine: postgres
+[2026-04-07 15:49:03,879] WARNING in database: create_all strategy enabled outside SQLite; prefer Alembic for managed environments.
+[2026-04-07 15:49:03,912] INFO in main: Starting the Flask app...
+[2026-04-07 15:49:03,912] INFO in main: Configuration loaded for 0.0.0.0:5001
+[2026-04-07 15:49:59,662] INFO in income_categories: Response: INCOME_CATEGORY_LIST
+[2026-04-07 16:01:25,646] INFO in expenses_categories: Response: EXPENSE_CATEGORY_LIST
+[2026-04-07 16:01:28,534] INFO in income_categories: Response: INCOME_CATEGORY_LIST
+[2026-04-07 16:01:36,654] INFO in expenses_categories: Response: EXPENSE_CATEGORY_LIST
+[2026-04-07 16:09:25,910] INFO in auth: Response: TOKEN_REFRESHED
+[2026-04-07 16:09:25,920] INFO in expenses_categories: Response: EXPENSE_CATEGORY_LIST
+[2026-04-07 16:09:25,925] INFO in investment_categories: Response: INVESTMENT_CATEGORY_LIST
+[2026-04-07 16:09:25,927] INFO in income_categories: Response: INCOME_CATEGORY_LIST
+[2026-04-07 16:09:25,933] INFO in category_rules: Response: CATEGORY_RULE_LIST
+[2026-04-07 16:09:27,045] INFO in cards: Response: CARD_LIST
+[2026-04-07 16:09:27,059] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 16:09:27,061] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 16:09:27,062] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-07 16:09:28,584] ERROR in summaries: Error: DATABASE_ERROR, Details: Internal server error: function missing required argument 'year' (pos 1)
+[2026-04-07 16:09:31,666] INFO in households: Response: HOUSEHOLD_LIST
+[2026-04-07 16:09:33,180] INFO in households: Response: HOUSEHOLD_LIST
+[2026-04-07 16:09:33,178] ERROR in main: Unhandled Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.13/site-packages/flask/app.py", line 891, in dispatch_request
+    self.raise_routing_exception(req)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/usr/local/lib/python3.13/site-packages/flask/app.py", line 500, in raise_routing_exception
+    raise request.routing_exception  # type: ignore[misc]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/site-packages/flask/ctx.py", line 362, in match_request
+    result = self.url_adapter.match(return_rule=True)  # type: ignore
+  File "/usr/local/lib/python3.13/site-packages/werkzeug/routing/map.py", line 629, in match
+    raise NotFound() from None
+werkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+[2026-04-07 16:09:33,192] INFO in users: Response: USER_LIST
+[2026-04-07 16:09:36,648] INFO in users: Response: USER_LIST
+[2026-04-07 16:09:36,649] INFO in savings: Response: SAVING_LIST
+[2026-04-07 16:09:36,658] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-07 16:09:37,188] INFO in savings: Response: SAVING_LIST
+[2026-04-07 16:09:37,189] INFO in saving_logs: Response: SAVING_LOG_LIST
+[2026-04-07 16:09:37,191] INFO in savings: Response: SAVING_LIST
+[2026-04-07 16:09:37,680] INFO in sources: Response: SOURCE_LIST
+[2026-04-07 16:09:38,807] INFO in investments: Response: INVESTMENT_LIST
+[2026-04-07 16:09:38,809] INFO in users: Response: USER_LIST
+[2026-04-07 16:09:38,815] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-07 16:09:38,817] INFO in investment_categories: Response: INVESTMENT_CATEGORY_LIST
+[2026-04-07 16:09:39,291] INFO in investment_categories: Response: INVESTMENT_CATEGORY_LIST
+[2026-04-07 16:09:39,294] INFO in users: Response: USER_LIST
+[2026-04-07 16:09:39,747] ERROR in main: Unhandled Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.13/site-packages/flask/app.py", line 891, in dispatch_request
+    self.raise_routing_exception(req)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/usr/local/lib/python3.13/site-packages/flask/app.py", line 500, in raise_routing_exception
+    raise request.routing_exception  # type: ignore[misc]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/site-packages/flask/ctx.py", line 362, in match_request
+    result = self.url_adapter.match(return_rule=True)  # type: ignore
+  File "/usr/local/lib/python3.13/site-packages/werkzeug/routing/map.py", line 629, in match
+    raise NotFound() from None
+werkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+[2026-04-07 16:09:39,752] INFO in investments: Response: INVESTMENT_LIST
+[2026-04-07 16:09:39,755] INFO in investments: Response: INVESTMENT_LIST
+[2026-04-07 16:09:40,796] INFO in investments: Response: INVESTMENT_LIST
+[2026-04-07 16:09:40,796] INFO in users: Response: USER_LIST
+[2026-04-07 16:09:40,799] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-07 16:09:40,805] INFO in investment_categories: Response: INVESTMENT_CATEGORY_LIST
+[2026-04-07 16:09:42,185] INFO in investment_categories: Response: INVESTMENT_CATEGORY_LIST
+[2026-04-07 16:09:42,185] INFO in users: Response: USER_LIST
+[2026-04-07 16:10:25,648] INFO in investment_categories: Response: INVESTMENT_CATEGORY_LIST
+[2026-04-07 16:10:25,651] INFO in users: Response: USER_LIST
+[2026-04-07 16:14:56,668] INFO in investment_categories: Response: INVESTMENT_CATEGORY_LIST
+[2026-04-07 16:14:56,670] INFO in users: Response: USER_LIST
+[2026-04-07 16:23:29,026] INFO in income_categories: Response: INCOME_CATEGORY_LIST
+[2026-04-07 16:23:29,658] INFO in sources: Response: SOURCE_LIST
+[2026-04-07 16:23:31,619] ERROR in main: Unhandled Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.13/site-packages/flask/app.py", line 891, in dispatch_request
+    self.raise_routing_exception(req)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/usr/local/lib/python3.13/site-packages/flask/app.py", line 500, in raise_routing_exception
+    raise request.routing_exception  # type: ignore[misc]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/site-packages/flask/ctx.py", line 362, in match_request
+    result = self.url_adapter.match(return_rule=True)  # type: ignore
+  File "/usr/local/lib/python3.13/site-packages/werkzeug/routing/map.py", line 629, in match
+    raise NotFound() from None
+werkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+[2026-04-07 16:23:31,626] INFO in investments: Response: INVESTMENT_LIST
+[2026-04-07 16:23:31,629] INFO in investments: Response: INVESTMENT_LIST
+[2026-04-07 16:23:32,346] INFO in investment_categories: Response: INVESTMENT_CATEGORY_LIST
+[2026-04-07 16:23:32,346] INFO in users: Response: USER_LIST
+[2026-04-07 16:23:32,919] INFO in investments: Response: INVESTMENT_LIST
+[2026-04-07 16:23:32,928] INFO in users: Response: USER_LIST
+[2026-04-07 16:23:32,931] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-07 16:23:32,936] INFO in investment_categories: Response: INVESTMENT_CATEGORY_LIST
+[2026-04-07 16:23:34,349] INFO in expenses: Response: EXPENSE_LIST
+[2026-04-07 16:23:34,351] INFO in users: Response: USER_LIST
+[2026-04-07 16:23:34,360] INFO in expenses_categories: Response: EXPENSE_CATEGORY_LIST
+[2026-04-07 16:23:34,360] INFO in sources: Response: SOURCE_LIST
+[2026-04-07 16:23:34,364] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-07 16:23:36,349] INFO in category_rules: Response: CATEGORY_RULE_LIST
+[2026-04-07 16:23:36,372] INFO in banks: Response: BANK_LIST
+[2026-04-07 16:23:36,376] INFO in accounts: Response: ACCOUNT_LIST
+[2026-04-07 16:23:36,377] INFO in sources: Response: SOURCE_LIST
+[2026-04-07 16:23:36,386] INFO in income_categories: Response: INCOME_CATEGORY_LIST
+[2026-04-07 16:23:36,388] INFO in expenses_categories: Response: EXPENSE_CATEGORY_LIST
+[2026-04-07 16:23:36,389] INFO in cards: Response: CARD_LIST
+[2026-04-07 16:23:36,395] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 16:23:36,397] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 16:23:36,928] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 16:23:40,013] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 16:23:40,019] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 16:23:44,562] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 16:23:46,850] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 16:23:46,852] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 16:31:57,701] INFO in auth: Response: TOKEN_REFRESHED
+[2026-04-07 16:31:57,718] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 16:31:57,719] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 16:37:41,531] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 16:37:41,535] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 16:42:50,413] INFO in import_profiles: Response: IMPORT_PROFILE_CREATED
+[2026-04-07 16:42:50,441] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 16:42:50,444] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 16:52:54,443] INFO in auth: Response: TOKEN_REFRESHED
+[2026-04-07 16:52:54,457] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 16:52:54,459] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 16:53:36,465] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 16:53:36,475] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 16:54:22,131] ERROR in import_profiles: Unhandled error in create import_profiles: (psycopg2.errors.UniqueViolation) duplicate key value violates unique constraint "uq_origin_profile_name"
+DETAIL:  Key (origin_id, name)=(1, ING Excel Account) already exists.
+
+[SQL: INSERT INTO import_profiles (origin_id, file_type, name, header_row_guess, columns, active, version, deleted_at) VALUES (%(origin_id)s, %(file_type)s, %(name)s, %(header_row_guess)s, %(columns)s::JSONB, %(active)s, %(version)s, %(deleted_at)s) RETURNING import_profiles.id, import_profiles.created_at, import_profiles.updated_at]
+[parameters: {'origin_id': 1, 'file_type': None, 'name': 'ING Excel Account', 'header_row_guess': 4, 'columns': '{"description": ["descripcion", "descripci\\u00f3n"], "asdasd": ["asdasdas"]}', 'active': True, 'version': 1, 'deleted_at': None}]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/engine/default.py", line 951, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+psycopg2.errors.UniqueViolation: duplicate key value violates unique constraint "uq_origin_profile_name"
+DETAIL:  Key (origin_id, name)=(1, ING Excel Account) already exists.
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/app/routers/imports/import_profile_router.py", line 52, in create
+    result = get_service(db).create(data)
+  File "/app/services/core/base_service.py", line 38, in create
+    obj = self.repository.create(obj)
+  File "/app/repositories/core/base_repository.py", line 48, in create
+    self.db.commit()
+    ~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/orm/session.py", line 2030, in commit
+    trans.commit(_to_root=True)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "<string>", line 2, in commit
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/orm/state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/orm/session.py", line 1311, in commit
+    self._prepare_impl()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "<string>", line 2, in _prepare_impl
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/orm/state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/orm/session.py", line 1286, in _prepare_impl
+    self.session.flush()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/orm/session.py", line 4331, in flush
+    self._flush(objects)
+    ~~~~~~~~~~~^^^^^^^^^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/orm/session.py", line 4466, in _flush
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/util/langhelpers.py", line 224, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/orm/session.py", line 4427, in _flush
+    flush_context.execute()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/orm/unitofwork.py", line 466, in execute
+    rec.execute(self)
+    ~~~~~~~~~~~^^^^^^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/orm/unitofwork.py", line 642, in execute
+    util.preloaded.orm_persistence.save_obj(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self.mapper,
+        ^^^^^^^^^^^^
+        uow.states_for_mapper_hierarchy(self.mapper, False, False),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        uow,
+        ^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/orm/persistence.py", line 93, in save_obj
+    _emit_insert_statements(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        base_mapper,
+        ^^^^^^^^^^^^
+    ...<3 lines>...
+        insert,
+        ^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/orm/persistence.py", line 1233, in _emit_insert_statements
+    result = connection.execute(
+        statement,
+        params,
+        execution_options=execution_options,
+    )
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/engine/base.py", line 1419, in execute
+    return meth(
+        self,
+        distilled_parameters,
+        execution_options or NO_OPTIONS,
+    )
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/sql/elements.py", line 526, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, distilled_params, execution_options
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/engine/base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+        dialect,
+    ...<8 lines>...
+        cache_hit=cache_hit,
+    )
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/engine/base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        dialect, context, statement, parameters
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/engine/base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        e, str_statement, effective_parameters, cursor, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/engine/base.py", line 2355, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/engine/default.py", line 951, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+sqlalchemy.exc.IntegrityError: (psycopg2.errors.UniqueViolation) duplicate key value violates unique constraint "uq_origin_profile_name"
+DETAIL:  Key (origin_id, name)=(1, ING Excel Account) already exists.
+
+[SQL: INSERT INTO import_profiles (origin_id, file_type, name, header_row_guess, columns, active, version, deleted_at) VALUES (%(origin_id)s, %(file_type)s, %(name)s, %(header_row_guess)s, %(columns)s::JSONB, %(active)s, %(version)s, %(deleted_at)s) RETURNING import_profiles.id, import_profiles.created_at, import_profiles.updated_at]
+[parameters: {'origin_id': 1, 'file_type': None, 'name': 'ING Excel Account', 'header_row_guess': 4, 'columns': '{"description": ["descripcion", "descripci\\u00f3n"], "asdasd": ["asdasdas"]}', 'active': True, 'version': 1, 'deleted_at': None}]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+[2026-04-07 16:54:22,143] ERROR in import_profiles: Error: INTERNAL_ERROR, Details: UNEXPECTED_ERROR
+[2026-04-07 16:58:00,660] INFO in database: Database URL: postgresql+psycopg2://miguel:tu_password@postgres:5432/economy
+[2026-04-07 16:58:00,660] INFO in database: Database Engine: postgres
+[2026-04-07 16:58:00,863] WARNING in database: create_all strategy enabled outside SQLite; prefer Alembic for managed environments.
+[2026-04-07 16:58:00,896] INFO in main: Starting the Flask app...
+[2026-04-07 16:58:00,896] INFO in main: Configuration loaded for 0.0.0.0:5001
+[2026-04-07 16:58:09,433] INFO in database: Database URL: postgresql+psycopg2://miguel:tu_password@postgres:5432/economy
+[2026-04-07 16:58:09,433] INFO in database: Database Engine: postgres
+[2026-04-07 16:58:09,609] WARNING in database: create_all strategy enabled outside SQLite; prefer Alembic for managed environments.
+[2026-04-07 16:58:09,643] INFO in main: Starting the Flask app...
+[2026-04-07 16:58:09,643] INFO in main: Configuration loaded for 0.0.0.0:5001
+[2026-04-07 17:00:05,335] INFO in database: Database URL: postgresql+psycopg2://miguel:tu_password@postgres:5432/economy
+[2026-04-07 17:00:05,335] INFO in database: Database Engine: postgres
+[2026-04-07 17:00:05,517] WARNING in database: create_all strategy enabled outside SQLite; prefer Alembic for managed environments.
+[2026-04-07 17:00:05,556] INFO in main: Starting the Flask app...
+[2026-04-07 17:00:05,556] INFO in main: Configuration loaded for 0.0.0.0:5001
+[2026-04-07 17:01:18,280] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:01:18,281] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:02:35,336] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:02:35,338] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:03:21,526] ERROR in import_profiles: Unhandled error in create import_profiles: (psycopg2.errors.UniqueViolation) duplicate key value violates unique constraint "uq_origin_profile_name"
+DETAIL:  Key (origin_id, name)=(1, ING Excel Account) already exists.
+
+[SQL: INSERT INTO import_profiles (origin_id, file_type, name, header_row_guess, columns, active, version, deleted_at) VALUES (%(origin_id)s, %(file_type)s, %(name)s, %(header_row_guess)s, %(columns)s::JSONB, %(active)s, %(version)s, %(deleted_at)s) RETURNING import_profiles.id, import_profiles.created_at, import_profiles.updated_at]
+[parameters: {'origin_id': 1, 'file_type': None, 'name': 'ING Excel Account', 'header_row_guess': 4, 'columns': '{"description": ["descripcion", "descripci\\u00f3n"]}', 'active': True, 'version': 1, 'deleted_at': None}]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/engine/default.py", line 951, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+psycopg2.errors.UniqueViolation: duplicate key value violates unique constraint "uq_origin_profile_name"
+DETAIL:  Key (origin_id, name)=(1, ING Excel Account) already exists.
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/app/routers/imports/import_profile_router.py", line 52, in create
+    result = get_service(db).create(data)
+  File "/app/services/core/base_service.py", line 55, in create
+    obj = self.repository.create(obj)
+  File "/app/repositories/core/base_repository.py", line 48, in create
+    self.db.commit()
+    ~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/orm/session.py", line 2030, in commit
+    trans.commit(_to_root=True)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "<string>", line 2, in commit
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/orm/state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/orm/session.py", line 1311, in commit
+    self._prepare_impl()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "<string>", line 2, in _prepare_impl
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/orm/state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/orm/session.py", line 1286, in _prepare_impl
+    self.session.flush()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/orm/session.py", line 4331, in flush
+    self._flush(objects)
+    ~~~~~~~~~~~^^^^^^^^^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/orm/session.py", line 4466, in _flush
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/util/langhelpers.py", line 224, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/orm/session.py", line 4427, in _flush
+    flush_context.execute()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/orm/unitofwork.py", line 466, in execute
+    rec.execute(self)
+    ~~~~~~~~~~~^^^^^^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/orm/unitofwork.py", line 642, in execute
+    util.preloaded.orm_persistence.save_obj(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self.mapper,
+        ^^^^^^^^^^^^
+        uow.states_for_mapper_hierarchy(self.mapper, False, False),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        uow,
+        ^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/orm/persistence.py", line 93, in save_obj
+    _emit_insert_statements(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        base_mapper,
+        ^^^^^^^^^^^^
+    ...<3 lines>...
+        insert,
+        ^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/orm/persistence.py", line 1233, in _emit_insert_statements
+    result = connection.execute(
+        statement,
+        params,
+        execution_options=execution_options,
+    )
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/engine/base.py", line 1419, in execute
+    return meth(
+        self,
+        distilled_parameters,
+        execution_options or NO_OPTIONS,
+    )
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/sql/elements.py", line 526, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, distilled_params, execution_options
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/engine/base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+        dialect,
+    ...<8 lines>...
+        cache_hit=cache_hit,
+    )
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/engine/base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        dialect, context, statement, parameters
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/engine/base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        e, str_statement, effective_parameters, cursor, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/engine/base.py", line 2355, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/engine/default.py", line 951, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+sqlalchemy.exc.IntegrityError: (psycopg2.errors.UniqueViolation) duplicate key value violates unique constraint "uq_origin_profile_name"
+DETAIL:  Key (origin_id, name)=(1, ING Excel Account) already exists.
+
+[SQL: INSERT INTO import_profiles (origin_id, file_type, name, header_row_guess, columns, active, version, deleted_at) VALUES (%(origin_id)s, %(file_type)s, %(name)s, %(header_row_guess)s, %(columns)s::JSONB, %(active)s, %(version)s, %(deleted_at)s) RETURNING import_profiles.id, import_profiles.created_at, import_profiles.updated_at]
+[parameters: {'origin_id': 1, 'file_type': None, 'name': 'ING Excel Account', 'header_row_guess': 4, 'columns': '{"description": ["descripcion", "descripci\\u00f3n"]}', 'active': True, 'version': 1, 'deleted_at': None}]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+[2026-04-07 17:03:21,536] ERROR in import_profiles: Error: INTERNAL_ERROR, Details: UNEXPECTED_ERROR
+[2026-04-07 17:04:45,328] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:04:45,333] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:04:54,451] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:04:54,453] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:05:17,446] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:05:17,448] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:05:29,446] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:05:29,452] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:05:34,386] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:05:34,388] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:05:53,691] INFO in database: Database URL: postgresql+psycopg2://miguel:tu_password@postgres:5432/economy
+[2026-04-07 17:05:53,691] INFO in database: Database Engine: postgres
+[2026-04-07 17:05:53,873] WARNING in database: create_all strategy enabled outside SQLite; prefer Alembic for managed environments.
+[2026-04-07 17:05:53,913] INFO in main: Starting the Flask app...
+[2026-04-07 17:05:53,913] INFO in main: Configuration loaded for 0.0.0.0:5001
+[2026-04-07 17:06:13,462] INFO in database: Database URL: postgresql+psycopg2://miguel:tu_password@postgres:5432/economy
+[2026-04-07 17:06:13,462] INFO in database: Database Engine: postgres
+[2026-04-07 17:06:13,639] WARNING in database: create_all strategy enabled outside SQLite; prefer Alembic for managed environments.
+[2026-04-07 17:06:13,672] INFO in main: Starting the Flask app...
+[2026-04-07 17:06:13,672] INFO in main: Configuration loaded for 0.0.0.0:5001
+[2026-04-07 17:06:32,252] INFO in database: Database URL: postgresql+psycopg2://miguel:tu_password@postgres:5432/economy
+[2026-04-07 17:06:32,252] INFO in database: Database Engine: postgres
+[2026-04-07 17:06:32,436] WARNING in database: create_all strategy enabled outside SQLite; prefer Alembic for managed environments.
+[2026-04-07 17:06:32,470] INFO in main: Starting the Flask app...
+[2026-04-07 17:06:32,471] INFO in main: Configuration loaded for 0.0.0.0:5001
+[2026-04-07 17:06:45,004] INFO in database: Database URL: postgresql+psycopg2://miguel:tu_password@postgres:5432/economy
+[2026-04-07 17:06:45,004] INFO in database: Database Engine: postgres
+[2026-04-07 17:06:45,191] WARNING in database: create_all strategy enabled outside SQLite; prefer Alembic for managed environments.
+[2026-04-07 17:06:45,233] INFO in main: Starting the Flask app...
+[2026-04-07 17:06:45,233] INFO in main: Configuration loaded for 0.0.0.0:5001
+[2026-04-07 17:08:11,003] INFO in database: Database URL: postgresql+psycopg2://miguel:tu_password@postgres:5432/economy
+[2026-04-07 17:08:11,003] INFO in database: Database Engine: postgres
+[2026-04-07 17:08:11,197] WARNING in database: create_all strategy enabled outside SQLite; prefer Alembic for managed environments.
+[2026-04-07 17:08:11,234] INFO in main: Starting the Flask app...
+[2026-04-07 17:08:11,234] INFO in main: Configuration loaded for 0.0.0.0:5001
+[2026-04-07 17:08:15,880] INFO in auth: Response: TOKEN_REFRESHED
+[2026-04-07 17:08:15,898] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:08:15,906] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:09:26,996] ERROR in import_profiles: Validation error: [{'type': 'value_error', 'loc': ('columns',), 'msg': 'Value error, columns cannot be empty', 'input': {}, 'ctx': {'error': ValueError('columns cannot be empty')}, 'url': 'https://errors.pydantic.dev/2.11/v/value_error'}]
+[2026-04-07 17:09:26,996] ERROR in import_profiles: Error: VALIDATION_ERROR, Details: [{'type': 'value_error', 'loc': ('columns',), 'msg': 'Value error, columns cannot be empty', 'input': {}, 'ctx': {'error': ValueError('columns cannot be empty')}, 'url': 'https://errors.pydantic.dev/2.11/v/value_error'}]
+[2026-04-07 17:09:56,341] INFO in import_profiles: Response: IMPORT_PROFILE_CREATED
+[2026-04-07 17:09:56,351] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:09:56,356] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:10:11,692] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:10:11,700] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:10:13,563] INFO in import_profiles: Response: IMPORT_PROFILE_DELETED
+[2026-04-07 17:11:00,057] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:11:00,061] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:11:03,299] INFO in category_rules: Response: CATEGORY_RULE_LIST
+[2026-04-07 17:11:03,301] INFO in expenses_categories: Response: EXPENSE_CATEGORY_LIST
+[2026-04-07 17:11:03,305] INFO in income_categories: Response: INCOME_CATEGORY_LIST
+[2026-04-07 17:11:03,309] INFO in investment_categories: Response: INVESTMENT_CATEGORY_LIST
+[2026-04-07 17:11:04,702] INFO in category_rules: Response: CATEGORY_RULE_LIST
+[2026-04-07 17:11:04,711] INFO in expenses_categories: Response: EXPENSE_CATEGORY_LIST
+[2026-04-07 17:11:04,714] INFO in income_categories: Response: INCOME_CATEGORY_LIST
+[2026-04-07 17:11:04,724] INFO in investment_categories: Response: INVESTMENT_CATEGORY_LIST
+[2026-04-07 17:11:11,184] INFO in category_rules: Response: CATEGORY_RULE_LIST
+[2026-04-07 17:11:11,187] INFO in expenses_categories: Response: EXPENSE_CATEGORY_LIST
+[2026-04-07 17:11:11,190] INFO in income_categories: Response: INCOME_CATEGORY_LIST
+[2026-04-07 17:11:11,192] INFO in investment_categories: Response: INVESTMENT_CATEGORY_LIST
+[2026-04-07 17:11:14,800] INFO in expenses_categories: Response: EXPENSE_CATEGORY_LIST
+[2026-04-07 17:11:14,800] INFO in category_rules: Response: CATEGORY_RULE_LIST
+[2026-04-07 17:11:14,801] INFO in investment_categories: Response: INVESTMENT_CATEGORY_LIST
+[2026-04-07 17:11:14,801] INFO in income_categories: Response: INCOME_CATEGORY_LIST
+[2026-04-07 17:11:19,268] INFO in category_rules: Response: CATEGORY_RULE_LIST
+[2026-04-07 17:11:19,268] INFO in expenses_categories: Response: EXPENSE_CATEGORY_LIST
+[2026-04-07 17:11:19,272] INFO in investment_categories: Response: INVESTMENT_CATEGORY_LIST
+[2026-04-07 17:11:19,273] INFO in income_categories: Response: INCOME_CATEGORY_LIST
+[2026-04-07 17:11:42,400] INFO in category_rules: Response: CATEGORY_RULE_UPDATED
+[2026-04-07 17:11:42,408] INFO in category_rules: Response: CATEGORY_RULE_LIST
+[2026-04-07 17:12:27,094] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:12:27,097] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:14:44,180] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:14:44,181] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:14:45,392] INFO in auth: User logged in successfully: admin@economy.com
+[2026-04-07 17:14:45,393] INFO in auth: Response: LOGIN_SUCCESS
+[2026-04-07 17:15:05,952] INFO in auth: User logged in successfully: admin@economy.com
+[2026-04-07 17:15:05,952] INFO in auth: Response: LOGIN_SUCCESS
+[2026-04-07 17:15:08,390] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:15:08,403] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:15:14,078] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:15:24,387] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:15:24,405] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:16:26,185] INFO in import_profiles: Response: IMPORT_PROFILE_UPDATED
+[2026-04-07 17:16:31,745] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:17:25,449] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:17:25,454] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:17:52,193] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:17:52,196] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:18:02,651] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:18:02,655] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:18:08,804] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:18:08,808] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:18:56,026] ERROR in import_profiles: Unhandled error in create import_profiles: (psycopg2.errors.UniqueViolation) duplicate key value violates unique constraint "uq_origin_profile_name"
+DETAIL:  Key (origin_id, name)=(1, ING Excel Account) already exists.
+
+[SQL: INSERT INTO import_profiles (origin_id, file_type, name, header_row_guess, columns, active, version, deleted_at) VALUES (%(origin_id)s, %(file_type)s, %(name)s, %(header_row_guess)s, %(columns)s::JSONB, %(active)s, %(version)s, %(deleted_at)s) RETURNING import_profiles.id, import_profiles.created_at, import_profiles.updated_at]
+[parameters: {'origin_id': 1, 'file_type': None, 'name': 'ING Excel Account', 'header_row_guess': 4, 'columns': '{"description": ["descripcion", "descripci\\u00f3n"]}', 'active': True, 'version': 1, 'deleted_at': None}]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/engine/default.py", line 951, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+psycopg2.errors.UniqueViolation: duplicate key value violates unique constraint "uq_origin_profile_name"
+DETAIL:  Key (origin_id, name)=(1, ING Excel Account) already exists.
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/app/routers/imports/import_profile_router.py", line 57, in create
+    result = get_service(db).create(data)
+  File "/app/services/core/base_service.py", line 61, in create
+    obj = self.repository.create(obj)
+  File "/app/repositories/core/base_repository.py", line 48, in create
+    self.db.commit()
+    ~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/orm/session.py", line 2030, in commit
+    trans.commit(_to_root=True)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "<string>", line 2, in commit
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/orm/state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/orm/session.py", line 1311, in commit
+    self._prepare_impl()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "<string>", line 2, in _prepare_impl
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/orm/state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/orm/session.py", line 1286, in _prepare_impl
+    self.session.flush()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/orm/session.py", line 4331, in flush
+    self._flush(objects)
+    ~~~~~~~~~~~^^^^^^^^^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/orm/session.py", line 4466, in _flush
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/util/langhelpers.py", line 224, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/orm/session.py", line 4427, in _flush
+    flush_context.execute()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/orm/unitofwork.py", line 466, in execute
+    rec.execute(self)
+    ~~~~~~~~~~~^^^^^^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/orm/unitofwork.py", line 642, in execute
+    util.preloaded.orm_persistence.save_obj(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self.mapper,
+        ^^^^^^^^^^^^
+        uow.states_for_mapper_hierarchy(self.mapper, False, False),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        uow,
+        ^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/orm/persistence.py", line 93, in save_obj
+    _emit_insert_statements(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        base_mapper,
+        ^^^^^^^^^^^^
+    ...<3 lines>...
+        insert,
+        ^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/orm/persistence.py", line 1233, in _emit_insert_statements
+    result = connection.execute(
+        statement,
+        params,
+        execution_options=execution_options,
+    )
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/engine/base.py", line 1419, in execute
+    return meth(
+        self,
+        distilled_parameters,
+        execution_options or NO_OPTIONS,
+    )
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/sql/elements.py", line 526, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, distilled_params, execution_options
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/engine/base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+        dialect,
+    ...<8 lines>...
+        cache_hit=cache_hit,
+    )
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/engine/base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        dialect, context, statement, parameters
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/engine/base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        e, str_statement, effective_parameters, cursor, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/engine/base.py", line 2355, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/engine/default.py", line 951, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+sqlalchemy.exc.IntegrityError: (psycopg2.errors.UniqueViolation) duplicate key value violates unique constraint "uq_origin_profile_name"
+DETAIL:  Key (origin_id, name)=(1, ING Excel Account) already exists.
+
+[SQL: INSERT INTO import_profiles (origin_id, file_type, name, header_row_guess, columns, active, version, deleted_at) VALUES (%(origin_id)s, %(file_type)s, %(name)s, %(header_row_guess)s, %(columns)s::JSONB, %(active)s, %(version)s, %(deleted_at)s) RETURNING import_profiles.id, import_profiles.created_at, import_profiles.updated_at]
+[parameters: {'origin_id': 1, 'file_type': None, 'name': 'ING Excel Account', 'header_row_guess': 4, 'columns': '{"description": ["descripcion", "descripci\\u00f3n"]}', 'active': True, 'version': 1, 'deleted_at': None}]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+[2026-04-07 17:18:56,037] ERROR in import_profiles: Error: INTERNAL_ERROR, Details: UNEXPECTED_ERROR
+[2026-04-07 17:19:54,004] INFO in database: Database URL: postgresql+psycopg2://miguel:tu_password@postgres:5432/economy
+[2026-04-07 17:19:54,004] INFO in database: Database Engine: postgres
+[2026-04-07 17:19:54,183] WARNING in database: create_all strategy enabled outside SQLite; prefer Alembic for managed environments.
+[2026-04-07 17:19:54,218] INFO in main: Starting the Flask app...
+[2026-04-07 17:19:54,218] INFO in main: Configuration loaded for 0.0.0.0:5001
+[2026-04-07 17:19:57,708] INFO in database: Database URL: postgresql+psycopg2://miguel:tu_password@postgres:5432/economy
+[2026-04-07 17:19:57,708] INFO in database: Database Engine: postgres
+[2026-04-07 17:19:57,881] WARNING in database: create_all strategy enabled outside SQLite; prefer Alembic for managed environments.
+[2026-04-07 17:19:57,916] INFO in main: Starting the Flask app...
+[2026-04-07 17:19:57,916] INFO in main: Configuration loaded for 0.0.0.0:5001
+[2026-04-07 17:20:00,389] INFO in database: Database URL: postgresql+psycopg2://miguel:tu_password@postgres:5432/economy
+[2026-04-07 17:20:00,389] INFO in database: Database Engine: postgres
+[2026-04-07 17:20:00,565] WARNING in database: create_all strategy enabled outside SQLite; prefer Alembic for managed environments.
+[2026-04-07 17:20:00,600] INFO in main: Starting the Flask app...
+[2026-04-07 17:20:00,600] INFO in main: Configuration loaded for 0.0.0.0:5001
+[2026-04-07 17:20:25,834] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:20:25,835] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:21:21,252] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:21:21,253] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:21:59,869] ERROR in import_profiles: Unhandled error in create import_profiles: (psycopg2.errors.UniqueViolation) duplicate key value violates unique constraint "uq_origin_profile_name"
+DETAIL:  Key (origin_id, name)=(1, ING Excel Account) already exists.
+
+[SQL: INSERT INTO import_profiles (origin_id, file_type, name, header_row_guess, columns, active, version, deleted_at) VALUES (%(origin_id)s, %(file_type)s, %(name)s, %(header_row_guess)s, %(columns)s::JSONB, %(active)s, %(version)s, %(deleted_at)s) RETURNING import_profiles.id, import_profiles.created_at, import_profiles.updated_at]
+[parameters: {'origin_id': 1, 'file_type': None, 'name': 'ING Excel Account', 'header_row_guess': 4, 'columns': '{"description": ["descripcion", "descripci\\u00f3n"]}', 'active': True, 'version': 1, 'deleted_at': None}]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/engine/default.py", line 951, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+psycopg2.errors.UniqueViolation: duplicate key value violates unique constraint "uq_origin_profile_name"
+DETAIL:  Key (origin_id, name)=(1, ING Excel Account) already exists.
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/app/routers/imports/import_profile_router.py", line 52, in create
+    result = get_service(db).create(data)
+  File "/app/services/core/base_service.py", line 38, in create
+    obj = self.repository.create(obj)
+  File "/app/repositories/core/base_repository.py", line 48, in create
+    self.db.commit()
+    ~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/orm/session.py", line 2030, in commit
+    trans.commit(_to_root=True)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "<string>", line 2, in commit
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/orm/state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/orm/session.py", line 1311, in commit
+    self._prepare_impl()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "<string>", line 2, in _prepare_impl
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/orm/state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/orm/session.py", line 1286, in _prepare_impl
+    self.session.flush()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/orm/session.py", line 4331, in flush
+    self._flush(objects)
+    ~~~~~~~~~~~^^^^^^^^^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/orm/session.py", line 4466, in _flush
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/util/langhelpers.py", line 224, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/orm/session.py", line 4427, in _flush
+    flush_context.execute()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/orm/unitofwork.py", line 466, in execute
+    rec.execute(self)
+    ~~~~~~~~~~~^^^^^^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/orm/unitofwork.py", line 642, in execute
+    util.preloaded.orm_persistence.save_obj(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self.mapper,
+        ^^^^^^^^^^^^
+        uow.states_for_mapper_hierarchy(self.mapper, False, False),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        uow,
+        ^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/orm/persistence.py", line 93, in save_obj
+    _emit_insert_statements(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        base_mapper,
+        ^^^^^^^^^^^^
+    ...<3 lines>...
+        insert,
+        ^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/orm/persistence.py", line 1233, in _emit_insert_statements
+    result = connection.execute(
+        statement,
+        params,
+        execution_options=execution_options,
+    )
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/engine/base.py", line 1419, in execute
+    return meth(
+        self,
+        distilled_parameters,
+        execution_options or NO_OPTIONS,
+    )
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/sql/elements.py", line 526, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, distilled_params, execution_options
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/engine/base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+        dialect,
+    ...<8 lines>...
+        cache_hit=cache_hit,
+    )
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/engine/base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        dialect, context, statement, parameters
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/engine/base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        e, str_statement, effective_parameters, cursor, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/engine/base.py", line 2355, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/engine/default.py", line 951, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+sqlalchemy.exc.IntegrityError: (psycopg2.errors.UniqueViolation) duplicate key value violates unique constraint "uq_origin_profile_name"
+DETAIL:  Key (origin_id, name)=(1, ING Excel Account) already exists.
+
+[SQL: INSERT INTO import_profiles (origin_id, file_type, name, header_row_guess, columns, active, version, deleted_at) VALUES (%(origin_id)s, %(file_type)s, %(name)s, %(header_row_guess)s, %(columns)s::JSONB, %(active)s, %(version)s, %(deleted_at)s) RETURNING import_profiles.id, import_profiles.created_at, import_profiles.updated_at]
+[parameters: {'origin_id': 1, 'file_type': None, 'name': 'ING Excel Account', 'header_row_guess': 4, 'columns': '{"description": ["descripcion", "descripci\\u00f3n"]}', 'active': True, 'version': 1, 'deleted_at': None}]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+[2026-04-07 17:21:59,878] ERROR in import_profiles: Error: INTERNAL_ERROR, Details: UNEXPECTED_ERROR
+[2026-04-07 17:23:49,507] INFO in auth: Response: TOKEN_REFRESHED
+[2026-04-07 17:23:49,520] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:23:49,520] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:24:34,299] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:24:34,305] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:24:54,457] ERROR in import_profiles: Unhandled error in create import_profiles: (psycopg2.errors.UniqueViolation) duplicate key value violates unique constraint "uq_origin_profile_name"
+DETAIL:  Key (origin_id, name)=(1, ING Excel Account) already exists.
+
+[SQL: INSERT INTO import_profiles (origin_id, file_type, name, header_row_guess, columns, active, version, deleted_at) VALUES (%(origin_id)s, %(file_type)s, %(name)s, %(header_row_guess)s, %(columns)s::JSONB, %(active)s, %(version)s, %(deleted_at)s) RETURNING import_profiles.id, import_profiles.created_at, import_profiles.updated_at]
+[parameters: {'origin_id': 1, 'file_type': None, 'name': 'ING Excel Account', 'header_row_guess': 4, 'columns': '{"description": ["descripcion", "descripci\\u00f3n"]}', 'active': True, 'version': 1, 'deleted_at': None}]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/engine/default.py", line 951, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+psycopg2.errors.UniqueViolation: duplicate key value violates unique constraint "uq_origin_profile_name"
+DETAIL:  Key (origin_id, name)=(1, ING Excel Account) already exists.
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/app/routers/imports/import_profile_router.py", line 52, in create
+    result = get_service(db).create(data)
+  File "/app/services/core/base_service.py", line 38, in create
+    obj = self.repository.create(obj)
+  File "/app/repositories/core/base_repository.py", line 48, in create
+    self.db.commit()
+    ~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/orm/session.py", line 2030, in commit
+    trans.commit(_to_root=True)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "<string>", line 2, in commit
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/orm/state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/orm/session.py", line 1311, in commit
+    self._prepare_impl()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "<string>", line 2, in _prepare_impl
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/orm/state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/orm/session.py", line 1286, in _prepare_impl
+    self.session.flush()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/orm/session.py", line 4331, in flush
+    self._flush(objects)
+    ~~~~~~~~~~~^^^^^^^^^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/orm/session.py", line 4466, in _flush
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/util/langhelpers.py", line 224, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/orm/session.py", line 4427, in _flush
+    flush_context.execute()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/orm/unitofwork.py", line 466, in execute
+    rec.execute(self)
+    ~~~~~~~~~~~^^^^^^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/orm/unitofwork.py", line 642, in execute
+    util.preloaded.orm_persistence.save_obj(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self.mapper,
+        ^^^^^^^^^^^^
+        uow.states_for_mapper_hierarchy(self.mapper, False, False),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        uow,
+        ^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/orm/persistence.py", line 93, in save_obj
+    _emit_insert_statements(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        base_mapper,
+        ^^^^^^^^^^^^
+    ...<3 lines>...
+        insert,
+        ^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/orm/persistence.py", line 1233, in _emit_insert_statements
+    result = connection.execute(
+        statement,
+        params,
+        execution_options=execution_options,
+    )
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/engine/base.py", line 1419, in execute
+    return meth(
+        self,
+        distilled_parameters,
+        execution_options or NO_OPTIONS,
+    )
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/sql/elements.py", line 526, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, distilled_params, execution_options
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/engine/base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+        dialect,
+    ...<8 lines>...
+        cache_hit=cache_hit,
+    )
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/engine/base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        dialect, context, statement, parameters
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/engine/base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        e, str_statement, effective_parameters, cursor, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/engine/base.py", line 2355, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.13/site-packages/sqlalchemy/engine/default.py", line 951, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+sqlalchemy.exc.IntegrityError: (psycopg2.errors.UniqueViolation) duplicate key value violates unique constraint "uq_origin_profile_name"
+DETAIL:  Key (origin_id, name)=(1, ING Excel Account) already exists.
+
+[SQL: INSERT INTO import_profiles (origin_id, file_type, name, header_row_guess, columns, active, version, deleted_at) VALUES (%(origin_id)s, %(file_type)s, %(name)s, %(header_row_guess)s, %(columns)s::JSONB, %(active)s, %(version)s, %(deleted_at)s) RETURNING import_profiles.id, import_profiles.created_at, import_profiles.updated_at]
+[parameters: {'origin_id': 1, 'file_type': None, 'name': 'ING Excel Account', 'header_row_guess': 4, 'columns': '{"description": ["descripcion", "descripci\\u00f3n"]}', 'active': True, 'version': 1, 'deleted_at': None}]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+[2026-04-07 17:24:54,461] ERROR in import_profiles: Error: INTERNAL_ERROR, Details: UNEXPECTED_ERROR
+[2026-04-07 17:25:26,700] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:25:26,707] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:25:37,228] INFO in import_profiles: Response: IMPORT_PROFILE_UPDATED
+[2026-04-07 17:25:37,238] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:25:37,242] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:26:23,023] INFO in import_profiles: Response: IMPORT_PROFILE_UPDATED
+[2026-04-07 17:26:23,034] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:26:23,039] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:28:23,994] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:28:23,998] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:28:24,704] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:28:24,707] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:29:52,075] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:29:52,079] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:30:57,159] INFO in import_profiles: Response: IMPORT_PROFILE_UPDATED
+[2026-04-07 17:30:57,169] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:30:57,172] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:32:13,579] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:32:13,587] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:32:19,576] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:32:19,584] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:32:41,335] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:32:41,387] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:32:53,327] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:32:53,331] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:33:01,473] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:33:01,478] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:33:07,441] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:33:07,452] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:34:50,965] INFO in import_profiles: Response: IMPORT_PROFILE_UPDATED
+[2026-04-07 17:34:50,974] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:34:50,978] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:34:58,963] INFO in import_profiles: Response: IMPORT_PROFILE_UPDATED
+[2026-04-07 17:34:58,971] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:34:58,973] INFO in import_origins: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:37:28,463] INFO in import_profiles: Response: IMPORT_PROFILE_LIST
+[2026-04-07 17:37:28,464] INFO in import_origins: Response: IMPORT_PROFILE_LIST

@@ -45,6 +45,7 @@
               mat-cell
               *matCellDef="let row"
               [matTooltip]="col.tooltipFormatter ? col.tooltipFormatter(row[col.key], row) : ''"
+              [matTooltipClass]="'tooltip-multiline'"
               matTooltipPosition="above">
               {{ col.formatter ? col.formatter(row[col.key], row) : row[col.key] }}
             </td>

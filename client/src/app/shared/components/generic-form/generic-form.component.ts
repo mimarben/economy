@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, OnDestroy, ChangeDetectorRef, ViewChildren, QueryList, AfterViewInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, ValidatorFn } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -9,6 +9,7 @@ import { takeUntil } from 'rxjs/operators';
 import { MATERIAL_IMPORTS } from '@app/utils/material.imports';
 import { FormFieldConfig } from './form-config';
 import { UtilsService } from '@app/utils/utils.service';
+import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'app-generic-form',
   templateUrl: './generic-form.component.html',
@@ -19,19 +20,24 @@ import { UtilsService } from '@app/utils/utils.service';
     FormsModule,
     ReactiveFormsModule,
     ...MATERIAL_IMPORTS,
-    MatSelectModule
+    MatSelectModule,
+    TranslateModule
   ]
 })
-export class GenericFormComponent implements OnChanges, OnDestroy {
+export class GenericFormComponent implements OnChanges, AfterViewInit, OnDestroy {
   @Input() fields: FormFieldConfig[] = [];
   @Input() initialData: Record<string, any> = {};
   @Output() formSubmit = new EventEmitter<Record<string, any>>();
   @Output() formValidity = new EventEmitter<boolean>();
   @Output() formDirty = new EventEmitter<boolean>();
+  @ViewChildren('columnKeyInput') columnKeyInputs!: QueryList<any>;
+  
   form: FormGroup;
   columnsRows: Array<{ id: number; key: string; aliases: string }> = [];
   private columnRowIdCounter = 0;
   private destroy$ = new Subject<void>();
+  private lastAddedRowId: number | null = null;
+  private shouldFocusInput = false;
 
   constructor(private fb: FormBuilder, private utilsService: UtilsService, private cdr: ChangeDetectorRef) {
     this.form = this.fb.group({});
@@ -40,6 +46,24 @@ export class GenericFormComponent implements OnChanges, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  ngAfterViewInit(): void {
+    // Suscribirse a cambios en los inputs de columnas para hacer focus cuando se añade una nueva fila
+    if (this.columnKeyInputs) {
+      this.columnKeyInputs.changes
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(() => {
+          if (this.shouldFocusInput) {
+            this.focusOnColumnInput();
+          }
+        });
+    }
+
+    // Hacer focus inicial si es necesario
+    if (this.shouldFocusInput) {
+      this.focusOnColumnInput();
+    }
   }
 
   private emitFormValidity(): void {
@@ -229,29 +253,75 @@ export class GenericFormComponent implements OnChanges, OnDestroy {
   }
 
   addColumnsMappingLine(): void {
-    this.columnsRows = [...this.columnsRows, { id: this.columnRowIdCounter++, key: '', aliases: '' }];
+    const newId = this.columnRowIdCounter++;
+    this.columnsRows = [...this.columnsRows, { id: newId, key: '', aliases: '' }];
+    this.lastAddedRowId = newId;
+    this.shouldFocusInput = true;
     
-    // Detectar cambios y luego hacer focus
-    this.cdr.detectChanges();
+    // Sincronizar y marcar como dirty
+    this.syncColumnsControlFromRows();
+    const columnsControl = this.form.get('columns');
+    if (columnsControl) {
+      columnsControl.markAsDirty();
+      columnsControl.markAsTouched();
+      // Emitir cambios de estado
+      this.formValidity.emit(this.form.valid);
+      this.formDirty.emit(this.form.dirty);
+    }
     
-    setTimeout(() => {
-      const inputs = document.querySelectorAll('.columns-grid input');
-      if (inputs.length >= 2) {
-        const lastKeyInput = inputs[inputs.length - 2] as HTMLInputElement;
-        if (lastKeyInput) {
-          lastKeyInput.focus();
-          lastKeyInput.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }
-      }
-    }, 100);
+    this.cdr.markForCheck();
+  }
+
+  private focusOnColumnInput(): void {
+    if (this.lastAddedRowId === null || !this.columnKeyInputs) {
+      return;
+    }
+
+    // Buscar el input que coincida con el lastAddedRowId
+    const lastRowIndex = this.columnsRows.findIndex(row => row.id === this.lastAddedRowId);
+    if (lastRowIndex === -1) {
+      this.shouldFocusInput = false;
+      return;
+    }
+
+    // Obtener el input de clave en la posición correspondiente
+    const inputs = this.columnKeyInputs.toArray();
+    const nativeElement = inputs[lastRowIndex]?.nativeElement;
+    
+    if (nativeElement) {
+      nativeElement.focus();
+      nativeElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+    
+    this.shouldFocusInput = false;
   }
 
   removeColumnsMappingLine(index: number): void {
     this.columnsRows = this.columnsRows.filter((_, i) => i !== index);
+    
+    // Sincronizar y marcar como dirty
+    this.syncColumnsControlFromRows();
+    const columnsControl = this.form.get('columns');
+    if (columnsControl) {
+      columnsControl.markAsDirty();
+      columnsControl.markAsTouched();
+      // Emitir cambios de estado
+      this.formValidity.emit(this.form.valid);
+      this.formDirty.emit(this.form.dirty);
+    }
   }
 
   onColumnsRowChange(): void {
-    // Este método ya no hace nada - la sincronización ocurre en submitForm
+    // Sincronizar columnas cuando hay cambios en los inputs
+    this.syncColumnsControlFromRows();
+    const columnsControl = this.form.get('columns');
+    if (columnsControl) {
+      columnsControl.markAsDirty();
+      columnsControl.markAsTouched();
+      // Emitir cambios de estado
+      this.formValidity.emit(this.form.valid);
+      this.formDirty.emit(this.form.dirty);
+    }
   }
 
   private initColumnsRows(): void {

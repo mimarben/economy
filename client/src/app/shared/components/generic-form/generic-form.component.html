@@ -24,9 +24,11 @@
         <ng-container *ngFor="let row of columnsRows; let i = index; trackBy: trackByColumnRowIndex">
           <mat-form-field appearance="outline" class="columns-input">
             <input
+              #columnKeyInput
               matInput
               [(ngModel)]="row.key"
               [ngModelOptions]="{ standalone: true, updateOn: 'blur' }"
+              (blur)="onColumnsRowChange()"
               placeholder="date">
           </mat-form-field>
 
@@ -35,6 +37,7 @@
               matInput
               [(ngModel)]="row.aliases"
               [ngModelOptions]="{ standalone: true, updateOn: 'blur' }"
+              (blur)="onColumnsRowChange()"
               placeholder="valor, fecha">
           </mat-form-field>
 
@@ -51,7 +54,7 @@
     </mat-form-field>
     <div *ngIf="isColumnsField(field)" class="columns-actions">
       <button mat-stroked-button type="button" (click)="addColumnsMappingLine()">
-        Añadir línea
+       {{ 'ADD_MAPPING' | translate }}
       </button>
     </div>
 

@@ -118,6 +118,22 @@
   padding: var(--space-sm) var(--space-md);
 }
 
+/* =========================================================
+   TOOLTIP - MULTILINE SUPPORT
+========================================================= */
+
+::ng-deep .tooltip-multiline {
+  white-space: pre-wrap !important;
+  word-wrap: normal !important;
+  word-break: normal !important;
+  overflow-wrap: normal !important;
+  max-width: none !important;
+  min-width: 300px !important;
+  padding: 10px !important;
+}
+  line-height: 1.4 !important;
+}
+
 .mat-mdc-paginator-container {
   padding: var(--space-sm) var(--space-md) !important;
   min-height: 56px;
