@@ -129,7 +129,8 @@
   <ng-container matColumnDef="analysis">
     <th mat-header-cell *matHeaderCellDef> Analizable </th>
     <td mat-cell *matCellDef="let t">
-      {{ t.ignore_in_analysis ? 'No' : 'Sí' }}
+      <mat-checkbox [(ngModel)]="t.ignore_in_analysis" (ngModelChange)="updateDataSource()"></mat-checkbox>
+      <span style="margin-left: 8px;">{{ t.ignore_in_analysis ? 'No' : 'Sí' }}</span>
     </td>
   </ng-container>
 

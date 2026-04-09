@@ -29,6 +29,7 @@ class IncomeImportCreate(BaseModel):
     source_id: int = Field(..., gt=0)
     category_id: Optional[int] = Field(None, gt=0)  # Optional - will be auto-categorized
     account_id: Optional[int] = Field(None, gt=0)
+    ignore_in_analysis: Optional[bool] = False
 
 
 class BulkImportRequest(BaseModel):

@@ -60,15 +60,18 @@ class ExpenseRepository(BaseRepository[Expense]):
         )
         return self.db.execute(stmt).scalar_one_or_none() is not None
 
-    def validate_foreign_keys(self, source_id: int, category_id: int, account_id: int) -> tuple[bool, Optional[str]]:
+    def validate_foreign_keys(self, source_id: int, category_id: Optional[int], account_id: int, user_id: Optional[int] = None) -> tuple[bool, Optional[str]]:
         """
         Validate all foreign keys at once.
+        category_id can be None for auto-categorization (needs_review status).
+        user_id can be provided for additional validation.
         Returns: (is_valid, error_message)
         """
         if not self.source_exists(source_id):
             return False, "SOURCE_NOT_FOUND"
 
-        if not self.category_exists(category_id):
+        # category_id can be None (needs_review)
+        if category_id is not None and not self.category_exists(category_id):
             return False, "CATEGORY_NOT_FOUND"
 
         if not self.account_exists(account_id):

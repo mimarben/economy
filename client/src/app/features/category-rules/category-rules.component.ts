@@ -52,6 +52,12 @@ export class CategoryRulesComponent implements OnInit, OnDestroy {
       sortable: true,
       formatter: (value: boolean) => (value ? 'Yes' : 'No'),
     },
+    {
+      key: 'ignore_in_analysis',
+      label: 'Mark Non-Analyzable',
+      sortable: true,
+      formatter: (value: boolean) => (value ? 'Yes' : 'No'),
+    },
   ];
   dialogFields: FormFieldConfig[] = [
     { key: 'id', label: 'Id', type: 'number' },
@@ -240,6 +246,7 @@ export class CategoryRulesComponent implements OnInit, OnDestroy {
         min: 0,
       },
       { key: 'is_active', label: 'Rule is Active', type: 'checkbox' },
+      { key: 'ignore_in_analysis', label: 'Mark Transaction as Non-Analyzable', type: 'checkbox' },
     ];
 
     return fields;

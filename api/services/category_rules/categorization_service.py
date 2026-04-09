@@ -155,6 +155,53 @@ class CategorizationService:
         # Step 4: Return None if no match and no AI
         return None
 
+    def categorize_transaction_with_flags(
+        self,
+        description: str,
+        transaction_type: str
+    ) -> dict:
+        """
+        Categorize a transaction using rules + AI fallback, also returning flags.
+        
+        Args:
+            description: Transaction description/name
+            transaction_type: Type of transaction (expense|income|investment)
+            
+        Returns:
+            Dict with category_id and ignore_in_analysis flag
+        """
+        if not description or not transaction_type:
+            return {"category_id": None, "ignore_in_analysis": False}
+
+        try:
+            enum_type = TransactionEnum(transaction_type)
+        except ValueError:
+            return {"category_id": None, "ignore_in_analysis": False}
+
+        # Step 1: Get active rules ordered by priority DESC
+        rules = self.rule_repository.get_active_by_type(enum_type)
+        
+        # Step 2: Apply regex matching
+        for rule in rules:
+            if rule.matches(description):
+                return {
+                    "category_id": rule.category_id,
+                    "ignore_in_analysis": bool(rule.ignore_in_analysis)
+                }
+
+        # Step 3: Fallback to AI service if available
+        if self.ai_service:
+            try:
+                category_id = self.ai_service.categorize(description, transaction_type)
+                if category_id:
+                    return {"category_id": category_id, "ignore_in_analysis": False}
+            except Exception as e:
+                # Log error but don't crash
+                print(f"AI categorization failed: {e}")
+
+        # Step 4: Return None if no match and no AI
+        return {"category_id": None, "ignore_in_analysis": False}
+
     def categorize_batch(
         self,
         transactions: List[dict]
@@ -170,16 +217,17 @@ class CategorizationService:
         
         Returns:
         [
-            {"description": "...", "type": "expense", "category_id": 5 or None},
+            {"description": "...", "type": "expense", "category_id": 5 or None, "ignore_in_analysis": False},
             {...}
         ]
         """
         result = []
         for transaction in transactions:
-            category_id = self.categorize_transaction(
+            categorization = self.categorize_transaction_with_flags(
                 description=transaction.get("description", ""),
                 transaction_type=transaction.get("type", "")
             )
-            transaction["category_id"] = category_id
+            transaction["category_id"] = categorization["category_id"]
+            transaction["ignore_in_analysis"] = categorization["ignore_in_analysis"]
             result.append(transaction)
         return result

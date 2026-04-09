@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Numeric, Date, ForeignKey, Enum as SQLEnum, UniqueConstraint
+from sqlalchemy import Column, Integer, String, Numeric, Date, Boolean, ForeignKey, Enum as SQLEnum, UniqueConstraint
 from sqlalchemy.orm import relationship
 
 from ..core.base import Base, TimestampMixin
@@ -16,6 +16,7 @@ class Income(TimestampMixin, Base):
     amount = Column(Numeric(12, 2), nullable=False)
     date = Column(Date, nullable=False)
     currency = Column(SQLEnum(CurrencyEnum), nullable=False)
+    ignore_in_analysis = Column(Boolean, default=False, nullable=False)
     dedup_hash = Column(String(64), nullable=False, index=True)
 
     # Foreign Keys

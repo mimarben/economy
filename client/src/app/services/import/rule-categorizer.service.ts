@@ -69,18 +69,24 @@ export class RuleCategorizerService {
 
     return transactions.map((t) => {
       const type = t.amount < 0 ? 'expense' : 'income';
-      const matchCategoryId = this.suggestCategory(String(t.description || ''), type);
+      const { categoryId, ignoreInAnalysis } = this.suggestCategoryAndIgnoreFlag(
+        String(t.description || ''),
+        type
+      );
 
-      if (matchCategoryId) {
-        t.suggestedCategoryId = matchCategoryId;
+      if (categoryId) {
+        t.suggestedCategoryId = categoryId;
 
         const matchedCategory = (type === 'expense' ? expenseCategories : incomeCategories)
-          .find((c) => c.id === matchCategoryId);
+          .find((c) => c.id === categoryId);
 
         if (matchedCategory) {
           t.suggestedCategoryName = (matchedCategory as any).name || null;
         }
       }
+
+      // Apply ignore_in_analysis flag from rules
+      t.ignore_in_analysis = ignoreInAnalysis;
 
       return t;
     });
@@ -114,6 +120,39 @@ export class RuleCategorizerService {
     }
 
     return null;
+  }
+
+  /**
+   * Suggest category and ignore_in_analysis flag from rules.
+   * Returns both the category_id and whether the transaction should be ignored in analysis.
+   */
+  suggestCategoryAndIgnoreFlag(
+    description: string,
+    transactionType: 'expense' | 'income'
+  ): { categoryId: number | null; ignoreInAnalysis: boolean } {
+    if (!description || !this.rulesCache.length) {
+      return { categoryId: null, ignoreInAnalysis: false };
+    }
+
+    const rules = this.rulesCache
+      .filter(r => r.type === transactionType && r.is_active)
+      .sort((a, b) => b.priority - a.priority);
+
+    for (const rule of rules) {
+      try {
+        const regex = new RegExp(rule.pattern, 'i');
+        if (regex.test(description)) {
+          return {
+            categoryId: rule.category_id,
+            ignoreInAnalysis: rule.ignore_in_analysis ?? false
+          };
+        }
+      } catch (e) {
+        console.error(`Invalid regex in rule ${rule.id}:`, e);
+      }
+    }
+
+    return { categoryId: null, ignoreInAnalysis: false };
   }
 
   /**

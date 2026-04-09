@@ -17,6 +17,7 @@ export interface CategoryRule {
   type: 'expense' | 'income' | 'investment';
   priority: number;
   is_active: boolean;
+  ignore_in_analysis?: boolean;
   category_id: number;
   created_at?: string;
   updated_at?: string;
@@ -28,6 +29,7 @@ export interface CategoryRuleUpdate {
   type?: 'expense' | 'income' | 'investment';
   priority?: number;
   is_active?: boolean;
+  ignore_in_analysis?: boolean;
   category_id?: number;
 }
 

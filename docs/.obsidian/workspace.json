@@ -1,0 +1,210 @@
+{
+  "main": {
+    "id": "83e5211501b1309b",
+    "type": "split",
+    "children": [
+      {
+        "id": "1b2de12c60025882",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "11681d80508ffedd",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Economy.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Economy"
+            }
+          },
+          {
+            "id": "3a024bc59c050f56",
+            "type": "leaf",
+            "state": {
+              "type": "graph",
+              "state": {},
+              "icon": "lucide-git-fork",
+              "title": "Graph view"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "b81390a163902a69",
+    "type": "split",
+    "children": [
+      {
+        "id": "ee02116821ad8b97",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "1f9a9aa6073506d8",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "57953a3f1176a20a",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "17f243c65d4da69f",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "c8f89269c810556f",
+    "type": "split",
+    "children": [
+      {
+        "id": "e9530cb7b5cd98df",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "dac747a0f9ec6d20",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "frontend/old/QUICK_REFERENCE.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for QUICK_REFERENCE"
+            }
+          },
+          {
+            "id": "00f7f32efd3e57d1",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "frontend/old/QUICK_REFERENCE.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from QUICK_REFERENCE"
+            }
+          },
+          {
+            "id": "2254e92ffe65d1fc",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "d5aa00f89d2d473e",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
+            }
+          },
+          {
+            "id": "20d8b8a128e9bf45",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "frontend/old/QUICK_REFERENCE.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of QUICK_REFERENCE"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false
+    }
+  },
+  "active": "11681d80508ffedd",
+  "lastOpenFiles": [
+    "001-backend/AUDITORIA DEL BACKEND.md",
+    "Economy.md",
+    "001-backend/PRINCIPIOS.md",
+    "001-backend/old/architecture-analysis_backend.md",
+    "001-backend/old/flow_interface.md",
+    "001-backend/old/import-investments-notes.md",
+    "001-backend/CONTROL DE FLUJO.md",
+    "old_to_delete/modificar_copilot.md",
+    "002-frontend/old/QUICK_REFERENCE.md",
+    "old_to_delete",
+    "002-frontend/old/COMPLETION_REPORT.md"
+  ]
+}

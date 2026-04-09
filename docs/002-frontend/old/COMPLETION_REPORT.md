@@ -32,6 +32,7 @@ Transform the Angular frontend service architecture to match the Python backend'
 - [x] Removed 50 lines of duplicate code
 - [x] Added JSDoc documentation
 
+
 **Files**:
 - `services/interfaces.ts` (NEW)
 - `services/base-crud.service.ts` (UPDATED)

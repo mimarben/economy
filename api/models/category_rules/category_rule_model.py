@@ -38,6 +38,7 @@ class CategoryRule(TimestampMixin, Base):
     type = Column(SQLEnum(TransactionEnum), nullable=False)  # expense | income | investment
     priority = Column(Integer, nullable=False, default=100)  # Higher = applied first. Must be unique per (type, priority)
     is_active = Column(Boolean, nullable=False, default=True)
+    ignore_in_analysis = Column(Boolean, nullable=True, default=False)  # Mark tx as ignore_in_analysis when rule matches
     
     # Foreign Keys
     category_id = Column(Integer, nullable=False)  # Generic FK to any category

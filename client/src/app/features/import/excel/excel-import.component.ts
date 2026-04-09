@@ -476,7 +476,7 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
     this.filteredAccounts = this.accounts.filter((a) => a.bank_id === bankId);
   }
 
-  private updateDataSource(): void {
+  updateDataSource(): void {
     this.dataSource.data = this.transactions;
     if (this.sort) {
       this.dataSource.sort = this.sort;
@@ -533,6 +533,7 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
       category_id: t.suggestedCategoryId,
       source_id: t.source_id ?? t.suggestedSourceId,
       account_id: t.account_id ?? this.selectedAccount?.id,
+      ignore_in_analysis: t.ignore_in_analysis ?? false,
     }));
 
   

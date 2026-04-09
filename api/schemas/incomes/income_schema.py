@@ -20,11 +20,13 @@ class IncomeBase(BaseModel):
     source_id: int = Field(..., gt=0, json_schema_extra={"ui_type": "select", "relation": "source"})
     category_id: int = Field(..., gt=0, json_schema_extra={"ui_type": "select", "relation": "income-category"})
     account_id: int = Field(..., gt=0, json_schema_extra={"ui_type": "select", "relation": "account"})
+    ignore_in_analysis: Optional[bool] = None
 
 
 class IncomeRead(IncomeBase, AuditFields):
     """Response schema for Income."""
     id: int
+    ignore_in_analysis: bool
 
     class Config:
         from_attributes = True
@@ -44,6 +46,7 @@ class IncomeUpdate(BaseModel):
     source_id: Optional[int] = Field(None, gt=0)
     category_id: Optional[int] = Field(None, gt=0)
     account_id: Optional[int] = Field(None, gt=0)
+    ignore_in_analysis: Optional[bool] = None
 
 
 class IncomeDelete(BaseModel):

@@ -16,6 +16,7 @@ class CategoryRuleBase(BaseModel):
     type: TransactionEnum
     priority: int = 100
     is_active: bool = True
+    ignore_in_analysis: Optional[bool] = None
     category_id: int
 
     @field_validator('pattern')
@@ -48,6 +49,7 @@ class CategoryRuleUpdate(BaseModel):
     type: Optional[TransactionEnum] = None
     priority: Optional[int] = None
     is_active: Optional[bool] = None
+    ignore_in_analysis: Optional[bool] = None
     category_id: Optional[int] = None
 
     @field_validator('pattern')

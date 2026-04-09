@@ -1,5 +1,3 @@
-# Auditoría del directorio `api/` — Economy App
-
 ## Resumen General
 
 La arquitectura del backend está **muy bien planteada**. La separación en capas (Router → Service → Repository → Model → Schema) es correcta, tiene interfaces abstractas (ISP), generics en [BaseService](file:///home/martinm/src/economy/api/services/core/base_service.py#11-63)/[BaseRepository](file:///home/martinm/src/economy/api/repositories/core/base_repository.py#8-75), i18n con Babel, y un logger propio. **Hay muchas cosas que NO hay que tocar**. A continuación, lo que está bien y lo que se debe mejorar.
