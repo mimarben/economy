@@ -1,0 +1,30 @@
+[2026-04-09 09:37:26,190] INFO in database: Database URL: postgresql+psycopg2://miguel:tu_password@postgres:5432/economy
+[2026-04-09 09:37:26,191] INFO in database: Database Engine: postgres
+[2026-04-09 09:37:26,605] WARNING in database: create_all strategy enabled outside SQLite; prefer Alembic for managed environments.
+[2026-04-09 09:37:26,640] INFO in main: Starting the Flask app...
+[2026-04-09 09:37:26,641] INFO in main: Configuration loaded for 0.0.0.0:5001
+[2026-04-09 09:37:26,982] INFO in database: Database URL: postgresql+psycopg2://miguel:tu_password@postgres:5432/economy
+[2026-04-09 09:37:26,982] INFO in database: Database Engine: postgres
+[2026-04-09 09:37:27,163] WARNING in database: create_all strategy enabled outside SQLite; prefer Alembic for managed environments.
+[2026-04-09 09:37:27,199] INFO in main: Starting the Flask app...
+[2026-04-09 09:37:27,199] INFO in main: Configuration loaded for 0.0.0.0:5001
+[2026-04-09 18:03:43,947] INFO in database: Database URL: postgresql+psycopg2://miguel:tu_password@postgres:5432/economy
+[2026-04-09 18:03:43,947] INFO in database: Database Engine: postgres
+[2026-04-09 18:03:44,808] WARNING in database: create_all strategy enabled outside SQLite; prefer Alembic for managed environments.
+[2026-04-09 18:03:44,848] INFO in main: Starting the Flask app...
+[2026-04-09 18:03:44,848] INFO in main: Configuration loaded for 0.0.0.0:5001
+[2026-04-09 18:03:45,214] INFO in database: Database URL: postgresql+psycopg2://miguel:tu_password@postgres:5432/economy
+[2026-04-09 18:03:45,214] INFO in database: Database Engine: postgres
+[2026-04-09 18:03:45,393] WARNING in database: create_all strategy enabled outside SQLite; prefer Alembic for managed environments.
+[2026-04-09 18:03:45,427] INFO in main: Starting the Flask app...
+[2026-04-09 18:03:45,427] INFO in main: Configuration loaded for 0.0.0.0:5001
+[2026-04-09 18:44:04,856] INFO in database: Database URL: postgresql+psycopg2://miguel:tu_password@postgres:5432/economy
+[2026-04-09 18:44:04,856] INFO in database: Database Engine: postgres
+[2026-04-09 18:44:05,037] WARNING in database: create_all strategy enabled outside SQLite; prefer Alembic for managed environments.
+[2026-04-09 18:44:05,072] INFO in main: Starting the Flask app...
+[2026-04-09 18:44:05,072] INFO in main: Configuration loaded for 0.0.0.0:5001
+[2026-04-09 18:44:05,386] INFO in database: Database URL: postgresql+psycopg2://miguel:tu_password@postgres:5432/economy
+[2026-04-09 18:44:05,387] INFO in database: Database Engine: postgres
+[2026-04-09 18:44:05,562] WARNING in database: create_all strategy enabled outside SQLite; prefer Alembic for managed environments.
+[2026-04-09 18:44:05,598] INFO in main: Starting the Flask app...
+[2026-04-09 18:44:05,598] INFO in main: Configuration loaded for 0.0.0.0:5001

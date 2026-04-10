@@ -36,7 +36,7 @@
   <mat-select required [value]="selectedAccount?.id" (selectionChange)="onAccountSelected($event.value)">
     <mat-option [value]="null">Seleccionar cuenta</mat-option>
     @for (account of filteredAccounts; track account.id) {
-      <mat-option [value]="account.id">{{ account.name }} ({{ account.iban }})</mat-option>
+      <mat-option [value]="account.id">{{ account.name }}</mat-option>
     }
   </mat-select>
 </mat-form-field>
@@ -99,7 +99,10 @@
       </mat-checkbox>
     </th>
     <td mat-cell *matCellDef="let t">
-      <mat-checkbox [(ngModel)]="t.selected"></mat-checkbox>
+      <mat-checkbox 
+        [(ngModel)]="t.selected" 
+        [disabled]="t.ignore_in_analysis === true">
+      </mat-checkbox>
     </td>
   </ng-container>
 
@@ -126,11 +129,16 @@
       {{ t.amount < 0 ? 'expense' : 'income' }}
     </td>
   </ng-container>
+
+  <!-- Descartable  -->
   <ng-container matColumnDef="analysis">
-    <th mat-header-cell *matHeaderCellDef> Analizable </th>
+    <th mat-header-cell *matHeaderCellDef> Descartable </th>
     <td mat-cell *matCellDef="let t">
-      <mat-checkbox [(ngModel)]="t.ignore_in_analysis" (ngModelChange)="updateDataSource()"></mat-checkbox>
-      <span style="margin-left: 8px;">{{ t.ignore_in_analysis ? 'No' : 'Sí' }}</span>
+      <mat-checkbox 
+        [checked]="t.ignore_in_analysis" 
+        (change)="onAnalyzableChange(t, !$event.checked)">
+      </mat-checkbox>
+      <span style="margin-left: 8px;">{{ t.ignore_in_analysis ? 'Sí' : 'No' }}</span>
     </td>
   </ng-container>
 

@@ -326,21 +326,24 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
       });
       console.log('Valid rows:', validRows);
 
-      const tempTransactions: ImportTransaction[] = validRows.map((row) => ({
-        date: row[dateIndex],
-        description: row[descriptionIndex],
-        amount: this.utilsService.parseAmount(row[amountIndex]),
-        balance: this.utilsService.parseAmount(row[balanceIndex]),
-        suggestedCategoryId: null,
-        suggestedCategoryName: null,
-        source_id: null,
-        account_id: this.selectedAccount?.id ?? null,
-        suggestedSourceId: null,
-        suggestedAccountId: this.selectedAccount?.id ?? null,
-        card_id: this.selectedCard?.id ?? null,
-        ignore_in_analysis: !!this.selectedCard && this.utilsService.parseAmount(row[amountIndex]) < 0,
-        selected: false,
-      }));
+      const tempTransactions: ImportTransaction[] = validRows.map((row) => {
+        const isNotAnalyzable = !!this.selectedCard && this.utilsService.parseAmount(row[amountIndex]) < 0;
+        return {
+          date: row[dateIndex],
+          description: row[descriptionIndex],
+          amount: this.utilsService.parseAmount(row[amountIndex]),
+          balance: this.utilsService.parseAmount(row[balanceIndex]),
+          suggestedCategoryId: null,
+          suggestedCategoryName: null,
+          source_id: null,
+          account_id: this.selectedAccount?.id ?? null,
+          suggestedSourceId: null,
+          suggestedAccountId: this.selectedAccount?.id ?? null,
+          card_id: this.selectedCard?.id ?? null,
+          ignore_in_analysis: isNotAnalyzable,
+          selected: !isNotAnalyzable, // true if analyzable, false if not analyzable
+        };
+      });
 
       // Make sure rules are loaded/refreshed before local categorization.
       await this.ruleCategorizerService.refreshRules();
@@ -350,6 +353,11 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
         this.incomeCategories,
         this.expenseCategories,
       );
+      for (let i = 0; i < categorized.length; i++) {
+        categorized[i].selected = tempTransactions[i].selected;
+        categorized[i].ignore_in_analysis = tempTransactions[i].ignore_in_analysis;
+      }
+      console.log('Categorized transactions:', categorized);
       const uncategorized = categorized.filter(t => !t.suggestedCategoryId);
       categorized
         .filter(t => t.suggestedCategoryId)
@@ -407,6 +415,15 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
   onCategoryChange(transaction: ImportTransaction, categoryId: number) {
     transaction.suggestedCategoryId = categoryId;
     this.suggestSourceForTransaction(transaction, categoryId);
+  }
+
+  onAnalyzableChange(transaction: ImportTransaction, isAnalyzable: boolean): void {
+    transaction.ignore_in_analysis = !isAnalyzable;
+    // If not analyzable (ignore=true), force selected to false
+    // If analyzable (ignore=false), force selected to true
+    transaction.selected = isAnalyzable;
+    console.log(`Transaction "${transaction.description}" analyzable: ${isAnalyzable}, selected: ${transaction.selected}, ignored: ${transaction.ignore_in_analysis}`);
+    this.updateDataSource();
   }
 
   private suggestSourceForTransaction(transaction: ImportTransaction, categoryId: number) {
@@ -477,6 +494,12 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
   }
 
   updateDataSource(): void {
+    // Ensure consistency: if ignore_in_analysis is true, selected must be false
+    this.transactions.forEach(t => {
+      if (t.ignore_in_analysis === true && t.selected === true) {
+        t.selected = false;
+      }
+    });
     this.dataSource.data = this.transactions;
     if (this.sort) {
       this.dataSource.sort = this.sort;
@@ -485,8 +508,15 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
 
   toggleAll(checked: boolean) {
     this.transactions.forEach((t) => {
-      t.selected = checked;
+      // If transaction is not analyzable (descartable), always set selected to false
+      // If transaction is analyzable, set selected according to checked parameter
+      if (t.ignore_in_analysis === true) {
+        t.selected = false;
+      } else {
+        t.selected = checked;
+      }
     });
+    this.updateDataSource();
   }
   isAllSelected(): boolean {
     return (
