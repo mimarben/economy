@@ -23,8 +23,7 @@ class SourceService(BaseService[Source, SourceRead, SourceCreate, SourceUpdate])
         # transaction_type expected: expense|income|investment
         source = self.repository.get_active_by_type(transaction_type)
 
-        if source:
-            return source
+        if not source:
+            source = self.repository.get_first_active()
 
-        # Fallback to first active source
-        return self.repository.get_first_active()
+        return SourceRead.model_validate(source) if source else None

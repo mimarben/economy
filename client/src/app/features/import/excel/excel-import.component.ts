@@ -22,6 +22,8 @@ import { CardService } from '@app/services/cards/cards.service';
 import { ImportProfilesService, ImportOriginsService } from '@import_services/import-profiles.service';
 import { BankService } from '@finance_services/bank.service';
 import { BankBase as Bank } from '@finance_models/BankBase';
+import { AuthService } from '@app/services/auth/auth.service';
+
 import { ImportTransaction } from '@import_models/import-transaction.model';
 import { ClassifyRequest, ClassifyResult, ClassifyPayload } from '@import_models/classify-request-ai';
 import { ImportOriginBase as ImportOrigin } from '@app/models/import/import-originBase';
@@ -31,6 +33,7 @@ import { AppTranslateService } from '@utils/app-translate.service';
 import { TranslateModule } from '@ngx-translate/core';
 import { MATERIAL_IMPORTS } from '@utils/material.imports';
 import { FormsModule } from '@angular/forms';
+import { CurrencyEnum } from '@app/core/const/Currency.enum';
 @Component({
   selector: 'app-excel-import',
   standalone: true,
@@ -94,6 +97,7 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
     private cardService: CardService,
     private importOriginsService: ImportOriginsService,
     private importProfilesService: ImportProfilesService,
+    private authService: AuthService
   ) { }
   ngOnInit(): void {
     this.bankService.getBanks().subscribe({
@@ -329,7 +333,7 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
       const tempTransactions: ImportTransaction[] = validRows.map((row) => {
         const isNotAnalyzable = !!this.selectedCard && this.utilsService.parseAmount(row[amountIndex]) < 0;
         return {
-          date: row[dateIndex],
+          date: this.utilsService.toIsoDate(row[dateIndex]),
           description: row[descriptionIndex],
           amount: this.utilsService.parseAmount(row[amountIndex]),
           balance: this.utilsService.parseAmount(row[balanceIndex]),
@@ -528,20 +532,23 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
     return selectedCount > 0 && selectedCount < this.transactions.length;
   }
   confirmImport() {
-    const selected = this.transactions.filter((t) => t.selected);
-    if (!selected.length) {
-      this.toastService.error('Selecciona al menos una transacción');
+    const currentUserId = this.authService.getUserId();
+    // Only process transactions marked as importable (selected: true)
+    const importable = this.transactions.filter((t) => t.selected);
+    if (!importable.length) {
+      this.toastService.warning('No hay transacciones marcadas para importar');
       return;
     }
 
-    const withoutCategory = selected.filter((t) => !t.suggestedCategoryId);
-    if (withoutCategory.length > 0) {
-      this.toastService.error('Hay transacciones sin categoría asignada');
+    // Only include transactions that have a category assigned
+    const validTransactions = importable.filter((t) => t.suggestedCategoryId);
+    if (!validTransactions.length) {
+      this.toastService.warning('Las transacciones marcadas no tienen categoría asignada');
       return;
     }
 
-    const expenses = selected.filter((t) => t.amount < 0);
-    const incomes = selected.filter((t) => t.amount >= 0);
+    const expenses = validTransactions.filter((t) => t.amount < 0);
+    const incomes = validTransactions.filter((t) => t.amount >= 0);
 
     const expensesDraftPayload = expenses.map((t) => ({
       name: String(t.description).trim().slice(0, 255),
@@ -553,6 +560,8 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
       account_id: t.account_id ?? this.selectedAccount?.id,
       card_id: t.card_id ?? this.selectedCard?.id ?? null,
       ignore_in_analysis: t.ignore_in_analysis ?? false,
+      currency: CurrencyEnum.EUR,  
+      user_id: currentUserId, 
     }));
 
     const incomesDraftPayload = incomes.map((t) => ({
@@ -564,9 +573,10 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
       source_id: t.source_id ?? t.suggestedSourceId,
       account_id: t.account_id ?? this.selectedAccount?.id,
       ignore_in_analysis: t.ignore_in_analysis ?? false,
-    }));
+      currency: CurrencyEnum.EUR,  
+      user_id: currentUserId, 
 
-  
+    }));
 
     console.log('Expense bulk draft payload:', expensesDraftPayload);
     console.log('Income bulk draft payload:', incomesDraftPayload);

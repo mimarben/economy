@@ -145,4 +145,15 @@ export class AuthService {
     localStorage.removeItem(this.tokenTypeKey);
     localStorage.removeItem(this.lastActivityKey);
   }
+
+  getUserId(): number | null {
+    const token = localStorage.getItem('auth_token');
+    if (!token) return null;
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload.sub ?? payload.user_id ?? null;
+    } catch {
+      return null;
+  }
+}
 }

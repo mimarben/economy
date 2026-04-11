@@ -1,21 +1,10 @@
 import { Injectable } from '@angular/core';
 //import moment from 'moment';
-import {
-  format,
-  parse,
-  isValid,
-  startOfDay,
-  isDate
-} from 'date-fns';
-import {
-  cloneDeep,
-  isEmpty,
-  map,
-  filter,
-} from 'lodash-es';
+import { format, parse, isValid, startOfDay, isDate } from 'date-fns';
+import { cloneDeep, isEmpty, map, filter } from 'lodash-es';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UtilsService {
   readonly _ = {
@@ -28,11 +17,11 @@ export class UtilsService {
   // Internal helper to convert MomentInput (Date, string, number) to a Date object,
   // since date-fns works primarily with native Date objects.
   public getDate(date: Date | string | number | null | undefined): Date | null {
-      if (!date) return null;
-      if (isDate(date)) return date as Date;
-      // Handle string or number input by creating a Date object
-      const d = new Date(date);
-      return isValid(d) ? d : null;
+    if (!date) return null;
+    if (isDate(date)) return date as Date;
+    // Handle string or number input by creating a Date object
+    const d = new Date(date);
+    return isValid(d) ? d : null;
   }
   formatDateShortStr(date: Date | string | number | null | undefined): string {
     const d = this.getDate(date);
@@ -40,7 +29,9 @@ export class UtilsService {
     return format(d, 'dd-MM-yyyy');
   }
   // Uses 'date-fns/startOfDay' and returns a native Date
-  formatDateShort(date: Date | string | number | null | undefined): Date | null {
+  formatDateShort(
+    date: Date | string | number | null | undefined,
+  ): Date | null {
     const d = this.getDate(date);
     if (!d) return null;
     return startOfDay(d);
@@ -76,22 +67,24 @@ export class UtilsService {
 
     return null; // any other type is invalid
   }
+  public toIsoDate(dateStr: string): string {
+    const d = parse(dateStr, 'dd/MM/yyyy', new Date());
+    return isValid(d) ? format(d, 'yyyy-MM-dd') : dateStr;
+  }
+
   public normalize(text: string): string {
-  return text
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "") // remove accents
-    .replace(/[^a-z0-9 ]/g, "") // remove symbols
-    .trim();
+    return text
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '') // remove accents
+      .replace(/[^a-z0-9 ]/g, '') // remove symbols
+      .trim();
   }
   public parseAmount(value: any): number {
     if (value == null || value === '' || value === undefined) return 0;
     if (typeof value === 'number') return value;
 
-    let str = String(value)
-      .trim()
-      .replace(/[€\s]/g, '')
-      .replace('−', '-');
+    let str = String(value).trim().replace(/[€\s]/g, '').replace('−', '-');
 
     const lastDot = str.lastIndexOf('.');
     const lastComma = str.lastIndexOf(',');
@@ -108,5 +101,4 @@ export class UtilsService {
     //console.log("Valor raw:", value, "parsed:", num);
     return num;
   }
-
-  }
+}
