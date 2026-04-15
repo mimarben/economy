@@ -33,4 +33,5 @@ export interface AccountBase {
   users?: any[];
   import_origin_id?: ImportOriginId;
   import_profile_id?: ImportProfileId;
+  users?: any[]; // Users added manually
 }

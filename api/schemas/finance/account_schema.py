@@ -5,6 +5,7 @@ from pydantic import BaseModel, Field, field_validator
 from models.core.enums import CurrencyEnum
 from schemas.core.audit_schema import AuditFields
 from schemas.cards.card_schema import CardRead
+from schemas.users.user_schema import UserRead
 
 class AccountBase(BaseModel):
     name: str
@@ -23,7 +24,6 @@ class AccountBase(BaseModel):
     )
     active: bool = Field(default=True)
     bank_id: int = Field(..., gt=0, json_schema_extra={"ui_type": "select", "relation": "bank"})
-    user_id: int = Field(..., gt=0, json_schema_extra={"ui_type": "select", "relation": "user"})
     import_origin_id: Optional[int] = Field(None, gt=0, json_schema_extra={"ui_type": "select", "relation": "import-origin"})
     import_profile_id: Optional[int] = Field(None, gt=0, json_schema_extra={"ui_type": "select", "relation": "import-profile"})
     
@@ -37,15 +37,17 @@ class AccountBase(BaseModel):
     def validate_iban(cls, v):
         if v and len(v.replace(" ", "")) < 15:
             raise ValueError("Invalid IBAN")
+
 class AccountRead(AccountBase, AuditFields):
     id: int
     cards: List[CardRead] = Field(default_factory=list)
+    users: List[UserRead] = Field(default_factory=list)
     class Config:
         from_attributes = True
 
 
 class AccountCreate(AccountBase):
-    pass
+    user_ids: List[int] = Field(..., min_items=1, json_schema_extra={"ui_type": "multi-select", "relation": "user"})
 
 
 class AccountUpdate(BaseModel):
@@ -56,6 +58,6 @@ class AccountUpdate(BaseModel):
     balance: Optional[Decimal] = None
     active: Optional[bool] = None
     bank_id: Optional[int] = Field(None, gt=0)
-    user_id: Optional[int] = Field(None, gt=0)
     import_origin_id: Optional[int] = Field(None, gt=0)
     import_profile_id: Optional[int] = Field(None, gt=0)
+    user_ids: Optional[List[int]] = Field(None, json_schema_extra={"ui_type": "multi-select", "relation": "user"})

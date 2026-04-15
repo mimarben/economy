@@ -14,7 +14,7 @@ from .core.enums import (
 from .users import User
 
 # Finance
-from .finance import Bank, Account, Source, Place
+from .finance import Bank, Account, Source, Place, AccountUser
 
 # Incomes
 from .incomes import Income, IncomesCategory
@@ -50,6 +50,7 @@ __all__ = [
     'User',
     'Bank',
     'Account',
+    'AccountUser',
     'Source',
     'Place',
     'Income',

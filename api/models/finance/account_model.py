@@ -4,12 +4,6 @@ from sqlalchemy.orm import relationship
 from ..core.base import Base, TimestampMixin
 from ..core.enums import CurrencyEnum
 
-from sqlalchemy import Column, Integer, String, Numeric, Boolean, ForeignKey, Enum as SQLEnum, UniqueConstraint
-from sqlalchemy.orm import relationship
-
-from ..core.base import Base, TimestampMixin
-from ..core.enums import CurrencyEnum
-
 class Account(TimestampMixin, Base):
     __tablename__ = 'accounts'
     __table_args__ = (
@@ -24,12 +18,13 @@ class Account(TimestampMixin, Base):
     balance = Column(Numeric(12, 2), nullable=True)
     
     # Foreign Keys
-    user_id = Column(Integer, ForeignKey('users.id'), nullable=False, index=True)
     bank_id = Column(Integer, ForeignKey('banks.id'), nullable=False, index=True)
     import_origin_id = Column(Integer, ForeignKey("import_origins.id"))
     import_profile_id = Column(Integer,ForeignKey("import_profiles.id"),nullable=True)
+    
     # Relationships
-    user = relationship('User', back_populates='accounts')
+    users = relationship('User', back_populates='accounts', secondary='account_users')
+    account_users = relationship('AccountUser', back_populates='account', cascade='all, delete-orphan')
     bank = relationship('Bank', back_populates='accounts')    
     savings = relationship('Saving', back_populates='account')
     investments = relationship('Investment', back_populates='account')

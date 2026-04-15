@@ -57,6 +57,7 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
   importProfiles: ImportProfile[] = [];
   filteredProfiles: ImportProfile[] = [];
   selectedOrigin: ImportOrigin | null = null;
+  accountUsers: any[] = []; // Users of the selected account
 
   selectedBank: Bank | null = null;
   
@@ -80,7 +81,6 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
     'balance',
     'category',
     'source',
-    'account'
   ];
   constructor(
     private bankService: BankService,
@@ -234,6 +234,8 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
     this.selectedAccount = account;
     this.filterCardsByAccount(accountId);
     this.selectedCard = null;
+    // Set the users for this account
+    this.accountUsers = account.users || [];
     // Apply account to all selected transactions
     this.transactions.forEach((t) => {
       t.account_id = account.id;
@@ -344,6 +346,7 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
           suggestedSourceId: null,
           suggestedAccountId: this.selectedAccount?.id ?? null,
           card_id: this.selectedCard?.id ?? null,
+          currency: CurrencyEnum.EUR,
           ignore_in_analysis: isNotAnalyzable,
           selected: !isNotAnalyzable, // true if analyzable, false if not analyzable
         };
