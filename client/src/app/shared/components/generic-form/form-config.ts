@@ -8,7 +8,7 @@ export interface FormFieldConfig {
   type: 'text' | 'number' | 'email' | 'select' | 'checkbox'| 'date';
   required?: boolean;
   validators?: ValidatorFn[];
-  options?: { value: string | number; label: string }[]; // For select fields
+  options?: { value: any; label: string }[]; // For select fields
   onChange?: (value: any, form?: any) => void;
   minLength?: number; // For text/email fields
   maxLength?: number; // For text/email fields
@@ -17,5 +17,6 @@ export interface FormFieldConfig {
   max?: number; // For number fields
   relation?: string; // For fields that represent a relation to another entity
   ui_type?: 'select' | string; // For custom UI components
+  multiple?: boolean; // Enables multi-select values (array)
 }
 
