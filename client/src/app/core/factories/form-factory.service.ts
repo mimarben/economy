@@ -119,6 +119,11 @@ private getFormatter(
 
   if (type === 'select' && options) {
     return (value: any) => {
+      if (Array.isArray(value)) {
+        return value
+          .map((item) => options.find((o) => o.value === item)?.label ?? item)
+          .join(', ');
+      }
       const match = options.find(o => o.value === value);
       return match ? match.label : value;
     };

@@ -62,6 +62,7 @@
     <mat-form-field appearance="outline" *ngIf="field.type === 'select'" class="full-width">
       <mat-label>{{ field.label }}</mat-label>
       <mat-select [formControlName]="field.key" [id]="field.key"
+        [multiple]="field.multiple === true"
         [attr.aria-describedby]="field.key + '-error'">
         <mat-option *ngFor="let option of field.options" [value]="option.value">
           {{ option.label }}
