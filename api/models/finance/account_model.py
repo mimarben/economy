@@ -12,7 +12,7 @@ class Account(TimestampMixin, Base):
     id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
     name = Column(String, nullable=False)
     description = Column(String)
-    iban = Column(String, nullable=True)
+    iban = Column(String, nullable=False, unique=True)
     currency = Column(SQLEnum(CurrencyEnum), nullable=False)
     active = Column(Boolean, default=True, nullable=False)
     balance = Column(Numeric(12, 2), nullable=True)

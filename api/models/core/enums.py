@@ -2,45 +2,45 @@ import enum
 
 
 class CurrencyEnum(str, enum.Enum):
-    euro = "€"
-    dolar = "$"
-    yuan = "¥"
-    bitcoin = "₿"
-    ethereum = "Ξ"
-    usdc = "USDC"
-    dogecoin = "DOGE"
-    litecoin = "LTC"
-    ripple = "XRP"
-    stellar = "XLM"
-    cardano = "ADA"
-    polkadot = "DOT"
-    solana = "SOL"
-    shiba_inu = "SHIB"
-    tron = "TRX"
+    EUR = "EUR"
+    USD = "USD"
+    JPY = "JPY"
+    BTC = "BTC"
+    ETH = "ETH"
+    USDC = "USDC"
+    DOGE = "DOGE",
+    LTC = "LTC",
+    XRP = "XRP",
+    XLM = "XLM",
+    ADA = "ADA",
+    DOT = "DOT",
+    SOL = "SOL",
+    SHIB = "SHIB",
+    TRX = "TRX"
 
 
 class RoleEnum(str, enum.Enum):
-    husband = "husband"
-    wife = "wife"
-    child = "child"
-    other = "other"
+    HUSBAND = "husband"
+    WIFE = "wife"
+    CHILD = "child"
+    OTHER = "other"
 
 
 class SourceTypeEnum(str, enum.Enum):
-    income = "income"
-    saving = "saving"
-    investment = "investment"
-    expense = "expense"
-    other = "other"
+    INCOME = "income"
+    SAVING = "saving"
+    INVESTMENT = "investment"
+    EXPENSE = "expense"
+    OTHER = "other"
 
 
 class ActionEnum(str, enum.Enum):
-    buy = "buy"
-    sell = "sell"
-    transfer = "transfer"
-    deposit = "deposit"
-    withdraw = "withdraw"
-    hold = "hold"
+    BUY = "buy"
+    SELL = "sell"
+    TRANSFER = "transfer"
+    DEPOSIT = "deposit"
+    WITHDRAW = "withdraw"
+    HOLD = "hold"
 
 
 class UserRoleEnum(str, enum.Enum):
@@ -52,11 +52,11 @@ class UserRoleEnum(str, enum.Enum):
 
 class TransactionEnum(str, enum.Enum):
     """Types of transactions for categorization rules."""
-    expense = "expense"
-    income = "income"
-    investment = "investment"
+    EXPENSE = "expense"
+    INCOME = "income"
+    INVESTMENT = "investment"
 
 class CardTypeEnum(str, enum.Enum):
-    credit = "credit"
-    debit = "debit"
-    revolving = "revolving"
+    CREDIT = "credit"
+    DEBIT = "debit"
+    REVOLVING = "revolving"

@@ -38,6 +38,7 @@ class AccountBase(BaseModel):
     def validate_iban(cls, v):
         if v and len(v.replace(" ", "")) < 15:
             raise ValueError("Invalid IBAN")
+        return v
 
 class AccountRead(AccountBase, AuditFields):
     id: int

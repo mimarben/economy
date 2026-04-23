@@ -11,7 +11,7 @@ class Source(TimestampMixin, Base):
     name = Column(String, nullable=False)
     description = Column(String)
     active = Column(Boolean, default=True, nullable=False)
-    type = Column(SQLEnum(SourceTypeEnum), default=SourceTypeEnum.income, nullable=False)
+    type = Column(SQLEnum(SourceTypeEnum), default=SourceTypeEnum.INCOME, nullable=False)
 
     # Relationships
     incomes = relationship('Income', back_populates='source')
