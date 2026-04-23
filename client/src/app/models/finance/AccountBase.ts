@@ -14,8 +14,6 @@ export type Iban = string;
 export type Balance = number;
 export type Active = boolean;
 export type BankId = number;
-export type UserId = number;
-export type UserIds = number[];
 export type ImportOriginId = number;
 export type ImportProfileId = number;
 
@@ -23,15 +21,13 @@ export interface AccountBase {
   id?: Id;
   name: Name;
   description?: Description;
-  iban: Iban;
-  balance: Balance;
-  currency: CurrencyEnum;
+  iban?: Iban;
+  balance?: Balance;
+  currency: string;
   active?: Active;
   bank_id: BankId;
-  user_id: UserId;
-  user_ids?: UserIds;
-  users?: any[];
   import_origin_id?: ImportOriginId;
   import_profile_id?: ImportProfileId;
-  users?: any[]; // Users added manually
+  users?: { id: number; name: string; surname1: string; surname2?: string; email?: string }[];
+  user_ids?: number[];
 }

@@ -117,6 +117,8 @@ if __name__ == "__main__":
     from schemas.cards.card_schema import CardRead
     from schemas.imports.import_origin_schema import ImportOriginRead
     from schemas.imports.import_profile_schema import ImportProfileCreate
+    from schemas.users.user_schema import UserRead, UserCreate
+    from schemas.finance.account_schema import AccountCreate
     #from schemas.expenses.expense_schema import ExpenseRead
     #from schemas.expenses.expense_category_schema import ExpenseCategoryRead
     #from schemas.incomes.income_schema import IncomeRead
@@ -127,7 +129,10 @@ if __name__ == "__main__":
         CardRead,
         ImportOriginRead,
         ImportProfileCreate,
-        #AccountRead,
+        UserRead,
+        UserCreate,
+        AccountCreate,
+        #AccountRead,  # Skip because of forward references to UserRead
         #BankRead,
         #ExpenseRead,
         #ExpenseCategoryRead,

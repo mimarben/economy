@@ -32,6 +32,7 @@ export class UsersComponent implements OnInit {
     { key: 'active', label: 'Active', sortable: true, formatter: (value) => (value ? 'Yes' : 'No') },
     { key: 'telephone', label: 'Telephone', sortable: true },
     { key: 'role', label: 'Role', sortable: true },
+    { key: 'accounts', label: 'Accounts', sortable: false, formatter: (value: { id: number; name: string }[]) => value?.map(a => a.name).join(', ') || 'None' },
   ];
 
   constructor(

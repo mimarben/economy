@@ -71,6 +71,7 @@ cover/
 *.mo
 *.pot
 *.log
+api/logs/*
 *.sage.py
 local_settings.py
 .pypirc
@@ -125,4 +126,5 @@ db.sqlite3-journal
 # IDE
 # ============================================================
  .vscode/
-api/logs/*
+
+.env.prod

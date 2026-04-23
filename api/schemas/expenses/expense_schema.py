@@ -18,6 +18,8 @@ class ExpenseBase(BaseModel):
     account_id: int = Field(..., gt=0, json_schema_extra={"ui_type": "select", "relation": "account"})
     ignore_in_analysis: Optional[bool] = None
     card_id: Optional[int] = Field(None, gt=0, json_schema_extra={"ui_type": "select", "relation": "card"})
+    is_personal: bool = Field(default=True)
+    user_id: Optional[int] = Field(None, gt=0, json_schema_extra={"ui_type": "select", "relation": "user"})
     #ignore_in_analysis: bool = Field(default=False, exclude=True)
 
     @field_validator('amount')
@@ -34,6 +36,14 @@ class ExpenseBase(BaseModel):
             account_id = info.data.get("account_id")
             if not account_id:
                 raise ValueError("card_id requires account_id")
+        return v
+
+    @field_validator('user_id')
+    @classmethod
+    def validate_user_id(cls, v, info):
+        is_personal = info.data.get('is_personal', True)
+        if is_personal and v is None:
+            raise ValueError('user_id is required for personal expenses')
         return v
 class ExpenseRead(ExpenseBase, AuditFields):
     """Response schema for Expense."""
@@ -62,6 +72,8 @@ class ExpenseUpdate(BaseModel):
 
     card_id: Optional[int] = Field(None, gt=0)
     ignore_in_analysis: Optional[bool] = None
+    is_personal: Optional[bool] = None
+    user_id: Optional[int] = Field(None, gt=0)
 
 class ExpenseDelete(BaseModel):
     pass

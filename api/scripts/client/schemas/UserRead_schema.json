@@ -1,12 +1,13 @@
 {
   "$defs": {
-    "CardTypeEnum": {
+    "UserRoleEnum": {
       "enum": [
-        "credit",
-        "debit",
-        "revolving"
+        "administrator",
+        "editor",
+        "user",
+        "guest"
       ],
-      "title": "CardTypeEnum",
+      "title": "UserRoleEnum",
       "type": "string"
     }
   },
@@ -35,16 +36,16 @@
       "title": "Deleted At"
     },
     "name": {
-      "maxLength": 255,
-      "minLength": 1,
       "title": "Name",
       "type": "string"
     },
-    "last4": {
+    "surname1": {
+      "title": "Surname1",
+      "type": "string"
+    },
+    "surname2": {
       "anyOf": [
         {
-          "maxLength": 4,
-          "minLength": 4,
           "type": "string"
         },
         {
@@ -52,27 +53,33 @@
         }
       ],
       "default": null,
-      "title": "Last4"
+      "title": "Surname2"
     },
-    "type": {
-      "$ref": "#/$defs/CardTypeEnum"
+    "dni": {
+      "title": "Dni",
+      "type": "string"
+    },
+    "email": {
+      "anyOf": [
+        {
+          "format": "email",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Email"
     },
     "active": {
       "default": true,
       "title": "Active",
       "type": "boolean"
     },
-    "account_id": {
-      "exclusiveMinimum": 0,
-      "relation": "account",
-      "title": "Account Id",
-      "type": "integer",
-      "ui_type": "select"
-    },
-    "import_origin_id": {
+    "telephone": {
       "anyOf": [
         {
-          "exclusiveMinimum": 0,
           "type": "integer"
         },
         {
@@ -80,24 +87,11 @@
         }
       ],
       "default": null,
-      "relation": "import-origin",
-      "title": "Import Origin Id",
-      "ui_type": "select"
+      "title": "Telephone"
     },
-    "import_profile_id": {
-      "anyOf": [
-        {
-          "exclusiveMinimum": 0,
-          "type": "integer"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null,
-      "relation": "import-profile",
-      "title": "Import Profile Id",
-      "ui_type": "select"
+    "role": {
+      "$ref": "#/$defs/UserRoleEnum",
+      "default": "user"
     },
     "id": {
       "title": "Id",
@@ -108,10 +102,10 @@
     "created_at",
     "updated_at",
     "name",
-    "type",
-    "account_id",
+    "surname1",
+    "dni",
     "id"
   ],
-  "title": "CardRead",
+  "title": "UserRead",
   "type": "object"
 }

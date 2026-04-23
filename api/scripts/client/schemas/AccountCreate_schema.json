@@ -1,0 +1,147 @@
+{
+  "$defs": {
+    "CurrencyEnum": {
+      "enum": [
+        "€",
+        "$",
+        "¥",
+        "₿",
+        "Ξ",
+        "USDC",
+        "DOGE",
+        "LTC",
+        "XRP",
+        "XLM",
+        "ADA",
+        "DOT",
+        "SOL",
+        "SHIB",
+        "TRX"
+      ],
+      "title": "CurrencyEnum",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "name": {
+      "title": "Name",
+      "type": "string"
+    },
+    "description": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Description"
+    },
+    "iban": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Iban"
+    },
+    "currency": {
+      "$ref": "#/$defs/CurrencyEnum"
+    },
+    "initial_balance": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,10}|(?=[\\d.]{1,13}0*$)\\d{0,10}\\.\\d{0,2}0*$)",
+          "type": "string"
+        }
+      ],
+      "default": 0,
+      "title": "Initial Balance"
+    },
+    "balance": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,10}|(?=[\\d.]{1,13}0*$)\\d{0,10}\\.\\d{0,2}0*$)",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Balance"
+    },
+    "active": {
+      "default": true,
+      "title": "Active",
+      "type": "boolean"
+    },
+    "bank_id": {
+      "exclusiveMinimum": 0,
+      "relation": "bank",
+      "title": "Bank Id",
+      "type": "integer",
+      "ui_type": "select"
+    },
+    "import_origin_id": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "relation": "import-origin",
+      "title": "Import Origin Id",
+      "ui_type": "select"
+    },
+    "import_profile_id": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "relation": "import-profile",
+      "title": "Import Profile Id",
+      "ui_type": "select"
+    },
+    "user_ids": {
+      "items": {
+        "type": "integer"
+      },
+      "minItems": 1,
+      "relation": "user",
+      "title": "User Ids",
+      "type": "array",
+      "ui_type": "multi-select"
+    }
+  },
+  "required": [
+    "name",
+    "currency",
+    "bank_id",
+    "user_ids"
+  ],
+  "title": "AccountCreate",
+  "type": "object"
+}

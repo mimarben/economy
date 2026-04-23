@@ -1,0 +1,86 @@
+{
+  "$defs": {
+    "UserRoleEnum": {
+      "enum": [
+        "administrator",
+        "editor",
+        "user",
+        "guest"
+      ],
+      "title": "UserRoleEnum",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "name": {
+      "title": "Name",
+      "type": "string"
+    },
+    "surname1": {
+      "title": "Surname1",
+      "type": "string"
+    },
+    "surname2": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Surname2"
+    },
+    "dni": {
+      "title": "Dni",
+      "type": "string"
+    },
+    "email": {
+      "anyOf": [
+        {
+          "format": "email",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Email"
+    },
+    "active": {
+      "default": true,
+      "title": "Active",
+      "type": "boolean"
+    },
+    "telephone": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Telephone"
+    },
+    "role": {
+      "$ref": "#/$defs/UserRoleEnum",
+      "default": "user"
+    },
+    "password": {
+      "title": "Password",
+      "type": "string"
+    }
+  },
+  "required": [
+    "name",
+    "surname1",
+    "dni",
+    "password"
+  ],
+  "title": "UserCreate",
+  "type": "object"
+}

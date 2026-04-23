@@ -1,8 +1,11 @@
 {
   "properties": {
     "origin_id": {
+      "exclusiveMinimum": 0,
+      "relation": "origin",
       "title": "Origin Id",
-      "type": "integer"
+      "type": "integer",
+      "ui_type": "select"
     },
     "name": {
       "title": "Name",

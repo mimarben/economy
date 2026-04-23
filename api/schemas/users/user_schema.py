@@ -1,8 +1,12 @@
+from __future__ import annotations
 import re
-from typing import Optional
-from pydantic import BaseModel, EmailStr, field_validator
+from typing import TYPE_CHECKING, List, Optional
+from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator
 from models.core.enums import UserRoleEnum
 from schemas.core.audit_schema import AuditFields
+
+if TYPE_CHECKING:
+    from schemas.finance.account_schema import AccountCompact
 
 
 # -------------------------
@@ -56,6 +60,7 @@ class UserBase(BaseModel):
 
 class UserRead(UserBase, AuditFields):
     id: int
+    accounts: List[AccountCompact] = Field(default_factory=list)
 
     class Config:
         from_attributes = True
@@ -94,3 +99,9 @@ class UserUpdate(BaseModel):
         if value is None:
             return value
         return check_password(value)
+
+class UserCompact(BaseModel):
+    id: int
+    name: str
+
+    model_config = ConfigDict(from_attributes=True)

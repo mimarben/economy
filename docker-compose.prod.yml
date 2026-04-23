@@ -1,0 +1,129 @@
+networks:
+  economy-net:
+    driver: bridge
+
+services:
+  backend:
+    build:
+      context: ./api
+      target: production
+    image: economy-api-prod:${BACKEND_TAG}
+    restart: always
+    ports:
+      - "5000:5000"
+    env_file:
+      - ./.env.prod
+    environment:
+      - FLASK_ENV=production
+      - FLASK_DEBUG=0
+    volumes:
+      - ./api/logs:/app/logs:Z
+    working_dir: /app
+    # Using gunicorn for production
+    command: gunicorn --bind 0.0.0.0:5000 --workers 4 --threads 2 --worker-class gthread --timeout 60 --access-logfile /app/logs/access.log --error-logfile /app/logs/error.log app:app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/api/system/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - economy-net
+
+  frontend:
+    build:
+      context: ./client
+      args:
+        - NG_ENVIRONMENT=production
+    image: economy-client-prod:${FRONTEND_TAG}
+    restart: always
+    ports:
+      - "4200:80"
+    environment:
+      - NODE_ENV=production
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:80/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - economy-net
+
+  postgres:
+    image: postgres:18
+    container_name: economy_db_prod
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_INITDB_ARGS: "--locale=C --encoding=UTF8"
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data_prod:/var/lib/postgresql:Z
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - economy-net
+
+  ai:
+    image: ghcr.io/ggml-org/llama.cpp:server-b8067
+    container_name: economy-ai-prod
+    restart: always
+    ports:
+      - "8181:8180"
+    volumes:
+      - ./model:/model:Z
+    command:
+      --model /model/qwen2.5-7b-instruct-q4_k_m-00001-of-00002.gguf
+      --host 0.0.0.0
+      --port 8180
+      --threads 6
+      --ctx-size 4096
+      --batch-size 512
+      --parallel 2
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8180/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - economy-net
+
+  nginx:
+    image: nginx:1.29.5-alpine
+    container_name: economy_nginx_prod
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro,Z
+      - ./nginx/certs:/etc/nginx/certs:ro,Z
+      - nginx_logs:/var/log/nginx:Z
+    depends_on:
+      - frontend
+      - backend
+      - ai
+    healthcheck:
+      test: ["CMD", "nginx", "-t"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - economy-net
+
+volumes:
+  postgres_data_prod:
+    driver: local
+  nginx_logs:
+    driver: local

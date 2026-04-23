@@ -1,11 +1,12 @@
+from __future__ import annotations
 from typing import List, Optional
 from decimal import Decimal
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from models.core.enums import CurrencyEnum
 from schemas.core.audit_schema import AuditFields
 from schemas.cards.card_schema import CardRead
-from schemas.users.user_schema import UserRead
+from schemas.users.user_schema import UserRead, UserCompact
 
 class AccountBase(BaseModel):
     name: str
@@ -41,7 +42,7 @@ class AccountBase(BaseModel):
 class AccountRead(AccountBase, AuditFields):
     id: int
     cards: List[CardRead] = Field(default_factory=list)
-    users: List[UserRead] = Field(default_factory=list)
+    users: List[UserCompact] = Field(default_factory=list)
     class Config:
         from_attributes = True
 
@@ -61,3 +62,11 @@ class AccountUpdate(BaseModel):
     import_origin_id: Optional[int] = Field(None, gt=0)
     import_profile_id: Optional[int] = Field(None, gt=0)
     user_ids: Optional[List[int]] = Field(None, json_schema_extra={"ui_type": "multi-select", "relation": "user"})
+class AccountCompact(BaseModel):
+    id: int
+    name: str
+
+    model_config = ConfigDict(from_attributes=True)
+# Rebuild to resolve forward references
+AccountRead.model_rebuild()
+UserRead.model_rebuild(_types_namespace={'AccountCompact': AccountCompact})

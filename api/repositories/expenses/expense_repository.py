@@ -1,8 +1,8 @@
 """Expense-specific repository with business logic for expense access."""
 from typing import Optional, List
 from sqlalchemy import select
-from sqlalchemy.orm import Session
-from models import Expense, Source, ExpensesCategory, Account
+from sqlalchemy.orm import Session, selectinload
+from models import Expense, Source, ExpensesCategory, Account, User
 from repositories.core.base_repository import BaseRepository
 
 
@@ -11,6 +11,10 @@ class ExpenseRepository(BaseRepository[Expense]):
 
     def __init__(self, db: Session):
         super().__init__(db, Expense)
+
+    def get_all(self, page: int = 1, per_page: int = 50):
+        stmt = self._base_query().options(selectinload(Expense.user)).offset((page - 1) * per_page).limit(per_page)
+        return self.db.execute(stmt).scalars().all()
 
     def get_by_user(self, user_id: int) -> List[Expense]:
         """Get all expenses for a specific user."""

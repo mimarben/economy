@@ -22,6 +22,8 @@ class User(TimestampMixin, Base):
     role = Column(SQLEnum(UserRoleEnum), default=UserRoleEnum.USER, nullable=False)
 
     # Relationships
-    accounts = relationship('Account', back_populates='users', secondary='account_users')
-    account_users = relationship('AccountUser', back_populates='user', cascade='all, delete-orphan')
+    accounts = relationship('Account', back_populates='users', secondary='account_users', overlaps='account_users')
+    account_users = relationship('AccountUser', back_populates='user', cascade='all, delete-orphan', overlaps='accounts')
     households_members = relationship('HouseholdMember', back_populates='user')
+    expenses = relationship('Expense', back_populates='user')
+

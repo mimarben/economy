@@ -3,6 +3,18 @@
 BEGIN;
 
 
+CREATE TABLE IF NOT EXISTS public.account_users
+(
+    id serial NOT NULL,
+    account_id integer NOT NULL,
+    user_id integer NOT NULL,
+    created_at timestamp without time zone NOT NULL DEFAULT now(),
+    updated_at timestamp without time zone NOT NULL DEFAULT now(),
+    deleted_at timestamp without time zone,
+    CONSTRAINT account_users_pkey PRIMARY KEY (id),
+    CONSTRAINT uq_account_user UNIQUE (account_id, user_id)
+);
+
 CREATE TABLE IF NOT EXISTS public.accounts
 (
     id serial NOT NULL,
@@ -72,6 +84,7 @@ CREATE TABLE IF NOT EXISTS public.category_rules
     created_at timestamp without time zone NOT NULL DEFAULT now(),
     updated_at timestamp without time zone NOT NULL DEFAULT now(),
     deleted_at timestamp without time zone,
+    ignore_in_analysis boolean DEFAULT false,
     CONSTRAINT category_rules_pkey PRIMARY KEY (id)
 );
 
@@ -314,6 +327,24 @@ CREATE TABLE IF NOT EXISTS public.users
     CONSTRAINT users_pkey PRIMARY KEY (id),
     CONSTRAINT uq_users_dni UNIQUE (dni)
 );
+
+ALTER TABLE IF EXISTS public.account_users
+    ADD CONSTRAINT account_users_account_id_fkey FOREIGN KEY (account_id)
+    REFERENCES public.accounts (id) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
+CREATE INDEX IF NOT EXISTS ix_account_users_account_id
+    ON public.account_users(account_id);
+
+
+ALTER TABLE IF EXISTS public.account_users
+    ADD CONSTRAINT account_users_user_id_fkey FOREIGN KEY (user_id)
+    REFERENCES public.users (id) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
+CREATE INDEX IF NOT EXISTS ix_account_users_user_id
+    ON public.account_users(user_id);
+
 
 ALTER TABLE IF EXISTS public.accounts
     ADD CONSTRAINT accounts_bank_id_fkey FOREIGN KEY (bank_id)

@@ -29,6 +29,8 @@ class Expense(TimestampMixin, Base):
     currency = Column(SQLEnum(CurrencyEnum), nullable=False)
     ignore_in_analysis = Column(Boolean, default=False, nullable=False)
     dedup_hash = Column(String(64), nullable=False, index=True)
+    is_personal = Column(Boolean, default=True, nullable=False)
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=True, index=True)
 
     # Foreign Keys
     source_id = Column(Integer, ForeignKey('sources.id'), nullable=False, index=True)
@@ -41,3 +43,4 @@ class Expense(TimestampMixin, Base):
     category = relationship('ExpensesCategory', back_populates='expenses')
     account = relationship('Account', back_populates='expenses')
     card = relationship("Card",  back_populates='expenses')
+    user = relationship('User', back_populates='expenses')

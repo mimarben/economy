@@ -12,15 +12,10 @@ export type Dni = string;
 export type Email = string | null;
 export type Active = boolean;
 export type Telephone = number | null;
-export type UserRole = 'administrator' | 'editor' | 'user' | 'guest';
+import { UserRoleEnum } from "@core/enums/UserRoleEnum";
+export type Password = string;
 
-
-
-export const USER_ROLE_OPTIONS: UserRole[] = ['administrator', 'editor', 'user', 'guest'];
-
-
-export interface UserBase {
-  id?: number;
+export interface UserCreate {
   name: Name;
   surname1: Surname1;
   surname2?: Surname2;
@@ -28,9 +23,7 @@ export interface UserBase {
   email?: Email;
   active?: Active;
   telephone?: Telephone;
-  password?: string;
-  role?: UserRole;
-  created_at?: string;
-  updated_at?: string;
-  accounts?: { id: number; name: string }[];
+  role?: UserRoleEnum;
+  password: Password;
+  [k: string]: unknown;
 }

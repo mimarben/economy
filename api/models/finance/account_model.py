@@ -23,8 +23,8 @@ class Account(TimestampMixin, Base):
     import_profile_id = Column(Integer,ForeignKey("import_profiles.id"),nullable=True)
     
     # Relationships
-    users = relationship('User', back_populates='accounts', secondary='account_users')
-    account_users = relationship('AccountUser', back_populates='account', cascade='all, delete-orphan')
+    users = relationship('User', back_populates='accounts', secondary='account_users', overlaps='account_users')
+    account_users = relationship('AccountUser', back_populates='account', cascade='all, delete-orphan', overlaps='users')
     bank = relationship('Bank', back_populates='accounts')    
     savings = relationship('Saving', back_populates='account')
     investments = relationship('Investment', back_populates='account')

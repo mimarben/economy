@@ -19,11 +19,6 @@ import { ImportOriginBase as ImportOrigin } from '@import_models/import-originBa
 import { ImportProfileBase as ImportProfile } from '@import_models/import-profileBase';
 import { ImportOriginsService, ImportProfilesService } from '@import_services/import-profiles.service';
 
-type AccountWithUsers = Account & {
-  users?: User[];
-  user_ids?: number[];
-};
-
 @Component({
   selector: 'app-banks-accounts',
   imports: [GenericTableComponent],
@@ -31,7 +26,7 @@ type AccountWithUsers = Account & {
   styleUrl: './banks-accounts.component.css'
 })
 export class BanksAccountsComponent implements OnInit {
-  accounts: AccountWithUsers[] = [];
+  accounts: Account[] = [];
   filterValue = '';
   isLoading = false;
   errorMessage = '';
@@ -41,7 +36,7 @@ export class BanksAccountsComponent implements OnInit {
   users: User[] = [];
   origins: ImportOrigin[] = [];
   profiles: ImportProfile[] = [];
-  columns: TableColumn<AccountWithUsers>[] = [];
+  columns: TableColumn<Account>[] = [];
 
   constructor(
     private accountService: AccountService,
@@ -71,17 +66,7 @@ export class BanksAccountsComponent implements OnInit {
       meta: this.metaService.getMeta('account'),
     }).subscribe({
       next: ({ accounts, banks, users, origins, profiles, meta }) => {
-        this.accounts = (accounts.response as AccountWithUsers[]).map((account) => {
-          const relationUserIds = (account.users ?? [])
-            .map((user) => user.id)
-            .filter((id): id is number => typeof id === 'number');
-          return {
-            ...account,
-            user_ids: relationUserIds.length > 0
-              ? relationUserIds
-              : (typeof account.user_id === 'number' ? [account.user_id] : []),
-          };
-        });
+        this.accounts = accounts.response as Account[];
         this.banks = banks.response;
         this.users = users.response;
         this.origins = origins.response;
@@ -91,13 +76,13 @@ export class BanksAccountsComponent implements OnInit {
           bank: this.banks.map((bank) => ({ value: bank.id!, label: bank.name })),
           bank_id: this.banks.map((bank) => ({ value: bank.id!, label: bank.name })),
           user: this.users.map((user) => ({ value: user.id!, label: `${user.name} (${user.email})` })),
-          user_id: this.users.map((user) => ({ value: user.id!, label: `${user.name} (${user.email})` })),
+          user_ids: this.users.map((user) => ({ value: user.id!, label: `${user.name} (${user.email})` })),
           'import-origin': this.origins.map((origin) => ({ value: origin.id, label: origin.name })),
           import_origin_id: this.origins.map((origin) => ({ value: origin.id, label: origin.name })),
           'import-profile': this.profiles.map((profile) => ({ value: profile.id, label: profile.name })),
           import_profile_id: this.profiles.map((profile) => ({ value: profile.id, label: profile.name })),
         }).map((field) => {
-          if (field.key !== 'user_id') {
+          if (field.key !== 'user_ids') {
             return field;
           }
           return {
@@ -107,7 +92,7 @@ export class BanksAccountsComponent implements OnInit {
           };
         });
 
-        this.columns = this.formFactory.getTableColumnsFromMetadata<AccountWithUsers>(this.formFields).map((column) => {
+        this.columns = this.formFactory.getTableColumnsFromMetadata<Account>(this.formFields).map((column) => {
           if (column.key === 'bank_id') {
             return {
               ...column,
@@ -115,10 +100,18 @@ export class BanksAccountsComponent implements OnInit {
             };
           }
 
-          if (column.key === 'user_id') {
+          if (column.key === 'users') {
             return {
               ...column,
-              formatter: (value: number | number[]) => this.getUserNames(value),
+              label: 'Usuarios',
+              formatter: (value: any[]) => this.formatUsers(value),
+            };
+          }
+
+          if (column.key === 'iban') {
+            return {
+              ...column,
+              label: 'IBAN',
             };
           }
 
@@ -137,31 +130,28 @@ export class BanksAccountsComponent implements OnInit {
     const bank = this.banks.find(b => b.id === bankId);
     return bank?.name || 'Unknown Bank';
   }
-  getUserNames(userId: number | number[]): string {
-    if (Array.isArray(userId)) {
-      const names = userId
-        .map((id) => this.getUserNames(id))
-        .filter((name) => name !== 'Unknown User');
-      return names.length ? names.join(', ') : 'Unknown User';
-    }
-    const user = this.users.find(u => u.id === userId);
-    return user ? `${user.name} ${user.surname1} ${user.surname2}` : 'Unknown User';
+  formatUsers(users: any[]): string {
+    if (!users || users.length === 0) return 'No users';
+    return users
+      .map((user) => `${user.name} ${user.surname1}`)
+      .join(', ');
   }
 
-  editAccount(account: AccountWithUsers): void {
+  editAccount(account: Account): void {
     this.openDialog(account);
   }
 
   addAccount(): void {
     this.openDialog();
   }
-  openDialog(data?: AccountWithUsers): void {
+
+  openDialog(data?: Account): void {
     const initialData = data
       ? {
           ...data,
-          user_id: data.user_ids?.length
-            ? data.user_ids
-            : (typeof data.user_id === 'number' ? [data.user_id] : []),
+          user_ids: (data.users ?? [])
+            .map((user) => user.id)
+            .filter((id): id is number => typeof id === 'number'),
         }
       : {};
     const dialogRef = this.dialog.open(GenericDialogComponent, {
@@ -179,31 +169,14 @@ export class BanksAccountsComponent implements OnInit {
       }
     });
   }
-/*  openDialog(data?: Account): void {
-    const dialogRef = this.dialog.open(GenericDialogComponent, {
-      data: {
-        title: data ? 'Edit Account' : 'New Account',
-        fields: this.formFactory.getFormConfig('account'),
-        initialData: data || {}
-      }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        result.id ? this.updateAccount(result) : this.createAccount(result);
-      }
-    });
-  } */
-
-  updateAccount(account: AccountWithUsers): void {
+  updateAccount(account: Account): void {
     this.accountService.update(account.id!, account).subscribe({
-      next: (response: ApiResponse<AccountWithUsers>) => {
+      next: (response: ApiResponse<Account>) => {
         this.isLoading = false;
         this.toastService.showToast(response, environment.toastType.Success, {});
-        const updatedAccount = this.attachUserIds(response.response);
-        const index = this.accounts.findIndex(acc => acc.id === updatedAccount.id);
+        const index = this.accounts.findIndex(acc => acc.id === response.response.id);
         if (index !== -1) {
-          this.accounts[index] = updatedAccount;
+          this.accounts[index] = response.response;
           this.accounts = [...this.accounts]; // Reassign to trigger change detection
         }
         this.cdr.detectChanges();
@@ -216,13 +189,12 @@ export class BanksAccountsComponent implements OnInit {
     });
   }
 
-  createAccount(account: AccountWithUsers): void {
+  createAccount(account: Account): void {
     this.accountService.create(account).subscribe({
-      next: (response: ApiResponse<AccountWithUsers>) => {
+      next: (response: ApiResponse<Account>) => {
         this.isLoading = false;
         this.toastService.showToast(response, environment.toastType.Success, {});
-        const newAccount = this.attachUserIds(response.response);
-        this.accounts.push(newAccount); // Add the new account to the array
+        this.accounts.push(response.response); // Add the new account to the array
         this.accounts = [...this.accounts]; // Reassign to trigger change detection
         this.cdr.detectChanges();
       },
@@ -239,29 +211,11 @@ export class BanksAccountsComponent implements OnInit {
     this.filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
   }
 
-  private normalizeAccountPayload(account: AccountWithUsers): AccountWithUsers {
-    const userIds = Array.isArray(account.user_id)
-      ? account.user_id.filter((id): id is number => typeof id === 'number')
-      : (Array.isArray(account.user_ids) ? account.user_ids : [account.user_id])
-          .filter((id): id is number => typeof id === 'number');
-
-    return {
-      ...account,
-      user_id: userIds[0] ?? account.user_id,
-      user_ids: userIds,
-    };
-  }
-
-  private attachUserIds(account: AccountWithUsers): AccountWithUsers {
-    const usersFromRelation = account.users
-      ?.map((user) => user.id)
-      .filter((id): id is number => typeof id === 'number');
-
-    return {
-      ...account,
-      user_ids: usersFromRelation?.length
-        ? usersFromRelation
-        : (typeof account.user_id === 'number' ? [account.user_id] : []),
-    };
+  private normalizeAccountPayload(account: Account): Account {
+    // Asegúrate de que user_ids es un array
+    if (!Array.isArray(account.user_ids)) {
+      account.user_ids = [];
+    }
+    return account;
   }
 }

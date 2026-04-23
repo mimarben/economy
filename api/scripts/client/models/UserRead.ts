@@ -9,25 +9,27 @@ export type CreatedAt = string;
 export type UpdatedAt = string;
 export type DeletedAt = string | null;
 export type Name = string;
-export type Last4 = string | null;
-export type CardTypeEnum = "credit" | "debit" | "revolving";
+export type Surname1 = string;
+export type Surname2 = string | null;
+export type Dni = string;
+export type Email = string | null;
 export type Active = boolean;
-export type AccountId = number;
-export type ImportOriginId = number | null;
-export type ImportProfileId = number | null;
+export type Telephone = number | null;
+import { UserRoleEnum } from "@core/const/UserRole.enum";
 export type Id = number;
 
-export interface CardRead {
+export interface UserRead {
   created_at: CreatedAt;
   updated_at: UpdatedAt;
   deleted_at?: DeletedAt;
   name: Name;
-  last4?: Last4;
-  type: CardTypeEnum;
+  surname1: Surname1;
+  surname2?: Surname2;
+  dni: Dni;
+  email?: Email;
   active?: Active;
-  account_id: AccountId;
-  import_origin_id?: ImportOriginId;
-  import_profile_id?: ImportProfileId;
+  telephone?: Telephone;
+  role?: UserRoleEnum;
   id: Id;
   [k: string]: unknown;
 }
