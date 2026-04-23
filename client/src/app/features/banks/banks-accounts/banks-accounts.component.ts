@@ -67,6 +67,7 @@ export class BanksAccountsComponent implements OnInit {
     }).subscribe({
       next: ({ accounts, banks, users, origins, profiles, meta }) => {
         this.accounts = accounts.response as Account[];
+        console.log('[BanksAccounts] accounts loaded:', this.accounts);
         this.banks = banks.response;
         this.users = users.response;
         this.origins = origins.response;
@@ -100,11 +101,12 @@ export class BanksAccountsComponent implements OnInit {
             };
           }
 
-          if (column.key === 'users') {
+          if (column.key === 'users' || column.key === 'user_ids') {
             return {
-              ...column,
+              key: 'users',
               label: 'Usuarios',
-              formatter: (value: any[]) => this.formatUsers(value),
+              sortable: false,
+              formatter: (_: any, row: Account) => this.formatUsers(row.users ?? []),
             };
           }
 
@@ -212,10 +214,6 @@ export class BanksAccountsComponent implements OnInit {
   }
 
   private normalizeAccountPayload(account: Account): Account {
-    // Asegúrate de que user_ids es un array
-    if (!Array.isArray(account.user_ids)) {
-      account.user_ids = [];
-    }
     return account;
   }
 }

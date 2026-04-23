@@ -1,7 +1,7 @@
 """Service for Account implementing CRUD operations."""
 from sqlalchemy.orm import Session
 from repositories.finance.account_repository import AccountRepository
-from schemas.finance.account_schema import AccountCreate, AccountRead, AccountUpdate
+from schemas.finance.account_schema import AccountBase, AccountCreate, AccountRead, AccountUpdate
 from models import Account, AccountUser, User
 from services.core.base_service import BaseService
 
@@ -35,9 +35,9 @@ class AccountService(BaseService[Account, AccountRead, AccountCreate, AccountUpd
         
         # Remove user_ids from data dict before creating the account
         account_data = data.model_dump(exclude={'user_ids'})
-        
-        # Call parent create with cleaned data
-        created_account = super().create(AccountCreate.model_validate(account_data))
+
+        # Call parent create with cleaned data (AccountBase, no user_ids required)
+        created_account = super().create(AccountBase.model_validate(account_data))
         
         # Now add the user associations
         if user_ids:

@@ -26,7 +26,7 @@ def upgrade() -> None:
     # Add user_id foreign key to expenses
     op.add_column('expenses', sa.Column('user_id', sa.Integer(), nullable=True))
     op.create_index(op.f('ix_expenses_user_id'), 'expenses', ['user_id'], unique=False)
-    op.create_foreign_key('fk_expenses_user_id', 'expenses', 'users', ['user_id'], [])
+    op.create_foreign_key('fk_expenses_user_id', 'expenses', 'users', ['user_id'], ['id'])
 
 
 def downgrade() -> None:

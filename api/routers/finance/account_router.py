@@ -154,4 +154,4 @@ def delete(id_account):
 
 @router.get("/meta/account")
 def get_meta():
-    return export_schema(AccountBase)
+    return export_schema(AccountCreate)

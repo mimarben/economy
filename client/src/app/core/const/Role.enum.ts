@@ -1,7 +1,7 @@
 export enum RoleEnum {
-  HUSBAND = "husband",
-  WIFE = "wife",
-  CHILD = "child",
-  PET= "pet",
-  OTHER = "other"
+  HUSBAND = "HUSBAND",
+  WIFE = "WIFE",
+  CHILD = "CHILD",
+  PET= "PET",
+  OTHER = "OTHER"
 }

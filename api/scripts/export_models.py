@@ -16,22 +16,21 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 # Patches: reemplaza enums inline por imports Angular
 # ─────────────────────────────────────────────
 ENUM_PATCHES: dict[str, str] = {
-    'export type CurrencyEnum = "€" | "$" | "¥" | "₿" | "Ξ" | "USDC" | "DOGE" | "LTC" | "XRP" | "XLM" | "ADA" | "DOT" | "SOL" | "SHIB" | "TRX";':
+    'export type CurrencyEnum = "EURO" | "USD" | "JPY" | "BTC" | "ETH" | "USDC" | "DOGE" | "LTC" | "XRP" | "XLM" | "ADA" | "DOT" | "SOL" | "SHIB" | "TRX";':
         'import { CurrencyEnum } from "@core/const/Currency.enum";',
-
     'export type RoleEnum = "husband" | "wife" | "child" | "other";':
         'import { RoleEnum } from "@core/const/Role.enum";',
 
-    'export type SourceTypeEnum = "income" | "saving" | "investment" | "expense" | "other";':
+    'export type SourceTypeEnum = "INCOME" | "SAVING" | "INVESTMENT" | "EXPENSE" | "OTHER";':
         'import { SourceTypeEnum } from "@core/const/SourceType.enum";',
 
-    'export type ActionEnum = "buy" | "sell" | "transfer" | "deposit" | "withdraw" | "hold";':
+    'export type ActionEnum = "BUY" | "SELL" | "TRANSFER" | "DEPOSIT" | "WITHDRAW" | "HOLD";':
         'import { ActionEnum } from "@core/const/Action.enum";',
 
-    'export type UserRoleEnum = "administrator" | "editor" | "user" | "guest";':
+    'export type UserRoleEnum = "ADMINISTRATOR" | "EDITOR" | "USER" | "GUEST";':
         'import { UserRoleEnum } from "@core/const/UserRole.enum";',
 
-    'export type TransactionEnum = "expense" | "income" | "investment";':
+    'export type TransactionEnum = "EXPENSE" | "INCOME" | "INVESTMENT";':
         'import { TransactionEnum } from "@core/const/Transaction.enum";',
 }
 

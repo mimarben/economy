@@ -174,7 +174,11 @@ export class GenericFormComponent implements OnChanges, AfterViewInit, OnDestroy
     const validators: ValidatorFn[] = field.validators ? [...field.validators] : [];
 
     if (field.required) {
-      validators.push(Validators.required);
+      if (field.type === 'select' && field.multiple) {
+        validators.push((control) => (Array.isArray(control.value) && control.value.length >= 1 ? null : { required: true }));
+      } else {
+        validators.push(Validators.required);
+      }
     }
 
     if (field.type === 'text' || field.type === 'email') {

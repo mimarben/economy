@@ -49,7 +49,7 @@ class AccountRead(AccountBase, AuditFields):
 
 
 class AccountCreate(AccountBase):
-    user_ids: List[int] = Field(..., min_items=1, json_schema_extra={"ui_type": "multi-select", "relation": "user"})
+    user_ids: List[int] = Field(..., min_length=1, json_schema_extra={"ui_type": "multi-select", "relation": "user"})
 
 
 class AccountUpdate(BaseModel):

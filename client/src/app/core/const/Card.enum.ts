@@ -1,6 +1,6 @@
 export enum CardEnum {
-    CREDIT = "credit",
-    DEBIT = "debit",
-    REVOLVING = "revolving",
-    OTHER = "other"
+    CREDIT = "CREDIT",
+    DEBIT = "DEBIT",
+    REVOLVING = "REVOLVING",
+    OTHER = "OTHER"
 }

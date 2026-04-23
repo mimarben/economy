@@ -11,6 +11,10 @@ class AccountRepository(BaseRepository[Account]):
     def __init__(self, db):
         super().__init__(db, Account)
 
+    def get_by_id(self, id: int):
+        stmt = self._base_query().options(selectinload(Account.users)).where(Account.id == id)
+        return self.db.execute(stmt).scalars().one_or_none()
+
     def get_all(self, page: int = 1, per_page: int = 50):
         stmt = self._base_query().options(selectinload(Account.users)).offset((page - 1) * per_page).limit(per_page)
         return self.db.execute(stmt).scalars().all()
