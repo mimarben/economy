@@ -34,6 +34,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MATERIAL_IMPORTS } from '@utils/material.imports';
 import { FormsModule } from '@angular/forms';
 import { CurrencyEnum } from '@app/core/const/Currency.enum';
+import { SourceEnum } from '@app/core/const/Source.enum';
 @Component({
   selector: 'app-excel-import',
   standalone: true,
@@ -447,7 +448,7 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    const transactionType: 'expense' | 'income' | 'investment' = transaction.amount < 0 ? 'expense' : 'income';
+    const transactionType: SourceEnum =  transaction.amount < 0 ? SourceEnum.EXPENSE : SourceEnum.INCOME;
 
     this.sourceService.suggestSource(categoryId, transactionType).subscribe({
       next: (res) => {
@@ -469,8 +470,7 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
   private findSourceByDescription(transaction: ImportTransaction): Source | null {
     const description = this.utilsService.normalize(String(transaction.description ?? ''));
     if (!description) return null;
-
-    const expectedType = transaction.amount < 0 ? 'expense' : 'income';
+    const expectedType: SourceEnum =    transaction.amount < 0 ? SourceEnum.EXPENSE : SourceEnum.INCOME;
     const candidates = this.sources.filter((s) => s.type === expectedType);
     if (!candidates.length) return null;
 
@@ -487,7 +487,7 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
   }
 
   private applySourceFallback(transaction: ImportTransaction) {
-    const expectedType = transaction.amount < 0 ? 'expense' : 'income';
+    const expectedType: SourceEnum =transaction.amount < 0 ? SourceEnum.EXPENSE : SourceEnum.INCOME;
     const sourceByType = this.sources.find((s) => s.type === expectedType);
     const fallbackSource = sourceByType ?? this.sources[0];
 

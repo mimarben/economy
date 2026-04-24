@@ -13,9 +13,10 @@ import { Observable } from 'rxjs';
 import { environment } from '@env/environment';
 import { ApiResponse } from '@app/models/core/APIResponse';
 import { SourceBase as Source } from '@finance_models/SourceBase';
+import { SourceEnum } from '@app/core/const/Source.enum';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SourceService extends BaseCrudService<Source> {
   /**
@@ -30,7 +31,23 @@ export class SourceService extends BaseCrudService<Source> {
    * Suggest a source based on category or transaction type.
    * Backend endpoint is optional; fallback to first active source if not available.
    */
-  suggestSource(categoryId: number, transactionType: 'expense' | 'income' | 'investment'): Observable<ApiResponse<Source>> {
-    return this.http.get<ApiResponse<Source>>(`${environment.apiUrl}/sources/suggest?category_id=${categoryId}&type=${transactionType}`);
+  suggestSource(
+    categoryId: number,
+    transactionType: SourceEnum,
+  ): Observable<ApiResponse<Source>> {
+    const allowed = [
+      SourceEnum.EXPENSE,
+      SourceEnum.INCOME,
+      SourceEnum.INVESTMENT,
+    ];
+
+    if (!allowed.includes(transactionType)) {
+      throw new Error(
+        `Unsupported transactionType for suggestSource: ${transactionType}`,
+      );
+    }
+    return this.http.get<ApiResponse<Source>>(
+      `${environment.apiUrl}/sources/suggest?category_id=${categoryId}&type=${transactionType}`,
+    );
   }
 }
