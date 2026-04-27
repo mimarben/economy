@@ -32,7 +32,7 @@ from .investments import Investment, InvestmentLog, InvestmentsCategory
 from .households import Household, HouseholdMember
 
 # Category Rules
-from .category_rules import CategoryRule
+from .category_rules import CategoryRule, SourceRule
 
 from .cards import Card
 
@@ -65,6 +65,7 @@ __all__ = [
     'Household',
     'HouseholdMember',
     'CategoryRule',
+    'SourceRule',
     'Card',
     'ImportOrigin',
     'ImportProfile',

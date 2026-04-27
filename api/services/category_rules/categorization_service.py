@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 
 from models import CategoryRule, TransactionEnum
 from repositories.category_rules.category_rule_repository import CategoryRuleRepository
+from repositories.category_rules.source_rule_repository import SourceRuleRepository
 from schemas.category_rules.category_rule_schema import (
     CategoryRuleRead,
     CategoryRuleCreate,
@@ -102,13 +103,14 @@ class CategorizationService:
     def __init__(self, db: Session, ai_service=None):
         """
         Initialize categorization service.
-        
+
         Args:
             db: SQLAlchemy session
             ai_service: Optional AI service for fallback categorization
         """
         self.db = db
         self.rule_repository = CategoryRuleRepository(db)
+        self.source_rule_repository = SourceRuleRepository(db)
         self.ai_service = ai_service
 
     def categorize_transaction(
@@ -161,31 +163,38 @@ class CategorizationService:
         transaction_type: str
     ) -> dict:
         """
-        Categorize a transaction using rules + AI fallback, also returning flags.
-        
+        Categorize a transaction using rules + AI fallback, also returning flags and source.
+
         Args:
             description: Transaction description/name
             transaction_type: Type of transaction (expense|income|investment)
-            
+
         Returns:
-            Dict with category_id and ignore_in_analysis flag
+            Dict with category_id, source_id, and ignore_in_analysis flag
         """
         if not description or not transaction_type:
-            return {"category_id": None, "ignore_in_analysis": False}
+            return {"category_id": None, "source_id": None, "ignore_in_analysis": False}
 
         try:
             enum_type = TransactionEnum(transaction_type)
         except ValueError:
-            return {"category_id": None, "ignore_in_analysis": False}
+            return {"category_id": None, "source_id": None, "ignore_in_analysis": False}
 
         # Step 1: Get active rules ordered by priority DESC
         rules = self.rule_repository.get_active_by_type(enum_type)
-        
+
         # Step 2: Apply regex matching
         for rule in rules:
             if rule.matches(description):
+                # Get first active source rule for this category rule
+                source_id = None
+                source_rules = self.source_rule_repository.get_active_by_category_rule(rule.id)
+                if source_rules:
+                    source_id = source_rules[0].source_id
+
                 return {
                     "category_id": rule.category_id,
+                    "source_id": source_id,
                     "ignore_in_analysis": bool(rule.ignore_in_analysis)
                 }
 
@@ -194,13 +203,13 @@ class CategorizationService:
             try:
                 category_id = self.ai_service.categorize(description, transaction_type)
                 if category_id:
-                    return {"category_id": category_id, "ignore_in_analysis": False}
+                    return {"category_id": category_id, "source_id": None, "ignore_in_analysis": False}
             except Exception as e:
                 # Log error but don't crash
                 print(f"AI categorization failed: {e}")
 
         # Step 4: Return None if no match and no AI
-        return {"category_id": None, "ignore_in_analysis": False}
+        return {"category_id": None, "source_id": None, "ignore_in_analysis": False}
 
     def categorize_batch(
         self,
@@ -208,16 +217,16 @@ class CategorizationService:
     ) -> List[dict]:
         """
         Categorize multiple transactions in batch.
-        
+
         Expected format:
         [
             {"description": "...", "type": "expense"},
             {...}
         ]
-        
+
         Returns:
         [
-            {"description": "...", "type": "expense", "category_id": 5 or None, "ignore_in_analysis": False},
+            {"description": "...", "type": "expense", "category_id": 5 or None, "source_id": 12 or None, "ignore_in_analysis": False},
             {...}
         ]
         """
@@ -228,6 +237,7 @@ class CategorizationService:
                 transaction_type=transaction.get("type", "")
             )
             transaction["category_id"] = categorization["category_id"]
+            transaction["source_id"] = categorization["source_id"]
             transaction["ignore_in_analysis"] = categorization["ignore_in_analysis"]
             result.append(transaction)
         return result

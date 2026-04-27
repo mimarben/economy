@@ -35,6 +35,7 @@ export const routes: Routes = [
       { path: 'import_profiles', loadComponent: () => import('./features/import/profiles/import-profiles.component').then((m) => m.ImportProfilesComponent), data: { title: 'import_profiles.title' } },
       { path: 'charts', loadComponent: () => import('./features/charts/components/charts-container/charts-container.component').then((m) => m.ChartsContainerComponent), data: { title: 'charts.title' } },
       { path: 'category_rules', loadComponent: () => import('./features/category-rules/category-rules.component').then((m) => m.CategoryRulesComponent), data: { title: 'category_rules.title' } },
+      { path: 'source_rules', loadComponent: () => import('./features/source-rules/source-rules.component').then((m) => m.SourceRulesComponent), data: { title: 'source_rules.title' } },
       { path: 'cards', loadComponent: () => import('./features/cards/cards.component').then((m) => m.CardsComponent), data: { title: 'cards.title' } },
     ]
   },
