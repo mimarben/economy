@@ -12,7 +12,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatSliderModule } from '@angular/material/slider';
 import { MATERIAL_IMPORTS } from '@app/utils/material.imports';
 
-import { CategoryRule } from '../../../services/category-rule/category-rule.service';
+import { CategoryRule } from '../../../services/rules/category-rule.service';
 import { regexValidator } from '../../../utils/validators/regex.validator';
 
 interface DialogData {

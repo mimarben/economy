@@ -1,33 +1,13 @@
-<div class="source-rules-container">
-  <div class="header">
-    <h1>Source Rules Management</h1>
-    <button mat-raised-button color="primary" (click)="openCreateDialog()" [disabled]="loading">
-      <mat-icon>add</mat-icon>
-      Add New Rule
-    </button>
-  </div>
-
-  <mat-card *ngIf="error" class="error-card">
-    <mat-card-content>
-      <p>{{ error }}</p>
-      <button mat-button (click)="error = null">Dismiss</button>
-    </mat-card-content>
-  </mat-card>
-
-  <mat-spinner *ngIf="loading && rules.length === 0" diameter="40" class="spinner"></mat-spinner>
-
-  <app-generic-table
-    *ngIf="rules.length > 0 && !loading"
-    [data]="rules"
-    [columns]="columns"
-    [loading]="loading"
-    (onEdit)="openEditDialog($event)"
-    (onDelete)="onDeleteRule($event)"
-  ></app-generic-table>
-
-  <mat-card *ngIf="rules.length === 0 && !loading" class="empty-state">
-    <mat-card-content>
-      <p>No source rules found. Create one to get started.</p>
-    </mat-card-content>
-  </mat-card>
-</div>
+<app-generic-table
+  [filter]="filterValue"
+  [data]="rules"
+  [columns]="columns"
+  [isLoading]="isLoading"
+  [errorMessage]="errorMessage"
+  [showDeleteAction]="true"
+  title="Source Rules"
+  addButtonLabel="Add Rule"
+  (edit)="editRule($event)"
+  (add)="addRule()"
+  (delete)="deleteRule($event)"
+></app-generic-table>

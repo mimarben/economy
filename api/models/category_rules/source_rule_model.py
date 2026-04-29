@@ -1,22 +1,26 @@
 """
-SourceRule model for mapping category rules to sources.
+SourceRule model for independent source matching using regex patterns.
 
-Each SourceRule associates a CategoryRule with a Source, allowing
-automatic source assignment when a rule matches a transaction.
+Mirrors CategoryRule but assigns a Source instead of a Category.
+Runs independently from CategoryRule during transaction categorization.
 """
 
-from sqlalchemy import Column, Integer, ForeignKey, Boolean, Index
-from sqlalchemy.orm import relationship
+import re
+from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, Enum as SQLEnum, Index
 
 from ..core.base import Base, TimestampMixin
+from ..core.enums import TransactionEnum
+from services.logs.logger_service import setup_logger
+
+logger = setup_logger("source_rules")
 
 
 class SourceRule(TimestampMixin, Base):
     """
-    Represents a source suggestion for a categorization rule.
+    Regex-based rule that assigns a Source to a transaction.
 
-    Allows multiple source suggestions per category rule, providing
-    flexibility for rules that match multiple merchant sources.
+    Applied independently from CategoryRule: same transaction goes through
+    both rule sets in parallel, each in priority DESC order.
     """
 
     __tablename__ = 'source_rules'
@@ -24,22 +28,30 @@ class SourceRule(TimestampMixin, Base):
     # Primary Key
     id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
 
-    # Foreign Keys
-    category_rule_id = Column(Integer, ForeignKey('category_rules.id'), nullable=False, index=True)
-    source_id = Column(Integer, ForeignKey('sources.id'), nullable=False, index=True)
-
-    # Status
+    # Rule definition (mirrors CategoryRule)
+    name = Column(String(255), nullable=False)
+    pattern = Column(String(1000), nullable=False)
+    type = Column(SQLEnum(TransactionEnum), nullable=False)
+    priority = Column(Integer, nullable=False, default=100)
     is_active = Column(Boolean, nullable=False, default=True)
 
-    # Indexes for common queries
+    # Target source
+    source_id = Column(Integer, ForeignKey('sources.id'), nullable=False, index=True)
+
     __table_args__ = (
-        Index('idx_source_rules_category_rule_id', 'category_rule_id'),
-        Index('idx_source_rules_source_id', 'source_id'),
-        Index('idx_source_rules_active', 'is_active'),
+        Index('idx_source_rules_active_type_priority', 'is_active', 'type', 'priority'),
+        Index('idx_source_rules_type_priority', 'type', 'priority'),
     )
+
+    def matches(self, text: str) -> bool:
+        try:
+            return bool(re.search(self.pattern, text, re.IGNORECASE))
+        except re.error as e:
+            logger.warning("Invalid regex pattern in source rule %s: %s", self.id, e)
+            return False
 
     def __repr__(self) -> str:
         return (
-            f"<SourceRule(id={self.id}, category_rule_id={self.category_rule_id}, "
-            f"source_id={self.source_id}, active={self.is_active})>"
+            f"<SourceRule(id={self.id}, name='{self.name}', "
+            f"type={self.type}, priority={self.priority}, active={self.is_active})>"
         )

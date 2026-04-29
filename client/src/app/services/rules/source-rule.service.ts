@@ -12,17 +12,23 @@ import { BaseCrudService } from '@core_services/base-crud.service';
 
 export interface SourceRule {
   id?: number;
-  category_rule_id: number;
-  source_id: number;
+  name: string;
+  pattern: string;
+  type: 'expense' | 'income' | 'investment';
+  priority: number;
   is_active: boolean;
+  source_id: number;
   created_at?: string;
   updated_at?: string;
 }
 
 export interface SourceRuleUpdate {
-  category_rule_id?: number;
-  source_id?: number;
+  name?: string;
+  pattern?: string;
+  type?: 'expense' | 'income' | 'investment';
+  priority?: number;
   is_active?: boolean;
+  source_id?: number;
 }
 
 @Injectable({
@@ -55,10 +61,10 @@ export class SourceRuleService extends BaseCrudService<SourceRule> {
   }
 
   /**
-   * Get all active rules for a category rule.
+   * Get all active rules for a transaction type.
    */
-  getActiveByCategoryRule(categoryRuleId: number): Observable<SourceRule[]> {
-    return this.http.get<any>(`/source_rules/by_category_rule/${categoryRuleId}`).pipe(
+  getActiveByType(transactionType: string): Observable<SourceRule[]> {
+    return this.http.get<any>(`/source_rules/by_type/${transactionType}`).pipe(
       map((payload) => payload?.response || []),
     );
   }

@@ -1,289 +1,143 @@
-/**
- * Source Rule Management Component
- */
-
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-import { MATERIAL_IMPORTS } from '@utils/material.imports';
-import { FormFieldConfig } from '@shared/generic-form/form-config';
 import { GenericDialogComponent } from '@shared/generic-dialog/generic-dialog.component';
-
-import { SourceRuleService, SourceRule } from '@services/source-rule/source-rule.service';
-import { CategoryRuleService, CategoryRule } from '@services/category-rule/category-rule.service';
-import { SourceService } from '@services/finance/source.service';
 import { GenericTableComponent, TableColumn } from '@shared/generic-table/generic-table.component';
+import { FormFieldConfig } from '@shared/generic-form/form-config';
+import { FormFactoryService } from '@app/core/factories/form-factory.service';
+import { MetaService } from '@core_services/meta.service';
+import { SourceRuleService, SourceRule } from '@app/services/rules/source-rule.service';
+import { SourceService } from '@finance_services/source.service';
 
 @Component({
   selector: 'app-source-rules',
   standalone: true,
-  imports: [CommonModule, ...MATERIAL_IMPORTS, GenericTableComponent],
+  imports: [GenericTableComponent],
   templateUrl: './source-rules.component.html',
   styleUrls: ['./source-rules.component.scss'],
 })
-export class SourceRulesComponent implements OnInit, OnDestroy {
+export class SourceRulesComponent implements OnInit {
   rules: SourceRule[] = [];
-  loading = false;
-  error: string | null = null;
-
-  categoryRules: CategoryRule[] = [];
-  sources: { id: number; name: string }[] = [];
-
-  columns: TableColumn<SourceRule>[] = [
-    {
-      key: 'category_rule_id',
-      label: 'Category Rule',
-      sortable: true,
-      formatter: (value: number) => this.getCategoryRuleLabel(value),
-    },
-    {
-      key: 'source_id',
-      label: 'Source',
-      sortable: true,
-      formatter: (value: number) => this.getSourceLabel(value),
-    },
-    {
-      key: 'is_active',
-      label: 'Active',
-      sortable: true,
-      formatter: (value: boolean) => (value ? 'Yes' : 'No'),
-    },
-  ];
-
-  private destroy$ = new Subject<void>();
+  filterValue = '';
+  isLoading = false;
+  errorMessage = '';
+  formFields: FormFieldConfig[] = [];
+  columns: TableColumn<SourceRule>[] = [];
 
   constructor(
     private sourceRuleService: SourceRuleService,
-    private categoryRuleService: CategoryRuleService,
     private sourceService: SourceService,
+    private cdr: ChangeDetectorRef,
     private dialog: MatDialog,
+    private formFactory: FormFactoryService,
+    private metaService: MetaService,
   ) {}
 
   ngOnInit(): void {
-    this.loadRules();
-    this.loadCategoryRules();
-    this.loadSources();
-  }
+    this.sourceService.getAll().subscribe({
+      next: (resp) => {
+        const sourceOptions = (resp?.response || [])
+          .filter((s) => s.id !== undefined && s.id !== null)
+          .map((s) => ({ value: s.id as number, label: s.name }));
 
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
+        this.metaService.getMeta('source_rule').subscribe((meta) => {
+          const enriched = this.formFactory.enrichMetadataFields(meta.fields, {
+            source_id: sourceOptions,
+          });
+          this.formFields = [{ key: 'id', label: 'Id', type: 'number' }, ...enriched];
+          this.columns = [
+            { key: 'id', label: 'Id', sortable: true },
+            ...this.formFactory.getTableColumnsFromMetadata(enriched),
+          ];
+          this.loadRules();
+        });
+      },
+      error: (err: unknown) => console.error('Error loading sources:', err),
+    });
   }
 
   loadRules(): void {
-    this.loading = true;
-    this.error = null;
-
-    this.sourceRuleService
-      .getAllRules()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (rules) => {
-          this.rules = rules;
-          this.loading = false;
-        },
-        error: (error) => {
-          this.error = 'Failed to load rules. Please try again.';
-          console.error('Error loading rules:', error);
-          this.loading = false;
-        },
-      });
-  }
-
-  private loadCategoryRules(): void {
-    this.categoryRuleService.getAllRules().pipe(takeUntil(this.destroy$)).subscribe({
-      next: (rules) => (this.categoryRules = rules),
-      error: (err) => console.error('Error loading category rules:', err),
+    this.isLoading = true;
+    this.sourceRuleService.getAllRules().subscribe({
+      next: (rules) => {
+        this.rules = rules;
+        this.isLoading = false;
+      },
+      error: (err: unknown) => {
+        this.errorMessage = 'Failed to load rules.';
+        console.error('Error loading rules:', err);
+        this.isLoading = false;
+      },
     });
   }
 
-  private loadSources(): void {
-    this.sourceService.getAll().pipe(takeUntil(this.destroy$)).subscribe({
-      next: (resp) =>
-        (this.sources = (resp?.response || [])
-          .filter((s) => s.id !== undefined && s.id !== null)
-          .map((s) => ({ id: s.id as number, name: s.name }))),
-      error: (err) => console.error('Error loading sources:', err),
+  editRule(rule: SourceRule): void {
+    this.openDialog(rule);
+  }
+
+  addRule(): void {
+    this.openDialog();
+  }
+
+  deleteRule(rule: SourceRule): void {
+    if (!rule.id || !confirm(`Delete rule "${rule.name}"?`)) return;
+    this.sourceRuleService.deleteRule(rule.id).subscribe({
+      next: () => {
+        this.rules = this.rules.filter((r) => r.id !== rule.id);
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        this.errorMessage = 'Failed to delete rule.';
+        console.error('Error deleting rule:', err);
+      },
     });
   }
 
-  private getCategoryRuleLabel(categoryRuleId?: number): string {
-    if (!categoryRuleId) {
-      return '-';
-    }
-
-    const rule = this.categoryRules.find((c) => c.id === categoryRuleId);
-    return rule ? rule.name : `#${categoryRuleId}`;
-  }
-
-  private getSourceLabel(sourceId?: number): string {
-    if (!sourceId) {
-      return '-';
-    }
-
-    const source = this.sources.find((s) => s.id === sourceId);
-    return source ? source.name : `#${sourceId}`;
-  }
-
-  private getCategoryRuleOptions() {
-    return this.categoryRules.map((c) => ({ value: c.id, label: c.name }));
-  }
-
-  private getSourceOptions() {
-    return this.sources.map((s) => ({ value: s.id, label: s.name }));
-  }
-
-  private getDialogFields(): FormFieldConfig[] {
-    return [
-      { key: 'id', label: 'Id', type: 'number' },
-      {
-        key: 'category_rule_id',
-        label: 'Category Rule',
-        type: 'select',
-        required: true,
-        options: this.getCategoryRuleOptions(),
-      },
-      {
-        key: 'source_id',
-        label: 'Source',
-        type: 'select',
-        required: true,
-        options: this.getSourceOptions(),
-      },
-      { key: 'is_active', label: 'Rule is Active', type: 'checkbox' },
-    ];
-  }
-
-  private isCategoryRuleIdValid(categoryRuleId: number): boolean {
-    if (!categoryRuleId) return false;
-    return this.getCategoryRuleOptions().some((option) => option.value === categoryRuleId);
-  }
-
-  private isSourceIdValid(sourceId: number): boolean {
-    if (!sourceId) return false;
-    return this.getSourceOptions().some((option) => option.value === sourceId);
-  }
-
-  openCreateDialog(): void {
-    const fields = this.getDialogFields();
-
+  private openDialog(data?: SourceRule): void {
     const dialogRef = this.dialog.open(GenericDialogComponent, {
-      width: '600px',
       data: {
-        title: 'Create New Source Rule',
-        fields,
-        initialData: {
-          category_rule_id: this.categoryRules?.[0]?.id || null,
-          source_id: this.sources?.[0]?.id || null,
-          is_active: true,
-        },
+        title: data ? 'Edit Source Rule' : 'New Source Rule',
+        fields: this.formFields,
+        initialData: data || {},
       },
     });
-
-    dialogRef
-      .afterClosed()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((result) => {
-        if (result) {
-          this.createRule(result);
-        }
-      });
-  }
-
-  openEditDialog(rule: SourceRule): void {
-    const fields = this.getDialogFields();
-
-    const dialogRef = this.dialog.open(GenericDialogComponent, {
-      width: '600px',
-      data: {
-        title: 'Edit Source Rule',
-        fields,
-        initialData: rule,
-      },
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        result.id ? this.updateRule(result) : this.createRule(result);
+      }
     });
-
-    dialogRef
-      .afterClosed()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((result) => {
-        if (result && rule.id) {
-          if (!this.isCategoryRuleIdValid(result.category_rule_id || rule.category_rule_id)) {
-            this.error = `Invalid category_rule_id ${result.category_rule_id || rule.category_rule_id}`;
-            return;
-          }
-          if (!this.isSourceIdValid(result.source_id || rule.source_id)) {
-            this.error = `Invalid source_id ${result.source_id || rule.source_id}`;
-            return;
-          }
-          this.updateRule(rule.id, result);
-        }
-      });
-  }
-
-  onDeleteRule(rule: SourceRule): void {
-    if (!rule.id) {
-      return;
-    }
-    this.deleteRule(rule.id);
   }
 
   private createRule(rule: SourceRule): void {
-    if (!this.isCategoryRuleIdValid(rule.category_rule_id)) {
-      this.error = `Invalid category_rule_id ${rule.category_rule_id}`;
-      return;
-    }
-    if (!this.isSourceIdValid(rule.source_id)) {
-      this.error = `Invalid source_id ${rule.source_id}`;
-      return;
-    }
-
-    this.loading = true;
-    this.sourceRuleService
-      .createRule(rule)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: () => this.loadRules(),
-        error: (error) => {
-          this.error = 'Failed to create rule.';
-          console.error('Error creating rule:', error);
-          this.loading = false;
-        },
-      });
+    this.sourceRuleService.createRule(rule).subscribe({
+      next: (created) => {
+        this.rules = [...this.rules, created];
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        this.errorMessage = 'Failed to create rule.';
+        console.error('Error creating rule:', err);
+      },
+    });
   }
 
-  private updateRule(id: number, updates: Partial<SourceRule>): void {
-    this.loading = true;
-    this.sourceRuleService
-      .updateRule(id, updates)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: () => this.loadRules(),
-        error: (error) => {
-          this.error = 'Failed to update rule.';
-          console.error('Error updating rule:', error);
-          this.loading = false;
-        },
-      });
+  private updateRule(rule: SourceRule): void {
+    this.sourceRuleService.updateRule(rule.id!, rule).subscribe({
+      next: (updated) => {
+        const index = this.rules.findIndex((r) => r.id === updated.id);
+        if (index !== -1) {
+          this.rules[index] = updated;
+          this.rules = [...this.rules];
+        }
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        this.errorMessage = 'Failed to update rule.';
+        console.error('Error updating rule:', err);
+      },
+    });
   }
 
-  private deleteRule(id: number): void {
-    if (!confirm('Are you sure you want to delete this source rule?')) {
-      return;
-    }
-
-    this.loading = true;
-    this.sourceRuleService
-      .deleteRule(id)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: () => this.loadRules(),
-        error: (error) => {
-          this.error = 'Failed to delete rule.';
-          console.error('Error deleting rule:', error);
-          this.loading = false;
-        },
-      });
+  applyFilter(event: Event): void {
+    this.filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
   }
 }

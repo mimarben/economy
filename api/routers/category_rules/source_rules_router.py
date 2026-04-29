@@ -5,8 +5,9 @@ from sqlalchemy.orm import Session
 from pydantic import ValidationError
 from flask_babel import _
 
-from schemas.category_rules.source_rule_schema import SourceRuleCreate, SourceRuleUpdate
-from services.category_rules.source_rule_service import SourceRuleService
+from schemas.rules.source_rule_schema import SourceRuleBase, SourceRuleCreate, SourceRuleUpdate
+from schemas.core.export_schema import export_schema
+from services.rules.source_rule_service import SourceRuleService
 from services.core.interfaces import IReadService, ICreateService, IUpdateService, IDeleteService
 from db.database import get_db
 from services.core.response_service import Response
@@ -76,14 +77,16 @@ def list_all():
         return Response.error(_("DATABASE_ERROR"), str(e), 500, name)
 
 
-@router.get("/source_rules/by_category_rule/<int:category_rule_id>")
-def get_active_by_category_rule(category_rule_id: int):
-    """Get active source rules for a specific category rule."""
+@router.get("/source_rules/by_type/<string:transaction_type>")
+def get_active_by_type(transaction_type: str):
+    """Get active source rules for a specific transaction type."""
     db: Session = next(get_db())
     try:
         service = SourceRuleService(db)
-        results = service.get_active_by_category_rule(category_rule_id)
+        results = service.get_active_by_type(transaction_type)
         return Response.ok_data([r.model_dump() for r in results], _("SOURCE_RULE_LIST"), 200, name)
+    except ValueError as e:
+        return Response.error(_("INVALID_DATA"), str(e), 400, name)
     except Exception as e:
         return Response.error(_("DATABASE_ERROR"), str(e), 500, name)
 
@@ -119,3 +122,9 @@ def delete(id):
         return Response.ok_data(None, _("SOURCE_RULE_DELETED"), 200, name)
     except Exception as e:
         return Response.error(_("DATABASE_ERROR"), str(e), 500, name)
+
+
+@router.get("/meta/source_rule")
+def get_source_rule_meta():
+    """Return form field metadata for SourceRule."""
+    return export_schema(SourceRuleBase)

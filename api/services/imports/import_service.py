@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from repositories.expenses.expense_repository import ExpenseRepository
 from repositories.incomes.income_repository import IncomeRepository
 from models import Expense, Income
-from services.category_rules.categorization_service import CategorizationService
+from services.rules.categorization_service import CategorizationService
 from services.core.dedup_service import generate_dedup_hash
 from schemas.imports.import_schema import BulkImportRequest
 

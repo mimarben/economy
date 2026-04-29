@@ -5,9 +5,9 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from models import CategoryRule, TransactionEnum
-from repositories.category_rules.category_rule_repository import CategoryRuleRepository
-from repositories.category_rules.source_rule_repository import SourceRuleRepository
-from schemas.category_rules.category_rule_schema import (
+from repositories.rules.category_rule_repository import CategoryRuleRepository
+from repositories.rules.source_rule_repository import SourceRuleRepository
+from schemas.rules.category_rule_schema import (
     CategoryRuleRead,
     CategoryRuleCreate,
     CategoryRuleUpdate,
@@ -183,20 +183,27 @@ class CategorizationService:
         # Step 1: Get active rules ordered by priority DESC
         rules = self.rule_repository.get_active_by_type(enum_type)
 
-        # Step 2: Apply regex matching
+        # Step 2: Apply regex matching for category
+        matched_rule = None
         for rule in rules:
             if rule.matches(description):
-                # Get first active source rule for this category rule
-                source_id = None
-                source_rules = self.source_rule_repository.get_active_by_category_rule(rule.id)
-                if source_rules:
-                    source_id = source_rules[0].source_id
+                matched_rule = rule
+                break
 
-                return {
-                    "category_id": rule.category_id,
-                    "source_id": source_id,
-                    "ignore_in_analysis": bool(rule.ignore_in_analysis)
-                }
+        if matched_rule:
+            # Independent source matching pass
+            source_id = None
+            source_rules = self.source_rule_repository.get_active_by_type(enum_type)
+            for source_rule in source_rules:
+                if source_rule.matches(description):
+                    source_id = source_rule.source_id
+                    break
+
+            return {
+                "category_id": matched_rule.category_id,
+                "source_id": source_id,
+                "ignore_in_analysis": bool(matched_rule.ignore_in_analysis)
+            }
 
         # Step 3: Fallback to AI service if available
         if self.ai_service:

@@ -11,7 +11,7 @@ import { MATERIAL_IMPORTS } from '@utils/material.imports';
 import { FormFieldConfig } from '@shared/generic-form/form-config';
 import { GenericDialogComponent } from '@shared/generic-dialog/generic-dialog.component';
 
-import { CategoryRuleService, CategoryRule } from '@services/category-rule/category-rule.service';
+import { CategoryRuleService, CategoryRule } from '@app/services/rules/category-rule.service';
 import { ExpenseCategoryService } from '@services/expenses/expense-category.service';
 import { IncomeCategoryService } from '@services/incomes/income-category.service';
 import { InvestmentCategoryService } from '@services/investments/investment-category.service';

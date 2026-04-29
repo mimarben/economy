@@ -3,7 +3,7 @@ import { Injectable } from "@angular/core";
 import { ImportTransaction } from "@import_models/import-transaction.model";
 import { IncomeCategoryBase } from "@incomes_models/IncomeCategoryBase";
 import { ExpenseCategoryBase } from "@expenses_models/ExpenseCategoryBase";
-import { CategoryRuleService, CategoryRule } from "../category-rule/category-rule.service";
+import { CategoryRuleService, CategoryRule } from "../rules/category-rule.service";
 import { firstValueFrom } from "rxjs";
 
 @Injectable({
