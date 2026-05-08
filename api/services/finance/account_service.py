@@ -30,20 +30,21 @@ class AccountService(BaseService[Account, AccountRead, AccountCreate, AccountUpd
         if iban and self.repository.find_by_iban(iban):
             raise ValueError('Account with this IBAN already exists')
 
-        # Extract user_ids before passing to parent create
+        # Extract user_ids and initial_balance before passing to parent create
         user_ids = data.user_ids
-        
-        # Remove user_ids from data dict before creating the account
-        account_data = data.model_dump(exclude={'user_ids'})
+        initial_balance = data.initial_balance
 
-        # Call parent create with cleaned data (AccountBase, no user_ids required)
+        account_data = data.model_dump(exclude={'user_ids', 'initial_balance'})
+        # Use initial_balance as balance if balance not explicitly provided
+        if account_data.get('balance') is None and initial_balance is not None:
+            account_data['balance'] = initial_balance
+
         created_account = super().create(AccountBase.model_validate(account_data))
         
         # Now add the user associations
         if user_ids:
             self._set_account_users(created_account.id, user_ids)
-            # Refresh to include users
-            created_account = self.repository.get_by_id(created_account.id)
+            created_account = AccountRead.model_validate(self.repository.get_by_id(created_account.id))
         
         return created_account
 
@@ -54,7 +55,8 @@ class AccountService(BaseService[Account, AccountRead, AccountCreate, AccountUpd
 
         if data.iban is not None:
             normalized = self._normalize_iban(data.iban)
-            if normalized != existing.iban and self.repository.find_by_iban(normalized):
+            conflict = self.repository.find_by_iban(normalized)
+            if conflict and conflict.id != id:
                 raise ValueError('Another account with this IBAN already exists')
             data.iban = normalized
 
@@ -69,8 +71,7 @@ class AccountService(BaseService[Account, AccountRead, AccountCreate, AccountUpd
             # Update user associations
             self._set_account_users(id, user_ids)
             
-            # Refresh to include updated users
-            updated_account = self.repository.get_by_id(id)
+            updated_account = AccountRead.model_validate(self.repository.get_by_id(id))
         else:
             updated_account = super().update(id, data)
 
@@ -93,7 +94,7 @@ class AccountService(BaseService[Account, AccountRead, AccountCreate, AccountUpd
             account_user = AccountUser(account_id=account_id, user_id=user_id)
             self.db.add(account_user)
         
-        self.db.flush()
+        self.db.commit()
 
     # ISearchService
     def search(self, **filters) -> list[AccountRead]:

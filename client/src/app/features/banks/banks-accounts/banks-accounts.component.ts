@@ -93,7 +93,9 @@ export class BanksAccountsComponent implements OnInit {
           };
         });
 
-        this.columns = this.formFactory.getTableColumnsFromMetadata<Account>(this.formFields).map((column) => {
+        this.columns = this.formFactory.getTableColumnsFromMetadata<Account>(this.formFields)
+          .filter(column => column.key !== 'balance')
+          .map((column) => {
           if (column.key === 'bank_id') {
             return {
               ...column,
@@ -117,6 +119,14 @@ export class BanksAccountsComponent implements OnInit {
             };
           }
 
+          if (column.key === 'initial_balance') {
+            return {
+              ...column,
+              key: 'balance',
+              label: 'Balance',
+            };
+          }
+
           return column;
         });
 
@@ -135,7 +145,7 @@ export class BanksAccountsComponent implements OnInit {
   formatUsers(users: any[]): string {
     if (!users || users.length === 0) return 'No users';
     return users
-      .map((user) => `${user.name} ${user.surname1}`)
+      .map((user) => [user.name, user.surname1].filter(Boolean).join(' '))
       .join(', ');
   }
 

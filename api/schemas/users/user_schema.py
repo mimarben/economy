@@ -103,5 +103,7 @@ class UserUpdate(BaseModel):
 class UserCompact(BaseModel):
     id: int
     name: str
+    surname1: Optional[str] = None
+    email: Optional[str] = None
 
     model_config = ConfigDict(from_attributes=True)

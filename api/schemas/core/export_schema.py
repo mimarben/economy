@@ -1,10 +1,13 @@
 # utils/schema_exporter.py
+from decimal import Decimal
 from enum import Enum
 from typing import get_origin, get_args, Union
 from pydantic import BaseModel
 
 def resolve_type(annotation):
     """Resuelve Optional[...]"""
+    if annotation is None:
+        return str
     if get_origin(annotation) is Union:
         args = [a for a in get_args(annotation) if a is not type(None)]
         return args[0] if args else str
@@ -14,7 +17,7 @@ def resolve_type(annotation):
 def map_type(py_type):
     if py_type == str:
         return "text"
-    if py_type == int or py_type == float:
+    if py_type in (int, float, Decimal):
         return "number"
     if py_type == bool:
         return "checkbox"

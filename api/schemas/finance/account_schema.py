@@ -13,11 +13,6 @@ class AccountBase(BaseModel):
     description: Optional[str] = None
     iban: Optional[str] = None
     currency: CurrencyEnum = Field(...)
-    initial_balance: Decimal = Field(
-        default=0,
-        max_digits=12,
-        decimal_places=2
-    )
     balance: Optional[Decimal] = Field(
         default=None,
         max_digits=12,
@@ -49,6 +44,7 @@ class AccountRead(AccountBase, AuditFields):
 
 
 class AccountCreate(AccountBase):
+    initial_balance: Decimal = Field(default=0, max_digits=12, decimal_places=2)
     user_ids: List[int] = Field(..., min_length=1, json_schema_extra={"ui_type": "multi-select", "relation": "user"})
 
 

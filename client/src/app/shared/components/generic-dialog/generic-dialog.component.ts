@@ -36,7 +36,7 @@ export class GenericDialogComponent {
   }
   onSave() {
     if (this.genericFormComponent?.form?.valid) {
-      this.dialogRef.close(this.genericFormComponent.form.getRawValue());
+      this.dialogRef.close({ ...this.data.initialData, ...this.genericFormComponent.form.getRawValue() });
     } else {
       this.genericFormComponent?.form?.markAllAsTouched();
     }

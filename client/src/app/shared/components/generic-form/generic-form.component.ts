@@ -154,6 +154,8 @@ export class GenericFormComponent implements OnChanges, AfterViewInit, OnDestroy
         return value; // Use Date as is
       }
       return null; // No valid date
+    } else if (field.type === 'number') {
+      return value ?? null;
     } else if (field.type === 'checkbox') {
       return value ?? false;
     } else if (field.type === 'select' && field.multiple) {
