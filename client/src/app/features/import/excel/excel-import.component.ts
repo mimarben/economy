@@ -58,7 +58,8 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
   importProfiles: ImportProfile[] = [];
   filteredProfiles: ImportProfile[] = [];
   selectedOrigin: ImportOrigin | null = null;
-  accountUsers: any[] = []; // Users of the selected account
+  accountUsers: any[] = [];
+  selectedUserId: number | null = null;
 
   selectedBank: Bank | null = null;
   
@@ -82,6 +83,7 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
     'balance',
     'category',
     'source',
+    'user',
   ];
   constructor(
     private bankService: BankService,
@@ -235,12 +237,22 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
     this.selectedAccount = account;
     this.filterCardsByAccount(accountId);
     this.selectedCard = null;
-    // Set the users for this account
     this.accountUsers = account.users || [];
-    // Apply account to all selected transactions
+    const currentUserId = this.authService.getUserId();
+    const defaultUser = this.accountUsers.find(u => u.id === currentUserId) ?? this.accountUsers[0] ?? null;
+    this.selectedUserId = defaultUser?.id ?? null;
     this.transactions.forEach((t) => {
       t.account_id = account.id;
       t.suggestedAccountId = account.id;
+      t.user_id = this.selectedUserId;
+    });
+    this.updateDataSource();
+  }
+
+  onUserSelected(userId: number | null) {
+    this.selectedUserId = userId;
+    this.transactions.forEach((t) => {
+      t.user_id = userId;
     });
     this.updateDataSource();
   }
@@ -349,7 +361,8 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
           card_id: this.selectedCard?.id ?? null,
           currency: CurrencyEnum.EUR,
           ignore_in_analysis: isNotAnalyzable,
-          selected: !isNotAnalyzable, // true if analyzable, false if not analyzable
+          selected: !isNotAnalyzable,
+          user_id: this.selectedUserId,
         };
       });
 
@@ -535,7 +548,6 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
     return selectedCount > 0 && selectedCount < this.transactions.length;
   }
   confirmImport() {
-    const currentUserId = this.authService.getUserId();
     // Only process transactions marked as importable (selected: true)
     const importable = this.transactions.filter((t) => t.selected);
     if (!importable.length) {
@@ -563,8 +575,8 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
       account_id: t.account_id ?? this.selectedAccount?.id,
       card_id: t.card_id ?? this.selectedCard?.id ?? null,
       ignore_in_analysis: t.ignore_in_analysis ?? false,
-      currency: CurrencyEnum.EUR,  
-      user_id: currentUserId, 
+      currency: CurrencyEnum.EUR,
+      user_id: t.user_id ?? this.selectedUserId,
     }));
 
     const incomesDraftPayload = incomes.map((t) => ({
@@ -576,9 +588,8 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
       source_id: t.source_id ?? t.suggestedSourceId,
       account_id: t.account_id ?? this.selectedAccount?.id,
       ignore_in_analysis: t.ignore_in_analysis ?? false,
-      currency: CurrencyEnum.EUR,  
-      user_id: currentUserId, 
-
+      currency: CurrencyEnum.EUR,
+      user_id: t.user_id ?? this.selectedUserId,
     }));
 
     console.log('Expense bulk draft payload:', expensesDraftPayload);

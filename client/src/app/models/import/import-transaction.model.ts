@@ -12,4 +12,5 @@ export interface ImportTransaction {
   suggestedSourceId?: number | null;
   suggestedAccountId?: number | null;
   ignore_in_analysis?: boolean;
+  user_id?: number | null;
 }
