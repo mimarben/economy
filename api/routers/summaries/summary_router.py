@@ -63,7 +63,9 @@ def get_summary():
         service = SummaryService(db)
 
         # Handle predefined periods or custom range
-        if period_type == 'week':
+        if period_type == 'today':
+            result = service.get_today_summary()
+        elif period_type == 'week':
             result = service.get_week_summary()
         elif period_type == 'month':
             result = service.get_month_summary()
@@ -95,6 +97,18 @@ def get_summary():
 
     except ValueError as e:
         return Response.error("VALIDATION_ERROR", str(e), 400, name)
+    except Exception as e:
+        return Response.error("DATABASE_ERROR", f"Internal server error: {str(e)}", 500, name)
+
+
+@router.get("/summary/today")
+def get_today_summary():
+    """Get summary for today."""
+    db: Session = next(get_db())
+    try:
+        service = SummaryService(db)
+        result = service.get_today_summary()
+        return Response.ok_data(result.model_dump(), "SUMMARY_FOUND", 200, name)
     except Exception as e:
         return Response.error("DATABASE_ERROR", f"Internal server error: {str(e)}", 500, name)
 

@@ -4,6 +4,7 @@ import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration } from 'chart.js';
 import { SummaryResponse } from '@app/services/summary.service';
 import { MATERIAL_IMPORTS } from '@app/utils/material.imports';
+import { ChartExportService } from '@app/services/export/chart-export.service';
 
 @Component({
   selector: 'app-investment-chart',
@@ -14,6 +15,15 @@ import { MATERIAL_IMPORTS } from '@app/utils/material.imports';
 })
 export class InvestmentChartComponent implements OnInit {
   @Input() summary!: SummaryResponse;
+
+  constructor(private exportSvc: ChartExportService) {}
+
+  export(): void {
+    const rows = this.summary.totals_by_category
+      .filter((i) => i.type === 'investment')
+      .map((i) => ({ Category: i.category_name, Amount: i.total }));
+    this.exportSvc.exportToExcel(rows, 'investments-by-category');
+  }
 
   chartConfig: ChartConfiguration<'pie'> = {
     type: 'pie',

@@ -9,6 +9,9 @@ import { ExpenseChartComponent } from '../expense-chart/expense-chart.component'
 import { IncomeChartComponent } from '../income-chart/income-chart.component';
 import { InvestmentChartComponent } from '../investment-chart/investment-chart.component';
 import { ComparisonChartComponent } from '../comparison-chart/comparison-chart.component';
+import { IncomeVsExpenseChartComponent } from '../income-vs-expense-chart/income-vs-expense-chart.component';
+import { ExpenseBySourceChartComponent } from '../expense-by-source-chart/expense-by-source-chart.component';
+import { ExpenseByUserChartComponent } from '../expense-by-user-chart/expense-by-user-chart.component';
 
 @Component({
   selector: 'app-charts-container',
@@ -21,7 +24,10 @@ import { ComparisonChartComponent } from '../comparison-chart/comparison-chart.c
     ExpenseChartComponent,
     IncomeChartComponent,
     InvestmentChartComponent,
-    ComparisonChartComponent
+    ComparisonChartComponent,
+    IncomeVsExpenseChartComponent,
+    ExpenseBySourceChartComponent,
+    ExpenseByUserChartComponent,
   ],
   standalone: true
 })
@@ -47,6 +53,8 @@ export class ChartsContainerComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     // Load default month summary
     this.loadMonthlySummary();
+    this.filterForm.get('startDate')?.disable();
+    this.filterForm.get('endDate')?.disable();
 
     // Subscribe to period changes
     this.filterForm.get('period')?.valueChanges
@@ -63,7 +71,13 @@ export class ChartsContainerComponent implements OnInit, OnDestroy {
   }
 
   onPeriodChange(): void {
+    this.filterForm.get('startDate')?.disable();
+    this.filterForm.get('endDate')?.disable();
+
     switch (this.periodType) {
+      case 'today':
+        this.loadTodaySummary();
+        break;
       case 'week':
         this.loadWeeklySummary();
         break;
@@ -102,6 +116,23 @@ export class ChartsContainerComponent implements OnInit, OnDestroy {
         },
         error: (err) => {
           this.error = err.error?.error || 'Failed to load summary';
+          this.loading = false;
+        },
+      });
+  }
+
+  private loadTodaySummary(): void {
+    this.loading = true;
+    this.summaryService.getTodaySummary()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          this.summary = response.response;
+          this.loading = false;
+          this.error = null;
+        },
+        error: (err) => {
+          this.error = err.error?.error || 'Failed to load today summary';
           this.loading = false;
         },
       });

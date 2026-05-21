@@ -1,0 +1,23 @@
+<mat-card class="chart-card">
+  <mat-card-header>
+    <mat-card-title>Income vs Expenses</mat-card-title>
+    <mat-card-subtitle>
+      Net: <strong [style.color]="summary.income_vs_expense.net >= 0 ? '#4CAF50' : '#FF6384'">
+        €{{ summary.income_vs_expense.net | number:'1.2-2' }}
+      </strong>
+      &nbsp;·&nbsp; {{ summary.income_vs_expense.count_transactions }} transactions
+    </mat-card-subtitle>
+    <div class="header-actions">
+      <button mat-icon-button (click)="export()" matTooltip="Export to Excel">
+        <mat-icon>download</mat-icon>
+      </button>
+    </div>
+  </mat-card-header>
+  <mat-card-content class="chart-content">
+    <canvas baseChart
+      [type]="chartConfig.type"
+      [data]="chartConfig.data"
+      [options]="chartConfig.options">
+    </canvas>
+  </mat-card-content>
+</mat-card>

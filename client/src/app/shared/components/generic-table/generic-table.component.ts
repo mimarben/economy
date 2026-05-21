@@ -41,6 +41,8 @@ export class GenericTableComponent<T> implements AfterViewInit, OnChanges {
   @Input() noDataMessage = 'No records found.';
   @Input() showDeleteAction = false;
   @Input() showRefreshAction = true;
+  @Input() scrollable = false;
+  @Input() scrollHeight = '480px';
 
   @Output() edit = new EventEmitter<T>();
   @Output() add = new EventEmitter<void>();
@@ -68,7 +70,7 @@ export class GenericTableComponent<T> implements AfterViewInit, OnChanges {
 
   private setupDataSource(): void {
     this.dataSource.data = this.data;
-    this.dataSource.paginator = this.paginator;
+    this.dataSource.paginator = this.scrollable ? null : this.paginator;
     this.dataSource.sort = this.sort;
   }
 

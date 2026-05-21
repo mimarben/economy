@@ -80,18 +80,29 @@ const SECTIONS: MenuSection[] = [
     icon: 'account_balance',
     links: [
       { label: 'Banks',    route: '/banks' },
-      { label: 'Accounts', route: '/accounts' }
+      { label: 'Accounts', route: '/accounts' },
+      { label: 'Cards',    route: '/cards' }
+    ]
+  },
+  {
+    title: 'Analytics',
+    icon: 'bar_chart',
+    links: [
+      { label: 'Charts',            route: '/charts' },
+      { label: 'Financial Summary', route: '/financial_summary' }
+    ]
+  },
+  {
+    title: 'Rules',
+    icon: 'rule',
+    links: [
+      { label: 'Category Rules', route: '/category_rules' },
+      { label: 'Source Rules',   route: '/source_rules' }
     ]
   }
 ];
 
-const BOTTOM_LINKS: MenuLink[] = [
-  { label: 'Financial Summary', route: '/financial_summary', icon: 'assignment' },
-  { label: 'Charts',            route: '/charts',            icon: 'bar_chart' },
-  { label: 'Category Rules',    route: '/category_rules',    icon: 'rule' },
-  { label: 'Source Rules',      route: '/source_rules',      icon: 'alt_route' },
-  { label: 'Cards',             route: '/cards',             icon: 'credit_card' }
-];
+const BOTTOM_LINKS: MenuLink[] = [];
 
 @Component({
   selector: 'app-side-menu',

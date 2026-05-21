@@ -9,6 +9,7 @@
         <mat-form-field appearance="outline" class="form-field">
           <mat-label>Period</mat-label>
           <mat-select formControlName="period">
+            <mat-option value="today">Today</mat-option>
             <mat-option value="week">This Week</mat-option>
             <mat-option value="month">This Month</mat-option>
             <mat-option value="year">This Year</mat-option>
@@ -20,9 +21,9 @@
         <div *ngIf="periodType === 'custom'" class="custom-range">
           <mat-form-field appearance="outline" class="form-field">
             <mat-label>Start Date</mat-label>
-            <input 
-              matInput 
-              [matDatepicker]="startPicker" 
+            <input
+              matInput
+              [matDatepicker]="startPicker"
               formControlName="startDate"
               [required]="periodType === 'custom'"
             />
@@ -32,9 +33,9 @@
 
           <mat-form-field appearance="outline" class="form-field">
             <mat-label>End Date</mat-label>
-            <input 
-              matInput 
-              [matDatepicker]="endPicker" 
+            <input
+              matInput
+              [matDatepicker]="endPicker"
               formControlName="endDate"
               [required]="periodType === 'custom'"
             />
@@ -42,9 +43,9 @@
             <mat-datepicker #endPicker></mat-datepicker>
           </mat-form-field>
 
-          <button 
-            mat-raised-button 
-            color="primary" 
+          <button
+            mat-raised-button
+            color="primary"
             (click)="loadCustomRange()"
             [disabled]="loading"
             class="load-btn"
@@ -66,38 +67,63 @@
     <p>Loading summary data...</p>
   </div>
 
-  <!-- Charts Grid -->
-  <mat-grid-list cols="2" rowHeight="500px" gutterSize="16px" *ngIf="summary && !loading">
-    <!-- Expense Chart -->
-    <mat-grid-tile>
-      <app-expense-chart 
-        [summary]="summary" 
-        class="chart-component"
-      ></app-expense-chart>
-    </mat-grid-tile>
+  <ng-container *ngIf="summary && !loading">
+    <!-- Row 1: Income vs Expenses overview -->
+    <mat-grid-list cols="2" rowHeight="420px" gutterSize="16px">
+      <mat-grid-tile>
+        <app-income-vs-expense-chart
+          [summary]="summary"
+          class="chart-component">
+        </app-income-vs-expense-chart>
+      </mat-grid-tile>
 
-    <!-- Income Chart -->
-    <mat-grid-tile>
-      <app-income-chart 
-        [summary]="summary" 
-        class="chart-component"
-      ></app-income-chart>
-    </mat-grid-tile>
+      <mat-grid-tile>
+        <app-comparison-chart
+          [summary]="summary"
+          class="chart-component">
+        </app-comparison-chart>
+      </mat-grid-tile>
+    </mat-grid-list>
 
-    <!-- Investment Chart -->
-    <mat-grid-tile>
-      <app-investment-chart 
-        [summary]="summary" 
-        class="chart-component"
-      ></app-investment-chart>
-    </mat-grid-tile>
+    <!-- Row 2: By Category -->
+    <mat-grid-list cols="3" rowHeight="460px" gutterSize="16px">
+      <mat-grid-tile>
+        <app-expense-chart
+          [summary]="summary"
+          class="chart-component">
+        </app-expense-chart>
+      </mat-grid-tile>
 
-    <!-- Comparison Chart -->
-    <mat-grid-tile>
-      <app-comparison-chart 
-        [summary]="summary" 
-        class="chart-component"
-      ></app-comparison-chart>
-    </mat-grid-tile>
-  </mat-grid-list>
+      <mat-grid-tile>
+        <app-income-chart
+          [summary]="summary"
+          class="chart-component">
+        </app-income-chart>
+      </mat-grid-tile>
+
+      <mat-grid-tile>
+        <app-investment-chart
+          [summary]="summary"
+          class="chart-component">
+        </app-investment-chart>
+      </mat-grid-tile>
+    </mat-grid-list>
+
+    <!-- Row 3: By Source and By User -->
+    <mat-grid-list cols="2" rowHeight="460px" gutterSize="16px">
+      <mat-grid-tile>
+        <app-expense-by-source-chart
+          [summary]="summary"
+          class="chart-component">
+        </app-expense-by-source-chart>
+      </mat-grid-tile>
+
+      <mat-grid-tile>
+        <app-expense-by-user-chart
+          [summary]="summary"
+          class="chart-component">
+        </app-expense-by-user-chart>
+      </mat-grid-tile>
+    </mat-grid-list>
+  </ng-container>
 </div>

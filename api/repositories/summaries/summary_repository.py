@@ -2,11 +2,13 @@
 from datetime import date, datetime, timedelta
 from typing import Dict, List, Tuple
 from sqlalchemy.orm import Session
-from sqlalchemy import func, and_, or_
+from sqlalchemy import func, and_, or_, Date
 from models import Expense, Income, Investment
 from models.expenses.expense_category_model import ExpensesCategory
 from models.incomes.income_category_model import IncomesCategory
 from models.investments.investment_category_model import InvestmentsCategory
+from models.finance.source_model import Source
+from models.users.user_model import User
 
 
 class SummaryRepository:
@@ -107,7 +109,7 @@ class SummaryRepository:
 
         # Expenses by date
         expenses = self.db.query(
-            func.cast(Expense.date, date).label('date'),
+            func.cast(Expense.date, Date).label('date'),
             func.sum(Expense.amount).label('total')
         ).filter(
             and_(
@@ -115,14 +117,14 @@ class SummaryRepository:
                 Expense.date <= end_date,
                 Expense.deleted_at.is_(None)
             )
-        ).group_by(func.cast(Expense.date, date)).all()
+        ).group_by(func.cast(Expense.date, Date)).all()
         
         for exp_date, total in expenses:
             daily_totals[exp_date]['expense'] = float(total)
 
         # Incomes by date
         incomes = self.db.query(
-            func.cast(Income.date, date).label('date'),
+            func.cast(Income.date, Date).label('date'),
             func.sum(Income.amount).label('total')
         ).filter(
             and_(
@@ -130,14 +132,14 @@ class SummaryRepository:
                 Income.date <= end_date,
                 Income.deleted_at.is_(None)
             )
-        ).group_by(func.cast(Income.date, date)).all()
+        ).group_by(func.cast(Income.date, Date)).all()
         
         for inc_date, total in incomes:
             daily_totals[inc_date]['income'] = float(total)
 
         # Investments by date
         investments = self.db.query(
-            func.cast(Investment.date, date).label('date'),
+            func.cast(Investment.date, Date).label('date'),
             func.sum(Investment.amount).label('total')
         ).filter(
             and_(
@@ -145,7 +147,7 @@ class SummaryRepository:
                 Investment.date <= end_date,
                 Investment.deleted_at.is_(None)
             )
-        ).group_by(func.cast(Investment.date, date)).all()
+        ).group_by(func.cast(Investment.date, Date)).all()
         
         for inv_date, total in investments:
             daily_totals[inv_date]['investment'] = float(total)
@@ -218,3 +220,79 @@ class SummaryRepository:
         total_count = expense_count + income_count + investment_count
 
         return float(total_income), float(total_expense), total_count
+
+    def get_totals_by_source(
+        self,
+        start_date: date,
+        end_date: date
+    ) -> List[Tuple]:
+        """
+        Get total amounts aggregated by source for expenses and incomes.
+
+        Returns list of tuples: (source_id, source_name, type, total)
+        """
+        results = []
+
+        expenses = self.db.query(
+            Expense.source_id,
+            Source.name.label('source_name'),
+            func.sum(Expense.amount).label('total')
+        ).join(Source, Expense.source_id == Source.id).filter(
+            and_(
+                Expense.date >= start_date,
+                Expense.date <= end_date,
+                Expense.deleted_at.is_(None)
+            )
+        ).group_by(Expense.source_id, Source.name).all()
+
+        results.extend([
+            (src_id, src_name, 'expense', float(total))
+            for src_id, src_name, total in expenses
+        ])
+
+        incomes = self.db.query(
+            Income.source_id,
+            Source.name.label('source_name'),
+            func.sum(Income.amount).label('total')
+        ).join(Source, Income.source_id == Source.id).filter(
+            and_(
+                Income.date >= start_date,
+                Income.date <= end_date,
+                Income.deleted_at.is_(None)
+            )
+        ).group_by(Income.source_id, Source.name).all()
+
+        results.extend([
+            (src_id, src_name, 'income', float(total))
+            for src_id, src_name, total in incomes
+        ])
+
+        return results
+
+    def get_totals_by_user(
+        self,
+        start_date: date,
+        end_date: date
+    ) -> List[Tuple]:
+        """
+        Get total expense amounts aggregated by user.
+
+        Returns list of tuples: (user_id, user_name, total)
+        """
+        results = self.db.query(
+            User.id,
+            func.concat(User.name, ' ', User.surname1).label('user_name'),
+            func.sum(Expense.amount).label('total')
+        ).join(User, Expense.user_id == User.id).filter(
+            and_(
+                Expense.date >= start_date,
+                Expense.date <= end_date,
+                Expense.deleted_at.is_(None),
+                Expense.user_id.isnot(None)
+            )
+        ).group_by(User.id, User.name, User.surname1).all()
+
+        return [
+            (user_id, user_name, float(total))
+            for user_id, user_name, total in results
+        ]

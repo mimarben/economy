@@ -5,6 +5,8 @@ from repositories.summaries.summary_repository import SummaryRepository
 from schemas.summaries.summary_schema import (
     SummaryResponse,
     TotalByCategory,
+    TotalBySource,
+    TotalByUser,
     TotalOverTime,
     IncomeVsExpense
 )
@@ -38,6 +40,8 @@ class SummaryService:
 
         # Fetch aggregated data
         totals_by_category_raw = self.repository.get_totals_by_category(start_date, end_date)
+        totals_by_source_raw = self.repository.get_totals_by_source(start_date, end_date)
+        totals_by_user_raw = self.repository.get_totals_by_user(start_date, end_date)
         totals_over_time_raw = self.repository.get_totals_over_time(start_date, end_date)
         total_income, total_expense, tx_count = self.repository.get_income_vs_expense(
             start_date, end_date
@@ -52,6 +56,25 @@ class SummaryService:
                 total=total
             )
             for cat_id, cat_name, tx_type, total in totals_by_category_raw
+        ]
+
+        totals_by_source = [
+            TotalBySource(
+                source_id=src_id,
+                source_name=src_name,
+                type=tx_type,
+                total=total
+            )
+            for src_id, src_name, tx_type, total in totals_by_source_raw
+        ]
+
+        totals_by_user = [
+            TotalByUser(
+                user_id=user_id,
+                user_name=user_name,
+                total=total
+            )
+            for user_id, user_name, total in totals_by_user_raw
         ]
 
         totals_over_time = [
@@ -76,9 +99,16 @@ class SummaryService:
             period_start=start_date,
             period_end=end_date,
             totals_by_category=totals_by_category,
+            totals_by_source=totals_by_source,
+            totals_by_user=totals_by_user,
             totals_over_time=totals_over_time,
             income_vs_expense=income_vs_expense
         )
+
+    def get_today_summary(self) -> SummaryResponse:
+        """Get summary for today only."""
+        today = date.today()
+        return self.get_summary(today, today)
 
     def get_week_summary(self) -> SummaryResponse:
         """Get summary for current week (Monday-Sunday)."""

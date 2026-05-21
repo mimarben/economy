@@ -4,6 +4,7 @@ import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration } from 'chart.js';
 import { SummaryResponse } from '@app/services/summary.service';
 import { MATERIAL_IMPORTS } from '@app/utils/material.imports';
+import { ChartExportService } from '@app/services/export/chart-export.service';
 
 @Component({
   selector: 'app-comparison-chart',
@@ -14,6 +15,19 @@ import { MATERIAL_IMPORTS } from '@app/utils/material.imports';
 })
 export class ComparisonChartComponent implements OnInit {
   @Input() summary!: SummaryResponse;
+
+  constructor(private exportSvc: ChartExportService) {}
+
+  export(): void {
+    const rows = this.summary.totals_over_time.map((d) => ({
+      Date: d.date,
+      Income: d.income,
+      Expense: d.expense,
+      Investment: d.investment,
+      Net: d.net,
+    }));
+    this.exportSvc.exportToExcel(rows, 'income-expense-over-time');
+  }
 
   chartConfig: ChartConfiguration<'line'> = {
     type: 'line',

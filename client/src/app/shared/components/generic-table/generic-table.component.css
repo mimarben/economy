@@ -342,6 +342,17 @@
   overflow-x: auto;
 }
 
+.table-scroll {
+  overflow-y: auto;
+  border-radius: var(--app-radius);
+}
+
+.table-scroll .mat-mdc-header-row {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
 .no-data-message {
   text-align: center;
   padding: 40px 20px;

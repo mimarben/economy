@@ -11,6 +11,19 @@ export interface TotalByCategory {
   total: number;
 }
 
+export interface TotalBySource {
+  source_id: number;
+  source_name: string;
+  type: 'expense' | 'income';
+  total: number;
+}
+
+export interface TotalByUser {
+  user_id: number;
+  user_name: string;
+  total: number;
+}
+
 export interface TotalOverTime {
   date: string;
   expense: number;
@@ -30,11 +43,13 @@ export interface SummaryResponse {
   period_start: string;
   period_end: string;
   totals_by_category: TotalByCategory[];
+  totals_by_source: TotalBySource[];
+  totals_by_user: TotalByUser[];
   totals_over_time: TotalOverTime[];
   income_vs_expense: IncomeVsExpense;
 }
 
-export type PeriodType = 'week' | 'month' | 'year' | 'custom';
+export type PeriodType = 'today' | 'week' | 'month' | 'year' | 'custom';
 
 @Injectable({
   providedIn: 'root'
@@ -53,6 +68,13 @@ export class SummaryService {
       .set('end_date', endDate);
 
     return this.http.get<ApiResponse<SummaryResponse>>(this.apiUrl, { params });
+  }
+
+  /**
+   * Get summary for today.
+   */
+  getTodaySummary(): Observable<ApiResponse<SummaryResponse>> {
+    return this.http.get<ApiResponse<SummaryResponse>>(`${this.apiUrl}/today`);
   }
 
   /**

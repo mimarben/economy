@@ -11,6 +11,21 @@ class TotalByCategory(BaseModel):
     total: float = Field(...)
 
 
+class TotalBySource(BaseModel):
+    """Total amount aggregated by source."""
+    source_id: int = Field(...)
+    source_name: str = Field(...)
+    type: str = Field(...)  # 'expense' | 'income'
+    total: float = Field(...)
+
+
+class TotalByUser(BaseModel):
+    """Total expense amount aggregated by user."""
+    user_id: int = Field(...)
+    user_name: str = Field(...)
+    total: float = Field(...)
+
+
 class TotalOverTime(BaseModel):
     """Total amount aggregated by date."""
     date: DateType = Field(...)
@@ -32,6 +47,8 @@ class SummaryResponse(BaseModel):
     period_start: DateType = Field(...)
     period_end: DateType = Field(...)
     totals_by_category: List[TotalByCategory] = Field(...)
+    totals_by_source: List[TotalBySource] = Field(default_factory=list)
+    totals_by_user: List[TotalByUser] = Field(default_factory=list)
     totals_over_time: List[TotalOverTime] = Field(...)
     income_vs_expense: IncomeVsExpense = Field(...)
 
