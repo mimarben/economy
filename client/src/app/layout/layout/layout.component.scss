@@ -1,19 +1,27 @@
+// ============================================================================
+// LAYOUT — Flatlogic Angular Material Dashboard
+// ============================================================================
+
 .container {
   height: 100vh;
   display: flex;
   margin: 0;
   padding: 0;
+  background: #ececec;
 }
 
+// ---- Sidenav panel ----
 .sidenav {
-  width: 250px;
+  width: 240px;
   flex-shrink: 0;
   margin: 0;
   padding: 0;
-  background: #f5f5f5;
-  border-right: 1px solid #e0e0e0;
+  background: #37474f;
+  border-right: none;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.18);
 }
 
+// ---- Main content area ----
 .sidenav-content {
   display: flex;
   flex-direction: column;
@@ -22,6 +30,7 @@
   overflow: hidden;
   margin: 0;
   padding: 0;
+  background: #ececec;
 }
 
 .layout-wrapper {
@@ -47,7 +56,7 @@
     padding: 0;
 
     .content {
-      padding: 20px;
+      padding: 24px;
       min-height: 100%;
     }
   }
@@ -59,6 +68,23 @@
   }
 }
 
+// ---- Material sidenav container overrides ----
+::ng-deep {
+  .mat-sidenav-container {
+    background: #ececec !important;
+  }
+
+  .mat-sidenav {
+    border-right: none !important;
+  }
+
+  // Remove the sidenav backdrop border
+  .mat-sidenav-content {
+    background: #ececec !important;
+  }
+}
+
+// ---- Responsive ----
 @media (max-width: 960px) {
   .sidenav {
     width: 200px;
@@ -67,6 +93,10 @@
 
 @media (max-width: 600px) {
   .sidenav {
-    width: 100%;
+    width: 240px;
+  }
+
+  .content {
+    padding: 16px !important;
   }
 }

@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { GenericTableComponent, TableColumn } from '@shared/generic-table/generic-table.component';
 import { GenericDialogComponent } from '@shared/generic-dialog/generic-dialog.component';
 import { ToastService } from '@core_services/toast.service';
+import { MetaService } from '@core_services/meta.service';
 import { environment } from '@env/environment';
 import { ApiResponse } from '@app/models/core/APIResponse';
 import { ExpenseBase as Expense } from '@expenses_models/ExpenseBase';
@@ -19,6 +20,8 @@ import { ExpenseCategoryService } from '@expenses_services/expense-category.serv
 import { UserService } from '@users_services/user.service';
 import { AccountService } from '@finance_services/account.service';
 import { SourceService } from '@finance_services/source.service';
+import { CardService } from '@app/services/cards/cards.service';
+import { CardBase as Card } from '@cards_models/CardBase';
 
 @Component({
   selector: 'app-expenses-component',
@@ -41,6 +44,7 @@ export class ExpensesComponent implements OnInit {
   accountsMap: Record<number, string> = {};
   sourcesMap: Record<number, string> = {};
   expensesCategoriesMap: Record<number, string> = {};
+  cardsMap: Record<number, string> = {};
 
   constructor(
     private expenseService: ExpenseService,
@@ -50,20 +54,14 @@ export class ExpensesComponent implements OnInit {
     private dialog: MatDialog,
     private toastService: ToastService,
     private formFactory: FormFactoryService,
+    private metaService: MetaService,
     private userService: UserService,
     private accountService: AccountService,
-    private sourceService: SourceService
+    private sourceService: SourceService,
+    private cardService: CardService
   ) {}
 
   ngOnInit(): void {
-    this.formFields = this.formFactory.getFormConfig('expense');
-    this.columns = this.formFactory.getTableColumns<Expense>('expense', {
-      category_id: (value: number) =>this.expensesCategoriesMap[value] ?? value,
-      user_id: (value: number) => this.usersMap[value] ?? value,
-      source_id: (value: number) => this.sourcesMap[value] ?? value,
-      account_id: (value: number) => this.accountsMap[value] ?? value,
-      date: (value: string) => this.utilsService.formatDateShortStr(value),
-    });
     this.loadExpenses();
   }
 
@@ -75,11 +73,12 @@ export class ExpensesComponent implements OnInit {
       const categories$ = this.expensecategoryService.getAll();
       const sources$ = this.sourceService.getAll();
       const accounts$ = this.accountService.getAll();
-      forkJoin([expenses$, users$, categories$, sources$, accounts$]).subscribe({
-          next: ([expensesResponse, usersResponse, categoriesResponse, sourcesResponse, accountsResponse]) => {
+      const cards$ = this.cardService.getCards();
+      const meta$ = this.metaService.getMeta('expense');
+      forkJoin([expenses$, users$, categories$, sources$, accounts$, cards$, meta$]).subscribe({
+          next: ([expensesResponse, usersResponse, categoriesResponse, sourcesResponse, accountsResponse, cardsResponse, metaResponse]) => {
 
               this.expenses = expensesResponse.response || [];
-
 
               const users = usersResponse?.response || [];
               this.usersMap = Object.fromEntries(
@@ -89,13 +88,10 @@ export class ExpensesComponent implements OnInit {
                   ])
               );
 
-
               const categories = categoriesResponse?.response || [];
-              console.log('Categories loaded:', categories);
               this.expensesCategoriesMap = Object.fromEntries(
                 categories.map((c: ExpenseCategory) => [c.id, c.name])
               );
-
 
               const sources = sourcesResponse?.response || [];
               this.sourcesMap = Object.fromEntries(
@@ -103,12 +99,30 @@ export class ExpensesComponent implements OnInit {
               );
 
               const accounts = accountsResponse?.response || [];
-              console.log('Accounts loaded:', accounts);
               this.accountsMap = Object.fromEntries(
-                  accounts.map((a: Account) => [a.id, `${a.name}`])
+                  accounts.map((a: Account) => [a.id, a.name])
               );
-              console.log('Accounts Map:', this.accountsMap);
-              console.log('Expenses loaded:', this.expenses);
+
+              const cards = cardsResponse?.response || [];
+              this.cardsMap = Object.fromEntries(
+                  cards.map((c: Card) => [c.id, c.name])
+              );
+
+              this.formFields = this.formFactory.enrichMetadataFields(metaResponse.fields);
+
+              const customFormatters: Record<string, (value: any) => string> = {
+                category_id: (value: number) => this.expensesCategoriesMap[value] ?? value,
+                user_id: (value: number) => this.usersMap[value] ?? value,
+                source_id: (value: number) => this.sourcesMap[value] ?? value,
+                account_id: (value: number) => this.accountsMap[value] ?? value,
+                card_id: (value: number) => this.cardsMap[value] ?? value,
+                date: (value: string) => this.utilsService.formatDateShortStr(value),
+              };
+              this.columns = this.formFactory.getTableColumnsFromMetadata<Expense>(this.formFields).map(col => ({
+                ...col,
+                formatter: customFormatters[col.key] ?? col.formatter,
+              }));
+
               this.isLoading = false;
               this.cdr.detectChanges();
           },
@@ -128,17 +142,19 @@ export class ExpensesComponent implements OnInit {
   const categories$ = this.expensecategoryService.getAll();
   const sources$ = this.sourceService.getAll();
   const accounts$ = this.accountService.getAll();
+  const cards$ = this.cardService.getCards();
 
-  forkJoin([users$, categories$, sources$, accounts$]).subscribe({
-    next: ([usersResponse, categoriesResponse, sourcesResponse, accountsResponse]) => {
+  forkJoin([users$, categories$, sources$, accounts$, cards$]).subscribe({
+    next: ([usersResponse, categoriesResponse, sourcesResponse, accountsResponse, cardsResponse]) => {
       // Extract payloads from each service response
       const users = usersResponse?.response || [];
       const categories = categoriesResponse?.response || [];
       const sources = sourcesResponse?.response || [];
       const accounts = accountsResponse?.response || [];
+      const cards = cardsResponse?.response || [];
 
       // Get base form configuration
-      const baseConfig = this.formFactory.getFormConfig('expense');
+      const baseConfig = this.formFields;
 
       // Populate select fields with loaded data
       const enrichedConfig = baseConfig.map((field: FormFieldConfig) => {
@@ -173,6 +189,14 @@ export class ExpensesComponent implements OnInit {
               options: accounts.map((a: Account) => ({
                 value: a.id,
                 label: a.name,
+              })),
+            };
+          case 'card_id':
+            return {
+              ...field,
+              options: cards.map((c: Card) => ({
+                value: c.id,
+                label: c.name,
               })),
             };
           default:
