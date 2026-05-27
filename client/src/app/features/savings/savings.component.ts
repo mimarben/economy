@@ -1,23 +1,20 @@
 import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { forkJoin } from 'rxjs';
 import { GenericDialogComponent } from '@shared/generic-dialog/generic-dialog.component';
-import {
-  GenericTableComponent,
-  TableColumn,
-} from '@shared/generic-table/generic-table.component';
+import { GenericTableComponent, TableColumn } from '@shared/generic-table/generic-table.component';
 import { ApiResponse } from '@app/models/core/APIResponse';
 import { FormFactoryService } from '@app/core/factories/form-factory.service';
 import { FormFieldConfig } from '@shared/generic-form/form-config';
 import { ToastService } from '@core_services/toast.service';
 import { environment } from '@env/environment';
 import { SavingBase as Saving } from '@savings_models/SavingBase';
-import { UserBase as User } from '@users_models/UserBase';
 import { AccountBase as Account } from '@finance_models/AccountBase';
 import { SavingService } from '@savings_services/saving.service';
-import { UserService } from '@users_services/user.service';
-import { UtilsService } from '@app/utils/utils.service';
 import { AccountService } from '@finance_services/account.service';
-import { forkJoin } from 'rxjs';
+import { MetaService } from '@core_services/meta.service';
+import { UtilsService } from '@app/utils/utils.service';
+
 @Component({
   selector: 'app-savings',
   imports: [GenericTableComponent],
@@ -32,81 +29,71 @@ export class SavingsComponent implements OnInit {
   formFields: FormFieldConfig[] = [];
   isFormValid = false;
   columns: TableColumn<Saving>[] = [];
-  usersMap: Record<number, string> = {};
   accountsMap: Record<number, string> = {};
 
   constructor(
     private savingService: SavingService,
-    private userService: UserService,
+    private accountService: AccountService,
+    private metaService: MetaService,
     private utilsService: UtilsService,
     private cdr: ChangeDetectorRef,
     private dialog: MatDialog,
     private toastService: ToastService,
     private formFactory: FormFactoryService,
-    private accountService: AccountService
   ) {}
 
   ngOnInit(): void {
-    this.formFields = this.formFactory.getFormConfig('saving');
-    this.columns = this.formFactory.getTableColumns<Saving>('saving', {
-      user_id: (value: number) => this.usersMap[value] ?? value,
-      account_id: (value: number) => this.accountsMap[value] ?? value,
-      date: (value: string) => this.utilsService.formatDateLong(value),
-    });
-    this.loadSavings();
+    this.loadInitialData();
   }
- // Dentro de tu componente
-loadSavings() {
+
+  private loadInitialData(): void {
     this.isLoading = true;
-    this.errorMessage = ''; // Limpiar el error anterior
+    forkJoin({
+      savings: this.savingService.getAll(),
+      meta: this.metaService.getMeta('saving'),
+      accounts: this.accountService.getAll(),
+    }).subscribe({
+      next: ({ savings, meta, accounts }) => {
+        this.savings = savings.response;
 
-    const savings$ = this.savingService.getAll();
-    const users$ = this.userService.getUsers();
-    const accounts$ = this.accountService.getAll();
+        this.accountsMap = Object.fromEntries(
+          accounts.response.map((a: Account) => [a.id as number, a.name])
+        );
 
-    forkJoin([savings$, users$, accounts$]).subscribe({
-        next: ([savingsResponse, usersResponse, accountsResponse]: any) => {
-            // a) Asignar Ahorros (Savings)
-            this.savings = savingsResponse.response || [];
+        const relationOptions = {
+          account: accounts.response.map((a: Account) => ({ value: a.id as number, label: a.name })),
+        };
 
-            // b) Mapear Usuarios
-            const users = usersResponse.response || [];
-            this.usersMap = Object.fromEntries(
-                users.map((u: User) => [
-                    u.id,
-                    `${u.name} ${u.surname1} ${u.surname2 || ''}`, // Asegurar que surname2 es opcional
-                ])
-            );
+        this.formFields = this.formFactory.enrichMetadataFields(meta.fields, relationOptions);
+        const baseCols = this.formFactory.getTableColumnsFromMetadata<Saving>(this.formFields);
+        this.columns = baseCols.map((col) => {
+          if (col.key === 'account_id') return { ...col, formatter: (v: number) => this.accountsMap[v] ?? String(v) };
+          if (col.key === 'date') return { ...col, formatter: (v: string) => this.utilsService.formatDateLong(v) };
+          return col;
+        });
 
-            // c) Mapear Cuentas (Accounts)
-            const accounts = accountsResponse.response || [];
-            this.accountsMap = Object.fromEntries(
-                accounts.map((a: Account) => [a.id, `${a.name}`])
-            );
-
-            this.isLoading = false;
-            // this.cdr.detectChanges();
-        },
-        error: (err: any) => {
-            // 4. Error: Manejar cualquier fallo de las tres llamadas
-            console.error('Error al cargar datos:', err);
-            this.errorMessage = 'Error loading savings, users, or accounts data.';
-            this.isLoading = false;
-            // this.cdr.detectChanges();
-        },
+        this.isLoading = false;
+      },
+      error: () => {
+        this.errorMessage = 'Error loading savings';
+        this.isLoading = false;
+      },
     });
-}
-  editSaving(savinglog: Saving): void {
-    this.openDialog(savinglog);
   }
+
+  editSaving(saving: Saving): void {
+    this.openDialog(saving);
+  }
+
   addSaving(): void {
     this.openDialog();
   }
-  /*   openDialog(data?: Saving): void {
+
+  openDialog(data?: Saving): void {
     const dialogRef = this.dialog.open(GenericDialogComponent, {
       data: {
         title: data ? 'Edit Saving' : 'New Saving',
-        fields: this.formFactory.getFormConfig('saving'),
+        fields: this.formFields,
         initialData: data || {},
       },
     });
@@ -116,107 +103,41 @@ loadSavings() {
         result.id ? this.updateSaving(result) : this.createSaving(result);
       }
     });
-  } */
-  openDialog(data?: Saving): void {
-    forkJoin({
-      users: this.userService.getUsers(),
-      accounts: this.accountService.getAll(),
-    }).subscribe({
-      next: (responses) => {
-        const baseConfig = this.formFactory.getFormConfig('saving');
-
-        const enrichedConfig = baseConfig.map((field: FormFieldConfig) => {
-          if (field.key === 'user_id') {
-            return {
-              ...field,
-              options: responses.users.response.map((user: User) => ({
-                value: user.id,
-                label: user.name,
-              })),
-            };
-          }
-
-          if (field.key === 'account_id') {
-            return {
-              ...field,
-              options: responses.accounts.response.map((account: Account) => ({
-                value: account.id,
-                label: `${account.name}`,
-              })),
-            };
-          }
-          return field;
-        });
-        const dialogRef = this.dialog.open(GenericDialogComponent, {
-          data: {
-            title: data ? 'Edit Saving' : 'New Saving',
-            fields: enrichedConfig,
-            initialData: data || {},
-          },
-        });
-
-        dialogRef.afterClosed().subscribe((result) => {
-          if (result) {
-            result.id ? this.updateSaving(result) : this.createSaving(result);
-          }
-        });
-      },
-      error: (error) => {
-        console.error('Error loading accounts and users:', error);
-        // Opcional: Mostrar un snackbar o mensaje de error
-      },
-    });
   }
+
   updateSaving(saving: Saving): void {
     this.savingService.update(saving.id!, saving).subscribe({
       next: (response: ApiResponse<Saving>) => {
         const updated = response.response;
-        const index = this.savings.findIndex((h) => h.id === updated.id);
+        const index = this.savings.findIndex((s) => s.id === updated.id);
         if (index !== -1) {
           this.savings[index] = updated;
           this.savings = [...this.savings];
         }
-        this.toastService.showToast(
-          response,
-          environment.toastType.Success,
-          {}
-        );
+        this.toastService.showToast(response, environment.toastType.Success, {});
         this.cdr.detectChanges();
       },
       error: (err: any) => {
-        this.toastService.showToast(
-          err.error as ApiResponse<string>,
-          environment.toastType.Error,
-          {}
-        );
+        this.toastService.showToast(err.error as ApiResponse<string>, environment.toastType.Error, {});
       },
     });
   }
+
   createSaving(saving: Saving): void {
     this.savingService.create(saving).subscribe({
       next: (response: ApiResponse<Saving>) => {
         this.savings.push(response.response);
         this.savings = [...this.savings];
-        this.toastService.showToast(
-          response,
-          environment.toastType.Success,
-          {}
-        );
+        this.toastService.showToast(response, environment.toastType.Success, {});
         this.cdr.detectChanges();
       },
       error: (err: any) => {
-        this.toastService.showToast(
-          err.error as ApiResponse<string>,
-          environment.toastType.Error,
-          {}
-        );
+        this.toastService.showToast(err.error as ApiResponse<string>, environment.toastType.Error, {});
       },
     });
   }
 
   applyFilter(event: Event) {
-    this.filterValue = (event.target as HTMLInputElement).value
-      .trim()
-      .toLowerCase();
+    this.filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
   }
 }

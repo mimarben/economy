@@ -82,7 +82,9 @@ export class BanksAccountsComponent implements OnInit {
           import_origin_id: this.origins.map((origin) => ({ value: origin.id, label: origin.name })),
           'import-profile': this.profiles.map((profile) => ({ value: profile.id, label: profile.name })),
           import_profile_id: this.profiles.map((profile) => ({ value: profile.id, label: profile.name })),
-        }).map((field) => {
+        })
+        .filter((field) => field.key !== 'user_id')
+        .map((field) => {
           if (field.key !== 'user_ids') {
             return field;
           }
@@ -94,7 +96,7 @@ export class BanksAccountsComponent implements OnInit {
         });
 
         this.columns = this.formFactory.getTableColumnsFromMetadata<Account>(this.formFields)
-          .filter(column => column.key !== 'balance')
+          .filter(column => !['balance', 'import_origin_id', 'import_profile_id', 'description'].includes(column.key))
           .map((column) => {
           if (column.key === 'bank_id') {
             return {
@@ -224,6 +226,7 @@ export class BanksAccountsComponent implements OnInit {
   }
 
   private normalizeAccountPayload(account: Account): Account {
-    return account;
+    const { user_id, users, ...rest } = account as any;
+    return rest as Account;
   }
 }

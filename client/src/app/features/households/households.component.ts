@@ -9,6 +9,8 @@ import { FormFieldConfig } from '@shared/generic-form/form-config';
 import { ToastService } from '@core_services/toast.service';
 import { environment } from '@env/environment';
 import { HouseholdService } from '@households_services/household.service';
+import { MetaService } from '@core_services/meta.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-households',
@@ -30,22 +32,26 @@ constructor(
           private cdr: ChangeDetectorRef,
           private dialog: MatDialog,
           private toastService: ToastService,
-          private formFactory: FormFactoryService
+          private formFactory: FormFactoryService,
+          private metaService: MetaService,
           ){}
   ngOnInit(): void {
-    this.formFields = this.formFactory.getFormConfig('houseHold');
-    this.columns = this.formFactory.getTableColumns<Household>('houseHold');
-    this.loadHouseHolds();
+    this.loadInitialData();
   }
-  loadHouseHolds(){
+  private loadInitialData(): void {
     this.isLoading = true;
-    this.householdService.getAll().subscribe({
-      next: (data: ApiResponse<Household[]>) => {
-        this.houseHolds = data.response;
+    forkJoin({
+      households: this.householdService.getAll(),
+      meta: this.metaService.getMeta('household'),
+    }).subscribe({
+      next: ({ households, meta }) => {
+        this.houseHolds = households.response;
+        this.formFields = this.formFactory.enrichMetadataFields(meta.fields);
+        this.columns = this.formFactory.getTableColumnsFromMetadata<Household>(this.formFields);
         this.isLoading = false;
       },
-      error: (err) => {
-        this.errorMessage = 'Error loading banks';
+      error: () => {
+        this.errorMessage = 'Error loading households';
         this.isLoading = false;
       },
     });
@@ -60,7 +66,7 @@ constructor(
     const dialogRef = this.dialog.open(GenericDialogComponent, {
       data: {
         title: data ? 'Edit HouseHold' : 'New HouseHold',
-        fields: this.formFactory.getFormConfig('houseHold'),
+        fields: this.formFields,
         initialData: data || {},
       },
     });

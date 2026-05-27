@@ -20,6 +20,6 @@ export class HouseholdMemberService extends BaseCrudService<HouseholdMember> {
    * @param http Angular HttpClient for making HTTP requests
    */
   constructor(protected override http: HttpClient) {
-    super(http, 'households_members');
+    super(http, 'household_members');
   }
 }

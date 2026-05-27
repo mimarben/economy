@@ -4,10 +4,8 @@ import { forkJoin } from 'rxjs';
 import { GenericDialogComponent } from '@shared/generic-dialog/generic-dialog.component';
 import { SavingLogBase as SavingLog } from '@savings_models/SavingLogBase';
 import { SavingBase as Saving } from '@savings_models/SavingBase';
-import {
-  GenericTableComponent,
-  TableColumn,
-} from '@shared/generic-table/generic-table.component';
+import { SourceBase as Source } from '@finance_models/SourceBase';
+import { GenericTableComponent, TableColumn } from '@shared/generic-table/generic-table.component';
 import { ApiResponse } from '@app/models/core/APIResponse';
 import { FormFactoryService } from '@app/core/factories/form-factory.service';
 import { FormFieldConfig } from '@shared/generic-form/form-config';
@@ -17,6 +15,7 @@ import { SavingLogService } from '@savings_services/saving-log.service';
 import { SavingService } from '@savings_services/saving.service';
 import { UtilsService } from '@app/utils/utils.service';
 import { SourceService } from '@finance_services/source.service';
+import { MetaService } from '@core_services/meta.service';
 
 @Component({
   selector: 'app-savings-log',
@@ -32,60 +31,53 @@ export class SavingsLogComponent implements OnInit {
   formFields: FormFieldConfig[] = [];
   isFormValid = false;
   columns: TableColumn<SavingLog>[] = [];
-  savingMap: Record<number, string> = [];
+  savingMap: Record<number, string> = {};
+
   constructor(
     private savinglogService: SavingLogService,
     private savingService: SavingService,
+    private sourceService: SourceService,
+    private metaService: MetaService,
     private utilsService: UtilsService,
     private cdr: ChangeDetectorRef,
     private dialog: MatDialog,
     private toastService: ToastService,
     private formFactory: FormFactoryService,
-    private sourceService: SourceService
   ) {}
+
   ngOnInit(): void {
-    this.formFields = this.formFactory.getFormConfig('saving_log');
-    this.columns = this.formFactory.getTableColumns<SavingLog>('saving_log', {
-      saving_id: (value: number) => this.savingMap[value] ?? value,
-      date: (value:string)=> this.utilsService.formatDateShortStr(value)
-    });
-    this.loadSavingLogs();
-    this.loadSavings();
+    this.loadInitialData();
   }
-  loadSavingLogs() {
+
+  private loadInitialData(): void {
     this.isLoading = true;
-    this.savinglogService.getAll().subscribe({
-      next: (data: ApiResponse<SavingLog[]>) => {
-        this.savinglogs = data.response;
+    forkJoin({
+      logs: this.savinglogService.getAll(),
+      meta: this.metaService.getMeta('saving-log'),
+      savings: this.savingService.getAll(),
+      sources: this.sourceService.getAll(),
+    }).subscribe({
+      next: ({ logs, meta, savings, sources }) => {
+        this.savinglogs = logs.response;
+
+        this.savingMap = Object.fromEntries(
+          savings.response.map((s: Saving) => [s.id as number, s.description || ''])
+        );
+
+        const relationOptions = {
+          saving: savings.response.map((s: Saving) => ({ value: s.id as number, label: s.description || '' })),
+          source: sources.response.map((s: Source) => ({ value: s.id as number, label: s.name })),
+        };
+
+        this.formFields = this.formFactory.enrichMetadataFields(meta.fields, relationOptions);
+        const baseCols = this.formFactory.getTableColumnsFromMetadata<SavingLog>(this.formFields);
+        this.columns = baseCols.map((col) => {
+          if (col.key === 'saving_id') return { ...col, formatter: (v: number) => this.savingMap[v] ?? String(v) };
+          if (col.key === 'date') return { ...col, formatter: (v: string) => this.utilsService.formatDateShortStr(v) };
+          return col;
+        });
+
         this.isLoading = false;
-      },
-      error: (err) => {
-        this.errorMessage = 'Error loading saving logs';
-        this.isLoading = false;
-      },
-    });
-    this.savingService.getAll().subscribe({
-      next: (res: ApiResponse<Saving[]>) => {
-        const savingField = this.formFields.find((s) => s.key === 'saving_id');
-        if (savingField) {
-          this.savingMap = Object.fromEntries(
-            res.response.map((s) => [s.id ?? 0, s.description || ''])
-          );
-        }
-      },
-    });
-  }
-  private loadSavings(): void {
-    this.savingService.getAll().subscribe({
-      next: (res: ApiResponse<Saving[]>) => {
-        const field = this.formFields.find((f) => f.key === 'saving_id');
-        if (field) {
-          field.type = 'select';
-          field.options = res.response.map((s) => ({
-            label: `${s.description || ''}`,
-            value: s.id ?? 0,
-          }));
-        }
       },
       error: () => {
         this.errorMessage = 'Error loading saving logs';
@@ -97,66 +89,16 @@ export class SavingsLogComponent implements OnInit {
   editSavingLog(savinglog: SavingLog): void {
     this.openDialog(savinglog);
   }
+
   addSavingLog(): void {
     this.openDialog();
   }
 
   openDialog(data?: SavingLog): void {
-    forkJoin({
-      savings: this.savingService.getAll(),
-      sources: this.sourceService.getAll()
-    }).subscribe({
-      next: (responses) => {
-        const baseConfig = this.formFactory.getFormConfig('saving_log');
-
-        const enrichedConfig = baseConfig.map(field => {
-          if (field.key === 'saving_id') {
-            return {
-              ...field,
-              options: responses.savings.response.map((r) => ({
-                value: r.id ?? 0,
-                label: r.description ?? ''
-              }))
-            };
-          }
-
-          if (field.key === 'source_id') {
-            return {
-              ...field,
-              options: responses.sources.response.map((r) => ({
-                value: r.id ?? 0,
-                label: `${r.name}`
-              }))
-            };
-          }
-
-          return field;
-        });
-
-        const dialogRef = this.dialog.open(GenericDialogComponent, {
-          data: {
-            title: data ? 'Edit Household Member' : 'New Household Member',
-            fields: enrichedConfig,
-            initialData: data || {}
-          }
-        });
-
-        dialogRef.afterClosed().subscribe(result => {
-          if (result) {
-            result.id ? this.updateSavingLog(result) : this.createSavingLog(result);
-          }
-        });
-      },
-      error: (error) => {
-        console.error('Error loading data:', error);
-      }
-    });
-  }
-/*  openDialog(data?: SavingLog): void {
     const dialogRef = this.dialog.open(GenericDialogComponent, {
       data: {
-        title: data ? 'Edit SavingLog' : 'New SavingLog',
-        fields: this.formFactory.getFormConfig('saving_log'),
+        title: data ? 'Edit Saving Log' : 'New Saving Log',
+        fields: this.formFields,
         initialData: data || {},
       },
     });
@@ -166,63 +108,41 @@ export class SavingsLogComponent implements OnInit {
         result.id ? this.updateSavingLog(result) : this.createSavingLog(result);
       }
     });
-  } */
+  }
 
   updateSavingLog(savinglog: SavingLog): void {
-    if (savinglog.id == null) {
-      this.errorMessage = 'Error updating saving log: missing id';
-      return;
-    }
-
     this.savinglogService.update(savinglog.id!, savinglog).subscribe({
       next: (response: ApiResponse<SavingLog>) => {
         const updated = response.response;
-        const index = this.savinglogs.findIndex((h) => h.id === updated.id);
+        const index = this.savinglogs.findIndex((s) => s.id === updated.id);
         if (index !== -1) {
           this.savinglogs[index] = updated;
           this.savinglogs = [...this.savinglogs];
         }
-        this.toastService.showToast(
-          response,
-          environment.toastType.Success,
-          {}
-        );
+        this.toastService.showToast(response, environment.toastType.Success, {});
         this.cdr.detectChanges();
       },
       error: (err) => {
-        this.toastService.showToast(
-          err.error as ApiResponse<string>,
-          environment.toastType.Error,
-          {}
-        );
+        this.toastService.showToast(err.error as ApiResponse<string>, environment.toastType.Error, {});
       },
     });
   }
+
   createSavingLog(savinglog: SavingLog): void {
     this.savinglogService.create(savinglog).subscribe({
       next: (response: ApiResponse<SavingLog>) => {
         this.savinglogs.push(response.response);
         this.savinglogs = [...this.savinglogs];
-        this.toastService.showToast(
-          response,
-          environment.toastType.Success,
-          {}
-        );
+        this.toastService.showToast(response, environment.toastType.Success, {});
         this.cdr.detectChanges();
       },
       error: (err) => {
-        this.toastService.showToast(
-          err.error as ApiResponse<string>,
-          environment.toastType.Error,
-          {}
-        );
+        this.toastService.showToast(err.error as ApiResponse<string>, environment.toastType.Error, {});
       },
     });
   }
 
   applyFilter(event: Event) {
-    this.filterValue = (event.target as HTMLInputElement).value
-      .trim()
-      .toLowerCase();
+    this.filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
   }
 }
