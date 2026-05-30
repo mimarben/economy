@@ -1,10 +1,8 @@
 import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { forkJoin } from 'rxjs';
 import { GenericDialogComponent } from '@shared/generic-dialog/generic-dialog.component';
-import {
-  GenericTableComponent,
-  TableColumn,
-} from '@shared/generic-table/generic-table.component';
+import { GenericTableComponent, TableColumn } from '@shared/generic-table/generic-table.component';
 import { ApiResponse } from '@app/models/core/APIResponse';
 import { FormFactoryService } from '@app/core/factories/form-factory.service';
 import { FormFieldConfig } from '@shared/generic-form/form-config';
@@ -13,9 +11,6 @@ import { MetaService } from '@core_services/meta.service';
 import { environment } from '@env/environment';
 import { InvestmentCategoryBase as InvestmentCategory } from '@investments_models/InvestmentCategoryBase';
 import { InvestmentCategoryService } from '@investments_services/investment-category.service';
-import { UserService } from '@users_services/user.service';
-import { UtilsService } from '@app/utils/utils.service';
-import { UserBase as User } from '@users_models/UserBase';
 
 @Component({
   selector: 'app-investmentsCategories-categories',
@@ -24,79 +19,69 @@ import { UserBase as User } from '@users_models/UserBase';
   styleUrl: './investments-categories.component.css'
 })
 export class InvestmentsCategoriesComponent implements OnInit {
-investmentsCategories: InvestmentCategory[]=[];
-filterValue= '';
-errorMessage = '';
-isLoading= false;
-formFields: FormFieldConfig[] = [];
-isFormValid= false;
-columns: TableColumn<InvestmentCategory>[]=[];
-usersMap: Record<number, string> = {};
-constructor(
-  private investmentCategoryService: InvestmentCategoryService,
-  private userService: UserService,
-  private utilsService: UtilsService,
-  private cdr: ChangeDetectorRef,
-  private dialog: MatDialog,
-  private toastService: ToastService,
-  private formFactory: FormFactoryService,
-  private metaService: MetaService
-){}
+  investmentsCategories: InvestmentCategory[] = [];
+  filterValue = '';
+  errorMessage = '';
+  isLoading = false;
+  formFields: FormFieldConfig[] = [];
+  columns: TableColumn<InvestmentCategory>[] = [];
+
+  constructor(
+    private investmentCategoryService: InvestmentCategoryService,
+    private cdr: ChangeDetectorRef,
+    private dialog: MatDialog,
+    private toastService: ToastService,
+    private formFactory: FormFactoryService,
+    private metaService: MetaService,
+  ) {}
 
   ngOnInit(): void {
-    this.metaService.getMeta('investment-category').subscribe(meta => {
-      this.formFields = meta.fields;
-      this.columns = [
-        { key: 'id', label: 'Id', sortable: true },
-        ...this.formFactory.getTableColumnsFromMetadata(meta.fields)
-      ];
-      this.loadInvestments();
-    });
+    this.loadInitialData();
   }
 
-  loadInvestments() {
-      this.isLoading = true;
-      this.investmentCategoryService.getAll().subscribe({
-        next: (data: ApiResponse<InvestmentCategory[]>) => {
-          this.investmentsCategories = data.response;
-          this.isLoading = false;
-        },
-        error: (err: any) => {
-          this.errorMessage = 'Error loading investments Categories';
-          this.isLoading = false;
-        },
-      });
-      this.userService.getUsers().subscribe({
-        next: (res: ApiResponse<User[]>) => {
-          const userField = this.formFields.find(f => f.key === 'user_id');
-          if (userField) {
-            this.usersMap = Object.fromEntries(res.response.map((u: User)=>[u.id, (`${u.name} ${u.surname1} ${u.surname2}`)]))
-          }
-        }
-      });
+  private loadInitialData(): void {
+    this.isLoading = true;
+    forkJoin({
+      categories: this.investmentCategoryService.getAll(),
+      meta: this.metaService.getMeta('investment-category'),
+    }).subscribe({
+      next: ({ categories, meta }) => {
+        this.investmentsCategories = categories.response;
+        this.formFields = this.formFactory.enrichMetadataFields(meta.fields);
+        this.columns = this.formFactory.getTableColumnsFromMetadata<InvestmentCategory>(this.formFields);
+        this.isLoading = false;
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.errorMessage = 'Error loading investment categories';
+        this.isLoading = false;
+      },
+    });
   }
 
   editInvestmentCategory(investmentCategory: InvestmentCategory): void {
     this.openDialog(investmentCategory);
   }
+
   addInvestmentInvestmentCategory(): void {
     this.openDialog();
   }
-  openDialog(data?: InvestmentCategory): void {
-      const dialogRef = this.dialog.open(GenericDialogComponent, {
-        data: {
-          title: data ? 'Edit Investment Category' : 'New Investment Category',
-          fields: this.formFields,
-          initialData: data || {},
-        },
-      });
 
-      dialogRef.afterClosed().subscribe((result) => {
-        if (result) {
-          result.id ? this.updateInvestmentCategory(result) : this.createInvestmentCategory(result);
-        }
-      });
-    }
+  openDialog(data?: InvestmentCategory): void {
+    const dialogRef = this.dialog.open(GenericDialogComponent, {
+      data: {
+        title: data ? 'Edit Investment Category' : 'New Investment Category',
+        fields: this.formFields,
+        initialData: data || {},
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        result.id ? this.updateInvestmentCategory(result) : this.createInvestmentCategory(result);
+      }
+    });
+  }
 
   updateInvestmentCategory(investmentCategory: InvestmentCategory): void {
     this.investmentCategoryService.update(investmentCategory.id!, investmentCategory).subscribe({
@@ -107,46 +92,30 @@ constructor(
           this.investmentsCategories[index] = updated;
           this.investmentsCategories = [...this.investmentsCategories];
         }
-        this.toastService.showToast(
-          response,
-          environment.toastType.Success,
-          {}
-        );
+        this.toastService.showToast(response, environment.toastType.Success, {});
         this.cdr.detectChanges();
       },
       error: (err) => {
-        this.toastService.showToast(
-          err.error as ApiResponse<string>,
-          environment.toastType.Error,
-          {}
-        );
+        this.toastService.showToast(err.error as ApiResponse<string>, environment.toastType.Error, {});
       },
     });
   }
+
   createInvestmentCategory(investmentCategory: InvestmentCategory): void {
     this.investmentCategoryService.create(investmentCategory).subscribe({
       next: (response: ApiResponse<InvestmentCategory>) => {
         this.investmentsCategories.push(response.response);
         this.investmentsCategories = [...this.investmentsCategories];
-        this.toastService.showToast(
-          response,
-          environment.toastType.Success,
-          {}
-        );
+        this.toastService.showToast(response, environment.toastType.Success, {});
         this.cdr.detectChanges();
       },
       error: (err) => {
-        this.toastService.showToast(
-          err.error as ApiResponse<string>,
-          environment.toastType.Error,
-          {}
-        );
+        this.toastService.showToast(err.error as ApiResponse<string>, environment.toastType.Error, {});
       },
     });
   }
+
   applyFilter(event: Event) {
-      this.filterValue = (event.target as HTMLInputElement).value
-        .trim()
-        .toLowerCase();
+    this.filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
   }
 }

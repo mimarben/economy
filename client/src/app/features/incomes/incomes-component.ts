@@ -7,7 +7,6 @@ import { ToastService } from '@core_services/toast.service';
 import { environment } from '@env/environment';
 import { ApiResponse } from '@app/models/core/APIResponse';
 import { IncomeBase as Income } from '@incomes_models/IncomeBase';
-import { UserBase as User } from '@users_models/UserBase';
 import { IncomeCategoryBase as IncomeCategory } from '@incomes_models/IncomeCategoryBase';
 import { SourceBase as Source } from '@finance_models/SourceBase';
 import { AccountBase as Account } from '@finance_models/AccountBase';
@@ -16,9 +15,9 @@ import { IncomeService } from '@incomes_services/income.service';
 import { FormFactoryService } from '@app/core/factories/form-factory.service';
 import { UtilsService } from '@app/utils/utils.service';
 import { IncomeCategoryService } from '@incomes_services/income-category.service';
-import { UserService } from '@users_services/user.service';
 import { AccountService } from '@finance_services/account.service';
 import { SourceService } from '@finance_services/source.service';
+import { MetaService } from '@core_services/meta.service';
 
 @Component({
   selector: 'app-incomes-component',
@@ -32,13 +31,10 @@ export class IncomesComponent implements OnInit {
   isLoading = false;
   errorMessage = '';
   formFields: FormFieldConfig[] = [];
-  isFormValid = false;
   columns: TableColumn<Income>[] = [];
-  incomeCategoryMap: Record<number, string> = [];
-  usersMap: Record<number, string> = {};
+  categoryMap: Record<number, string> = {};
   accountsMap: Record<number, string> = {};
   sourcesMap: Record<number, string> = {};
-  incomesCategoriesMap: Record<number, string> = {};
 
   constructor(
     private incomeService: IncomeService,
@@ -48,153 +44,78 @@ export class IncomesComponent implements OnInit {
     private dialog: MatDialog,
     private toastService: ToastService,
     private formFactory: FormFactoryService,
-    private userService: UserService,
+    private metaService: MetaService,
     private accountService: AccountService,
     private sourceService: SourceService
   ) {}
 
   ngOnInit(): void {
-    this.formFields = this.formFactory.getFormConfig('income');
-    this.columns = this.formFactory.getTableColumns<Income>('income', {
-      category_id: (value: number) =>this.incomesCategoriesMap[value] ?? value,
-      user_id: (value: number) => this.usersMap[value] ?? value,
-      source_id: (value: number) => this.sourcesMap[value] ?? value,
-      account_id: (value: number) => this.accountsMap[value] ?? value,
-      date: (value: string) => this.utilsService.formatDateShortStr(value),
-    });
-    this.loadIncomes();
+    this.loadInitialData();
   }
 
-  loadIncomes() {
-      this.isLoading = true;
-      this.errorMessage = '';
-      // Observables correctos definidos por el usuario
-      const incomes$ = this.incomeService.getAll();
-      const users$ = this.userService.getUsers();
-      const categories$ = this.incomecategoryService.getAll();
-      const sources$ = this.sourceService.getAll();
-      const accounts$ = this.accountService.getAll();
-      forkJoin([incomes$, users$, categories$, sources$, accounts$]).subscribe({
-          next: ([incomesResponse, usersResponse, categoriesResponse, sourcesResponse, accountsResponse]) => {
+  private loadInitialData(): void {
+    this.isLoading = true;
+    forkJoin({
+      incomes: this.incomeService.getAll(),
+      meta: this.metaService.getMeta('income'),
+      categories: this.incomecategoryService.getAll(),
+      sources: this.sourceService.getAll(),
+      accounts: this.accountService.getAll(),
+    }).subscribe({
+      next: ({ incomes, meta, categories, sources, accounts }) => {
+        this.incomes = incomes.response || [];
 
-              this.incomes = incomesResponse.response || [];
+        this.categoryMap = Object.fromEntries(
+          categories.response.map((c: IncomeCategory) => [c.id as number, c.name])
+        );
+        this.sourcesMap = Object.fromEntries(
+          sources.response.map((s: Source) => [s.id as number, s.name])
+        );
+        this.accountsMap = Object.fromEntries(
+          accounts.response.map((a: Account) => [a.id as number, a.name])
+        );
 
+        const relationOptions = {
+          'income-category': categories.response.map((c: IncomeCategory) => ({ value: c.id as number, label: c.name })),
+          source: sources.response.map((s: Source) => ({ value: s.id as number, label: s.name })),
+          account: accounts.response.map((a: Account) => ({ value: a.id as number, label: a.name })),
+        };
 
-              const users = usersResponse.response || [];
-              this.usersMap = Object.fromEntries(
-                  users.map((u: User) => [
-                      u.id,
-                      `${u.name} ${u.surname1} ${u.surname2 || ''}`,
-                  ])
-              );
+        this.formFields = this.formFactory.enrichMetadataFields(meta.fields, relationOptions);
+        const baseCols = this.formFactory.getTableColumnsFromMetadata<Income>(this.formFields);
+        this.columns = baseCols.map((col) => {
+          if (col.key === 'category_id') return { ...col, formatter: (v: number) => this.categoryMap[v] ?? String(v) };
+          if (col.key === 'source_id') return { ...col, formatter: (v: number) => this.sourcesMap[v] ?? String(v) };
+          if (col.key === 'account_id') return { ...col, formatter: (v: number) => this.accountsMap[v] ?? String(v) };
+          if (col.key === 'date') return { ...col, formatter: (v: string) => this.utilsService.formatDateShortStr(v) };
+          return col;
+        });
 
-
-              const categories = categoriesResponse.response || [];
-              this.incomesCategoriesMap = Object.fromEntries(
-                  categories.map((c: IncomeCategory) => [c.id, c.name])
-              );
-
-
-              const sources = sourcesResponse.response || [];
-              this.sourcesMap = Object.fromEntries(
-                  sources.map((s: Source) => [s.id, s.name])
-              );
-
-              const accounts = accountsResponse.response || [];
-              this.accountsMap = Object.fromEntries(
-                  accounts.map((a: Account) => [a.id, `${a.name}`])
-              );
-              this.isLoading = false;
-              this.cdr.detectChanges();
-          },
-          error: (err: any) => {
-              this.errorMessage = 'Error loading income data or related entities (Users, Categories, Sources, Accounts).';
-              this.isLoading = false;
-          },
-      });
+        this.isLoading = false;
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.errorMessage = 'Error loading income data.';
+        this.isLoading = false;
+      },
+    });
   }
 
   openDialog(data?: Income): void {
-  this.isLoading = true;
+    const dialogRef = this.dialog.open(GenericDialogComponent, {
+      data: {
+        title: data ? 'Edit Income' : 'New Income',
+        fields: this.formFields,
+        initialData: data || {},
+      },
+    });
 
-  // Creamos los observables de todas las dependencias
-  const users$ = this.userService.getUsers();
-  const categories$ = this.incomecategoryService.getAll();
-  const sources$ = this.sourceService.getAll();
-  const accounts$ = this.accountService.getAll();
-
-  forkJoin([users$, categories$, sources$, accounts$]).subscribe({
-    next: ([usersResponse, categoriesResponse, sourcesResponse, accountsResponse]) => {
-      // Extraemos los datos (response de cada servicio)
-      const users = usersResponse.response || [];
-      const categories = categoriesResponse.response || [];
-      const sources = sourcesResponse.response || [];
-      const accounts = accountsResponse.response || [];
-
-      const baseConfig = this.formFactory.getFormConfig('income');
-
-      const enrichedConfig = baseConfig.map((field: FormFieldConfig) => {
-        switch (field.key) {
-          case 'user_id':
-            return {
-              ...field,
-              options: users.map((u: User) => ({
-                value: u.id,
-                label: `${u.name} ${u.surname1} ${u.surname2 || ''}`,
-              })),
-            };
-          case 'category_id':
-            return {
-              ...field,
-              options: categories.map((c: IncomeCategory) => ({
-                value: c.id,
-                label: c.name,
-              })),
-            };
-          case 'source_id':
-            return {
-              ...field,
-              options: sources.map((s: Source) => ({
-                value: s.id,
-                label: s.name,
-              })),
-            };
-          case 'account_id':
-            return {
-              ...field,
-              options: accounts.map((a: Account) => ({
-                value: a.id,
-                label: a.name,
-              })),
-            };
-          default:
-            return field;
-        }
-      });
-
-      const dialogRef = this.dialog.open(GenericDialogComponent, {
-        data: {
-          title: data ? 'Edit Income' : 'New Income',
-          fields: enrichedConfig,
-          initialData: data || {},
-        },
-      });
-
-      dialogRef.afterClosed().subscribe((result) => {
-        if (result) {
-          result.id ? this.update(result) : this.create(result);
-        }
-      });
-
-      this.isLoading = false;
-    },
-    error: (error) => {
-      console.error('Error loading related data:', error);
-      this.isLoading = false;
-    },
-  });
-}
-
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        result.id ? this.update(result) : this.create(result);
+      }
+    });
+  }
 
   edit(income: Income): void {
     this.openDialog(income);
@@ -213,19 +134,11 @@ export class IncomesComponent implements OnInit {
           this.incomes[index] = updated;
           this.incomes = [...this.incomes];
         }
-        this.toastService.showToast(
-          response,
-          environment.toastType.Success,
-          {}
-        );
+        this.toastService.showToast(response, environment.toastType.Success, {});
         this.cdr.detectChanges();
       },
       error: (err) => {
-        this.toastService.showToast(
-          err.error as ApiResponse<string>,
-          environment.toastType.Error,
-          {}
-        );
+        this.toastService.showToast(err.error as ApiResponse<string>, environment.toastType.Error, {});
       },
     });
   }
@@ -235,26 +148,16 @@ export class IncomesComponent implements OnInit {
       next: (response: ApiResponse<Income>) => {
         this.incomes.push(response.response);
         this.incomes = [...this.incomes];
-        this.toastService.showToast(
-          response,
-          environment.toastType.Success,
-          {}
-        );
+        this.toastService.showToast(response, environment.toastType.Success, {});
         this.cdr.detectChanges();
       },
       error: (err) => {
-        this.toastService.showToast(
-          err.error as ApiResponse<string>,
-          environment.toastType.Error,
-          {}
-        );
+        this.toastService.showToast(err.error as ApiResponse<string>, environment.toastType.Error, {});
       },
     });
   }
 
   applyFilter(event: Event) {
-    this.filterValue = (event.target as HTMLInputElement).value
-      .trim()
-      .toLowerCase();
+    this.filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
   }
 }

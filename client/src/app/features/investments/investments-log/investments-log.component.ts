@@ -1,20 +1,20 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { forkJoin } from 'rxjs';
 import { GenericDialogComponent } from '@shared/generic-dialog/generic-dialog.component';
-import { GenericTableComponent } from '@shared/generic-table/generic-table.component';
-import { TableColumn } from '@shared/generic-table/generic-table.component';
+import { GenericTableComponent, TableColumn } from '@shared/generic-table/generic-table.component';
 import { ToastService } from '@core_services/toast.service';
 import { environment } from '@env/environment';
 import { ApiResponse } from '@app/models/core/APIResponse';
 import { InvestmentLogBase as InvestmentLog } from '@investments_models/InvestmentLogBase';
+import { InvestmentBase as Investment } from '@investments_models/InvestmentBase';
 import { FormFieldConfig } from '@shared/generic-form/form-config';
 import { InvestmentLogService } from '@investments_services/investment-log.service';
-import { InvestmentBase as Investment } from '@investments_models/InvestmentBase';
 import { InvestmentService } from '@investments_services/investment.service';
 import { FormFactoryService } from '@app/core/factories/form-factory.service';
-import { InvestmentCategoryService } from '@investments_services/investment-category.service';
+import { MetaService } from '@core_services/meta.service';
 import { UtilsService } from '@app/utils/utils.service';
-import { InvestmentCategoryBase  as InvestmentCategory} from '@investments_models/InvestmentCategoryBase';
+
 @Component({
   selector: 'app-investments-log',
   imports: [GenericTableComponent],
@@ -27,112 +27,82 @@ export class InvestmentsLogComponent implements OnInit {
   isLoading = false;
   errorMessage = '';
   formFields: FormFieldConfig[] = [];
-  isFormValid = false;
   columns: TableColumn<InvestmentLog>[] = [];
-  savingMap: Record<number, string> = [];
+  investmentMap: Record<number, string> = {};
+
   constructor(
     private investmentlogService: InvestmentLogService,
     private investmentService: InvestmentService,
-    private investmentCategoryService: InvestmentCategoryService,
+    private metaService: MetaService,
     private utilsService: UtilsService,
     private cdr: ChangeDetectorRef,
     private dialog: MatDialog,
     private toastService: ToastService,
-    private formFactory: FormFactoryService
+    private formFactory: FormFactoryService,
   ) {}
 
   ngOnInit(): void {
-    this.formFields = this.formFactory.getFormConfig('investment_log');
-        this.columns = this.formFactory.getTableColumns<InvestmentLog>('investment_log', {
-          saving_id: (value: number) => this.savingMap[value] ?? value,
-          date: (value:string)=> this.utilsService.formatDateShortStr(value)
-        });
-        this.loadInvestmentLogs();
-        this.loadInvestments();
+    this.loadInitialData();
   }
-  loadInvestmentLogs() {
-      this.isLoading = true;
-      this.investmentlogService.getAll().subscribe({
-        next: (data: ApiResponse<InvestmentLog[]>) => {
-          this.investmentlogs = data.response;
-          this.isLoading = false;
-        },
-        error: (err) => {
-          this.errorMessage = 'Error loading saving logs';
-          this.isLoading = false;
-        },
-      });
-      this.investmentService.getAll().subscribe({
-        next: (res: ApiResponse<Investment[]>) => {
-          const savingField = this.formFields.find((s) => s.key === 'investment_id');
-          if (savingField) {
-            this.savingMap = Object.fromEntries(
-              res.response.map((s) => [s.id ?? 0, s.description])
-            );
-          }
-        },
-      });
-    }
-    private loadInvestments(): void {
-      this.investmentService.getAll().subscribe({
-        next: (res: ApiResponse<Investment[]>) => {
-          const field = this.formFields.find((f) => f.key === 'saving_id');
-          if (field) {
-            field.type = 'select';
-            field.options = res.response.map((s) => ({
-              label: `${s.description}`,
-              value: s.id ?? 0,
-            }));
-          }
-        },
-        error: () => {
-          this.errorMessage = 'Error loading investments';
-          this.isLoading = false;
-        },
-      });
-    }
-  edit(investmentlog: InvestmentLog): void {
-      this.openDialog(investmentlog);
-    }
-  add(): void {
-      this.openDialog();
-    }
 
+  private loadInitialData(): void {
+    this.isLoading = true;
+    forkJoin({
+      logs: this.investmentlogService.getAll(),
+      meta: this.metaService.getMeta('investment-log'),
+      investments: this.investmentService.getAll(),
+    }).subscribe({
+      next: ({ logs, meta, investments }) => {
+        this.investmentlogs = logs.response;
 
+        this.investmentMap = Object.fromEntries(
+          investments.response.map((i: Investment) => [i.id as number, i.description])
+        );
+
+        const relationOptions = {
+          investment: investments.response.map((i: Investment) => ({ value: i.id as number, label: i.description })),
+        };
+
+        this.formFields = this.formFactory.enrichMetadataFields(meta.fields, relationOptions);
+        const baseCols = this.formFactory.getTableColumnsFromMetadata<InvestmentLog>(this.formFields);
+        this.columns = baseCols.map((col) => {
+          if (col.key === 'investment_id') return { ...col, formatter: (v: number) => this.investmentMap[v] ?? String(v) };
+          if (col.key === 'date') return { ...col, formatter: (v: string) => this.utilsService.formatDateShortStr(v) };
+          return col;
+        });
+
+        this.isLoading = false;
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.errorMessage = 'Error loading investment logs';
+        this.isLoading = false;
+      },
+    });
+  }
 
   openDialog(data?: InvestmentLog): void {
-    this.investmentCategoryService.getAll().subscribe({
-      next:(res:ApiResponse<InvestmentCategory[]>)=>{
-        const baseConfig = this.formFactory.getFormConfig('investment_log');
-        const enrichedConfig = baseConfig.map(field => {
-          if (field.key === 'investment_id') {
-            return {
-              ...field,
-              options: res.response.map(r => ({
-                value: r.id,
-                label: r.name
-              }))
-            };
-          }
-          return field;
-      });
-      const dialogRef = this.dialog.open(GenericDialogComponent, {
-        data: {
-          title: data ? 'Edit SavingLog' : 'New SavingLog',
-          fields: enrichedConfig,
-          initialData: data || {},
-        }
-      });
-      dialogRef.afterClosed().subscribe(result => {
-          if (result) {
-            result.id ? this.update(result) : this.create(result);
-          }
-        });
+    const dialogRef = this.dialog.open(GenericDialogComponent, {
+      data: {
+        title: data ? 'Edit Investment Log' : 'New Investment Log',
+        fields: this.formFields,
+        initialData: data || {},
       },
-      error: (error) => {
-        console.error('Error loading data:', error);
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        result.id ? this.update(result) : this.create(result);
       }
     });
+  }
+
+  edit(investmentlog: InvestmentLog): void {
+    this.openDialog(investmentlog);
+  }
+
+  add(): void {
+    this.openDialog();
   }
 
   update(investmentlog: InvestmentLog): void {
@@ -144,48 +114,30 @@ export class InvestmentsLogComponent implements OnInit {
           this.investmentlogs[index] = updated;
           this.investmentlogs = [...this.investmentlogs];
         }
-        this.toastService.showToast(
-          response,
-          environment.toastType.Success,
-          {}
-        );
+        this.toastService.showToast(response, environment.toastType.Success, {});
         this.cdr.detectChanges();
       },
       error: (err) => {
-        this.toastService.showToast(
-          err.error as ApiResponse<string>,
-          environment.toastType.Error,
-          {}
-        );
+        this.toastService.showToast(err.error as ApiResponse<string>, environment.toastType.Error, {});
       },
     });
   }
 
   create(investmentlog: InvestmentLog): void {
-      this.investmentlogService.create(investmentlog).subscribe({
-        next: (response: ApiResponse<InvestmentLog>) => {
-          this.investmentlogs.push(response.response);
-          this.investmentlogs = [...this.investmentlogs];
-          this.toastService.showToast(
-            response,
-            environment.toastType.Success,
-            {}
-          );
-          this.cdr.detectChanges();
-        },
-        error: (err) => {
-          this.toastService.showToast(
-            err.error as ApiResponse<string>,
-            environment.toastType.Error,
-            {}
-          );
-        },
-      });
+    this.investmentlogService.create(investmentlog).subscribe({
+      next: (response: ApiResponse<InvestmentLog>) => {
+        this.investmentlogs.push(response.response);
+        this.investmentlogs = [...this.investmentlogs];
+        this.toastService.showToast(response, environment.toastType.Success, {});
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        this.toastService.showToast(err.error as ApiResponse<string>, environment.toastType.Error, {});
+      },
+    });
   }
 
   applyFilter(event: Event) {
-    this.filterValue = (event.target as HTMLInputElement).value
-    .trim()
-    .toLowerCase();
+    this.filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
   }
 }

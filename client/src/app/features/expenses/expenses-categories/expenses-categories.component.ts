@@ -65,7 +65,6 @@ export class ExpensesCategoriesComponent implements OnInit {
             this.isLoading = false;
           },
         });
-        console.log("Categories: ", this.expensesCategories);
   }
 
     edit(expensecategory: ExpenseCategory): void {

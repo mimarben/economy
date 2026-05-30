@@ -40,7 +40,6 @@ ngOnInit(): void {
       { key: 'id', label: 'Id', sortable: true }, // opcional pero recomendable
       ...this.formFactory.getTableColumnsFromMetadata(meta.fields)
     ];
-    console.log(this.columns);
     this.loadSources();
   });
 }
