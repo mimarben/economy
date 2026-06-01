@@ -72,6 +72,11 @@ export class UtilsService {
     return isValid(d) ? format(d, 'yyyy-MM-dd') : dateStr;
   }
 
+  public formatDateISO(date: Date | null | undefined): string {
+    if (!date) return '';
+    return format(date, 'yyyy-MM-dd');
+  }
+
   public normalize(text: string): string {
     return text
       .toLowerCase()

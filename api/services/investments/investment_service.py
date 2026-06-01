@@ -27,7 +27,8 @@ class InvestmentService(BaseService[Investment, InvestmentRead, InvestmentCreate
             description=data.description,
         )
 
-        obj = Investment(**data.model_dump(), dedup_hash=dedup_hash)
+        payload = data.model_dump(exclude={'dedup_hash'})
+        obj = Investment(**payload, dedup_hash=dedup_hash)
 
         try:
             obj = self.repository.create(obj)

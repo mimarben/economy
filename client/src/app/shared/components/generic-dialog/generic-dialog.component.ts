@@ -36,7 +36,8 @@ export class GenericDialogComponent {
   }
   onSave() {
     if (this.genericFormComponent?.form?.valid) {
-      this.dialogRef.close({ ...this.data.initialData, ...this.genericFormComponent.form.getRawValue() });
+      const raw = this.genericFormComponent.serializeDates(this.genericFormComponent.form.getRawValue());
+      this.dialogRef.close({ ...this.data.initialData, ...raw });
     } else {
       this.genericFormComponent?.form?.markAllAsTouched();
     }

@@ -1,8 +1,8 @@
 from typing import Optional
-from datetime import date as DateType
+from datetime import date as DateType, datetime
 
 from decimal import Decimal
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 from models.core.enums import ActionEnum
 from schemas.core.audit_schema import AuditFields
 
@@ -29,6 +29,18 @@ class InvestmentLogRead(InvestmentLogBase, AuditFields):
 
 class InvestmentLogCreate(InvestmentLogBase):
     """Schema for creating InvestmentLog."""
+
+    @field_validator('date', mode='before')
+    @classmethod
+    def parse_date_formats(cls, v: object) -> object:
+        if not isinstance(v, str):
+            return v
+        for fmt in ('%d/%m/%Y', '%d-%m-%Y', '%Y-%m-%d'):
+            try:
+                return datetime.strptime(v, fmt).date()
+            except ValueError:
+                continue
+        return v
 
 
 class InvestmentLogUpdate(BaseModel):

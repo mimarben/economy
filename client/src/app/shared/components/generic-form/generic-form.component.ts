@@ -200,15 +200,23 @@ export class GenericFormComponent implements OnChanges, AfterViewInit, OnDestroy
    * Handles form submission, emitting valid data or marking fields as touched.
    */
   submitForm(): void {
-    // Sincronizar columnas antes de enviar
     this.syncColumnsControlFromRows();
-    
     if (this.form.valid) {
-      this.formSubmit.emit(this.form.value);
+      this.formSubmit.emit(this.serializeDates(this.form.value));
     } else {
       this.form.markAllAsTouched();
     }
     this.emitFormValidity();
+  }
+
+  serializeDates(value: Record<string, any>): Record<string, any> {
+    const result = { ...value };
+    this.fields.forEach(field => {
+      if (field.type === 'date' && result[field.key] instanceof Date) {
+        result[field.key] = this.utilsService.formatDateISO(result[field.key]);
+      }
+    });
+    return result;
   }
 
   /**

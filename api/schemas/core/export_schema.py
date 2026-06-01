@@ -1,5 +1,6 @@
 # utils/schema_exporter.py
 from decimal import Decimal
+from datetime import date as DateType
 from enum import Enum
 from typing import get_origin, get_args, Union
 from pydantic import BaseModel
@@ -21,6 +22,8 @@ def map_type(py_type):
         return "number"
     if py_type == bool:
         return "checkbox"
+    if py_type == DateType:
+        return "date"
     if isinstance(py_type, type) and issubclass(py_type, Enum):
         return "select"
     return "text"
