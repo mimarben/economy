@@ -15,7 +15,7 @@ class Account(TimestampMixin, Base):
     iban = Column(String, nullable=False, unique=True)
     currency = Column(SQLEnum(CurrencyEnum), nullable=False)
     active = Column(Boolean, default=True, nullable=False)
-    balance = Column(Numeric(12, 2), nullable=True)
+    balance = Column(Numeric(20, 10), nullable=True)
     
     # Foreign Keys
     bank_id = Column(Integer, ForeignKey('banks.id'), nullable=False, index=True)
