@@ -58,7 +58,9 @@ export class InvestmentsComponent implements OnInit {
       categories: this.investmentCategoryService.getAll(),
     }).subscribe({
       next: ({ investments, meta, accounts, categories }) => {
-        this.investments = investments.response;
+        this.investments = (investments.response as Investment[]).sort(
+          (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+        );
 
         this.accountMap = Object.fromEntries(
           accounts.response.map((a: Account) => [a.id as number, a.name])
@@ -99,12 +101,30 @@ export class InvestmentsComponent implements OnInit {
     this.openDialog();
   }
 
-  openDialog(data?: Investment): void {
+  duplicateInvestment(investment: Investment): void {
+    const { id: _id, ...copy } = investment as any;
+    this.openDialog(copy);
+  }
+
+  deleteInvestment(investment: Investment): void {
+    if (!confirm(`Delete investment "${investment.description}"?`)) return;
+    this.investmentService.delete(investment.id!).subscribe({
+      next: () => {
+        this.investments = this.investments.filter(i => i.id !== investment.id);
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        this.toastService.showToast(err.error as ApiResponse<Investment>, environment.toastType.Error, {});
+      },
+    });
+  }
+
+  openDialog(data?: Partial<Investment>): void {
     const dialogRef = this.dialog.open(GenericDialogComponent, {
       data: {
-        title: data ? 'Edit Investment' : 'New Investment',
+        title: data?.id ? 'Edit Investment' : 'New Investment',
         fields: this.formFields,
-        initialData: data || {},
+        initialData: data || { date: new Date() },
       },
     });
 

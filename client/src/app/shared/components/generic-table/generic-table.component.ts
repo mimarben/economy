@@ -40,6 +40,7 @@ export class GenericTableComponent<T> implements AfterViewInit, OnChanges {
   @Input() addButtonLabel = 'Add';
   @Input() noDataMessage = 'No records found.';
   @Input() showDeleteAction = false;
+  @Input() showDuplicateAction = false;
   @Input() showRefreshAction = true;
   @Input() scrollable = false;
   @Input() scrollHeight = '480px';
@@ -47,6 +48,7 @@ export class GenericTableComponent<T> implements AfterViewInit, OnChanges {
   @Output() edit = new EventEmitter<T>();
   @Output() add = new EventEmitter<void>();
   @Output() delete = new EventEmitter<T>();
+  @Output() duplicate = new EventEmitter<T>();
   @Output() refresh = new EventEmitter<void>();
 
   dataSource = new MatTableDataSource<T>([]);
@@ -85,6 +87,10 @@ export class GenericTableComponent<T> implements AfterViewInit, OnChanges {
 
   onDelete(row: T): void {
     this.delete.emit(row);
+  }
+
+  onDuplicate(row: T): void {
+    this.duplicate.emit(row);
   }
 
   onAdd(): void {

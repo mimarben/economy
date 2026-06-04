@@ -4,7 +4,11 @@
   [columns]="columns"
   [isLoading]="isLoading"
   [errorMessage]="errorMessage"
+  [showDeleteAction]="true"
+  [showDuplicateAction]="true"
   (edit)="edit($event)"
   (add)="add()"
+  (delete)="deleteLog($event)"
+  (duplicate)="duplicate($event)"
 ></app-generic-table>
 

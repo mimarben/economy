@@ -53,7 +53,9 @@ export class InvestmentsLogComponent implements OnInit {
       investments: this.investmentService.getAll(),
     }).subscribe({
       next: ({ logs, meta, investments }) => {
-        this.investmentlogs = logs.response;
+        this.investmentlogs = (logs.response as InvestmentLog[]).sort(
+          (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+        );
 
         this.investmentMap = Object.fromEntries(
           investments.response.map((i: Investment) => [i.id as number, i.description])
@@ -81,12 +83,12 @@ export class InvestmentsLogComponent implements OnInit {
     });
   }
 
-  openDialog(data?: InvestmentLog): void {
+  openDialog(data?: Partial<InvestmentLog>): void {
     const dialogRef = this.dialog.open(GenericDialogComponent, {
       data: {
-        title: data ? 'Edit Investment Log' : 'New Investment Log',
+        title: data?.id ? 'Edit Investment Log' : 'New Investment Log',
         fields: this.formFields,
-        initialData: data || {},
+        initialData: data || { date: new Date() },
       },
     });
 
@@ -103,6 +105,24 @@ export class InvestmentsLogComponent implements OnInit {
 
   add(): void {
     this.openDialog();
+  }
+
+  duplicate(investmentlog: InvestmentLog): void {
+    const { id: _id, ...copy } = investmentlog as any;
+    this.openDialog(copy);
+  }
+
+  deleteLog(investmentlog: InvestmentLog): void {
+    if (!confirm('Delete this investment log entry?')) return;
+    this.investmentlogService.delete(investmentlog.id!).subscribe({
+      next: () => {
+        this.investmentlogs = this.investmentlogs.filter(l => l.id !== investmentlog.id);
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        this.toastService.showToast(err.error as ApiResponse<string>, environment.toastType.Error, {});
+      },
+    });
   }
 
   update(investmentlog: InvestmentLog): void {

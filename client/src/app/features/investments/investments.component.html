@@ -4,6 +4,10 @@
   [columns]="columns"
   [isLoading]="isLoading"
   [errorMessage]="errorMessage"
+  [showDeleteAction]="true"
+  [showDuplicateAction]="true"
   (edit)="editInvestment($event)"
   (add)="addInvestment()"
+  (delete)="deleteInvestment($event)"
+  (duplicate)="duplicateInvestment($event)"
 ></app-generic-table>

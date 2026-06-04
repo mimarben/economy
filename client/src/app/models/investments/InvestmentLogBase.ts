@@ -8,16 +8,16 @@ import { ActionEnum } from '@core/const/Action.enum';
 export type Date = string;
 export type Currentvalue = number;
 export type Priceperunit = number;
-export type Unitsbought = number;
+export type Quantity = number;
 export type Note = string;
 export type InvestmentId = number;
 
 export interface InvestmentLogBase {
   id?: number;
   date: Date;
-  currentValue: Currentvalue;
-  pricePerUnit: Priceperunit;
-  unitsBought: Unitsbought;
+  current_value?: Currentvalue;
+  price_per_unit?: Priceperunit;
+  quantity?: Quantity;
   action: ActionEnum;
   note: Note;
   investment_id: InvestmentId;

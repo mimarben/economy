@@ -59,6 +59,9 @@
               <button mat-icon-button matTooltip="Edit" (click)="onEdit(row)">
                 <mat-icon>edit</mat-icon>
               </button>
+              <button *ngIf="showDuplicateAction" mat-icon-button matTooltip="Duplicate" (click)="onDuplicate(row)">
+                <mat-icon>content_copy</mat-icon>
+              </button>
               <button *ngIf="showDeleteAction" mat-icon-button matTooltip="Delete" (click)="onDelete(row)">
                 <mat-icon color="warn">delete</mat-icon>
               </button>

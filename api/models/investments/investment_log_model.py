@@ -9,9 +9,9 @@ class InvestmentLog(TimestampMixin, Base):
     __tablename__ = "investments_logs"
     id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
     date = Column(Date, nullable=False)
-    current_value = Column(Numeric(12, 2), nullable=False)
+    current_value = Column(Numeric(12, 2), nullable=True)
     price_per_unit = Column(Numeric(12, 2))
-    units_bought = Column(Numeric(12, 6))
+    quantity = Column(Numeric(12, 6))
     action = Column(SQLEnum(ActionEnum), nullable=False)
     note = Column(String)
 

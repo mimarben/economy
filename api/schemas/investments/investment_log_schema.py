@@ -11,9 +11,9 @@ class InvestmentLogBase(BaseModel):
     """Base schema for InvestmentLog aligned with ORM model."""
 
     date: DateType = Field(...)
-    current_value: Decimal = Field(..., gt=0)
+    current_value: Optional[Decimal] = Field(None, gt=0)
     price_per_unit: Optional[Decimal] = Field(None, gt=0)
-    units_bought: Optional[Decimal] = Field(None, gt=0)
+    quantity: Optional[Decimal] = Field(None)
     action: ActionEnum = Field(...)
     note: Optional[str] = Field(None)
     investment_id: int = Field(..., gt=0, json_schema_extra={"ui_type": "select", "relation": "investment"})
@@ -49,7 +49,7 @@ class InvestmentLogUpdate(BaseModel):
     date: Optional[DateType] = Field(None)
     current_value: Optional[Decimal] = Field(None, gt=0)
     price_per_unit: Optional[Decimal] = Field(None, gt=0)
-    units_bought: Optional[Decimal] = Field(None, gt=0)
+    quantity: Optional[Decimal] = Field(None)
     action: Optional[ActionEnum] = Field(None)
     note: Optional[str] = Field(None)
     investment_id: Optional[int] = Field(None, gt=0)
