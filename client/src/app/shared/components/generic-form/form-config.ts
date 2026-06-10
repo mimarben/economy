@@ -18,5 +18,6 @@ export interface FormFieldConfig {
   relation?: string; // For fields that represent a relation to another entity
   ui_type?: 'select' | string; // For custom UI components
   multiple?: boolean; // Enables multi-select values (array)
+  defaultValue?: any; // Default value when creating a new record (no initialData)
 }
 

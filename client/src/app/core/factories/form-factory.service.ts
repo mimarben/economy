@@ -223,17 +223,26 @@ private getFormatter(
     return fields
     .filter((field) => this.isMetaFieldVisible(field))
     .map((field) => {
-      const relationKey = field.relation ?? field.key;
+      let enriched: FormFieldConfig = { ...field };
+
+      if (enriched.type === 'date' && enriched.defaultValue === undefined) {
+        enriched = { ...enriched, defaultValue: new Date() };
+      }
+      if (enriched.key === 'currency' && enriched.defaultValue === undefined) {
+        enriched = { ...enriched, defaultValue: 'EUR' };
+      }
+
+      const relationKey = enriched.relation ?? enriched.key;
       const options = relationOptions[relationKey];
       const isRelationSelect =
-        field.ui_type === 'select' || !!field.relation || field.key.endsWith('_id');
+        enriched.ui_type === 'select' || !!enriched.relation || enriched.key.endsWith('_id');
 
       if (!isRelationSelect || !options) {
-        return field;
+        return enriched;
       }
 
       return {
-        ...field,
+        ...enriched,
         type: 'select',
         options,
       };

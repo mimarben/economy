@@ -33,7 +33,8 @@ class IncomeRead(IncomeBase, AuditFields):
 
 
 class IncomeCreate(IncomeBase):
-    """Schema for creating Income."""
+    """Schema for creating Income - dedup_hash is generated server-side."""
+    dedup_hash: Optional[str] = Field(None, min_length=64, max_length=64)
 
 
 class IncomeUpdate(BaseModel):

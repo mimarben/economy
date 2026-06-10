@@ -145,15 +145,18 @@ export class GenericFormComponent implements OnChanges, AfterViewInit, OnDestroy
    * @returns The initial value for the field.
    */
   private getInitialValue(field: FormFieldConfig): any {
-    const value = this.initialData[field.key] ?? null;
+    const rawValue = this.initialData[field.key];
+    const value = (rawValue !== null && rawValue !== undefined)
+      ? rawValue
+      : (field.defaultValue ?? null);
 
-  if (field.type === 'date') {
+    if (field.type === 'date') {
       if (typeof value === 'string' && value) {
         return this.utilsService.formatDateShort(value);
       } else if (value instanceof Date) {
-        return value; // Use Date as is
+        return value;
       }
-      return null; // No valid date
+      return null;
     } else if (field.type === 'number') {
       return value ?? null;
     } else if (field.type === 'checkbox') {
