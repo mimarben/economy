@@ -239,7 +239,7 @@ export class ExpensesComponent implements OnInit {
   }
 
   update(expense: Expense): void {
-   /*  this.expenseService.update(expense.id, expense).subscribe({
+    this.expenseService.update(expense.id!, expense).subscribe({
       next: (response: ApiResponse<Expense>) => {
         const updated = response.response;
         const index = this.expenses.findIndex((h) => h.id === updated.id);
@@ -261,7 +261,7 @@ export class ExpensesComponent implements OnInit {
           {}
         );
       },
-    }); */
+    });
   }
 
   create(expense: Expense): void {

@@ -8,6 +8,7 @@ import { provideHotToastConfig } from '@ngxpert/hot-toast';
 import { provideTranslateService } from '@ngx-translate/core';
 import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 
+import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 
 import { environment } from '../environments/environment';
 import { HttpInterceptorService } from '@core_services/http.interceptor';
@@ -34,6 +35,8 @@ export const appConfig: ApplicationConfig = {
     provideHotToastConfig(),
 
     ...provideMaterialDateConfig(),
+
+    provideCharts(withDefaultRegisterables()),
 
     // ✅ Register Global HTTP Interceptor
     {

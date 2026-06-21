@@ -67,9 +67,15 @@ export class GenericFormComponent implements OnChanges, AfterViewInit, OnDestroy
   }
 
   private emitFormValidity(): void {
-  this.form.statusChanges.subscribe(() => {
-    this.formValidity.emit(this.form.valid);
-    this.formDirty.emit(this.form.dirty)
+    // Emit initial state after parent ngAfterViewInit has subscribed
+    Promise.resolve().then(() => {
+      this.formValidity.emit(this.form.valid);
+      this.formDirty.emit(this.form.dirty);
+    });
+
+    this.form.statusChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      this.formValidity.emit(this.form.valid);
+      this.formDirty.emit(this.form.dirty);
     });
   }
 
