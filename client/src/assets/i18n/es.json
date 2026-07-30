@@ -24,35 +24,91 @@
       "banks": "Error fetching banks. Please try again later."
     }
   },
-  "home":{
-    "title": "Home of myBank"
+  "login": {
+    "title": "Iniciar Sesión"
   },
-  "investments_log":{
-    "title": "Investments Log"
+  "not_found": {
+    "title": "Página no encontrada"
   },
-  "savings":{
-    "title": "Savings"
+  "home": {
+    "title": "Inicio"
   },
-  "sources":{
-    "title": "Sources"
+  "banks": {
+    "title": "Bancos"
   },
-  "savings_log":{
-    "title": "Savings Logs"
+  "accounts": {
+    "title": "Cuentas"
   },
-  "investments":{
-    "title": "Investments"
+  "households": {
+    "title": "Hogares"
   },
-  "investments_categories":{
-    "title": "Investments Categories"
+  "households_members": {
+    "title": "Miembros del Hogar"
   },
-  "expenses":{
-    "title": "Expenses"
+  "savings": {
+    "title": "Ahorros"
   },
-  "expenses_categories":{
-    "title": "Expenses Categories"
+  "savings_log": {
+    "title": "Registro de Ahorros"
   },
-  "places":{
-    "title": "Places"
+  "sources": {
+    "title": "Fuentes"
+  },
+  "expenses": {
+    "title": "Gastos"
+  },
+  "expenses_categories": {
+    "title": "Categorías de Gastos"
+  },
+  "incomes": {
+    "title": "Ingresos"
+  },
+  "incomes_categories": {
+    "title": "Categorías de Ingresos"
+  },
+  "investments": {
+    "title": "Inversiones"
+  },
+  "investments_categories": {
+    "title": "Categorías de Inversiones"
+  },
+  "investments_log": {
+    "title": "Registro de Inversiones"
+  },
+  "summary": {
+    "title": "Resumen Financiero"
+  },
+  "excel_import": {
+    "title": "Importar Excel"
+  },
+  "import_origins": {
+    "title": "Orígenes de Importación"
+  },
+  "import_profiles": {
+    "title": "Perfiles de Importación",
+    "create": "Crear Perfil",
+    "name": "Nombre",
+    "origin": "Origen",
+    "mappings": "Mapeos",
+    "header_row_guess": "Fila de Cabecera",
+    "active": "Activo",
+    "actions": "Acciones",
+    "columns": "Columnas (JSON)"
+  },
+  "charts": {
+    "title": "Gráficos"
+  },
+  "category_rules": {
+    "title": "Reglas de Categorización"
+  },
+  "source_rules": {
+    "title": "Reglas de Fuente"
+  },
+  "cards": {
+    "title": "Tarjetas"
+  },
+  "places": {
+    "title": "Lugares"
   },
   "AUTH": {
     "BRAND": {
@@ -81,27 +137,25 @@
       }
     }
   },
-   "BANK": {
-    "NOT_FOUND": "Banco no encontrado"
+  "BANK": {
+    "NOT_FOUND": "Banco no encontrado",
+    "BANKS": "Bancos",
+    "SELECT": "Seleccionar banco",
+    "PROFILE_NOT_FOUND": "Perfil no encontrado para el banco seleccionado"
   },
-  "import_profiles": {
-    "title": "Perfiles de Importación",
-    "create": "Crear Perfil",
-    "name": "Nombre",
-    "origin": "Origen",
-    "mappings": "Mapeos",
-    "header_row_guess": "Fila de Cabecera",
-    "active": "Activo",
-    "actions": "Acciones",
-    "columns": "Columnas (JSON)"
+  "ACCOUNT": {
+    "ACCOUNTS": "Cuentas"
   },
-  "import_origins": {
-    "title": "Orígenes de Importación"
-  }
-  
-  
-  
-  
-  
+  "CARD": {
+    "CARDS": "Tarjetas"
+  },
+  "SELECT_EXCEL": "Seleccionar Excel",
+  "IMPORT_DATA": "Importar datos",
+  "ADD_MAPPING": "Añadir mapeo",
+  "ERROR_LOAD_BANKS": "Error al cargar los bancos",
+  "ERROR_LOAD_ACCOUNTS": "Error al cargar las cuentas",
+  "ERROR_LOAD_SOURCES": "Error al cargar las fuentes",
+  "ERROR_LOAD_INCOMES_CATEGORIES": "Error al cargar las categorías de ingresos",
+  "ERROR_LOAD_EXPENSES_CATEGORIES": "Error al cargar las categorías de gastos",
+  "ERROR_LOAD_CARDS": "Error al cargar las tarjetas"
 }
-

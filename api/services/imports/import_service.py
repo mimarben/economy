@@ -9,6 +9,9 @@ from models import Expense, Income
 from services.rules.categorization_service import CategorizationService
 from services.core.dedup_service import generate_dedup_hash
 from schemas.imports.import_schema import BulkImportRequest
+from services.logs.logger_service import setup_logger
+
+logger = setup_logger("import_service")
 
 
 class ImportService:
@@ -31,156 +34,161 @@ class ImportService:
     def import_transactions_atomic(self, data: BulkImportRequest) -> Dict[str, Any]:
         """
         Creates both incomes and expenses in a single atomic database transaction.
-        
+
         Behavior:
         - If category_id is null and auto_categorize=True → apply rules + AI
         - If categorization fails → category_id remains null
         - If any FK validation fails → raise ValueError (transaction rolls back)
         - All transactions must pass validation or entire import fails
-        
+
         Args:
             data: BulkImportRequest with expenses and incomes
-            
+
         Returns:
             Dict with counts of created resources
-            
+
         Raises:
             ValueError: If any foreign key validation fails
         """
-        
-        # Step 1: Auto-categorize transactions if needed
-        if data.auto_categorize:
-            for expense in data.expenses:
-                if expense.category_id is None and expense.description:
-                    expense.category_id = self.categorization_service.categorize_transaction(
-                        description=expense.description,
-                        transaction_type="expense"
-                    )
-            
-            for income in data.incomes:
-                if income.category_id is None and income.description:
-                    income.category_id = self.categorization_service.categorize_transaction(
-                        description=income.description,
-                        transaction_type="income"
-                    )
+        with self.db.begin():
+            # Step 1: Auto-categorize transactions if needed
+            if data.auto_categorize:
+                for expense in data.expenses:
+                    if expense.category_id is None and expense.description:
+                        expense.category_id = self.categorization_service.categorize_transaction(
+                            description=expense.description,
+                            transaction_type="expense"
+                        )
 
-        # Step 2: Validate foreign keys for all expenses
-        for item in data.expenses:
-            # category_id can be None now (needs_review)
-            is_valid, error = self.expense_repo.validate_foreign_keys(
-                user_id=item.user_id,
-                source_id=item.source_id,
-                category_id=item.category_id,  # Can be None
-                account_id=item.account_id
-            )
-            if not is_valid:
-                raise ValueError(f"Expense FK error: {error}")
+                for income in data.incomes:
+                    if income.category_id is None and income.description:
+                        income.category_id = self.categorization_service.categorize_transaction(
+                            description=income.description,
+                            transaction_type="income"
+                        )
 
-        # Step 3: Validate foreign keys for all incomes
-        for item in data.incomes:
-            # category_id can be None now (needs_review)
-            is_valid, error = self.income_repo.validate_foreign_keys(
-                source_id=item.source_id,
-                category_id=item.category_id,  # Can be None
-                account_id=item.account_id
-            )
-            if not is_valid:
-                raise ValueError(f"Income FK error: {error}")
+            # Step 2: Validate foreign keys for all expenses
+            for item in data.expenses:
+                # category_id can be None now (needs_review)
+                is_valid, error = self.expense_repo.validate_foreign_keys(
+                    user_id=item.user_id,
+                    source_id=item.source_id,
+                    category_id=item.category_id,  # Can be None
+                    account_id=item.account_id
+                )
+                if not is_valid:
+                    raise ValueError(f"Expense FK error: {error}")
 
-        # Step 4: Deduplicate and insert
-        inserted_expenses = 0
-        inserted_incomes = 0
-        duplicates = 0
-        batch_expense_keys = set()
-        batch_income_keys = set()
+            # Step 3: Validate foreign keys for all incomes
+            for item in data.incomes:
+                # category_id can be None now (needs_review)
+                is_valid, error = self.income_repo.validate_foreign_keys(
+                    source_id=item.source_id,
+                    category_id=item.category_id,  # Can be None
+                    account_id=item.account_id
+                )
+                if not is_valid:
+                    raise ValueError(f"Income FK error: {error}")
 
-        for item in data.expenses:
-            date = item.date
-            if isinstance(date, str):
-                date = datetime.fromisoformat(date)
+            # Step 4: Deduplicate and insert
+            inserted_expenses = 0
+            inserted_incomes = 0
+            duplicates = 0
+            batch_expense_keys = set()
+            batch_income_keys = set()
 
-            dedup_hash = generate_dedup_hash(
-                account_id=item.account_id,
-                txn_date=date,
-                amount=item.amount,
-                description=item.description
-            )
+            for item in data.expenses:
+                date = item.date
+                if isinstance(date, str):
+                    date = datetime.fromisoformat(date)
 
-            key = (item.account_id, dedup_hash)
-            if key in batch_expense_keys:
-                duplicates += 1
-                continue
-            batch_expense_keys.add(key)
+                dedup_hash = generate_dedup_hash(
+                    account_id=item.account_id,
+                    txn_date=date,
+                    amount=item.amount,
+                    description=item.description
+                )
 
-            if self.expense_repo.exists_by_dedup(item.account_id, dedup_hash):
-                duplicates += 1
-                continue
+                key = (item.account_id, dedup_hash)
+                if key in batch_expense_keys:
+                    duplicates += 1
+                    continue
+                batch_expense_keys.add(key)
 
-            obj = Expense(
-                name=item.name,
-                description=item.description,
-                amount=item.amount,
-                date=date,
-                currency=item.currency,
-                user_id=item.user_id,
-                source_id=item.source_id,
-                category_id=item.category_id,
-                account_id=item.account_id,
-                card_id=item.card_id,
-                ignore_in_analysis=bool(item.ignore_in_analysis),
-                dedup_hash=dedup_hash
-            )
+                if self.expense_repo.exists_by_dedup(item.account_id, dedup_hash):
+                    duplicates += 1
+                    continue
 
-            try:
-                self.expense_repo.create(obj)
-                inserted_expenses += 1
-            except IntegrityError:
-                duplicates += 1
+                obj = Expense(
+                    name=item.name,
+                    description=item.description,
+                    amount=item.amount,
+                    date=date,
+                    currency=item.currency,
+                    user_id=item.user_id,
+                    source_id=item.source_id,
+                    category_id=item.category_id,
+                    account_id=item.account_id,
+                    card_id=item.card_id,
+                    ignore_in_analysis=bool(item.ignore_in_analysis),
+                    dedup_hash=dedup_hash
+                )
 
-        for item in data.incomes:
-            date = item.date
-            if isinstance(date, str):
-                date = datetime.fromisoformat(date)
+                try:
+                    with self.db.begin_nested():
+                        self.db.add(obj)
+                        self.db.flush()
+                    inserted_expenses += 1
+                except IntegrityError:
+                    duplicates += 1
 
-            dedup_hash = generate_dedup_hash(
-                account_id=item.account_id,
-                txn_date=date,
-                amount=item.amount,
-                description=item.description
-            )
+            for item in data.incomes:
+                date = item.date
+                if isinstance(date, str):
+                    date = datetime.fromisoformat(date)
 
-            key = (item.account_id, dedup_hash)
-            if key in batch_income_keys:
-                duplicates += 1
-                continue
-            batch_income_keys.add(key)
+                dedup_hash = generate_dedup_hash(
+                    account_id=item.account_id,
+                    txn_date=date,
+                    amount=item.amount,
+                    description=item.description
+                )
 
-            if self.income_repo.exists_by_dedup(item.account_id, dedup_hash):
-                duplicates += 1
-                continue
+                key = (item.account_id, dedup_hash)
+                if key in batch_income_keys:
+                    duplicates += 1
+                    continue
+                batch_income_keys.add(key)
 
-            obj = Income(
-                description=item.description,
-                amount=item.amount,
-                date=date,
-                currency=item.currency,
-                source_id=item.source_id,
-                category_id=item.category_id,
-                account_id=item.account_id,
-                ignore_in_analysis=bool(item.ignore_in_analysis),
-                dedup_hash=dedup_hash
-            )
+                if self.income_repo.exists_by_dedup(item.account_id, dedup_hash):
+                    duplicates += 1
+                    continue
 
-            try:
-                self.income_repo.create(obj)
-                inserted_incomes += 1
-            except IntegrityError:
-                duplicates += 1
+                obj = Income(
+                    description=item.description,
+                    amount=item.amount,
+                    date=date,
+                    currency=item.currency,
+                    source_id=item.source_id,
+                    category_id=item.category_id,
+                    account_id=item.account_id,
+                    ignore_in_analysis=bool(item.ignore_in_analysis),
+                    dedup_hash=dedup_hash
+                )
 
-        total = len(data.expenses) + len(data.incomes)
+                try:
+                    with self.db.begin_nested():
+                        self.db.add(obj)
+                        self.db.flush()
+                    inserted_incomes += 1
+                except IntegrityError:
+                    duplicates += 1
 
-        return {
-            "inserted": inserted_expenses + inserted_incomes,
-            "duplicates": duplicates,
-            "total": total
-        }
+            total = len(data.expenses) + len(data.incomes)
+            logger.info(f"Import complete: {inserted_expenses + inserted_incomes} inserted, {duplicates} duplicates")
+
+            return {
+                "inserted": inserted_expenses + inserted_incomes,
+                "duplicates": duplicates,
+                "total": total
+            }

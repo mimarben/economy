@@ -18,10 +18,17 @@ export class HeaderComponent {
   @Output() toggleSidenav = new EventEmitter<void>()
   @Input() title: string = '';
 
+  readonly userLabel: string;
+  readonly userInitial: string;
+
   constructor(
     private authService: AuthService,
     private router: Router
-  ){}
+  ){
+    const email = this.authService.getUserEmail() ?? '';
+    this.userLabel = email.split('@')[0] || 'usuario';
+    this.userInitial = this.userLabel.charAt(0).toUpperCase();
+  }
 
   toggleMenu(){
     this.toggleSidenav.emit();

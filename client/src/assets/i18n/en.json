@@ -13,12 +13,6 @@
     "edit": "Edit",
     "view": "View"
   },
-  "banks": {
-    "title": "Banks List",
-    "refresh": "Refresh list",
-    "no_data": "No banks available",
-    "add": "Add Bank"
-  },
   "users": {
     "title": "Users List",
     "refresh": "Refresh list",
@@ -30,34 +24,90 @@
       "banks": "Error fetching banks. Please try again later."
     }
   },
-  "home":{
-    "title": "Home of myBank"
+  "login": {
+    "title": "Login"
   },
-  "investments_log":{
-    "title": "Investments Log"
+  "not_found": {
+    "title": "Page not found"
   },
-  "savings":{
+  "home": {
+    "title": "Home"
+  },
+  "banks": {
+    "title": "Banks"
+  },
+  "accounts": {
+    "title": "Accounts"
+  },
+  "households": {
+    "title": "Households"
+  },
+  "households_members": {
+    "title": "Household Members"
+  },
+  "savings": {
     "title": "Savings"
   },
-  "sources":{
+  "savings_log": {
+    "title": "Savings Log"
+  },
+  "sources": {
     "title": "Sources"
   },
-  "savings_log":{
-    "title": "Savings Logs"
-  },
-  "investments":{
-    "title": "Investments"
-  },
-  "investments_categories":{
-    "title": "Investments Categories"
-  },
-  "expenses":{
+  "expenses": {
     "title": "Expenses"
   },
-  "expenses_categories":{
-    "title": "Expenses Categories"
+  "expenses_categories": {
+    "title": "Expense Categories"
   },
-  "places":{
+  "incomes": {
+    "title": "Incomes"
+  },
+  "incomes_categories": {
+    "title": "Income Categories"
+  },
+  "investments": {
+    "title": "Investments"
+  },
+  "investments_categories": {
+    "title": "Investment Categories"
+  },
+  "investments_log": {
+    "title": "Investments Log"
+  },
+  "summary": {
+    "title": "Financial Summary"
+  },
+  "excel_import": {
+    "title": "Import Excel"
+  },
+  "import_origins": {
+    "title": "Import Origins"
+  },
+  "import_profiles": {
+    "title": "Import Profiles",
+    "create": "Create Profile",
+    "name": "Name",
+    "origin": "Origin",
+    "mappings": "Mappings",
+    "header_row_guess": "Header Row",
+    "active": "Active",
+    "actions": "Actions",
+    "columns": "Columns (JSON)"
+  },
+  "charts": {
+    "title": "Charts"
+  },
+  "category_rules": {
+    "title": "Category Rules"
+  },
+  "source_rules": {
+    "title": "Source Rules"
+  },
+  "cards": {
+    "title": "Cards"
+  },
+  "places": {
     "title": "Places"
   },
   "AUTH": {
@@ -65,9 +115,9 @@
       "NAME": "Enconomy"
     },
     "LOGIN": {
-      "SUBTITLE": "Home eceonomy app",
+      "SUBTITLE": "Home economy app",
       "SUBMIT": "Login",
-      "FORGOT_PASSWORD": "Do you forget the password?",
+      "FORGOT_PASSWORD": "Forgot your password?",
       "CREATE_ACCOUNT": "Create account",
       "EMAIL": {
         "LABEL": "Email",
@@ -82,26 +132,30 @@
         "TOGGLE": "Show and hide password",
         "ERROR": {
           "REQUIRED": "The password is mandatory",
-          "MINLENGTH": "Minimun 8 characteres"
+          "MINLENGTH": "Minimum 8 characters"
         }
       }
     }
   },
-   "BANK": {
-    "NOT_FOUND": "Bank not found"
+  "BANK": {
+    "NOT_FOUND": "Bank not found",
+    "BANKS": "Banks",
+    "SELECT": "Select bank",
+    "PROFILE_NOT_FOUND": "Profile not found for the selected bank"
   },
-  "import_profiles": {
-    "title": "Import Profiles",
-    "create": "Create Profile",
-    "name": "Name",
-    "origin": "Origin",
-    "mappings": "Mappings",
-    "header_row_guess": "Header Row",
-    "active": "Active",
-    "actions": "Actions",
-    "columns": "Columns (JSON)"
+  "ACCOUNT": {
+    "ACCOUNTS": "Accounts"
   },
-  "import_origins": {
-    "title": "Import Origins"
-  }
+  "CARD": {
+    "CARDS": "Cards"
+  },
+  "SELECT_EXCEL": "Select Excel file",
+  "IMPORT_DATA": "Import data",
+  "ADD_MAPPING": "Add mapping",
+  "ERROR_LOAD_BANKS": "Error loading banks",
+  "ERROR_LOAD_ACCOUNTS": "Error loading accounts",
+  "ERROR_LOAD_SOURCES": "Error loading sources",
+  "ERROR_LOAD_INCOMES_CATEGORIES": "Error loading income categories",
+  "ERROR_LOAD_EXPENSES_CATEGORIES": "Error loading expense categories",
+  "ERROR_LOAD_CARDS": "Error loading cards"
 }

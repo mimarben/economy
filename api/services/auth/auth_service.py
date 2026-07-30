@@ -6,7 +6,7 @@ from flask_jwt_extended import create_access_token, create_refresh_token
 from services.core.security_service import hash_password, verify_password
 from models import User, UserRoleEnum
 from repositories.users.user_repository import UserRepository
-from schemas.auth.auth_schema import LoginRequest, TokenResponse, RefreshResponse
+from schemas.auth.auth_schema import LoginRequest, RegisterRequest, TokenResponse, RefreshResponse
 from schemas.users.user_schema import UserRead
 
 # Setup logging
@@ -20,6 +20,27 @@ class AuthService:
     def __init__(self, db: Session):
         self.db = db
         self.repository = UserRepository(db)
+    def register(self, data: RegisterRequest) -> UserRead:
+        """Register a new user after checking uniqueness constraints."""
+        if self.repository.find_by_email(data.email):
+            raise ValueError("EMAIL_ALREADY_EXISTS")
+
+        if self.repository.find_by_dni(data.dni):
+            raise ValueError("DNI_ALREADY_EXISTS")
+
+        user = User(
+            name=data.name,
+            surname1=data.surname1,
+            surname2=data.surname2,
+            dni=data.dni,
+            email=data.email,
+            telephone=data.telephone,
+            password=hash_password(data.password),
+        )
+        created = self.repository.create(user)
+        logger.info(f"New user registered: {data.email}")
+        return UserRead.model_validate(created)
+
     def login(self, data: LoginRequest) -> Optional[TokenResponse]:
         """Authenticate user and return JWT tokens."""
         user = self.repository.find_by_email(data.email)

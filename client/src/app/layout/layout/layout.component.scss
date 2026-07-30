@@ -74,8 +74,11 @@
     background: #ececec !important;
   }
 
-  .mat-sidenav {
+  .mat-sidenav,
+  .mdc-drawer,
+  .mat-drawer {
     border-right: none !important;
+    border-radius: 0 !important;
   }
 
   // Remove the sidenav backdrop border

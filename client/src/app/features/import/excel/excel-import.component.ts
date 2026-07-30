@@ -1,4 +1,5 @@
-import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -85,11 +86,13 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
     'source',
     'user',
   ];
+  private destroyRef = inject(DestroyRef);
+
   constructor(
     private bankService: BankService,
     private toastService: ToastService,
     private translateService: AppTranslateService,
-    private incomeCategoyService: IncomeCategoryService,
+    private incomeCategoryService: IncomeCategoryService,
     private expenseCategoryService: ExpenseCategoryService,
     private ruleCategorizerService: RuleCategorizerService,
     private utilsService: UtilsService,
@@ -103,7 +106,7 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
     private authService: AuthService
   ) { }
   ngOnInit(): void {
-    this.bankService.getBanks().subscribe({
+    this.bankService.getBanks().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res) => {
         this.banks = res.response;
       },
@@ -114,7 +117,7 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
       },
     });
 
-    this.accountService.getAll().subscribe({
+    this.accountService.getAll().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res) => {
         this.accounts = res.response;
       },
@@ -125,7 +128,7 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
       },
     });
 
-    this.sourceService.getAll().subscribe({
+    this.sourceService.getAll().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res) => {
         this.sources = res.response;
       },
@@ -136,7 +139,7 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
       },
     });
 
-    this.incomeCategoyService.getAll().subscribe({
+    this.incomeCategoryService.getAll().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res) => {
         this.incomeCategories = res.response;
       },
@@ -146,7 +149,7 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
         );
       },
     });
-    this.expenseCategoryService.getAll().subscribe({
+    this.expenseCategoryService.getAll().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res) => {
         this.expenseCategories = res.response;
       },
@@ -156,7 +159,7 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
         );
       },
     });
-    this.cardService.getAll().subscribe({
+    this.cardService.getAll().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res) => {
         this.cards = res.response;
       },
@@ -166,7 +169,7 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
         );
       },
     });
-    this.importOriginsService.getOrigins().subscribe({
+    this.importOriginsService.getOrigins().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res) => {
         this.importOrigins = (res.response ?? []).filter((origin) => origin.active !== false);
       },
@@ -174,7 +177,7 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
         this.toastService.error('No se pudieron cargar los orígenes de importación');
       },
     });
-    this.importProfilesService.getProfiles().subscribe({
+    this.importProfilesService.getProfiles().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res) => {
         this.importProfiles = (res.response ?? []).filter((profile) => profile.active !== false);
       },
@@ -463,7 +466,7 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
 
     const transactionType: SourceEnum =  transaction.amount < 0 ? SourceEnum.EXPENSE : SourceEnum.INCOME;
 
-    this.sourceService.suggestSource(categoryId, transactionType).subscribe({
+    this.sourceService.suggestSource(categoryId, transactionType).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res) => {
         if (res && res.response && res.response.id) {
           transaction.suggestedSourceId = res.response.id;
@@ -600,7 +603,7 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
       incomes: incomesDraftPayload
     };
 
-    this.transactionImportService.importAtomic(payload).subscribe({
+    this.transactionImportService.importAtomic(payload).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res) => {
         const inserted = res.response?.inserted ?? (res.response?.expenses_created ?? 0) + (res.response?.incomes_created ?? 0);
         const duplicates = res.response?.duplicates ?? 0;

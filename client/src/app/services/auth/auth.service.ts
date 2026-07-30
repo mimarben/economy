@@ -154,6 +154,17 @@ export class AuthService {
       return payload.sub ?? payload.user_id ?? null;
     } catch {
       return null;
+    }
   }
-}
+
+  getUserEmail(): string | null {
+    const token = localStorage.getItem('auth_token');
+    if (!token) return null;
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload.email ?? null;
+    } catch {
+      return null;
+    }
+  }
 }

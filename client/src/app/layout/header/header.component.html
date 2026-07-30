@@ -1,7 +1,7 @@
 <mat-toolbar class="header-toolbar">
-  <button mat-icon-button 
+  <button mat-icon-button
           class="menu-button"
-          (click)="toggleMenu()" 
+          (click)="toggleMenu()"
           aria-label="Toggle menu"
           matTooltip="Toggle navigation">
     <mat-icon>menu</mat-icon>
@@ -13,11 +13,20 @@
 
   <div class="spacer"></div>
 
-  <button mat-icon-button 
-          class="logout-button"
-          (click)="logout()" 
-          aria-label="Logout" 
-          matTooltip="Logout">
-    <mat-icon>logout</mat-icon>
-  </button>
+  <div class="header-actions">
+    <div class="user-badge">
+      <div class="user-avatar">{{ userInitial }}</div>
+      <span class="user-label">{{ userLabel }}</span>
+    </div>
+
+    <div class="header-divider"></div>
+
+    <button mat-icon-button
+            class="logout-button"
+            (click)="logout()"
+            aria-label="Logout"
+            matTooltip="Cerrar sesión">
+      <mat-icon>logout</mat-icon>
+    </button>
+  </div>
 </mat-toolbar>
