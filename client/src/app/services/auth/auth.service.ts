@@ -10,6 +10,16 @@ interface LoginTokens {
   refresh_token: string;
   token_type: string;
 }
+
+export interface RegisterPayload {
+  name: string;
+  surname1: string;
+  surname2?: string;
+  dni: string;
+  email: string;
+  telephone?: number;
+  password: string;
+}
 @Injectable({
   providedIn: 'root'
 })
@@ -52,6 +62,10 @@ export class AuthService {
         return throwError(() => new Error('Login failed. Please check your credentials.'));
       })
     );
+  }
+
+  register(payload: RegisterPayload): Observable<ApiResponse<unknown>> {
+    return this.http.post<ApiResponse<unknown>>(`${this.apiUrl}/auth/register`, payload);
   }
 
   logout(): void {

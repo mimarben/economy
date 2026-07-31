@@ -17,6 +17,7 @@ import { IncomeCategoryService } from '@incomes_services/income-category.service
 import { UtilsService } from '@utils/utils.service';
 import { TransactionAiService } from '@services/ai/transaction-ai.service';
 import { RuleCategorizerService } from '@import_services/rule-categorizer.service';
+import { ExcelParserService } from '@import_services/excel-parser.service';
 import { ToastService } from '@core_services/toast.service';
 import { TransactionImportService } from '@app/services/import/transaction-import.service';
 import { CardService } from '@app/services/cards/cards.service';
@@ -95,6 +96,7 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
     private incomeCategoryService: IncomeCategoryService,
     private expenseCategoryService: ExpenseCategoryService,
     private ruleCategorizerService: RuleCategorizerService,
+    private excelParser: ExcelParserService,
     private utilsService: UtilsService,
     private transactionAiService: TransactionAiService,
     private transactionImportService: TransactionImportService,
@@ -260,15 +262,6 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
     this.updateDataSource();
   }
 
-  findColumnIndex(headers: string[], keywords: string[]): number {
-    return headers.findIndex((h) => {
-      if (!h) return false; //
-      const header = this.utilsService.normalize(String(h));
-
-      return keywords.some((k) => header.includes(k));
-    });
-  }
-
   private filterCardsByAccount(accountId: number) {
     this.filteredCards = this.cards.filter(c => c.account_id === accountId);
   }
@@ -306,68 +299,22 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
         raw: false,
       });
 
-      const headerRow = this.selectedProfile!.header_row_guess ?? 1;
-      const headerIndex = headerRow - 1;
+      const parsed = this.excelParser.parse(rows, this.selectedProfile!, {
+        selectedAccount: this.selectedAccount,
+        selectedCard: this.selectedCard,
+        selectedUserId: this.selectedUserId,
+      });
 
-      this.excelHeaders = (rows[headerIndex] as any[]).map((h) =>
-        h ? String(h).trim() : '',
-      );
-      this.excelRows = rows.slice(headerIndex + 1);
-
-      const dateIndex = this.findColumnIndex(
-        this.excelHeaders,
-        this.selectedProfile!.columns['date'] ?? [],
-      );
-      const descriptionIndex = this.findColumnIndex(
-        this.excelHeaders,
-        this.selectedProfile!.columns['description'] ?? [],
-      );
-
-      const amountIndex = this.findColumnIndex(
-        this.excelHeaders,
-        this.selectedProfile!.columns['amount'] ?? [],
-      );
-      const balanceIndex = this.findColumnIndex(
-        this.excelHeaders,
-        this.selectedProfile!.columns['balance'] ?? [],
-      );
-
-      if (dateIndex === -1 || descriptionIndex === -1 || amountIndex === -1) {
+      if (!parsed) {
         console.error('Column detection failed', this.excelHeaders);
         this.toastService.error('Excel format not recognized');
         return;
       }
-      const validRows = this.excelRows.filter((row) => {
-        const amount = this.utilsService.parseAmount(row[amountIndex]);
-        // Drop rows without amount
-        if (amount === null || amount === undefined || isNaN(amount) || amount === 0) {
-          //console.log('Row without import:', row);
-          return false;
-        }
-        return true;
-      });
-      console.log('Valid rows:', validRows);
 
-      const tempTransactions: ImportTransaction[] = validRows.map((row) => {
-        const isNotAnalyzable = !!this.selectedCard && this.utilsService.parseAmount(row[amountIndex]) < 0;
-        return {
-          date: this.utilsService.toIsoDate(row[dateIndex]),
-          description: row[descriptionIndex],
-          amount: this.utilsService.parseAmount(row[amountIndex]),
-          balance: this.utilsService.parseAmount(row[balanceIndex]),
-          suggestedCategoryId: null,
-          suggestedCategoryName: null,
-          source_id: null,
-          account_id: this.selectedAccount?.id ?? null,
-          suggestedSourceId: null,
-          suggestedAccountId: this.selectedAccount?.id ?? null,
-          card_id: this.selectedCard?.id ?? null,
-          currency: CurrencyEnum.EUR,
-          ignore_in_analysis: isNotAnalyzable,
-          selected: !isNotAnalyzable,
-          user_id: this.selectedUserId,
-        };
-      });
+      this.excelHeaders = parsed.headers;
+      this.excelRows = parsed.dataRows;
+      const tempTransactions: ImportTransaction[] = parsed.transactions;
+      console.log('Valid rows:', tempTransactions.length);
 
       // Make sure rules are loaded/refreshed before local categorization.
       await this.ruleCategorizerService.refreshRules();
@@ -430,7 +377,7 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
   }
 
   getCategories(t: ImportTransaction) {
-    if (t.amount < 0) {
+    if (this.excelParser.inferTransactionType(t.amount) === 'expense') {
       return this.expenseCategories;
     }
     return this.incomeCategories;

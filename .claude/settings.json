@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node -e \"const p=require\\('./package.json'\\); console.log\\(JSON.stringify\\(p.scripts,null,2\\)\\)\")",
+      "Bash(node -e \"const o=require\\('./src/assets/i18n/en.json'\\); console.log\\(JSON.stringify\\(o.AUTH?.LOGIN ?? o.AUTH?.login ?? o.auth?.login ?? 'AUTH.LOGIN not found at expected case', null, 2\\)\\)\")",
+      "Bash(node -e \"const o=require\\('./src/assets/i18n/en.json'\\); console.log\\(Object.keys\\(o\\)\\)\")",
+      "Bash(node -e \"const o=require\\('./src/assets/i18n/en.json'\\); console.log\\(JSON.stringify\\(o.AUTH, null, 2\\).slice\\(0,1200\\)\\)\")",
+      "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('src/assets/i18n/en.json','utf8'\\)\\); console.log\\('en.json OK'\\)\")",
+      "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('src/assets/i18n/es.json','utf8'\\)\\); console.log\\('es.json OK'\\)\")",
+      "Bash(node -e \"for\\(const l of ['en','es']\\){const o=require\\('./src/assets/i18n/'+l+'.json'\\); console.log\\(l, 'REGISTER keys:', Object.keys\\(o.AUTH.REGISTER\\).join\\(', '\\)\\)}\")",
+      "Bash(.venv/bin/python -m pytest tests/)"
+    ]
+  }
+}

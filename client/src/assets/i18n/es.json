@@ -135,6 +135,44 @@
           "MINLENGTH": "Mínimo 6 caracteres"
         }
       }
+    },
+    "REGISTER": {
+      "SUBTITLE": "Crea tu cuenta",
+      "SUBMIT": "Crear cuenta",
+      "BACK_TO_LOGIN": "Volver al inicio de sesión",
+      "NAME": {
+        "LABEL": "Nombre",
+        "ERROR": { "REQUIRED": "El nombre es obligatorio", "MINLENGTH": "Mínimo 2 caracteres" }
+      },
+      "SURNAME1": {
+        "LABEL": "Primer apellido",
+        "ERROR": { "REQUIRED": "El primer apellido es obligatorio" }
+      },
+      "SURNAME2": {
+        "LABEL": "Segundo apellido (opcional)"
+      },
+      "DNI": {
+        "LABEL": "DNI",
+        "ERROR": { "REQUIRED": "El DNI es obligatorio", "INVALID": "DNI inválido (8 dígitos + letra)" }
+      },
+      "EMAIL": {
+        "LABEL": "Correo electrónico",
+        "PLACEHOLDER": "ejemplo@correo.com",
+        "ERROR": { "REQUIRED": "El correo es obligatorio", "INVALID": "Correo electrónico inválido" }
+      },
+      "TELEPHONE": {
+        "LABEL": "Teléfono (opcional)",
+        "ERROR": { "PATTERN": "Debe tener 9 dígitos" }
+      },
+      "PASSWORD": {
+        "LABEL": "Contraseña",
+        "TOGGLE": "Mostrar u ocultar contraseña",
+        "ERROR": { "REQUIRED": "La contraseña es obligatoria", "MINLENGTH": "Mínimo 8 caracteres", "WEAK": "Usa mayúsculas, minúsculas, un dígito y un símbolo" }
+      },
+      "CONFIRM": {
+        "LABEL": "Confirmar contraseña",
+        "ERROR": { "MISMATCH": "Las contraseñas no coinciden" }
+      }
     }
   },
   "BANK": {

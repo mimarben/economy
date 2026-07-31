@@ -135,6 +135,44 @@
           "MINLENGTH": "Minimum 8 characters"
         }
       }
+    },
+    "REGISTER": {
+      "SUBTITLE": "Create your account",
+      "SUBMIT": "Create account",
+      "BACK_TO_LOGIN": "Back to login",
+      "NAME": {
+        "LABEL": "Name",
+        "ERROR": { "REQUIRED": "Name is mandatory", "MINLENGTH": "Minimum 2 characters" }
+      },
+      "SURNAME1": {
+        "LABEL": "First surname",
+        "ERROR": { "REQUIRED": "First surname is mandatory" }
+      },
+      "SURNAME2": {
+        "LABEL": "Second surname (optional)"
+      },
+      "DNI": {
+        "LABEL": "ID (DNI)",
+        "ERROR": { "REQUIRED": "DNI is mandatory", "INVALID": "Invalid DNI (8 digits + letter)" }
+      },
+      "EMAIL": {
+        "LABEL": "Email",
+        "PLACEHOLDER": "sample@email.com",
+        "ERROR": { "REQUIRED": "Email is mandatory", "INVALID": "Invalid email" }
+      },
+      "TELEPHONE": {
+        "LABEL": "Telephone (optional)",
+        "ERROR": { "PATTERN": "Must be 9 digits" }
+      },
+      "PASSWORD": {
+        "LABEL": "Password",
+        "TOGGLE": "Show and hide password",
+        "ERROR": { "REQUIRED": "The password is mandatory", "MINLENGTH": "Minimum 8 characters", "WEAK": "Use upper and lower case, a digit and a symbol" }
+      },
+      "CONFIRM": {
+        "LABEL": "Confirm password",
+        "ERROR": { "MISMATCH": "Passwords do not match" }
+      }
     }
   },
   "BANK": {

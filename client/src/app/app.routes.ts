@@ -5,6 +5,7 @@ import { LayoutComponent } from './layout/layout/layout.component';
 export const routes: Routes = [
   // Routes without layout
   { path: 'login', loadComponent: () => import('./features/auth/login/login.component').then((m) => m.LoginComponent), data: { title: 'login.title' } },
+  { path: 'register', loadComponent: () => import('./features/auth/register/register.component').then((m) => m.RegisterComponent), data: { title: 'register.title' } },
   { path: 'not_found', loadComponent: () => import('./features/not-found/not-found.component').then((m) => m.NotFoundComponent), data: { title: 'not_found.title' } },
 
   // Routes with layout (header + footer + menu)
