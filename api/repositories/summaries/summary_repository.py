@@ -2,7 +2,7 @@
 from datetime import date, datetime, timedelta
 from typing import Dict, List, Tuple
 from sqlalchemy.orm import Session
-from sqlalchemy import func, and_, or_, Date
+from sqlalchemy import func, and_, or_, Date, select
 from models import Expense, Income, Investment
 from models.expenses.expense_category_model import ExpensesCategory
 from models.incomes.income_category_model import IncomesCategory
@@ -25,25 +25,27 @@ class SummaryRepository:
     ) -> List[Tuple]:
         """
         Get total amounts aggregated by category.
-        
+
         Returns list of tuples: (category_id, category_name, type, total)
         """
         results = []
 
         # Expenses aggregation
         if category_type is None or category_type == 'expense':
-            expenses = self.db.query(
-                Expense.category_id,
-                ExpensesCategory.name.label('category_name'),
-                func.sum(Expense.amount).label('total')
-            ).join(ExpensesCategory).filter(
-                and_(
-                    Expense.date >= start_date,
-                    Expense.date <= end_date,
-                    Expense.deleted_at.is_(None)
-                )
-            ).group_by(Expense.category_id, ExpensesCategory.name).all()
-            
+            expenses = self.db.execute(
+                select(
+                    Expense.category_id,
+                    ExpensesCategory.name.label('category_name'),
+                    func.sum(Expense.amount).label('total')
+                ).join(ExpensesCategory).where(
+                    and_(
+                        Expense.date >= start_date,
+                        Expense.date <= end_date,
+                        Expense.deleted_at.is_(None)
+                    )
+                ).group_by(Expense.category_id, ExpensesCategory.name)
+            ).all()
+
             results.extend([
                 (cat_id, cat_name, 'expense', float(total))
                 for cat_id, cat_name, total in expenses
@@ -51,18 +53,20 @@ class SummaryRepository:
 
         # Incomes aggregation
         if category_type is None or category_type == 'income':
-            incomes = self.db.query(
-                Income.category_id,
-                IncomesCategory.name.label('category_name'),
-                func.sum(Income.amount).label('total')
-            ).join(IncomesCategory).filter(
-                and_(
-                    Income.date >= start_date,
-                    Income.date <= end_date,
-                    Income.deleted_at.is_(None)
-                )
-            ).group_by(Income.category_id, IncomesCategory.name).all()
-            
+            incomes = self.db.execute(
+                select(
+                    Income.category_id,
+                    IncomesCategory.name.label('category_name'),
+                    func.sum(Income.amount).label('total')
+                ).join(IncomesCategory).where(
+                    and_(
+                        Income.date >= start_date,
+                        Income.date <= end_date,
+                        Income.deleted_at.is_(None)
+                    )
+                ).group_by(Income.category_id, IncomesCategory.name)
+            ).all()
+
             results.extend([
                 (cat_id, cat_name, 'income', float(total))
                 for cat_id, cat_name, total in incomes
@@ -70,18 +74,20 @@ class SummaryRepository:
 
         # Investments aggregation
         if category_type is None or category_type == 'investment':
-            investments = self.db.query(
-                Investment.category_id,
-                InvestmentsCategory.name.label('category_name'),
-                func.sum(Investment.amount).label('total')
-            ).join(InvestmentsCategory).filter(
-                and_(
-                    Investment.date >= start_date,
-                    Investment.date <= end_date,
-                    Investment.deleted_at.is_(None)
-                )
-            ).group_by(Investment.category_id, InvestmentsCategory.name).all()
-            
+            investments = self.db.execute(
+                select(
+                    Investment.category_id,
+                    InvestmentsCategory.name.label('category_name'),
+                    func.sum(Investment.amount).label('total')
+                ).join(InvestmentsCategory).where(
+                    and_(
+                        Investment.date >= start_date,
+                        Investment.date <= end_date,
+                        Investment.deleted_at.is_(None)
+                    )
+                ).group_by(Investment.category_id, InvestmentsCategory.name)
+            ).all()
+
             results.extend([
                 (cat_id, cat_name, 'investment', float(total))
                 for cat_id, cat_name, total in investments
@@ -96,11 +102,11 @@ class SummaryRepository:
     ) -> Dict[date, Dict[str, float]]:
         """
         Get daily totals aggregated by transaction type.
-        
+
         Returns dict: {date: {'expense': total, 'income': total, 'investment': total, 'net': net}}
         """
         daily_totals = {}
-        
+
         # Initialize all dates in range
         current = start_date
         while current <= end_date:
@@ -108,47 +114,53 @@ class SummaryRepository:
             current += timedelta(days=1)
 
         # Expenses by date
-        expenses = self.db.query(
-            func.cast(Expense.date, Date).label('date'),
-            func.sum(Expense.amount).label('total')
-        ).filter(
-            and_(
-                Expense.date >= start_date,
-                Expense.date <= end_date,
-                Expense.deleted_at.is_(None)
-            )
-        ).group_by(func.cast(Expense.date, Date)).all()
-        
+        expenses = self.db.execute(
+            select(
+                func.cast(Expense.date, Date).label('date'),
+                func.sum(Expense.amount).label('total')
+            ).where(
+                and_(
+                    Expense.date >= start_date,
+                    Expense.date <= end_date,
+                    Expense.deleted_at.is_(None)
+                )
+            ).group_by(func.cast(Expense.date, Date))
+        ).all()
+
         for exp_date, total in expenses:
             daily_totals[exp_date]['expense'] = float(total)
 
         # Incomes by date
-        incomes = self.db.query(
-            func.cast(Income.date, Date).label('date'),
-            func.sum(Income.amount).label('total')
-        ).filter(
-            and_(
-                Income.date >= start_date,
-                Income.date <= end_date,
-                Income.deleted_at.is_(None)
-            )
-        ).group_by(func.cast(Income.date, Date)).all()
-        
+        incomes = self.db.execute(
+            select(
+                func.cast(Income.date, Date).label('date'),
+                func.sum(Income.amount).label('total')
+            ).where(
+                and_(
+                    Income.date >= start_date,
+                    Income.date <= end_date,
+                    Income.deleted_at.is_(None)
+                )
+            ).group_by(func.cast(Income.date, Date))
+        ).all()
+
         for inc_date, total in incomes:
             daily_totals[inc_date]['income'] = float(total)
 
         # Investments by date
-        investments = self.db.query(
-            func.cast(Investment.date, Date).label('date'),
-            func.sum(Investment.amount).label('total')
-        ).filter(
-            and_(
-                Investment.date >= start_date,
-                Investment.date <= end_date,
-                Investment.deleted_at.is_(None)
-            )
-        ).group_by(func.cast(Investment.date, Date)).all()
-        
+        investments = self.db.execute(
+            select(
+                func.cast(Investment.date, Date).label('date'),
+                func.sum(Investment.amount).label('total')
+            ).where(
+                and_(
+                    Investment.date >= start_date,
+                    Investment.date <= end_date,
+                    Investment.deleted_at.is_(None)
+                )
+            ).group_by(func.cast(Investment.date, Date))
+        ).all()
+
         for inv_date, total in investments:
             daily_totals[inv_date]['investment'] = float(total)
 
@@ -167,53 +179,59 @@ class SummaryRepository:
     ) -> Tuple[float, float, int]:
         """
         Get income vs expense totals.
-        
+
         Returns tuple: (total_income, total_expense, transaction_count)
         """
         # Total income
-        total_income = self.db.query(
-            func.coalesce(func.sum(Income.amount), 0)
-        ).filter(
-            and_(
-                Income.date >= start_date,
-                Income.date <= end_date,
-                Income.deleted_at.is_(None)
+        total_income = self.db.execute(
+            select(func.coalesce(func.sum(Income.amount), 0)).where(
+                and_(
+                    Income.date >= start_date,
+                    Income.date <= end_date,
+                    Income.deleted_at.is_(None)
+                )
             )
         ).scalar() or 0.0
 
         # Total expense
-        total_expense = self.db.query(
-            func.coalesce(func.sum(Expense.amount), 0)
-        ).filter(
-            and_(
-                Expense.date >= start_date,
-                Expense.date <= end_date,
-                Expense.deleted_at.is_(None)
+        total_expense = self.db.execute(
+            select(func.coalesce(func.sum(Expense.amount), 0)).where(
+                and_(
+                    Expense.date >= start_date,
+                    Expense.date <= end_date,
+                    Expense.deleted_at.is_(None)
+                )
             )
         ).scalar() or 0.0
 
         # Transaction count
-        expense_count = self.db.query(func.count(Expense.id)).filter(
-            and_(
-                Expense.date >= start_date,
-                Expense.date <= end_date,
-                Expense.deleted_at.is_(None)
+        expense_count = self.db.execute(
+            select(func.count(Expense.id)).where(
+                and_(
+                    Expense.date >= start_date,
+                    Expense.date <= end_date,
+                    Expense.deleted_at.is_(None)
+                )
             )
         ).scalar() or 0
 
-        income_count = self.db.query(func.count(Income.id)).filter(
-            and_(
-                Income.date >= start_date,
-                Income.date <= end_date,
-                Income.deleted_at.is_(None)
+        income_count = self.db.execute(
+            select(func.count(Income.id)).where(
+                and_(
+                    Income.date >= start_date,
+                    Income.date <= end_date,
+                    Income.deleted_at.is_(None)
+                )
             )
         ).scalar() or 0
 
-        investment_count = self.db.query(func.count(Investment.id)).filter(
-            and_(
-                Investment.date >= start_date,
-                Investment.date <= end_date,
-                Investment.deleted_at.is_(None)
+        investment_count = self.db.execute(
+            select(func.count(Investment.id)).where(
+                and_(
+                    Investment.date >= start_date,
+                    Investment.date <= end_date,
+                    Investment.deleted_at.is_(None)
+                )
             )
         ).scalar() or 0
 
@@ -233,34 +251,38 @@ class SummaryRepository:
         """
         results = []
 
-        expenses = self.db.query(
-            Expense.source_id,
-            Source.name.label('source_name'),
-            func.sum(Expense.amount).label('total')
-        ).join(Source, Expense.source_id == Source.id).filter(
-            and_(
-                Expense.date >= start_date,
-                Expense.date <= end_date,
-                Expense.deleted_at.is_(None)
-            )
-        ).group_by(Expense.source_id, Source.name).all()
+        expenses = self.db.execute(
+            select(
+                Expense.source_id,
+                Source.name.label('source_name'),
+                func.sum(Expense.amount).label('total')
+            ).join(Source, Expense.source_id == Source.id).where(
+                and_(
+                    Expense.date >= start_date,
+                    Expense.date <= end_date,
+                    Expense.deleted_at.is_(None)
+                )
+            ).group_by(Expense.source_id, Source.name)
+        ).all()
 
         results.extend([
             (src_id, src_name, 'expense', float(total))
             for src_id, src_name, total in expenses
         ])
 
-        incomes = self.db.query(
-            Income.source_id,
-            Source.name.label('source_name'),
-            func.sum(Income.amount).label('total')
-        ).join(Source, Income.source_id == Source.id).filter(
-            and_(
-                Income.date >= start_date,
-                Income.date <= end_date,
-                Income.deleted_at.is_(None)
-            )
-        ).group_by(Income.source_id, Source.name).all()
+        incomes = self.db.execute(
+            select(
+                Income.source_id,
+                Source.name.label('source_name'),
+                func.sum(Income.amount).label('total')
+            ).join(Source, Income.source_id == Source.id).where(
+                and_(
+                    Income.date >= start_date,
+                    Income.date <= end_date,
+                    Income.deleted_at.is_(None)
+                )
+            ).group_by(Income.source_id, Source.name)
+        ).all()
 
         results.extend([
             (src_id, src_name, 'income', float(total))
@@ -279,18 +301,20 @@ class SummaryRepository:
 
         Returns list of tuples: (user_id, user_name, total)
         """
-        results = self.db.query(
-            User.id,
-            func.concat(User.name, ' ', User.surname1).label('user_name'),
-            func.sum(Expense.amount).label('total')
-        ).join(User, Expense.user_id == User.id).filter(
-            and_(
-                Expense.date >= start_date,
-                Expense.date <= end_date,
-                Expense.deleted_at.is_(None),
-                Expense.user_id.isnot(None)
-            )
-        ).group_by(User.id, User.name, User.surname1).all()
+        results = self.db.execute(
+            select(
+                User.id,
+                func.concat(User.name, ' ', User.surname1).label('user_name'),
+                func.sum(Expense.amount).label('total')
+            ).join(User, Expense.user_id == User.id).where(
+                and_(
+                    Expense.date >= start_date,
+                    Expense.date <= end_date,
+                    Expense.deleted_at.is_(None),
+                    Expense.user_id.isnot(None)
+                )
+            ).group_by(User.id, User.name, User.surname1)
+        ).all()
 
         return [
             (user_id, user_name, float(total))

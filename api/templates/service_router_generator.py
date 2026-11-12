@@ -23,7 +23,9 @@ class {entity_class}Service(ICRUDService[{entity_class}Read, {entity_class}Creat
     # ICreateService methods
     def create(self, data: {entity_class}Create) -> {entity_class}Read:
         """Create a new {entity_name}."""
-        obj = self.repository.create(**data.model_dump())
+        obj = {entity_class}(**data.model_dump())
+        obj = self.repository.create(obj)
+        self.db.commit()
         return {entity_class}Read.model_validate(obj)
 
     # IReadService methods
@@ -46,12 +48,16 @@ class {entity_class}Service(ICRUDService[{entity_class}Read, {entity_class}Creat
         obj = self.repository.update(id, **update_data)
         if not obj:
             return None
+        self.db.commit()
         return {entity_class}Read.model_validate(obj)
 
     # IDeleteService methods
     def delete(self, id: int) -> bool:
         """Delete a {entity_name}."""
-        return self.repository.delete(id)
+        success = self.repository.delete(id)
+        if success:
+            self.db.commit()
+        return success
 
     # ISearchService methods
     def search(self, **filters) -> List[{entity_class}Read]:
@@ -64,141 +70,88 @@ class {entity_class}Service(ICRUDService[{entity_class}Read, {entity_class}Creat
         return self.repository.count(**filters)
 '''
 
-ROUTER_TEMPLATE = '''"""Router for {entity_name} endpoints following ISP."""
-from flask import Blueprint, request
+ROUTER_TEMPLATE = '''"""Router for {entity_name} endpoints."""
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from pydantic import ValidationError
-from flask_babel import _
+from utils.i18n import _
 
 from schemas.{entity_file}_schema import {entity_class}Create, {entity_class}Update
 from services.{entity_file}_service import {entity_class}Service
-from services.interfaces import IReadService, ICreateService, IUpdateService, IDeleteService, ISearchService
 from db.database import get_db
-from services.response_service import Response
+from services.core.response_service import Response
 
 
-router = Blueprint('{entity_plural}', __name__)
+router = APIRouter()
 name = "{entity_plural}"
 
 
-def _get_create_service(db: Session) -> ICreateService:
-    """Dependency: Inject only create service."""
-    return {entity_class}Service(db)
-
-
-def _get_read_service(db: Session) -> IReadService:
-    """Dependency: Inject only read service."""
-    return {entity_class}Service(db)
-
-
-def _get_update_service(db: Session) -> IUpdateService:
-    """Dependency: Inject only update service."""
-    return {entity_class}Service(db)
-
-
-def _get_delete_service(db: Session) -> IDeleteService:
-    """Dependency: Inject only delete service."""
-    return {entity_class}Service(db)
-
-
-def _get_search_service(db: Session) -> ISearchService:
-    """Dependency: Inject only search service."""
+def _get_service(db: Session) -> {entity_class}Service:
+    """Dependency: service bound to the request session."""
     return {entity_class}Service(db)
 
 
 @router.post("/{entity_plural}")
-def create_{entity_name}():
+def create_{entity_name}(payload: {entity_class}Create, db: Session = Depends(get_db)):
     """Create a new {entity_name}."""
-    db: Session = next(get_db())
-
+    service = _get_service(db)
     try:
-        data = {entity_class}Create.model_validate(request.json)
-    except ValidationError as e:
-        return Response.error(_("VALIDATION_ERROR"), e.errors(), 400, name)
-
-    try:
-        service: ICreateService = _get_create_service(db)
-        result = service.create(data)
-        return Response.ok_data(result.model_dump(), _("{entity_upper}_CREATED"), 201, name)
+        result = service.create(payload)
     except ValueError as e:
         return Response.error(_("INVALID_DATA"), str(e), 400, name)
-    except Exception as e:
-        return Response.error(_("DATABASE_ERROR"), str(e), 500, name)
+    return Response.ok_data(result.model_dump(), _("{entity_upper}_CREATED"), 201, name)
 
 
-@router.get("/{entity_plural}/<int:{entity_name}_id>")
-def get_{entity_name}({entity_name}_id):
+@router.get("/{entity_plural}/{{{entity_name}_id:int}}")
+def get_{entity_name}({entity_name}_id: int, db: Session = Depends(get_db)):
     """Get a single {entity_name} by ID."""
-    db: Session = next(get_db())
+    service = _get_service(db)
+    result = service.get_by_id({entity_name}_id)
 
-    try:
-        service: IReadService = _get_read_service(db)
-        result = service.get_by_id({entity_name}_id)
+    if not result:
+        return Response.error(_("{entity_upper}_NOT_FOUND"), _("NONE"), 404, name)
 
-        if not result:
-            return Response.error(_("{entity_upper}_NOT_FOUND"), _("NONE"), 404, name)
-
-        return Response.ok_data(result.model_dump(), _("{entity_upper}_FOUND"), 200, name)
-    except Exception as e:
-        return Response.error(_("DATABASE_ERROR"), str(e), 500, name)
+    return Response.ok_data(result.model_dump(), _("{entity_upper}_FOUND"), 200, name)
 
 
 @router.get("/{entity_plural}")
-def list_{entity_plural}():
+def list_{entity_plural}(db: Session = Depends(get_db)):
     """Get all {entity_name}s."""
-    db: Session = next(get_db())
+    service = _get_service(db)
+    results = service.get_all()
 
-    try:
-        service: IReadService = _get_read_service(db)
-        results = service.get_all()
-
-        return Response.ok_data(
-            [r.model_dump() for r in results],
-            _("{entity_upper}_LIST"),
-            200,
-            name
-        )
-    except Exception as e:
-        return Response.error(_("DATABASE_ERROR"), str(e), 500, name)
+    return Response.ok_data(
+        [r.model_dump() for r in results],
+        _("{entity_upper}_LIST"),
+        200,
+        name
+    )
 
 
-@router.patch("/{entity_plural}/<int:{entity_name}_id>")
-def update_{entity_name}({entity_name}_id):
+@router.patch("/{entity_plural}/{{{entity_name}_id:int}}")
+def update_{entity_name}({entity_name}_id: int, payload: {entity_class}Update, db: Session = Depends(get_db)):
     """Update a {entity_name}."""
-    db: Session = next(get_db())
-
+    service = _get_service(db)
     try:
-        data = {entity_class}Update.model_validate(request.json)
-    except ValidationError as e:
-        return Response.error(_("VALIDATION_ERROR"), e.errors(), 400, name)
+        result = service.update({entity_name}_id, payload)
+    except ValueError as e:
+        return Response.error(_("INVALID_DATA"), str(e), 400, name)
 
-    try:
-        service: IUpdateService = _get_update_service(db)
-        result = service.update({entity_name}_id, data)
+    if not result:
+        return Response.error(_("{entity_upper}_NOT_FOUND"), _("NONE"), 404, name)
 
-        if not result:
-            return Response.error(_("{entity_upper}_NOT_FOUND"), _("NONE"), 404, name)
-
-        return Response.ok_data(result.model_dump(), _("{entity_upper}_UPDATED"), 200, name)
-    except Exception as e:
-        return Response.error(_("DATABASE_ERROR"), str(e), 500, name)
+    return Response.ok_data(result.model_dump(), _("{entity_upper}_UPDATED"), 200, name)
 
 
-@router.delete("/{entity_plural}/<int:{entity_name}_id>")
-def delete_{entity_name}({entity_name}_id):
+@router.delete("/{entity_plural}/{{{entity_name}_id:int}}")
+def delete_{entity_name}({entity_name}_id: int, db: Session = Depends(get_db)):
     """Delete a {entity_name}."""
-    db: Session = next(get_db())
+    service = _get_service(db)
+    success = service.delete({entity_name}_id)
 
-    try:
-        service: IDeleteService = _get_delete_service(db)
-        success = service.delete({entity_name}_id)
+    if not success:
+        return Response.error(_("{entity_upper}_NOT_FOUND"), _("NONE"), 404, name)
 
-        if not success:
-            return Response.error(_("{entity_upper}_NOT_FOUND"), _("NONE"), 404, name)
-
-        return esponse.ok_message(_("{entity_upper}_DELETED"), 204, name)
-    except Exception as e:
-        return Response.error(_("DATABASE_ERROR"), str(e), 500, name)
+    return Response.ok_message(_("{entity_upper}_DELETED"), 204, name)
 '''
 
 
@@ -218,7 +171,8 @@ class {entity_class}Repository(BaseRepository[{entity_class}]):
     # Add custom domain-specific queries here
     # Example:
     # def get_by_custom_field(self, value) -> List[{entity_class}]:
-    #     return self.db.query({entity_class}).filter({entity_class}.custom_field == value).all()
+    #     stmt = select({entity_class}).where({entity_class}.custom_field == value)
+    #     return self.db.execute(stmt).scalars().all()
 '''
 
 if __name__ == "__main__":

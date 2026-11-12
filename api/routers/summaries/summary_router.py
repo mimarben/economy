@@ -1,6 +1,7 @@
 """Summary router for aggregation endpoints."""
+from fastapi import APIRouter, Body, Depends, Query, Request
+from typing import Any
 from datetime import date
-from flask import Blueprint, request
 from sqlalchemy.orm import Session
 from pydantic import ValidationError
 
@@ -9,12 +10,12 @@ from db.database import get_db
 from services.core.response_service import Response
 
 
-router = Blueprint('summaries', __name__)
+router = APIRouter()
 name = "summaries"
 
 
 @router.get("/summary")
-def get_summary():
+def get_summary(start_date_str: str | None = Query(default=None, alias="start_date"), end_date_str: str | None = Query(default=None, alias="end_date"), period_type: str = Query(default="custom", alias="period"), db: Session = Depends(get_db)):
     """
     Get summary with aggregations for a date range.
     
@@ -51,14 +52,7 @@ def get_summary():
         }
     }
     """
-    db: Session = next(get_db())
-
     try:
-        start_date_str = request.args.get('start_date')
-        end_date_str = request.args.get('end_date')
-        
-        period_type = request.args.get('period', 'custom')  # 'week'|'month'|'year'|'custom'
-
         # Initialize service
         service = SummaryService(db)
 
@@ -75,7 +69,7 @@ def get_summary():
             if not start_date_str or not end_date_str:
                 return Response.error(
                     "VALIDATION_ERROR",
-                    "start_date and end_date are required for custom period",
+                    "SUMMARY_DATES_REQUIRED",
                     400,
                     name
                 )
@@ -83,10 +77,10 @@ def get_summary():
             try:
                 start_date = date.fromisoformat(start_date_str)
                 end_date = date.fromisoformat(end_date_str)
-            except ValueError as e:
+            except ValueError:
                 return Response.error(
                     "VALIDATION_ERROR",
-                    f"Invalid date format. Use YYYY-MM-DD: {str(e)}",
+                    "SUMMARY_DATE_INVALID",
                     400,
                     name
                 )
@@ -95,64 +89,57 @@ def get_summary():
 
         return Response.ok_data(result.model_dump(), "SUMMARY_FOUND", 200, name)
 
-    except ValueError as e:
-        return Response.error("VALIDATION_ERROR", str(e), 400, name)
-    except Exception as e:
-        return Response.error("DATABASE_ERROR", f"Internal server error: {str(e)}", 500, name)
+    except ValueError:
+        return Response.error("VALIDATION_ERROR", "SUMMARY_DATE_INVALID", 400, name)
+    except Exception:
+        return Response.error("DATABASE_ERROR", "UNEXPECTED_ERROR", 500, name)
 
 
 @router.get("/summary/today")
-def get_today_summary():
+def get_today_summary(db: Session = Depends(get_db)):
     """Get summary for today."""
-    db: Session = next(get_db())
     try:
         service = SummaryService(db)
         result = service.get_today_summary()
         return Response.ok_data(result.model_dump(), "SUMMARY_FOUND", 200, name)
-    except Exception as e:
-        return Response.error("DATABASE_ERROR", f"Internal server error: {str(e)}", 500, name)
+    except Exception:
+        return Response.error("DATABASE_ERROR", "UNEXPECTED_ERROR", 500, name)
 
 
 @router.get("/summary/week")
-def get_week_summary():
+def get_week_summary(db: Session = Depends(get_db)):
     """
     Get summary for current week (Monday-Sunday).
     """
-    db: Session = next(get_db())
-
     try:
         service = SummaryService(db)
         result = service.get_week_summary()
         return Response.ok_data(result.model_dump(), "SUMMARY_FOUND", 200, name)
-    except Exception as e:
-        return Response.error("DATABASE_ERROR", f"Internal server error: {str(e)}", 500, name)
+    except Exception:
+        return Response.error("DATABASE_ERROR", "UNEXPECTED_ERROR", 500, name)
 
 
 @router.get("/summary/month")
-def get_month_summary():
+def get_month_summary(db: Session = Depends(get_db)):
     """
     Get summary for current month.
     """
-    db: Session = next(get_db())
-
     try:
         service = SummaryService(db)
         result = service.get_month_summary()
         return Response.ok_data(result.model_dump(), "SUMMARY_FOUND", 200, name)
-    except Exception as e:
-        return Response.error("DATABASE_ERROR", f"Internal server error: {str(e)}", 500, name)
+    except Exception:
+        return Response.error("DATABASE_ERROR", "UNEXPECTED_ERROR", 500, name)
 
 
 @router.get("/summary/year")
-def get_year_summary():
+def get_year_summary(db: Session = Depends(get_db)):
     """
     Get summary for current year.
     """
-    db: Session = next(get_db())
-
     try:
         service = SummaryService(db)
         result = service.get_year_summary()
         return Response.ok_data(result.model_dump(), "SUMMARY_FOUND", 200, name)
-    except Exception as e:
-        return Response.error("DATABASE_ERROR", f"Internal server error: {str(e)}", 500, name)
+    except Exception:
+        return Response.error("DATABASE_ERROR", "UNEXPECTED_ERROR", 500, name)

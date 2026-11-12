@@ -33,6 +33,7 @@
 				"group": "economy",
 				"database": "${workspaceFolder:economy}/api/db/economy.db"
 			}
-		]
+		],
+		"svn.ignoreMissingSvnWarning": true
 	}
 }

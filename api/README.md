@@ -1,5 +1,13 @@
-http://localhost:8000/docs
-http://localhost:8000/redoc
+# API server
+
+The API uses FastAPI and starts with Uvicorn on port `5001`. Its interactive
+documentation is available at:
+
+- http://localhost:5001/docs
+- http://localhost:5001/redoc
+
+The existing `/api` endpoints and their response envelope remain in place.
+FastAPI validates request bodies with Pydantic and serves the OpenAPI docs.
 
 # Documentation
 
@@ -104,14 +112,24 @@ https://stackoverflow.com/questions/67699451/make-every-field-as-optional-with-p
 # UV VENV
 
 ```python
-uv venv /home/miguel/venvs/economy-env --python 3.13.7
+
+ºuv venv /home/miguel/venvs/economy-env --python 3.13.7
 
 source /home/miguel/venvs/economy-env/bin/activate
 
 uv sync --active
+
+source .venv/bin/activate
 ```
 
-python app.py tiene que tener la ruta de la base de datos en la variable de entrono.
+Start the API locally from this directory with:
+
+```bash
+uvicorn app:app --host 0.0.0.0 --port 5001 --reload
+```
+
+Configure the PostgreSQL connection through the environment variables described
+in the project configuration.
 
 No funciona bien el uv en nfs ni samba o no lo he conseguido arreglar
 
@@ -123,8 +141,8 @@ uv pip compile pyproject.toml --output-file requirements.txt
 Con Docker
 
 ```python
-docker build -t flask-dev .
-docker run --rm -p 5001:5001 --env-file .env flask-dev
+docker build -t economy-api-dev .
+docker run --rm -p 5001:5001 --env-file .env economy-api-dev
 ```
 
 # Estructura y patrones.
@@ -425,5 +443,3 @@ GET /users/1
 ```
 
 Router --> UserService --> BaseService --> UserRepository --> BaseRepository --> SQLAlchemy --> Database
-
-

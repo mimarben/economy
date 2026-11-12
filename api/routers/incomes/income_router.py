@@ -1,47 +1,35 @@
 """Router for Income endpoints following ISP."""
-from flask import Blueprint, request
+from fastapi import APIRouter, Body, Depends, Query, Request
+from typing import Any
 from sqlalchemy.orm import Session
 from pydantic import ValidationError
-from flask_babel import _
+from utils.i18n import _
 
 from schemas.incomes.income_schema import IncomeBase, IncomeCreate, IncomeUpdate
 from schemas.core.export_schema import export_schema
 
 from services.incomes.income_service import IncomeService
-from services.core.interfaces import IReadService, ICreateService, IUpdateService, IDeleteService
 from db.database import get_db
 from services.core.response_service import Response
 
 
-router = Blueprint("incomes", __name__)
+router = APIRouter()
 name = "incomes"
 
 
-def _get_create_service(db: Session) -> ICreateService:
-    return IncomeService(db)
-
-
-def _get_read_service(db: Session) -> IReadService:
-    return IncomeService(db)
-
-
-def _get_update_service(db: Session) -> IUpdateService:
-    return IncomeService(db)
-
-
-def _get_delete_service(db: Session) -> IDeleteService:
+def _get_service(db: Session) -> IncomeService:
+    """Dependency: service bound to the request session."""
     return IncomeService(db)
 
 
 @router.post("/incomes")
-def create():
-    db: Session = next(get_db())
+def create(payload: IncomeCreate, db: Session = Depends(get_db)):
     try:
-        data = IncomeCreate.model_validate(request.json)
+        data = IncomeCreate.model_validate(payload)
     except ValidationError as e:
         return Response.error(_("VALIDATION_ERROR"), e.errors(), 400, name)
     try:
-        service: ICreateService = _get_create_service(db)
+        service = _get_service(db)
         result = service.create(data)
         return Response.ok_data(result.model_dump(), _("INCOME_CREATED"), 201, name)
     except ValueError as e:
@@ -52,13 +40,12 @@ def create():
         return Response.error(_("DATABASE_ERROR"), str(e), 500, name)
 
 @router.post("/incomes/bulk")
-def create_bulk():
-    db: Session = next(get_db())
-    if not isinstance(request.json, list):
-        return Response.error(_("VALIDATION_ERROR"), "Request body must be an array", 400, name)
+def create_bulk(payload: list[IncomeCreate], db: Session = Depends(get_db)):
+    if not isinstance(payload, list):
+        return Response.error(_("VALIDATION_ERROR"), "REQUEST_BODY_ARRAY_REQUIRED", 400, name)
 
     try:
-        data = [IncomeCreate.model_validate(item) for item in request.json]
+        data = [IncomeCreate.model_validate(item) for item in payload]
     except ValidationError as e:
         return Response.error(_("VALIDATION_ERROR"), e.errors(), 400, name)
 
@@ -73,10 +60,9 @@ def create_bulk():
         return Response.error(_("DATABASE_ERROR"), str(e), 500, name)
 
 
-@router.get("/incomes/<int:id>")
-def get_by_id(id):
-    db: Session = next(get_db())
-    service: IReadService = _get_read_service(db)
+@router.get("/incomes/{id:int}")
+def get_by_id(id: int, db: Session = Depends(get_db)):
+    service = _get_service(db)
     result = service.get_by_id(id)
     if not result:
         return Response.error(_("INCOME_NOT_FOUND"), _("NONE"), 404, name)
@@ -84,22 +70,20 @@ def get_by_id(id):
 
 
 @router.get("/incomes")
-def list_all():
-    db: Session = next(get_db())
-    service: IReadService = _get_read_service(db)
+def list_all(db: Session = Depends(get_db)):
+    service = _get_service(db)
     results = service.get_all()
     return Response.ok_data([r.model_dump() for r in results], _("INCOME_LIST"), 200, name)
 
 
-@router.patch("/incomes/<int:id>")
-def update(id):
-    db: Session = next(get_db())
+@router.patch("/incomes/{id:int}")
+def update(id: int, payload: IncomeUpdate, db: Session = Depends(get_db)):
     try:
-        data = IncomeUpdate.model_validate(request.json)
+        data = IncomeUpdate.model_validate(payload)
     except ValidationError as e:
         return Response.error(_("VALIDATION_ERROR"), e.errors(), 400, name)
     try:
-        service: IUpdateService = _get_update_service(db)
+        service = _get_service(db)
         result = service.update(id, data)
         if not result:
             return Response.error(_("INCOME_NOT_FOUND"), _("NONE"), 404, name)
@@ -108,11 +92,10 @@ def update(id):
         return Response.error(_("DATABASE_ERROR"), str(e), 500, name)
 
 
-@router.delete("/incomes/<int:id>")
-def delete(id):
-    db: Session = next(get_db())
+@router.delete("/incomes/{id:int}")
+def delete(id: int, db: Session = Depends(get_db)):
     try:
-        service: IDeleteService = _get_delete_service(db)
+        service = _get_service(db)
         success = service.delete(id)
         if not success:
             return Response.error(_("INCOME_NOT_FOUND"), _("NONE"), 404, name)

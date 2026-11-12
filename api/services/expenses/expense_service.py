@@ -47,8 +47,11 @@ class ExpenseService(BaseService[Expense, ExpenseRead, ExpenseCreate, ExpenseUpd
 
         obj = Expense(**data.model_dump(), dedup_hash=dedup_hash)
         try:
-            obj = self.repository.create(obj)
+            with self.db.begin_nested():
+                obj = self.repository.create(obj)
+            self.db.commit()
         except IntegrityError as e:
+            self.db.rollback()
             if 'uq_expenses_account_dedup_hash' in str(e.orig):
                 raise ValueError("DUPLICATE_TRANSACTION")
             raise
@@ -95,12 +98,15 @@ class ExpenseService(BaseService[Expense, ExpenseRead, ExpenseCreate, ExpenseUpd
 
             obj = Expense(**item.model_dump(), dedup_hash=dedup_hash)
 
+            # SAVEPOINT per row: a duplicate only rolls back its own insert.
             try:
-                obj = self.repository.create(obj)
+                with self.db.begin_nested():
+                    obj = self.repository.create(obj)
                 created_objects.append(obj)
             except IntegrityError:
                 continue
 
+        self.db.commit()
         return [ExpenseRead.model_validate(obj) for obj in created_objects]
 
     # Domain-specific methods

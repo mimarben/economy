@@ -1,504 +1,501 @@
-# English translations for PROJECT.
-# Copyright (C) 2025 ORGANIZATION
-# This file is distributed under the same license as the PROJECT project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
-#
 msgid ""
 msgstr ""
-"Project-Id-Version: PROJECT VERSION\n"
-"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-02-12 15:23+0100\n"
-"PO-Revision-Date: 2025-04-15 16:11+0200\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Project-Id-Version: Economy API\n"
 "Language: en\n"
-"Language-Team: en <LL@li.org>\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.17.0\n"
 
-#: routers/account_router.py:47 routers/account_router.py:103
-#: routers/bank_router.py:47 routers/bank_router.py:103
-#: routers/expense_category_router.py:40 routers/expense_category_router.py:81
-#: routers/expense_router.py:51 routers/expense_router.py:109
-#: routers/household_member_router.py:73 routers/household_router.py:40
-#: routers/household_router.py:73 routers/income_category_router.py:40
-#: routers/income_category_router.py:73 routers/income_router.py:40
-#: routers/income_router.py:73 routers/investment_category_router.py:40
-#: routers/investment_category_router.py:73 routers/investment_log_router.py:40
-#: routers/investment_log_router.py:73 routers/investment_router.py:40
-#: routers/investment_router.py:73 routers/saving_log_router.py:40
-#: routers/saving_log_router.py:73 routers/saving_router.py:40
-#: routers/saving_router.py:73 routers/source_router.py:40
-#: routers/source_router.py:73 routers/user_router.py:47
-#: routers/user_router.py:108
-msgid "VALIDATION_ERROR"
-msgstr ""
-
-#: routers/account_router.py:52
 msgid "ACCOUNT_CREATED"
-msgstr ""
+msgstr "Account created successfully."
 
-#: routers/account_router.py:54 routers/bank_router.py:54
-#: routers/expense_category_router.py:46 routers/user_router.py:59
-#: routers/user_router.py:119
-msgid "INVALID_DATA"
-msgstr "Invalid data in te query"
-
-#: routers/account_router.py:56 routers/account_router.py:73
-#: routers/account_router.py:92 routers/account_router.py:114
-#: routers/account_router.py:131 routers/bank_router.py:56
-#: routers/bank_router.py:73 routers/bank_router.py:92
-#: routers/bank_router.py:114 routers/bank_router.py:131
-#: routers/expense_category_router.py:48 routers/expense_category_router.py:61
-#: routers/expense_category_router.py:72 routers/expense_category_router.py:89
-#: routers/expense_category_router.py:102 routers/expense_router.py:67
-#: routers/expense_router.py:121 routers/expense_router.py:139
-#: routers/household_member_router.py:81 routers/household_member_router.py:94
-#: routers/household_router.py:46 routers/household_router.py:81
-#: routers/household_router.py:94 routers/income_category_router.py:46
-#: routers/income_category_router.py:81 routers/income_category_router.py:94
-#: routers/income_router.py:46 routers/income_router.py:81
-#: routers/income_router.py:94 routers/investment_category_router.py:46
-#: routers/investment_category_router.py:81
-#: routers/investment_category_router.py:94 routers/investment_log_router.py:46
-#: routers/investment_log_router.py:81 routers/investment_log_router.py:94
-#: routers/investment_router.py:46 routers/investment_router.py:81
-#: routers/investment_router.py:94 routers/saving_log_router.py:46
-#: routers/saving_log_router.py:81 routers/saving_log_router.py:94
-#: routers/saving_router.py:46 routers/saving_router.py:81
-#: routers/saving_router.py:94 routers/source_router.py:46
-#: routers/source_router.py:81 routers/source_router.py:94
-#: routers/user_router.py:61 routers/user_router.py:78
-#: routers/user_router.py:97 routers/user_router.py:121
-#: routers/user_router.py:138
-msgid "DATABASE_ERROR"
-msgstr ""
-
-#: routers/account_router.py:69 routers/account_router.py:110
-#: routers/account_router.py:127
-msgid "ACCOUNT_NOT_FOUND"
-msgstr ""
-
-#: routers/account_router.py:69 routers/account_router.py:110
-#: routers/account_router.py:127 routers/bank_router.py:69
-#: routers/bank_router.py:110 routers/bank_router.py:127
-#: routers/expense_category_router.py:58 routers/expense_category_router.py:86
-#: routers/expense_category_router.py:99 routers/expense_router.py:80
-#: routers/expense_router.py:117 routers/expense_router.py:135
-#: routers/household_member_router.py:78 routers/household_member_router.py:91
-#: routers/household_router.py:55 routers/household_router.py:78
-#: routers/household_router.py:91 routers/income_category_router.py:55
-#: routers/income_category_router.py:78 routers/income_category_router.py:91
-#: routers/income_router.py:55 routers/income_router.py:78
-#: routers/income_router.py:91 routers/investment_category_router.py:55
-#: routers/investment_category_router.py:78
-#: routers/investment_category_router.py:91 routers/investment_log_router.py:55
-#: routers/investment_log_router.py:78 routers/investment_log_router.py:91
-#: routers/investment_router.py:55 routers/investment_router.py:78
-#: routers/investment_router.py:91 routers/saving_log_router.py:55
-#: routers/saving_log_router.py:78 routers/saving_log_router.py:91
-#: routers/saving_router.py:55 routers/saving_router.py:78
-#: routers/saving_router.py:91 routers/source_router.py:55
-#: routers/source_router.py:78 routers/source_router.py:91
-msgid "NONE"
-msgstr ""
-
-#: routers/account_router.py:71
-msgid "ACCOUNT_FOUND"
-msgstr ""
-
-#: routers/account_router.py:87
-msgid "ACCOUNT_LIST"
-msgstr ""
-
-#: routers/account_router.py:112
-msgid "ACCOUNT_UPDATED"
-msgstr ""
-
-#: routers/account_router.py:129
 msgid "ACCOUNT_DELETED"
-msgstr ""
+msgstr "Account deleted successfully."
 
-#: routers/bank_router.py:52
+msgid "ACCOUNT_FOUND"
+msgstr "Account found."
+
+msgid "ACCOUNT_LIST"
+msgstr "Accounts retrieved successfully."
+
+msgid "ACCOUNT_NOT_FOUND"
+msgstr "Account not found."
+
+msgid "ACCOUNT_UPDATED"
+msgstr "Account updated successfully."
+
+msgid "AI_ERROR"
+msgstr "The transaction could not be classified."
+
+msgid "AUTH_ERROR"
+msgstr "Authentication failed."
+
+msgid "AUTH_FAILED"
+msgstr "Authentication failed."
+
+msgid "AUTH_RATE_LIMITED"
+msgstr "Too many failed login attempts. Try again in a few minutes."
+
+msgid "AUTH_FORBIDDEN"
+msgstr "You are not allowed to access this resource."
+
+msgid "AUTH_TOKEN_INVALID"
+msgstr "The bearer token is invalid or has expired."
+
+msgid "AUTH_TOKEN_REVOKED"
+msgstr "The token has been revoked."
+
+msgid "LOGOUT_SUCCESS"
+msgstr "Session closed successfully."
+
+msgid "AUTH_TOKEN_MISSING"
+msgstr "A bearer token is required."
+
 msgid "BANK_CREATED"
-msgstr "Bank Created Successfully"
+msgstr "Bank created successfully."
 
-#: routers/bank_router.py:69 routers/bank_router.py:110
-#: routers/bank_router.py:127
-msgid "BANK_NOT_FOUND"
-msgstr ""
-
-#: routers/bank_router.py:71
-msgid "BANK_FOUND"
-msgstr "Bank not Found"
-
-#: routers/bank_router.py:87
-msgid "BANK_LIST"
-msgstr "Bank list loaded"
-
-#: routers/bank_router.py:112
-msgid "BANK_UPDATED"
-msgstr "Bank Updated Successfully"
-
-#: routers/bank_router.py:129
 msgid "BANK_DELETED"
-msgstr ""
+msgstr "Bank deleted successfully."
 
-#: routers/expense_category_router.py:44
+msgid "BANK_FOUND"
+msgstr "Bank found."
+
+msgid "BANK_LIST"
+msgstr "Banks retrieved successfully."
+
+msgid "BANK_NOT_FOUND"
+msgstr "Bank not found."
+
+msgid "BANK_UPDATED"
+msgstr "Bank updated successfully."
+
+msgid "CARD_CREATED"
+msgstr "Card created successfully."
+
+msgid "CARD_DELETED"
+msgstr "Card deleted successfully."
+
+msgid "CARD_FOUND"
+msgstr "Card found."
+
+msgid "CARD_LIST"
+msgstr "Cards retrieved successfully."
+
+msgid "CARD_NOT_FOUND"
+msgstr "Card not found."
+
+msgid "CARD_UPDATED"
+msgstr "Card updated successfully."
+
+msgid "CATEGORY_RULE_CREATED"
+msgstr "Category rule created successfully."
+
+msgid "CATEGORY_RULE_DELETED"
+msgstr "Category rule deleted successfully."
+
+msgid "CATEGORY_RULE_FOUND"
+msgstr "Category rule found."
+
+msgid "CATEGORY_RULE_LIST"
+msgstr "Category rules retrieved successfully."
+
+msgid "CATEGORY_RULE_NOT_FOUND"
+msgstr "Category rule not found."
+
+msgid "CATEGORY_RULE_UPDATED"
+msgstr "Category rule updated successfully."
+
+msgid "CLASSIFIED"
+msgstr "Transactions were classified successfully."
+
+msgid "DATABASE_ERROR"
+msgstr "The request could not be completed because of a database error."
+
+msgid "DB_CONNECTION_TIMEOUT"
+msgstr "The database is temporarily unavailable. Please try again later."
+
+msgid "DB_INFO"
+msgstr "Database information retrieved successfully."
+
+msgid "DUPLICATE_TRANSACTION"
+msgstr "This transaction already exists."
+
 msgid "EXPENSE_CATEGORY_CREATED"
-msgstr ""
+msgstr "Expense category created successfully."
 
-#: routers/expense_category_router.py:58 routers/expense_category_router.py:86
-#: routers/expense_category_router.py:99
-msgid "EXPENSE_CATEGORY_NOT_FOUND"
-msgstr ""
-
-#: routers/expense_category_router.py:59
-msgid "EXPENSE_CATEGORY_FOUND"
-msgstr ""
-
-#: routers/expense_category_router.py:70
-msgid "EXPENSE_CATEGORY_LIST"
-msgstr ""
-
-#: routers/expense_category_router.py:87
-msgid "EXPENSE_CATEGORY_UPDATED"
-msgstr ""
-
-#: routers/expense_category_router.py:100
 msgid "EXPENSE_CATEGORY_DELETED"
-msgstr ""
+msgstr "Expense category deleted successfully."
 
-#: routers/expense_router.py:59
+msgid "EXPENSE_CATEGORY_FOUND"
+msgstr "Expense category found."
+
+msgid "EXPENSE_CATEGORY_LIST"
+msgstr "Expense categories retrieved successfully."
+
+msgid "EXPENSE_CATEGORY_NOT_FOUND"
+msgstr "Expense category not found."
+
+msgid "EXPENSE_CATEGORY_UPDATED"
+msgstr "Expense category updated successfully."
+
 msgid "EXPENSE_CREATED"
-msgstr ""
+msgstr "Expense created successfully."
 
-#: routers/expense_router.py:65
-msgid "FK_ERROR"
-msgstr ""
-
-#: routers/expense_router.py:80 routers/expense_router.py:117
-#: routers/expense_router.py:135 routers/expense_router.py:153
-msgid "EXPENSE_NOT_FOUND"
-msgstr ""
-
-#: routers/expense_router.py:82 routers/expense_router.py:157
-msgid "EXPENSE_FOUND"
-msgstr ""
-
-#: routers/expense_router.py:95
-msgid "EXPENSE_LIST"
-msgstr ""
-
-#: routers/expense_router.py:119
-msgid "EXPENSE_UPDATED"
-msgstr ""
-
-#: routers/expense_router.py:137
 msgid "EXPENSE_DELETED"
-msgstr ""
+msgstr "Expense deleted successfully."
+
+msgid "EXPENSE_FOUND"
+msgstr "Expense found."
+
+msgid "EXPENSE_LIST"
+msgstr "Expenses retrieved successfully."
+
+msgid "EXPENSE_NOT_FOUND"
+msgstr "Expense not found."
+
+msgid "EXPENSE_UPDATED"
+msgstr "Expense updated successfully."
 
 msgid "FINANCIAL_SUMMARY_CREATED"
-msgstr ""
-
-msgid "FINANCIAL_SUMMARY_NOT_FOUND"
-msgstr ""
-
-msgid "FINANCIAL_SUMMARY_FOUND"
-msgstr ""
-
-msgid "FINANCIAL_SUMMARY_LIST"
-msgstr ""
-
-msgid "FINANCIAL_SUMMARY_UPDATED"
-msgstr ""
+msgstr "Financial summary created successfully."
 
 msgid "FINANCIAL_SUMMARY_DELETED"
-msgstr ""
+msgstr "Financial summary deleted successfully."
 
-#: routers/household_member_router.py:44
-msgid "HOUSEHOLD_MEMBER_CREATED"
-msgstr ""
+msgid "FINANCIAL_SUMMARY_FOUND"
+msgstr "Financial summary found."
 
-#: routers/household_member_router.py:55 routers/household_member_router.py:78
-#: routers/household_member_router.py:91
-msgid "HOUSEHOLD_MEMBER_NOT_FOUND"
-msgstr ""
+msgid "FINANCIAL_SUMMARY_LIST"
+msgstr "Financial summaries retrieved successfully."
 
-#: routers/household_member_router.py:56
-msgid "HOUSEHOLD_MEMBER_FOUND"
-msgstr ""
+msgid "FINANCIAL_SUMMARY_NOT_FOUND"
+msgstr "Financial summary not found."
 
-#: routers/household_member_router.py:64
-msgid "HOUSEHOLD_MEMBER_LIST"
-msgstr ""
+msgid "FINANCIAL_SUMMARY_UPDATED"
+msgstr "Financial summary updated successfully."
 
-#: routers/household_member_router.py:79
-msgid "HOUSEHOLD_MEMBER_UPDATED"
-msgstr ""
+msgid "FK_ERROR"
+msgstr "One or more referenced records do not exist."
 
-#: routers/household_member_router.py:92
-msgid "HOUSEHOLD_MEMBER_DELETED"
-msgstr ""
-
-#: routers/household_router.py:44
 msgid "HOUSEHOLD_CREATED"
-msgstr ""
+msgstr "Household created successfully."
 
-#: routers/household_router.py:55 routers/household_router.py:78
-#: routers/household_router.py:91
-msgid "HOUSEHOLD_NOT_FOUND"
-msgstr ""
-
-#: routers/household_router.py:56
-msgid "HOUSEHOLD_FOUND"
-msgstr ""
-
-#: routers/household_router.py:64
-msgid "HOUSEHOLD_LIST"
-msgstr ""
-
-#: routers/household_router.py:79
-msgid "HOUSEHOLD_UPDATED"
-msgstr ""
-
-#: routers/household_router.py:92
 msgid "HOUSEHOLD_DELETED"
-msgstr ""
+msgstr "Household deleted successfully."
 
-#: routers/income_category_router.py:44
+msgid "HOUSEHOLD_FOUND"
+msgstr "Household found."
+
+msgid "HOUSEHOLD_LIST"
+msgstr "Households retrieved successfully."
+
+msgid "HOUSEHOLD_MEMBER_CREATED"
+msgstr "Household member created successfully."
+
+msgid "HOUSEHOLD_MEMBER_DELETED"
+msgstr "Household member deleted successfully."
+
+msgid "HOUSEHOLD_MEMBER_FOUND"
+msgstr "Household member found."
+
+msgid "HOUSEHOLD_MEMBER_LIST"
+msgstr "Household members retrieved successfully."
+
+msgid "HOUSEHOLD_MEMBER_NOT_FOUND"
+msgstr "Household member not found."
+
+msgid "HOUSEHOLD_MEMBER_UPDATED"
+msgstr "Household member updated successfully."
+
+msgid "HOUSEHOLD_NOT_FOUND"
+msgstr "Household not found."
+
+msgid "HOUSEHOLD_UPDATED"
+msgstr "Household updated successfully."
+
+msgid "HTTP_ERROR"
+msgstr "The request could not be completed."
+
+msgid "IMPORT_PROFILE_CREATED"
+msgstr "Import profile created successfully."
+
+msgid "IMPORT_PROFILE_DELETED"
+msgstr "Import profile deleted successfully."
+
+msgid "IMPORT_PROFILE_FOUND"
+msgstr "Import profile found."
+
+msgid "IMPORT_PROFILE_LIST"
+msgstr "Import profiles retrieved successfully."
+
+msgid "IMPORT_PROFILE_NOT_FOUND"
+msgstr "Import profile not found."
+
+msgid "IMPORT_PROFILE_UPDATED"
+msgstr "Import profile updated successfully."
+
 msgid "INCOME_CATEGORY_CREATED"
-msgstr ""
+msgstr "Income category created successfully."
 
-#: routers/income_category_router.py:55 routers/income_category_router.py:78
-#: routers/income_category_router.py:91
-msgid "INCOME_CATEGORY_NOT_FOUND"
-msgstr ""
-
-#: routers/income_category_router.py:56
-msgid "INCOME_CATEGORY_FOUND"
-msgstr ""
-
-#: routers/income_category_router.py:64
-msgid "INCOME_CATEGORY_LIST"
-msgstr ""
-
-#: routers/income_category_router.py:79
-msgid "INCOME_CATEGORY_UPDATED"
-msgstr ""
-
-#: routers/income_category_router.py:92
 msgid "INCOME_CATEGORY_DELETED"
-msgstr ""
+msgstr "Income category deleted successfully."
 
-#: routers/income_router.py:44
+msgid "INCOME_CATEGORY_FOUND"
+msgstr "Income category found."
+
+msgid "INCOME_CATEGORY_LIST"
+msgstr "Income categories retrieved successfully."
+
+msgid "INCOME_CATEGORY_NOT_FOUND"
+msgstr "Income category not found."
+
+msgid "INCOME_CATEGORY_UPDATED"
+msgstr "Income category updated successfully."
+
 msgid "INCOME_CREATED"
-msgstr ""
+msgstr "Income created successfully."
 
-#: routers/income_router.py:55 routers/income_router.py:78
-#: routers/income_router.py:91
-msgid "INCOME_NOT_FOUND"
-msgstr ""
-
-#: routers/income_router.py:56
-msgid "INCOME_FOUND"
-msgstr ""
-
-#: routers/income_router.py:64
-msgid "INCOME_LIST"
-msgstr ""
-
-#: routers/income_router.py:79
-msgid "INCOME_UPDATED"
-msgstr ""
-
-#: routers/income_router.py:92
 msgid "INCOME_DELETED"
-msgstr ""
+msgstr "Income deleted successfully."
 
-#: routers/investment_category_router.py:44
+msgid "INCOME_FOUND"
+msgstr "Income found."
+
+msgid "INCOME_LIST"
+msgstr "Incomes retrieved successfully."
+
+msgid "INCOME_NOT_FOUND"
+msgstr "Income not found."
+
+msgid "INCOME_UPDATED"
+msgstr "Income updated successfully."
+
+msgid "INTERNAL_ERROR"
+msgstr "An internal error occurred. Please try again later."
+
+msgid "INVALID_CREDENTIALS"
+msgstr "The email or password is incorrect."
+
+msgid "INVALID_DATA"
+msgstr "The submitted data is invalid."
+
+msgid "INVALID_PARAMETERS"
+msgstr "One or more parameters are invalid."
+
 msgid "INVESTMENT_CATEGORY_CREATED"
-msgstr ""
+msgstr "Investment category created successfully."
 
-#: routers/investment_category_router.py:55
-#: routers/investment_category_router.py:78
-#: routers/investment_category_router.py:91
-msgid "INVESTMENT_CATEGORY_NOT_FOUND"
-msgstr ""
-
-#: routers/investment_category_router.py:56
-msgid "INVESTMENT_CATEGORY_FOUND"
-msgstr ""
-
-#: routers/investment_category_router.py:64
-msgid "INVESTMENT_CATEGORY_LIST"
-msgstr ""
-
-#: routers/investment_category_router.py:79
-msgid "INVESTMENT_CATEGORY_UPDATED"
-msgstr ""
-
-#: routers/investment_category_router.py:92
 msgid "INVESTMENT_CATEGORY_DELETED"
-msgstr ""
+msgstr "Investment category deleted successfully."
 
-#: routers/investment_log_router.py:44
-msgid "INVESTMENT_LOG_CREATED"
-msgstr ""
+msgid "INVESTMENT_CATEGORY_FOUND"
+msgstr "Investment category found."
 
-#: routers/investment_log_router.py:55 routers/investment_log_router.py:78
-#: routers/investment_log_router.py:91
-msgid "INVESTMENT_LOG_NOT_FOUND"
-msgstr ""
+msgid "INVESTMENT_CATEGORY_LIST"
+msgstr "Investment categories retrieved successfully."
 
-#: routers/investment_log_router.py:56
-msgid "INVESTMENT_LOG_FOUND"
-msgstr ""
+msgid "INVESTMENT_CATEGORY_NOT_FOUND"
+msgstr "Investment category not found."
 
-#: routers/investment_log_router.py:64
-msgid "INVESTMENT_LOG_LIST"
-msgstr ""
+msgid "INVESTMENT_CATEGORY_UPDATED"
+msgstr "Investment category updated successfully."
 
-#: routers/investment_log_router.py:79
-msgid "INVESTMENT_LOG_UPDATED"
-msgstr ""
-
-#: routers/investment_log_router.py:92
-msgid "INVESTMENT_LOG_DELETED"
-msgstr ""
-
-#: routers/investment_router.py:44
 msgid "INVESTMENT_CREATED"
-msgstr ""
+msgstr "Investment created successfully."
 
-#: routers/investment_router.py:55 routers/investment_router.py:78
-#: routers/investment_router.py:91
-msgid "INVESTMENT_NOT_FOUND"
-msgstr ""
-
-#: routers/investment_router.py:56
-msgid "INVESTMENT_FOUND"
-msgstr ""
-
-#: routers/investment_router.py:64
-msgid "INVESTMENT_LIST"
-msgstr ""
-
-#: routers/investment_router.py:79
-msgid "INVESTMENT_UPDATED"
-msgstr ""
-
-#: routers/investment_router.py:92
 msgid "INVESTMENT_DELETED"
-msgstr ""
+msgstr "Investment deleted successfully."
 
-#: routers/saving_log_router.py:44
-msgid "SAVING_LOG_CREATED"
-msgstr ""
+msgid "INVESTMENT_FOUND"
+msgstr "Investment found."
 
-#: routers/saving_log_router.py:55 routers/saving_log_router.py:78
-#: routers/saving_log_router.py:91
-msgid "SAVING_LOG_NOT_FOUND"
-msgstr ""
+msgid "INVESTMENT_LIST"
+msgstr "Investments retrieved successfully."
 
-#: routers/saving_log_router.py:56
-msgid "SAVING_LOG_FOUND"
-msgstr ""
+msgid "INVESTMENT_LOG_CREATED"
+msgstr "Investment log created successfully."
 
-#: routers/saving_log_router.py:64
-msgid "SAVING_LOG_LIST"
-msgstr ""
+msgid "INVESTMENT_LOG_DELETED"
+msgstr "Investment log deleted successfully."
 
-#: routers/saving_log_router.py:79
-msgid "SAVING_LOG_UPDATED"
-msgstr ""
+msgid "INVESTMENT_LOG_FOUND"
+msgstr "Investment log found."
 
-#: routers/saving_log_router.py:92
-msgid "SAVING_LOG_DELETED"
-msgstr ""
+msgid "INVESTMENT_LOG_LIST"
+msgstr "Investment logs retrieved successfully."
 
-#: routers/saving_router.py:44
+msgid "INVESTMENT_LOG_NOT_FOUND"
+msgstr "Investment log not found."
+
+msgid "INVESTMENT_LOG_UPDATED"
+msgstr "Investment log updated successfully."
+
+msgid "INVESTMENT_NOT_FOUND"
+msgstr "Investment not found."
+
+msgid "INVESTMENT_UPDATED"
+msgstr "Investment updated successfully."
+
+msgid "LOGIN_SUCCESS"
+msgstr "You have signed in successfully."
+
+msgid "NONE"
+msgstr "No additional details are available."
+
+msgid "REGISTRATION_ERROR"
+msgstr "The account could not be created."
+
+msgid "REQUEST_BODY_ARRAY_REQUIRED"
+msgstr "The request body must be an array."
+
 msgid "SAVING_CREATED"
-msgstr ""
+msgstr "Saving created successfully."
 
-#: routers/saving_router.py:55 routers/saving_router.py:78
-#: routers/saving_router.py:91
-msgid "SAVING_NOT_FOUND"
-msgstr ""
-
-#: routers/saving_router.py:56
-msgid "SAVING_FOUND"
-msgstr ""
-
-#: routers/saving_router.py:64
-msgid "SAVING_LIST"
-msgstr ""
-
-#: routers/saving_router.py:79
-msgid "SAVING_UPDATED"
-msgstr ""
-
-#: routers/saving_router.py:92
 msgid "SAVING_DELETED"
-msgstr ""
+msgstr "Saving deleted successfully."
 
-#: routers/source_router.py:44
+msgid "SAVING_FOUND"
+msgstr "Saving found."
+
+msgid "SAVING_LIST"
+msgstr "Savings retrieved successfully."
+
+msgid "SAVING_LOG_CREATED"
+msgstr "Saving log created successfully."
+
+msgid "SAVING_LOG_DELETED"
+msgstr "Saving log deleted successfully."
+
+msgid "SAVING_LOG_FOUND"
+msgstr "Saving log found."
+
+msgid "SAVING_LOG_LIST"
+msgstr "Saving logs retrieved successfully."
+
+msgid "SAVING_LOG_NOT_FOUND"
+msgstr "Saving log not found."
+
+msgid "SAVING_LOG_UPDATED"
+msgstr "Saving log updated successfully."
+
+msgid "SAVING_NOT_FOUND"
+msgstr "Saving not found."
+
+msgid "SAVING_UPDATED"
+msgstr "Saving updated successfully."
+
 msgid "SOURCE_CREATED"
-msgstr ""
+msgstr "Source created successfully."
 
-#: routers/source_router.py:55 routers/source_router.py:78
-#: routers/source_router.py:91
-msgid "SOURCE_NOT_FOUND"
-msgstr ""
-
-#: routers/source_router.py:56
-msgid "SOURCE_FOUND"
-msgstr ""
-
-#: routers/source_router.py:64
-msgid "SOURCE_LIST"
-msgstr ""
-
-#: routers/source_router.py:79
-msgid "SOURCE_UPDATED"
-msgstr ""
-
-#: routers/source_router.py:92
 msgid "SOURCE_DELETED"
-msgstr ""
+msgstr "Source deleted successfully."
 
-#: routers/user_router.py:54
+msgid "SOURCE_FOUND"
+msgstr "Source found."
+
+msgid "SOURCE_LIST"
+msgstr "Sources retrieved successfully."
+
+msgid "SOURCE_NOT_FOUND"
+msgstr "Source not found."
+
+msgid "SOURCE_RULE_CREATED"
+msgstr "Source rule created successfully."
+
+msgid "SOURCE_RULE_DELETED"
+msgstr "Source rule deleted successfully."
+
+msgid "SOURCE_RULE_FOUND"
+msgstr "Source rule found."
+
+msgid "SOURCE_RULE_LIST"
+msgstr "Source rules retrieved successfully."
+
+msgid "SOURCE_RULE_NOT_FOUND"
+msgstr "Source rule not found."
+
+msgid "SOURCE_RULE_UPDATED"
+msgstr "Source rule updated successfully."
+
+msgid "SOURCE_SUGGESTED"
+msgstr "A source was suggested successfully."
+
+msgid "SOURCE_SUGGEST_INVALID_PARAMS"
+msgstr "The source suggestion parameters are invalid."
+
+msgid "SOURCE_UPDATED"
+msgstr "Source updated successfully."
+
+msgid "SUMMARY_DATES_REQUIRED"
+msgstr "Start and end dates are required for a custom period."
+
+msgid "SUMMARY_DATE_INVALID"
+msgstr "Dates must use the YYYY-MM-DD format."
+
+msgid "SUMMARY_FOUND"
+msgstr "Summary retrieved successfully."
+
+msgid "TOKEN_REFRESHED"
+msgstr "Your session has been renewed."
+
+msgid "TRANSACTIONS_IMPORTED"
+msgstr "Transactions were imported successfully."
+
+msgid "UNEXPECTED_ERROR"
+msgstr "An unexpected error occurred. Please try again later."
+
 msgid "USER_CREATED"
-msgstr ""
+msgstr "User created successfully."
 
-#: routers/user_router.py:74 routers/user_router.py:115
-#: routers/user_router.py:134
-msgid "USER_NOT_FOUND"
-msgstr ""
-
-#: routers/user_router.py:74 routers/user_router.py:115
-#: routers/user_router.py:134
-msgid "USER_NOT_FOUND_DATABASE"
-msgstr ""
-
-#: routers/user_router.py:76
-msgid "USER_FOUND"
-msgstr "USER FOUND WIHT ID: %(id)s"
-
-#: routers/user_router.py:92
-msgid "USER_LIST"
-msgstr "USER LIST REPORT"
-
-#: routers/user_router.py:117
-msgid "USER_UPDATED"
-msgstr ""
-
-#: routers/user_router.py:136
 msgid "USER_DELETED"
-msgstr ""
+msgstr "User deleted successfully."
 
-#~ msgid "DNI_EXIST"
-#~ msgstr "The Id is already used by other user."
+msgid "USER_FOUND"
+msgstr "User found."
 
+msgid "USER_LIST"
+msgstr "Users retrieved successfully."
+
+msgid "USER_NOT_FOUND"
+msgstr "User not found."
+
+msgid "USER_NOT_FOUND_DATABASE"
+msgstr "The user was not found in the database."
+
+msgid "USER_REGISTERED"
+msgstr "Your account has been created successfully."
+
+msgid "USER_UPDATED"
+msgstr "User updated successfully."
+
+msgid "VALIDATION_ERROR"
+msgstr "The request contains invalid or missing values."
+
+msgid "VALIDATION_EXTRA_FIELD"
+msgstr "This field is not allowed."
+
+msgid "VALIDATION_INVALID"
+msgstr "This value is invalid."
+
+msgid "VALIDATION_INVALID_EMAIL"
+msgstr "Enter a valid email address."
+
+msgid "VALIDATION_INVALID_FORMAT"
+msgstr "The value has an invalid format."
+
+msgid "VALIDATION_INVALID_JSON"
+msgstr "The request body contains invalid JSON."
+
+msgid "VALIDATION_INVALID_TYPE"
+msgstr "The value has an invalid type."
+
+msgid "VALIDATION_OUT_OF_RANGE"
+msgstr "The value is outside the allowed range."
+
+msgid "VALIDATION_REQUIRED"
+msgstr "This field is required."
+
+msgid "VALIDATION_TOO_LONG"
+msgstr "This value is too long."
+
+msgid "VALIDATION_TOO_SHORT"
+msgstr "This value is too short."

@@ -49,8 +49,11 @@ class IncomeService(BaseService[Income, IncomeRead, IncomeCreate, IncomeUpdate])
         obj = Income(**self._to_income_model_kwargs(data), dedup_hash=dedup_hash)
 
         try:
-            obj = self.repository.create(obj)
+            with self.db.begin_nested():
+                obj = self.repository.create(obj)
+            self.db.commit()
         except IntegrityError as e:
+            self.db.rollback()
             if 'uq_incomes_account_dedup_hash' in str(e.orig):
                 raise ValueError("DUPLICATE_TRANSACTION")
             raise
@@ -91,10 +94,13 @@ class IncomeService(BaseService[Income, IncomeRead, IncomeCreate, IncomeUpdate])
 
             obj = Income(**self._to_income_model_kwargs(item), dedup_hash=dedup_hash)
 
+            # SAVEPOINT per row: a duplicate only rolls back its own insert.
             try:
-                obj = self.repository.create(obj)
+                with self.db.begin_nested():
+                    obj = self.repository.create(obj)
                 created_objects.append(obj)
             except IntegrityError:
                 continue
 
+        self.db.commit()
         return [IncomeRead.model_validate(obj) for obj in created_objects]

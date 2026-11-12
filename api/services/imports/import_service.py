@@ -9,6 +9,7 @@ from models import Expense, Income
 from services.rules.categorization_service import CategorizationService
 from services.core.dedup_service import generate_dedup_hash
 from schemas.imports.import_schema import BulkImportRequest
+from db.database import atomic
 from services.logs.logger_service import setup_logger
 
 logger = setup_logger("import_service")
@@ -50,7 +51,7 @@ class ImportService:
         Raises:
             ValueError: If any foreign key validation fails
         """
-        with self.db.begin():
+        with atomic(self.db):
             # Step 1: Auto-categorize transactions if needed
             if data.auto_categorize:
                 for expense in data.expenses:

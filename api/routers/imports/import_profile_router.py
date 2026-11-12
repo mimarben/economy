@@ -1,9 +1,10 @@
 """Router for ImportProfile endpoints following ISP."""
+from fastapi import APIRouter, Body, Depends, Query, Request
+from typing import Any
 
-from flask import Blueprint, request
 from sqlalchemy.orm import Session
 from pydantic import ValidationError
-from flask_babel import _
+from utils.i18n import _
 
 from schemas.imports.import_profile_schema import (
     ImportProfileBase,
@@ -19,7 +20,7 @@ from services.logs.logger_service import setup_logger
 from db.database import get_db
 
 
-router = Blueprint("import_profiles", __name__)
+router = APIRouter()
 NAME = "import_profiles"
 logger = setup_logger(NAME)
 
@@ -41,10 +42,8 @@ def handle_exception(e: Exception, action: str):
 
 
 @router.post("/import-profiles")
-def create():
-    db: Session = next(get_db())
-
-    data, error = handle_validation(ImportProfileCreate, request.json)
+def create(payload: ImportProfileCreate, db: Session = Depends(get_db)):
+    data, error = handle_validation(ImportProfileCreate, payload)
     if error:
         return error
 
@@ -55,10 +54,8 @@ def create():
         return handle_exception(e, "create")
 
 
-@router.get("/import-profiles/<int:profile_id>")
-def get_by_id(profile_id: int):
-    db: Session = next(get_db())
-
+@router.get("/import-profiles/{profile_id:int}")
+def get_by_id(profile_id: int, db: Session = Depends(get_db)):
     result = get_service(db).get_by_id(profile_id)
     if not result:
         return Response.error(_("IMPORT_PROFILE_NOT_FOUND"), _("NONE"), 404, NAME)
@@ -67,9 +64,7 @@ def get_by_id(profile_id: int):
 
 
 @router.get("/import-profiles")
-def list_all():
-    db: Session = next(get_db())
-
+def list_all(db: Session = Depends(get_db)):
     results = get_service(db).get_all()
     return Response.ok_data(
         [r.model_dump() for r in results],
@@ -79,11 +74,9 @@ def list_all():
     )
 
 
-@router.patch("/import-profiles/<int:profile_id>")
-def update(profile_id: int):
-    db: Session = next(get_db())
-
-    data, error = handle_validation(ImportProfileUpdate, request.json)
+@router.patch("/import-profiles/{profile_id:int}")
+def update(profile_id: int, payload: ImportProfileUpdate, db: Session = Depends(get_db)):
+    data, error = handle_validation(ImportProfileUpdate, payload)
     if error:
         return error
 
@@ -99,10 +92,8 @@ def update(profile_id: int):
         return handle_exception(e, "update")
 
 
-@router.delete("/import-profiles/<int:profile_id>")
-def delete(profile_id: int):
-    db: Session = next(get_db())
-
+@router.delete("/import-profiles/{profile_id:int}")
+def delete(profile_id: int, db: Session = Depends(get_db)):
     try:
         success = get_service(db).delete(profile_id)
 

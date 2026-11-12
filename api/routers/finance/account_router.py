@@ -1,8 +1,9 @@
 """Router for Account endpoints following ISP - Dependency Inversion Principle."""
-from flask import Blueprint, request
+from fastapi import APIRouter, Body, Depends, Query, Request
+from typing import Any
 from sqlalchemy.orm import Session
 from pydantic import ValidationError
-from flask_babel import _
+from utils.i18n import _
 
 from models.finance.account_model import Account
 from schemas.finance.account_schema import AccountBase, AccountCreate, AccountUpdate
@@ -11,49 +12,30 @@ from schemas.core.export_schema import export_schema
 
 from services.finance.account_service import AccountService
 from services.core.response_service import Response
-from services.core.interfaces import IReadService, ICreateService, IUpdateService, IDeleteService
 from services.logs.logger_service import setup_logger
 
 from db.database import get_db
 
 
-router = Blueprint("accounts", __name__)
+router = APIRouter()
 NAME = "accounts"
 
 
-# Dependency Injection - Each endpoint depends only on what it needs (ISP)
-def _get_create_service(db: Session) -> ICreateService:
-    """Inject only create interface."""
-    return AccountService(db)
-
-
-def _get_read_service(db: Session) -> IReadService:
-    """Inject only read interface."""
-    return AccountService(db)
-
-
-def _get_update_service(db: Session) -> IUpdateService:
-    """Inject only update interface."""
-    return AccountService(db)
-
-
-def _get_delete_service(db: Session) -> IDeleteService:
-    """Inject only delete interface."""
+def _get_service(db: Session) -> AccountService:
+    """Dependency: service bound to the request session."""
     return AccountService(db)
 
 
 @router.post("/accounts")
-def create():
+def create(payload: AccountCreate, db: Session = Depends(get_db)):
     """Create a new account."""
-    db: Session = next(get_db())
-
     try:
-        data = AccountCreate.model_validate(request.json)
+        data = AccountCreate.model_validate(payload)
     except ValidationError as e:
         return Response.error(_("VALIDATION_ERROR"), e.errors(), 400, NAME)
 
     try:
-        service: ICreateService = _get_create_service(db)
+        service = _get_service(db)
         result = service.create(data)
         return Response.ok_data(result.model_dump(), _("ACCOUNT_CREATED"), 201, NAME)
     except ValueError as e:
@@ -64,15 +46,14 @@ def create():
         return Response.error(_("INTERNAL_ERROR"), _("UNEXPECTED_ERROR"), 500, NAME)
 
 
-@router.get("/accounts/<int:id_account>")
-def get_by_id(id_account):
+@router.get("/accounts/{id_account:int}")
+def get_by_id(id_account: int, db: Session = Depends(get_db)):
     print("🔥 ENDPOINT GET_BY_ID HIT")
     print("🔥 ENDPOINT GET_BY_ID HIT")
     
     """Get a single account by ID."""
-    db: Session = next(get_db())
     try:
-        service: IReadService = _get_read_service(db)
+        service = _get_service(db)
         result = service.get_by_id(id_account)
         print("IBAN ORM:", result.iban)
         print("RAW ORM:", result)
@@ -89,12 +70,10 @@ def get_by_id(id_account):
 
 
 @router.get("/accounts")
-def list_all():
+def list_all(db: Session = Depends(get_db)):
     """Get all accounts."""
-    db: Session = next(get_db())
-
     try:
-        service: IReadService = _get_read_service(db)
+        service = _get_service(db)
         results = service.get_all()
 
         return Response.ok_data(
@@ -109,18 +88,16 @@ def list_all():
         return Response.error(_("INTERNAL_ERROR"), _("UNEXPECTED_ERROR"), 500, NAME)
 
 
-@router.patch("/accounts/<int:id_account>")
-def update(id_account):
+@router.patch("/accounts/{id_account:int}")
+def update(id_account: int, payload: AccountUpdate, db: Session = Depends(get_db)):
     """Update an account."""
-    db: Session = next(get_db())
-
     try:
-        data = AccountUpdate.model_validate(request.json)
+        data = AccountUpdate.model_validate(payload)
     except ValidationError as e:
         return Response.error(_("VALIDATION_ERROR"), e.errors(), 400, NAME)
 
     try:
-        service: IUpdateService = _get_update_service(db)
+        service = _get_service(db)
         result = service.update(id_account, data)
 
         if not result:
@@ -133,13 +110,11 @@ def update(id_account):
         return Response.error(_("INTERNAL_ERROR"), _("UNEXPECTED_ERROR"), 500, NAME)
 
 
-@router.delete("/accounts/<int:id_account>")
-def delete(id_account):
+@router.delete("/accounts/{id_account:int}")
+def delete(id_account: int, db: Session = Depends(get_db)):
     """Delete an account."""
-    db: Session = next(get_db())
-
     try:
-        service: IDeleteService = _get_delete_service(db)
+        service = _get_service(db)
         success = service.delete(id_account)
 
         if not success:

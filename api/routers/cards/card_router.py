@@ -1,47 +1,35 @@
 """Router for Source endpoints following ISP."""
-from flask import Blueprint, request
+from fastapi import APIRouter, Body, Depends, Query, Request
+from typing import Any
 from sqlalchemy.orm import Session
 from pydantic import ValidationError
-from flask_babel import _
+from utils.i18n import _
 from schemas.cards.card_schema import CardBase, CardCreate, CardUpdate
 from schemas.core.export_schema import export_schema
 
 from services.cards.card_service import CardService
-from services.core.interfaces import IReadService, ICreateService, IUpdateService, IDeleteService
 from services.core.response_service import Response
 from services.logs.logger_service import setup_logger
 
 from db.database import get_db
 
-router = Blueprint("cards", __name__)
+router = APIRouter()
 NAME = "cards"
 
-def _get_create_service(db: Session) -> ICreateService:
-    return CardService(db)
-
-
-def _get_read_service(db: Session) -> IReadService:
-    return CardService(db)
-
-
-def _get_update_service(db: Session) -> IUpdateService:
-    return CardService(db)
-
-
-def _get_delete_service(db: Session) -> IDeleteService:
+def _get_service(db: Session) -> CardService:
+    """Dependency: service bound to the request session."""
     return CardService(db)
 
 
 @router.post("/cards")
-def create():
-    db: Session = next(get_db())
+def create(payload: CardCreate, db: Session = Depends(get_db)):
     try:
-        data = CardCreate.model_validate(request.json)
+        data = CardCreate.model_validate(payload)
     except ValidationError as e:
         return Response.error(_("VALIDATION_ERROR"), e.errors(), 400, NAME)
 
     try:
-        service: ICreateService = _get_create_service(db)
+        service = _get_service(db)
         result = service.create(data)
         return Response.ok_data(result.model_dump(), _("CARD_CREATED"), 201, NAME)
     except Exception as e:
@@ -50,10 +38,9 @@ def create():
         return Response.error(_("INTERNAL_ERROR"), _("UNEXPECTED_ERROR"), 500, NAME)
 
 
-@router.get("/cards/<int:card_id>")
-def get_by_id(card_id: int):
-    db: Session = next(get_db())
-    service: IReadService = _get_read_service(db)
+@router.get("/cards/{card_id:int}")
+def get_by_id(card_id: int, db: Session = Depends(get_db)):
+    service = _get_service(db)
     result = service.get_by_id(card_id)
 
     if not result:
@@ -63,11 +50,10 @@ def get_by_id(card_id: int):
 
 
 @router.get("/cards")
-def list_all():
-    db: Session = next(get_db())
-    service: IReadService = _get_read_service(db)
+def list_all(request: Request, db: Session = Depends(get_db)):
+    service = _get_service(db)
 
-    filters = request.args.to_dict()
+    filters = dict(request.query_params)
 
     if "account_id" in filters:
         filters["account_id"] = int(filters["account_id"])
@@ -77,16 +63,15 @@ def list_all():
     return Response.ok_data([r.model_dump() for r in results], _("CARD_LIST"), 200, NAME)
 
 
-@router.patch("/cards/<int:card_id>")
-def update(card_id: int):
-    db: Session = next(get_db())
+@router.patch("/cards/{card_id:int}")
+def update(card_id: int, payload: CardUpdate, db: Session = Depends(get_db)):
     try:
-        data = CardUpdate.model_validate(request.json)
+        data = CardUpdate.model_validate(payload)
     except ValidationError as e:
         return Response.error(_("VALIDATION_ERROR"), e.errors(), 400, NAME)
 
     try:
-        service: IUpdateService = _get_update_service(db)
+        service = _get_service(db)
         result = service.update(card_id, data)
 
         if not result:
@@ -100,11 +85,10 @@ def update(card_id: int):
         return Response.error(_("INTERNAL_ERROR"), _("UNEXPECTED_ERROR"), 500, NAME)
 
 
-@router.delete("/cards/<int:card_id>")
-def delete(card_id: int):
-    db: Session = next(get_db())
+@router.delete("/cards/{card_id:int}")
+def delete(card_id: int, db: Session = Depends(get_db)):
     try:
-        service: IDeleteService = _get_delete_service(db)
+        service = _get_service(db)
         success = service.delete(card_id)
 
         if not success:

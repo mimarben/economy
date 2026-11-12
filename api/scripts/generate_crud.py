@@ -37,7 +37,8 @@ class {class_name}Repository(BaseRepository[{class_name}]):
     # Add custom domain-specific queries here
     # Example:
     # def get_by_custom_field(self, value) -> List[{class_name}]:
-    #     return self.db.query({class_name}).filter({class_name}.custom_field == value).all()
+    #     stmt = select({class_name}).where({class_name}.custom_field == value)
+    #     return self.db.execute(stmt).scalars().all()
 '''
 
 SERVICE_TEMPLATE = '''"""Service for {class_name} implementing segregated CRUD interfaces."""
@@ -59,7 +60,9 @@ class {class_name}Service(ICRUDService[{class_name}Read, {class_name}Create, {cl
     # ICreateService
     def create(self, data: {class_name}Create) -> {class_name}Read:
         """Create a new {class_name}."""
-        obj = self.repository.create(**data.model_dump())
+        obj = {class_name}(**data.model_dump())
+        obj = self.repository.create(obj)
+        self.db.commit()
         return {class_name}Read.model_validate(obj)
 
     # IReadService
@@ -82,12 +85,16 @@ class {class_name}Service(ICRUDService[{class_name}Read, {class_name}Create, {cl
         obj = self.repository.update(id, **update_data)
         if not obj:
             return None
+        self.db.commit()
         return {class_name}Read.model_validate(obj)
 
     # IDeleteService
     def delete(self, id: int) -> bool:
         """Delete a {class_name}."""
-        return self.repository.delete(id)
+        success = self.repository.delete(id)
+        if success:
+            self.db.commit()
+        return success
 
     # ISearchService
     def search(self, **filters) -> List[{class_name}Read]:
@@ -101,10 +108,11 @@ class {class_name}Service(ICRUDService[{class_name}Read, {class_name}Create, {cl
 '''
 
 ROUTER_TEMPLATE = '''"""Router for {class_name} endpoints following ISP - Dependency Inversion Principle."""
-from flask import Blueprint, request
+from typing import Any
+from fastapi import APIRouter, Body, Depends
 from sqlalchemy.orm import Session
 from pydantic import ValidationError
-from flask_babel import _
+from utils.i18n import _
 
 from schemas.{singular}_schema import {class_name}Create, {class_name}Update
 from services.{singular}_service import {class_name}Service
@@ -113,7 +121,7 @@ from db.database import get_db
 from services.response_service import Response
 
 
-router = Blueprint('{plural}', __name__)
+router = APIRouter()
 name = "{plural}"
 
 
@@ -139,12 +147,11 @@ def _get_delete_service(db: Session) -> IDeleteService:
 
 
 @router.post("/{plural}")
-def create():
+def create(payload: Any = Body(...), db: Session = Depends(get_db)):
     """Create a new {class_name}."""
-    db: Session = next(get_db())
 
     try:
-        data = {class_name}Create.model_validate(request.json)
+        data = {class_name}Create.model_validate(payload)
     except ValidationError as e:
         return Response.error(_("VALIDATION_ERROR"), e.errors(), 400, name)
 
@@ -158,10 +165,9 @@ def create():
         return Response.error(_("DATABASE_ERROR"), str(e), 500, name)
 
 
-@router.get("/{plural}/<int:id>")
-def get_by_id(id):
+@router.get("/{plural}/{{id:int}}")
+def get_by_id(id: int, db: Session = Depends(get_db)):
     """Get a single {class_name} by ID."""
-    db: Session = next(get_db())
 
     try:
         service: IReadService = _get_read_service(db)
@@ -176,9 +182,8 @@ def get_by_id(id):
 
 
 @router.get("/{plural}")
-def list_all():
+def list_all(db: Session = Depends(get_db)):
     """Get all {class_name}s."""
-    db: Session = next(get_db())
 
     try:
         service: IReadService = _get_read_service(db)
@@ -194,13 +199,12 @@ def list_all():
         return Response.error(_("DATABASE_ERROR"), str(e), 500, name)
 
 
-@router.patch("/{plural}/<int:id>")
-def update(id):
+@router.patch("/{plural}/{{id:int}}")
+def update(id: int, payload: Any = Body(...), db: Session = Depends(get_db)):
     """Update a {class_name}."""
-    db: Session = next(get_db())
 
     try:
-        data = {class_name}Update.model_validate(request.json)
+        data = {class_name}Update.model_validate(payload)
     except ValidationError as e:
         return Response.error(_("VALIDATION_ERROR"), e.errors(), 400, name)
 
@@ -216,10 +220,9 @@ def update(id):
         return Response.error(_("DATABASE_ERROR"), str(e), 500, name)
 
 
-@router.delete("/{plural}/<int:id>")
-def delete(id):
+@router.delete("/{plural}/{{id:int}}")
+def delete(id: int, db: Session = Depends(get_db)):
     """Delete a {class_name}."""
-    db: Session = next(get_db())
 
     try:
         service: IDeleteService = _get_delete_service(db)
@@ -228,7 +231,7 @@ def delete(id):
         if not success:
             return Response.error(_("{upper}_NOT_FOUND"), _("NONE"), 404, name)
 
-        return esponse.ok_message(_("{upper}_DELETED"), 204, name)
+        return Response.ok_message(_("{upper}_DELETED"), 204, name)
     except Exception as e:
         return Response.error(_("DATABASE_ERROR"), str(e), 500, name)
 '''

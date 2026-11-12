@@ -28,14 +28,11 @@ class Config:
         )
 
     JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY')
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
     DEBUG = False
     LANGUAGES = {
         'en': 'English',
         'es': 'Spanish'
     }
-    BABEL_DEFAULT_LOCALE = 'en'
-    BABEL_TRANSLATION_DIRECTORIES = 'i18n'
     INIT_DB_ON_STARTUP = False
     SCHEMA_INIT_STRATEGY = os.getenv("SCHEMA_INIT_STRATEGY", "create_all")
     SEED_DB_ON_STARTUP = os.getenv("SEED_DB_ON_STARTUP", "false").lower() == "true"
@@ -77,3 +74,18 @@ class ProductionConfig(Config):
     def validate(cls):
         if not cls.JWT_SECRET_KEY:
             raise ValueError("JWT_SECRET_KEY must be set in production environment")
+
+
+def get_config() -> type[Config]:
+    """Selecciona la clase de configuración según la variable de entorno APP_ENV.
+
+    Valores admitidos: "development" (por defecto), "testing" y "production".
+    Permite que el despliegue active ProductionConfig (y su validate()) sin
+    cambiar código.
+    """
+    env = os.getenv("APP_ENV", "development").lower()
+    if env == "production":
+        return ProductionConfig
+    if env == "testing":
+        return TestingConfig
+    return DevelopmentConfig

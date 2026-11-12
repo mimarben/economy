@@ -12,6 +12,7 @@ import { ComparisonChartComponent } from '../comparison-chart/comparison-chart.c
 import { IncomeVsExpenseChartComponent } from '../income-vs-expense-chart/income-vs-expense-chart.component';
 import { ExpenseBySourceChartComponent } from '../expense-by-source-chart/expense-by-source-chart.component';
 import { ExpenseByUserChartComponent } from '../expense-by-user-chart/expense-by-user-chart.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-charts-container',
@@ -20,6 +21,7 @@ import { ExpenseByUserChartComponent } from '../expense-by-user-chart/expense-by
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    TranslateModule,
     ...MATERIAL_IMPORTS,
     ExpenseChartComponent,
     IncomeChartComponent,

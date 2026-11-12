@@ -1,8 +1,9 @@
 """Router for Bank endpoints following ISP - Dependency Inversion Principle."""
-from flask import Blueprint, request
+from fastapi import APIRouter, Body, Depends, Query, Request
+from typing import Any
 from sqlalchemy.orm import Session
 from pydantic import ValidationError
-from flask_babel import _
+from utils.i18n import _
 
 from schemas.finance.bank_schema import BankBase, BankCreate, BankUpdate
 
@@ -12,48 +13,29 @@ from services.finance.bank_service import BankService
 from services.logs.logger_service import setup_logger
 
 from services.core.response_service import Response
-from services.core.interfaces import IReadService, ICreateService, IUpdateService, IDeleteService
 
 from db.database import get_db
 
 
-router = Blueprint("banks", __name__)
+router = APIRouter()
 NAME = "banks"
 
 
-# Dependency Injection - Each endpoint depends only on what it needs (ISP)
-def _get_create_service(db: Session) -> ICreateService:
-    """Inject only create interface."""
-    return BankService(db)
-
-
-def _get_read_service(db: Session) -> IReadService:
-    """Inject only read interface."""
-    return BankService(db)
-
-
-def _get_update_service(db: Session) -> IUpdateService:
-    """Inject only update interface."""
-    return BankService(db)
-
-
-def _get_delete_service(db: Session) -> IDeleteService:
-    """Inject only delete interface."""
+def _get_service(db: Session) -> BankService:
+    """Dependency: service bound to the request session."""
     return BankService(db)
 
 
 @router.post("/banks")
-def create():
+def create(payload: BankCreate, db: Session = Depends(get_db)):
     """Create a new bank."""
-    db: Session = next(get_db())
-
     try:
-        data = BankCreate.model_validate(request.json)
+        data = BankCreate.model_validate(payload)
     except ValidationError as e:
         return Response.error(_("VALIDATION_ERROR"), e.errors(), 400, NAME)
 
     try:
-        service: ICreateService = _get_create_service(db)
+        service = _get_service(db)
         result = service.create(data)
         return Response.ok_data(result.model_dump(), _("BANK_CREATED"), 201, NAME)
     except ValueError as e:
@@ -64,13 +46,11 @@ def create():
         return Response.error(_("INTERNAL_ERROR"), _("UNEXPECTED_ERROR"), 500, NAME)
 
 
-@router.get("/banks/<int:id>")
-def get_by_id(id):
+@router.get("/banks/{id:int}")
+def get_by_id(id: int, db: Session = Depends(get_db)):
     """Get a single bank by ID."""
-    db: Session = next(get_db())
-
     try:
-        service: IReadService = _get_read_service(db)
+        service = _get_service(db)
         result = service.get_by_id(id)
 
         if not result:
@@ -84,12 +64,10 @@ def get_by_id(id):
 
 
 @router.get("/banks")
-def list_all():
+def list_all(db: Session = Depends(get_db)):
     """Get all banks."""
-    db: Session = next(get_db())
-
     try:
-        service: IReadService = _get_read_service(db)
+        service = _get_service(db)
         results = service.get_all()
 
         return Response.ok_data(
@@ -104,19 +82,17 @@ def list_all():
         return Response.error(_("INTERNAL_ERROR"), _("UNEXPECTED_ERROR"), 500, NAME)
 
 
-@router.patch("/banks/<int:id>")
-def update(bank_id: int):
+@router.patch("/banks/{id:int}")
+def update(id: int, payload: BankUpdate, db: Session = Depends(get_db)):
     """Update a bank."""
-    db: Session = next(get_db())
-
     try:
-        data = BankUpdate.model_validate(request.json)
+        data = BankUpdate.model_validate(payload)
     except ValidationError as e:
         return Response.error(_("VALIDATION_ERROR"), e.errors(), 400, NAME)
 
     try:
-        service: IUpdateService = _get_update_service(db)
-        result = service.update(bank_id, data)
+        service = _get_service(db)
+        result = service.update(id, data)
 
         if not result:
             return Response.error(_("BANK_NOT_FOUND"), _("NONE"), 404, NAME)
@@ -128,14 +104,12 @@ def update(bank_id: int):
         return Response.error(_("INTERNAL_ERROR"), _("UNEXPECTED_ERROR"), 500, NAME)
 
 
-@router.delete("/banks/<int:id>")
-def delete(bank_id: int):
+@router.delete("/banks/{id:int}")
+def delete(id: int, db: Session = Depends(get_db)):
     """Delete a bank."""
-    db: Session = next(get_db())
-
     try:
-        service: IDeleteService = _get_delete_service(db)
-        success = service.delete(bank_id)
+        service = _get_service(db)
+        success = service.delete(id)
 
         if not success:
             return Response.error(_("BANK_NOT_FOUND"), _("NONE"), 404, NAME)

@@ -1,22 +1,21 @@
-from flask import Blueprint
+from fastapi import APIRouter, Body, Depends, Query, Request
+from typing import Any
 from sqlalchemy.orm import Session
 from sqlalchemy import text
 from db.database import get_db
 from services.core.response_service import Response
-from flask_babel import _
+from utils.i18n import _
 
-router = Blueprint("core", __name__)
+router = APIRouter()
 name = "core"
 
 @router.get("/core/db-info")
-def get_db_info():
+def get_db_info(db: Session = Depends(get_db)):
     """
     Get database engine information.
 
     Infrastructure endpoint.
     """
-    db: Session = next(get_db())
-
     try:
         engine = db.get_bind()
         dialect = engine.dialect.name

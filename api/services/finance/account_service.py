@@ -1,4 +1,5 @@
 """Service for Account implementing CRUD operations."""
+from sqlalchemy import delete, select
 from sqlalchemy.orm import Session
 from repositories.finance.account_repository import AccountRepository
 from schemas.finance.account_schema import AccountBase, AccountCreate, AccountRead, AccountUpdate
@@ -80,12 +81,14 @@ class AccountService(BaseService[Account, AccountRead, AccountCreate, AccountUpd
     def _set_account_users(self, account_id: int, user_ids: list[int]) -> None:
         """Set users for an account (replaces existing associations)."""
         # Delete existing associations
-        self.db.query(AccountUser).filter(
-            AccountUser.account_id == account_id
-        ).delete(synchronize_session=False)
-        
+        self.db.execute(
+            delete(AccountUser).where(AccountUser.account_id == account_id)
+        )
+
         # Verify all users exist
-        users = self.db.query(User).filter(User.id.in_(user_ids)).all()
+        users = self.db.execute(
+            select(User).where(User.id.in_(user_ids))
+        ).scalars().all()
         if len(users) != len(user_ids):
             raise ValueError('One or more users do not exist')
         

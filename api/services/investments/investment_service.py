@@ -31,8 +31,11 @@ class InvestmentService(BaseService[Investment, InvestmentRead, InvestmentCreate
         obj = Investment(**payload, dedup_hash=dedup_hash)
 
         try:
-            obj = self.repository.create(obj)
+            with self.db.begin_nested():
+                obj = self.repository.create(obj)
+            self.db.commit()
         except IntegrityError as e:
+            self.db.rollback()
             if 'uq_investments_account_dedup_hash' in str(e.orig):
                 raise ValueError("DUPLICATE_TRANSACTION")
             raise

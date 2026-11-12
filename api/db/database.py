@@ -1,7 +1,29 @@
 import os
 from sqlalchemy import create_engine, event
-from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy.orm import sessionmaker
 from contextlib import contextmanager
+
+from sqlalchemy.orm import Session as ORMSession
+
+
+@contextmanager
+def atomic(session: ORMSession):
+    """Run a block atomically regardless of the session's current state.
+
+    `session.begin()` raises InvalidRequestError if the session already has an
+    implicit transaction (autobegin from a prior read). This helper commits on
+    success / rolls back on error either way.
+    """
+    if session.in_transaction():
+        try:
+            yield
+            session.commit()
+        except Exception:
+            session.rollback()
+            raise
+    else:
+        with session.begin():
+            yield
 from models import Base, User, Account, Bank
 from config import Config
 from .users_seed import seed_admin
@@ -18,7 +40,9 @@ logger.info(f"Database Engine: {Config.DB_ENGINE}")
 engine = create_engine(
     DATABASE_URL,
     echo=Config.DEBUG,
-    pool_size=20,
+    # FastAPI runs sync endpoints in a threadpool of 40 threads; the pool
+    # must cover them or requests queue on pool_timeout under load.
+    pool_size=40,
     max_overflow=10,
     pool_timeout=60
 )
@@ -33,29 +57,24 @@ if Config.DB_ENGINE == "sqlite":
 
 
 SessionFactory = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-SessionLocal = scoped_session(SessionFactory)
 
 
 def get_db():
-    """Generator for database sessions. Used with next() in routers."""
-    db = SessionLocal()
+    """Provide one SQLAlchemy session per request."""
+    db = SessionFactory()
     try:
         yield db
-    except Exception as e:
+    except Exception:
         db.rollback()
-        logger.error(f"Database session error: {e}")
         raise
-
-
-def remove_db_session() -> None:
-    """Remove scoped session at the end of the request lifecycle."""
-    SessionLocal.remove()
+    finally:
+        db.close()
 
 
 @contextmanager
 def get_db_session():
     """Context manager for database sessions. Preferred for explicit lifecycle control."""
-    db = SessionLocal()
+    db = SessionFactory()
     try:
         yield db
         db.commit()

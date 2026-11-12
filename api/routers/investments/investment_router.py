@@ -1,47 +1,35 @@
 """Router for Investment endpoints following ISP."""
-from flask import Blueprint, request
+from fastapi import APIRouter, Body, Depends, Query, Request
+from typing import Any
 from sqlalchemy.orm import Session
 from pydantic import ValidationError
-from flask_babel import _
+from utils.i18n import _
 
 from schemas.investments.investment_schema import InvestmentBase, InvestmentCreate, InvestmentUpdate
 from schemas.core.export_schema import export_schema
 
 from services.investments.investment_service import InvestmentService
-from services.core.interfaces import IReadService, ICreateService, IUpdateService, IDeleteService
 from db.database import get_db
 from services.core.response_service import Response
 
 
-router = Blueprint("investments", __name__)
+router = APIRouter()
 name = "investments"
 
 
-def _get_create_service(db: Session) -> ICreateService:
-    return InvestmentService(db)
-
-
-def _get_read_service(db: Session) -> IReadService:
-    return InvestmentService(db)
-
-
-def _get_update_service(db: Session) -> IUpdateService:
-    return InvestmentService(db)
-
-
-def _get_delete_service(db: Session) -> IDeleteService:
+def _get_service(db: Session) -> InvestmentService:
+    """Dependency: service bound to the request session."""
     return InvestmentService(db)
 
 
 @router.post("/investments")
-def create():
-    db: Session = next(get_db())
+def create(payload: InvestmentCreate, db: Session = Depends(get_db)):
     try:
-        data = InvestmentCreate.model_validate(request.json)
+        data = InvestmentCreate.model_validate(payload)
     except ValidationError as e:
         return Response.error(_("VALIDATION_ERROR"), e.errors(), 400, name)
     try:
-        service: ICreateService = _get_create_service(db)
+        service = _get_service(db)
         result = service.create(data)
         return Response.ok_data(result.model_dump(), _("INVESTMENT_CREATED"), 201, name)
     except ValueError as e:
@@ -52,10 +40,9 @@ def create():
         return Response.error(_("DATABASE_ERROR"), str(e), 500, name)
 
 
-@router.get("/investments/<int:id>")
-def get_by_id(id):
-    db: Session = next(get_db())
-    service: IReadService = _get_read_service(db)
+@router.get("/investments/{id:int}")
+def get_by_id(id: int, db: Session = Depends(get_db)):
+    service = _get_service(db)
     result = service.get_by_id(id)
     if not result:
         return Response.error(_("INVESTMENT_NOT_FOUND"), _("NONE"), 404, name)
@@ -63,22 +50,20 @@ def get_by_id(id):
 
 
 @router.get("/investments")
-def list_all():
-    db: Session = next(get_db())
-    service: IReadService = _get_read_service(db)
+def list_all(db: Session = Depends(get_db)):
+    service = _get_service(db)
     results = service.get_all()
     return Response.ok_data([r.model_dump() for r in results], _("INVESTMENT_LIST"), 200, name)
 
 
-@router.patch("/investments/<int:id>")
-def update(id):
-    db: Session = next(get_db())
+@router.patch("/investments/{id:int}")
+def update(id: int, payload: InvestmentUpdate, db: Session = Depends(get_db)):
     try:
-        data = InvestmentUpdate.model_validate(request.json)
+        data = InvestmentUpdate.model_validate(payload)
     except ValidationError as e:
         return Response.error(_("VALIDATION_ERROR"), e.errors(), 400, name)
     try:
-        service: IUpdateService = _get_update_service(db)
+        service = _get_service(db)
         result = service.update(id, data)
         if not result:
             return Response.error(_("INVESTMENT_NOT_FOUND"), _("NONE"), 404, name)
@@ -87,11 +72,10 @@ def update(id):
         return Response.error(_("DATABASE_ERROR"), str(e), 500, name)
 
 
-@router.delete("/investments/<int:id>")
-def delete(id):
-    db: Session = next(get_db())
+@router.delete("/investments/{id:int}")
+def delete(id: int, db: Session = Depends(get_db)):
     try:
-        service: IDeleteService = _get_delete_service(db)
+        service = _get_service(db)
         success = service.delete(id)
         if not success:
             return Response.error(_("INVESTMENT_NOT_FOUND"), _("NONE"), 404, name)

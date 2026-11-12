@@ -11,7 +11,28 @@
     "save": "Guardar",
     "delete": "Eliminar",
     "edit": "Editar",
-    "view": "Ver"
+    "view": "Ver",
+    "search": "Buscar",
+    "actions": "Acciones",
+    "add": "Añadir",
+    "refresh": "Actualizar",
+    "duplicate": "Duplicar"
+  },
+  "table": {
+    "no_data": "No hay registros."
+  },
+  "charts": {
+    "filters": "Filtros del resumen",
+    "period": "Periodo",
+    "period_today": "Hoy",
+    "period_week": "Esta semana",
+    "period_month": "Este mes",
+    "period_year": "Este año",
+    "period_custom": "Rango personalizado",
+    "start_date": "Fecha inicio",
+    "end_date": "Fecha fin",
+    "load": "Cargar",
+    "loading": "Cargando datos del resumen..."
   },
   "users": {
     "title": "Users List",
@@ -31,7 +52,15 @@
     "title": "Página no encontrada"
   },
   "home": {
-    "title": "Inicio"
+    "title": "Inicio",
+    "month_summary": "Resumen del mes",
+    "language": "Idioma",
+    "kpi": {
+      "income": "Ingresos del mes",
+      "expense": "Gastos del mes",
+      "net": "Ahorro neto",
+      "invested": "Invertido"
+    }
   },
   "banks": {
     "title": "Bancos"

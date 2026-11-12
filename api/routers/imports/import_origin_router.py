@@ -1,9 +1,10 @@
 """Router for ImportOrigin endpoints following ISP."""
+from fastapi import APIRouter, Body, Depends, Query, Request
+from typing import Any
 
-from flask import Blueprint, request
 from sqlalchemy.orm import Session
 from pydantic import ValidationError
-from flask_babel import _
+from utils.i18n import _
 
 from schemas.imports.import_origin_schema import (
     ImportOriginBase,
@@ -12,7 +13,6 @@ from schemas.imports.import_origin_schema import (
 )
 from schemas.core.export_schema import export_schema
 
-from services.core.interfaces import IReadService, IUpdateService,ICreateService, IUpdateService, IDeleteService
 from services.imports.import_origin_service import ImportOriginService
 from services.core.response_service import Response
 from services.logs.logger_service import setup_logger
@@ -20,24 +20,13 @@ from services.logs.logger_service import setup_logger
 from db.database import get_db
 
 
-router = Blueprint("import_origins", __name__)
+router = APIRouter()
 NAME = "import_origins"
 logger = setup_logger(NAME)
 
 
-def _get_create_service(db: Session) -> ICreateService:
-    return ImportOriginService(db)
-
-
-def _get_read_service(db: Session) -> IReadService:
-    return ImportOriginService(db)
-
-
-def _get_update_service(db: Session) -> IUpdateService:
-    return ImportOriginService(db)
-
-
-def _get_delete_service(db: Session) -> IDeleteService:
+def _get_service(db: Session) -> ImportOriginService:
+    """Dependency: service bound to the request session."""
     return ImportOriginService(db)
 
 
@@ -54,25 +43,22 @@ def handle_exception(e: Exception, action: str):
 
 
 @router.post("/import-origins")
-def create():
-    db: Session = next(get_db())
-
-    data, error = handle_validation(ImportOriginCreate, request.json)
+def create(payload: ImportOriginCreate, db: Session = Depends(get_db)):
+    data, error = handle_validation(ImportOriginCreate, payload)
     if error:
         return error
 
     try:
-        service: ICreateService = _get_create_service(db)
+        service = _get_service(db)
         result = service.create(data)
         return Response.ok_data(result.model_dump(), _("IMPORT_PROFILE_CREATED"), 201, NAME)
     except Exception as e:
         return handle_exception(e, "create")
 
 
-@router.get("/import-origins/<int:origin_id>")
-def get_by_id(origin_id: int):
-    db: Session = next(get_db())
-    service: IReadService = _get_read_service(db)
+@router.get("/import-origins/{origin_id:int}")
+def get_by_id(origin_id: int, db: Session = Depends(get_db)):
+    service = _get_service(db)
     result = service.get_by_id(origin_id)
     if not result:
         return Response.error(_("IMPORT_PROFILE_NOT_FOUND"), _("NONE"), 404, NAME)
@@ -81,9 +67,8 @@ def get_by_id(origin_id: int):
 
 
 @router.get("/import-origins")
-def list_all():
-    db: Session = next(get_db())
-    service: IReadService = _get_read_service(db)
+def list_all(db: Session = Depends(get_db)):
+    service = _get_service(db)
     results = service.get_all()
     return Response.ok_data(
         [r.model_dump() for r in results],
@@ -93,16 +78,14 @@ def list_all():
     )
 
 
-@router.patch("/import-origins/<int:origin_id>")
-def update(origin_id: int):
-    db: Session = next(get_db())
-
-    data, error = handle_validation(ImportOriginUpdate, request.json)
+@router.patch("/import-origins/{origin_id:int}")
+def update(origin_id: int, payload: ImportOriginUpdate, db: Session = Depends(get_db)):
+    data, error = handle_validation(ImportOriginUpdate, payload)
     if error:
         return error
 
     try:
-        service: IUpdateService = _get_update_service(db)
+        service = _get_service(db)
         result = service.update(origin_id, data)
 
         if not result:
@@ -114,12 +97,10 @@ def update(origin_id: int):
         return handle_exception(e, "update")
 
 
-@router.delete("/import-origins/<int:origin_id>")
-def delete(origin_id: int):
-    db: Session = next(get_db())
-
+@router.delete("/import-origins/{origin_id:int}")
+def delete(origin_id: int, db: Session = Depends(get_db)):
     try:
-        service: IDeleteService = _get_delete_service(db)
+        service = _get_service(db)
         success = service.delete(origin_id)
 
         if not success:

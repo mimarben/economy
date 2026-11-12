@@ -36,6 +36,7 @@ class BaseService(
     def create(self, data: CreateT) -> ReadT:
         obj = self.model(**data.model_dump())
         obj = self.repository.create(obj)
+        self.db.commit()
         return self.read_schema.model_validate(obj)
 
     def get_by_id(self, id: int) -> Optional[ReadT]:
@@ -49,10 +50,16 @@ class BaseService(
     def update(self, id: int, data: UpdateT) -> Optional[ReadT]:
         update_data = data.model_dump(exclude_unset=True)
         obj = self.repository.update(id, **update_data)
-        return self.read_schema.model_validate(obj) if obj else None
+        if not obj:
+            return None
+        self.db.commit()
+        return self.read_schema.model_validate(obj)
 
     def delete(self, id: int) -> bool:
-        return self.repository.delete(id)
+        success = self.repository.delete(id)
+        if success:
+            self.db.commit()
+        return success
 
     def search(self, **filters) -> List[ReadT]:
         objs = self.repository.search(**filters)

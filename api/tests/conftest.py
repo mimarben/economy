@@ -32,23 +32,3 @@ def db_session():
         yield session
     finally:
         session.close()
-
-
-@pytest.fixture
-def app_context():
-    """Minimal Flask app context so flask_jwt_extended token helpers work.
-
-    AuthService.login/refresh call create_access_token/create_refresh_token,
-    which read ``current_app.config``. The full ``create_app`` is not used here
-    because TestingConfig lacks ``PREFIX`` (needed by blueprint registration) and
-    the service layer does not need routers/blueprints — only the JWT config.
-    """
-    from flask import Flask
-    from flask_jwt_extended import JWTManager
-
-    app = Flask(__name__)
-    app.config["JWT_SECRET_KEY"] = "testing-jwt-secret"
-    JWTManager(app)
-
-    with app.app_context():
-        yield app

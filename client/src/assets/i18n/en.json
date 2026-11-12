@@ -11,7 +11,28 @@
     "save": "Save",
     "delete": "Delete",
     "edit": "Edit",
-    "view": "View"
+    "view": "View",
+    "search": "Search",
+    "actions": "Actions",
+    "add": "Add",
+    "refresh": "Refresh",
+    "duplicate": "Duplicate"
+  },
+  "table": {
+    "no_data": "No records found."
+  },
+  "charts": {
+    "filters": "Summary Filters",
+    "period": "Period",
+    "period_today": "Today",
+    "period_week": "This Week",
+    "period_month": "This Month",
+    "period_year": "This Year",
+    "period_custom": "Custom Range",
+    "start_date": "Start Date",
+    "end_date": "End Date",
+    "load": "Load",
+    "loading": "Loading summary data..."
   },
   "users": {
     "title": "Users List",
@@ -31,7 +52,15 @@
     "title": "Page not found"
   },
   "home": {
-    "title": "Home"
+    "title": "Home",
+    "month_summary": "Month summary",
+    "language": "Language",
+    "kpi": {
+      "income": "Income this month",
+      "expense": "Expenses this month",
+      "net": "Net savings",
+      "invested": "Invested"
+    }
   },
   "banks": {
     "title": "Banks"

@@ -41,11 +41,13 @@ class BaseRepository(ICRUDRepository[T]):
 
     # ======================
     # WRITE
+    # NOTE: write methods only flush — the owning SERVICE decides when to
+    # commit, so multi-repository operations stay in one transaction.
     # ======================
 
     def create(self, obj: T) -> T:
         self.db.add(obj)
-        self.db.commit()
+        self.db.flush()
         self.db.refresh(obj)
         return obj
 
@@ -58,7 +60,7 @@ class BaseRepository(ICRUDRepository[T]):
             if hasattr(obj, key):
                 setattr(obj, key, value)
 
-        self.db.commit()
+        self.db.flush()
         self.db.refresh(obj)
         return obj
 
@@ -72,7 +74,7 @@ class BaseRepository(ICRUDRepository[T]):
         else:
             self.db.delete(obj)
 
-        self.db.commit()
+        self.db.flush()
         return True
 
     def hard_delete(self, id: int) -> bool:
@@ -81,7 +83,7 @@ class BaseRepository(ICRUDRepository[T]):
             return False
 
         self.db.delete(obj)
-        self.db.commit()
+        self.db.flush()
         return True
 
     # ======================
@@ -121,11 +123,10 @@ class BaseRepository(ICRUDRepository[T]):
     # ======================
 
     def count(self, **filters) -> int:
-        base = self._base_query().subquery()
-        stmt = select(func.count()).select_from(base)
+        stmt = self._base_query()
 
         for key, value in filters.items():
             if hasattr(self.model, key):
                 stmt = stmt.where(getattr(self.model, key) == value)
 
-        return self.db.execute(stmt).scalar_one()
+        return self.db.execute(select(func.count()).select_from(stmt.subquery())).scalar_one()

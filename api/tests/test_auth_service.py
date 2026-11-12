@@ -1,9 +1,4 @@
-"""Unit tests for AuthService (register / login / refresh / get_current_user).
-
-Follows the existing suite conventions: pytest plain functions, real in-memory
-SQLite, real bcrypt, no mocking. ``login``/``refresh`` need a Flask app context
-because they call flask_jwt_extended token helpers.
-"""
+"""Unit tests for AuthService (register / login / refresh / get_current_user)."""
 import pytest
 
 from models import User, UserRoleEnum
@@ -84,7 +79,7 @@ def test_register_rejects_duplicate_dni(db_session):
 
 # ───────────────────────────── login ─────────────────────────────
 
-def test_login_success(db_session, app_context):
+def test_login_success(db_session):
     _seed_user(db_session)
     result = AuthService(db_session).login(
         LoginRequest(email="login@example.com", password=_PASSWORD)
@@ -96,14 +91,14 @@ def test_login_success(db_session, app_context):
     assert result.token_type == "Bearer"
 
 
-def test_login_unknown_email_returns_none(db_session, app_context):
+def test_login_unknown_email_returns_none(db_session):
     result = AuthService(db_session).login(
         LoginRequest(email="nobody@example.com", password=_PASSWORD)
     )
     assert result is None
 
 
-def test_login_inactive_user_returns_none(db_session, app_context):
+def test_login_inactive_user_returns_none(db_session):
     _seed_user(db_session, active=False)
     result = AuthService(db_session).login(
         LoginRequest(email="login@example.com", password=_PASSWORD)
@@ -111,7 +106,7 @@ def test_login_inactive_user_returns_none(db_session, app_context):
     assert result is None
 
 
-def test_login_wrong_password_returns_none(db_session, app_context):
+def test_login_wrong_password_returns_none(db_session):
     _seed_user(db_session)
     result = AuthService(db_session).login(
         LoginRequest(email="login@example.com", password="WrongPass1!")
@@ -121,7 +116,7 @@ def test_login_wrong_password_returns_none(db_session, app_context):
 
 # ───────────────────────────── refresh ─────────────────────────────
 
-def test_refresh_success(db_session, app_context):
+def test_refresh_success(db_session):
     user = _seed_user(db_session)
     result = AuthService(db_session).refresh(str(user.id))
 
@@ -129,7 +124,7 @@ def test_refresh_success(db_session, app_context):
     assert result.token_type == "Bearer"
 
 
-def test_refresh_unknown_user_raises(db_session, app_context):
+def test_refresh_unknown_user_raises(db_session):
     with pytest.raises(ValueError) as exc:
         AuthService(db_session).refresh("99999")
     assert "USER_NOT_FOUND" in str(exc.value)

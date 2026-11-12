@@ -1,82 +1,66 @@
+<div class="dashboard">
 
+  <div class="page-header">
+    <h1>{{ 'app.title' | translate }}</h1>
+    <span class="page-subtitle">{{ 'home.month_summary' | translate }}</span>
+  </div>
 
-<div class="jumbotron">
-  <mat-card class="welcome-card">
-    <mat-card-header>
-      <mat-card-title>{{"app.title"|translate}}</mat-card-title>
-      <mat-card-subtitle>This is a sample application built with Angular Material</mat-card-subtitle>
-    </mat-card-header>
-    <mat-card-content>
-      <p>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit amet nulla auctor, vestibulum magna sed, convallis ex.
-      </p>
-      <button mat-raised-button color="primary" routerLink="/get-started">Get Started</button>
-    </mat-card-content>
-  </mat-card>
-</div>
+  <!-- Error -->
+  <div *ngIf="error" class="error-banner">
+    <mat-icon>error</mat-icon>
+    {{ error }}
+  </div>
 
-<div class="features">
-  <h2>Features</h2>
-  <mat-grid-list cols="3" rowHeight="200px">
-    <mat-grid-tile>
-      <mat-card>
-        <mat-card-header>
-          <mat-card-title>Feature 1</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-          </p>
-        </mat-card-content>
-      </mat-card>
-    </mat-grid-tile>
-    <mat-grid-tile>
-      <mat-card>
-        <mat-card-header>
-          <mat-card-title>Feature 2</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-          </p>
-        </mat-card-content>
-      </mat-card>
-    </mat-grid-tile>
-    <mat-grid-tile>
-      <mat-card>
-        <mat-card-header>
-          <mat-card-title>Feature 3</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-          </p>
-        </mat-card-content>
-      </mat-card>
-    </mat-grid-tile>
-  </mat-grid-list>
-</div>
-<div class="features">
-  <h2>Languages</h2>
-  <mat-grid-list cols="1" rowHeight="200px">
-    <mat-grid-tile>
-      <mat-card>
-        <mat-card-header>
-          <mat-card-title>Language Selector</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <div class="language-selector">
-            <button
-              *ngFor="let lang of languages"
-              [class.active]="currentLanguage === lang.code"
-              (click)="changeLanguage(lang.code)"
-              title="{{lang.name}}">
-              <span class="flag">{{lang.flag}}</span>
-              <span class="name">{{lang.name}}</span>
-            </button>
-          </div>
-        </mat-card-content>
-      </mat-card>
-    </mat-grid-tile>
-  </mat-grid-list>
+  <!-- KPIs del mes -->
+  <div class="kpi-grid" *ngIf="summary">
+    <div class="stat-card stat-success">
+      <span class="stat-card__label">{{ 'home.kpi.income' | translate }}</span>
+      <span class="stat-card__value">{{ summary.income_vs_expense.total_income | number:'1.2-2' }} €</span>
+    </div>
+    <div class="stat-card stat-danger">
+      <span class="stat-card__label">{{ 'home.kpi.expense' | translate }}</span>
+      <span class="stat-card__value">{{ summary.income_vs_expense.total_expense | number:'1.2-2' }} €</span>
+    </div>
+    <div class="stat-card" [class.stat-success]="summary.income_vs_expense.net >= 0"
+                           [class.stat-danger]="summary.income_vs_expense.net < 0">
+      <span class="stat-card__label">{{ 'home.kpi.net' | translate }}</span>
+      <span class="stat-card__value">{{ summary.income_vs_expense.net | number:'1.2-2' }} €</span>
+    </div>
+    <div class="stat-card stat-accent">
+      <span class="stat-card__label">{{ 'home.kpi.invested' | translate }}</span>
+      <span class="stat-card__value">{{ investmentTotal | number:'1.2-2' }} €</span>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading-row" *ngIf="loading">
+    <mat-spinner diameter="36"></mat-spinner>
+    <span>{{ 'common.loading' | translate }}</span>
+  </div>
+
+  <!-- Gráficos del mes -->
+  <div class="charts-grid" *ngIf="summary && !loading">
+    <div class="chart-panel">
+      <app-income-vs-expense-chart [summary]="summary"></app-income-vs-expense-chart>
+    </div>
+    <div class="chart-panel">
+      <app-expense-chart [summary]="summary"></app-expense-chart>
+    </div>
+  </div>
+
+  <!-- Selector de idioma -->
+  <div class="language-bar">
+    <span class="language-bar__label">{{ 'home.language' | translate }}</span>
+    <div class="language-selector">
+      <button
+        *ngFor="let lang of languages"
+        [class.active]="currentLanguage === lang.code"
+        (click)="changeLanguage(lang.code)"
+        title="{{lang.name}}">
+        <span class="flag">{{lang.flag}}</span>
+        <span class="name">{{lang.name}}</span>
+      </button>
+    </div>
+  </div>
+
 </div>

@@ -5,19 +5,23 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13.7"
 dependencies = [
+    "fastapi>=0.115.0",
     "alembic>=1.17.1",
+    "babel>=2.17.0",
     "bcrypt>=4.2.0",
     "datamodel-code-generator>=0.30.1",
     "dotenv>=0.9.9",
-    "flask>=3.1.0",
-    "flask-babel>=4.0.0",
-    "flask-cors>=5.0.1",
-    "flask-jwt-extended>=4.7.1",
-    "flask-limiter>=3.12",
-    "gunicorn>=23.0.0",
+    "pyjwt>=2.10.1",
     "pip>=25.3",
     "psycopg2-binary>=2.9.11",
     "pydantic[email]>=2.11.3",
     "sqlalchemy>=2.0.40",
+    "uvicorn[standard]>=0.34.0",
     "watchdog>=6.0.0",
 ]
+
+[tool.pytest.ini_options]
+# `uv run pytest tests/` no añade api/ a sys.path (solo tests/); sin esto
+# `from models import Base` en conftest.py falla con ModuleNotFoundError.
+pythonpath = ["."]
+testpaths = ["tests"]

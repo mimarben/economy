@@ -37,8 +37,8 @@ export class GenericTableComponent<T> implements AfterViewInit, OnChanges {
   @Input() filter = '';
   @Input() title = '';
   @Input() subtitle = '';
-  @Input() addButtonLabel = 'Add';
-  @Input() noDataMessage = 'No records found.';
+  @Input() addButtonLabel = '';
+  @Input() noDataMessage = '';
   @Input() showDeleteAction = false;
   @Input() showDuplicateAction = false;
   @Input() showRefreshAction = true;

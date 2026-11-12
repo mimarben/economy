@@ -2,25 +2,25 @@
   <!-- Filter Section -->
   <mat-card class="filter-card">
     <mat-card-header>
-      <mat-card-title>Summary Filters</mat-card-title>
+      <mat-card-title>{{ 'charts.filters' | translate }}</mat-card-title>
     </mat-card-header>
     <mat-card-content>
       <form [formGroup]="filterForm" class="filter-form">
         <mat-form-field appearance="outline" class="form-field">
-          <mat-label>Period</mat-label>
+          <mat-label>{{ 'charts.period' | translate }}</mat-label>
           <mat-select formControlName="period">
-            <mat-option value="today">Today</mat-option>
-            <mat-option value="week">This Week</mat-option>
-            <mat-option value="month">This Month</mat-option>
-            <mat-option value="year">This Year</mat-option>
-            <mat-option value="custom">Custom Range</mat-option>
+            <mat-option value="today">{{ 'charts.period_today' | translate }}</mat-option>
+            <mat-option value="week">{{ 'charts.period_week' | translate }}</mat-option>
+            <mat-option value="month">{{ 'charts.period_month' | translate }}</mat-option>
+            <mat-option value="year">{{ 'charts.period_year' | translate }}</mat-option>
+            <mat-option value="custom">{{ 'charts.period_custom' | translate }}</mat-option>
           </mat-select>
         </mat-form-field>
 
         <!-- Custom Date Range -->
         <div *ngIf="periodType === 'custom'" class="custom-range">
           <mat-form-field appearance="outline" class="form-field">
-            <mat-label>Start Date</mat-label>
+            <mat-label>{{ 'charts.start_date' | translate }}</mat-label>
             <input
               matInput
               [matDatepicker]="startPicker"
@@ -32,7 +32,7 @@
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="form-field">
-            <mat-label>End Date</mat-label>
+            <mat-label>{{ 'charts.end_date' | translate }}</mat-label>
             <input
               matInput
               [matDatepicker]="endPicker"
@@ -50,7 +50,7 @@
             [disabled]="loading"
             class="load-btn"
           >
-            Load
+            {{ 'charts.load' | translate }}
           </button>
         </div>
       </form>
@@ -64,7 +64,7 @@
 
   <!-- Loading Indicator -->
   <div *ngIf="loading" class="loading">
-    <p>Loading summary data...</p>
+    <p>{{ 'charts.loading' | translate }}</p>
   </div>
 
   <ng-container *ngIf="summary && !loading">

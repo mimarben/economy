@@ -1,49 +1,37 @@
 """Router for Source endpoints following ISP."""
-from flask import Blueprint, request
+from fastapi import APIRouter, Body, Depends, Query, Request
+from typing import Any
 from sqlalchemy.orm import Session
 from pydantic import ValidationError
-from flask_babel import _
+from utils.i18n import _
 
 from schemas.finance.source_schema import SourceBase, SourceCreate, SourceUpdate
 from schemas.core.export_schema import export_schema
 
 from services.finance.source_service import SourceService
-from services.core.interfaces import IReadService, ICreateService, IUpdateService, IDeleteService
 from services.core.response_service import Response
 from services.logs.logger_service import setup_logger
 
 from db.database import get_db
 
 
-router = Blueprint("sources", __name__)
+router = APIRouter()
 NAME = "sources"
 
 
-def _get_create_service(db: Session) -> ICreateService:
-    return SourceService(db)
-
-
-def _get_read_service(db: Session) -> IReadService:
-    return SourceService(db)
-
-
-def _get_update_service(db: Session) -> IUpdateService:
-    return SourceService(db)
-
-
-def _get_delete_service(db: Session) -> IDeleteService:
+def _get_service(db: Session) -> SourceService:
+    """Dependency: service bound to the request session."""
     return SourceService(db)
 
 
 @router.post("/sources")
-def create():
-    db: Session = next(get_db())
+def create(payload: SourceCreate, db: Session = Depends(get_db)):
     try:
-        data = SourceCreate.model_validate(request.json)
+        data = SourceCreate.model_validate(payload)
     except ValidationError as e:
         return Response.error(_("VALIDATION_ERROR"), e.errors(), 400, NAME)
     try:
-        service: ICreateService = _get_create_service(db)
+        service = _get_service(db)
         result = service.create(data)
         return Response.ok_data(result.model_dump(), _("SOURCE_CREATED"), 201, NAME)
     except Exception as e:
@@ -52,10 +40,9 @@ def create():
         return Response.error(_("INTERNAL_ERROR"), _("UNEXPECTED_ERROR"), 500, NAME)
 
 
-@router.get("/sources/<int:source_id>")
-def get_by_id(source_id: int):
-    db: Session = next(get_db())
-    service: IReadService = _get_read_service(db)
+@router.get("/sources/{source_id:int}")
+def get_by_id(source_id: int, db: Session = Depends(get_db)):
+    service = _get_service(db)
     result = service.get_by_id(source_id)
     if not result:
         return Response.error(_("SOURCE_NOT_FOUND"), _("NONE"), 404, NAME)
@@ -63,20 +50,15 @@ def get_by_id(source_id: int):
 
 
 @router.get("/sources")
-def list_all():
-    db: Session = next(get_db())
-    service: IReadService = _get_read_service(db)
+def list_all(db: Session = Depends(get_db)):
+    service = _get_service(db)
     results = service.get_all()
     return Response.ok_data([r.model_dump() for r in results], _("SOURCE_LIST"), 200, NAME)
 
 
 @router.get("/sources/suggest")
-def suggest_source():
-    db: Session = next(get_db())
+def suggest_source(category_id: int | None = None, transaction_type: str | None = Query(default=None, alias="type"), db: Session = Depends(get_db)):
     source_service = SourceService(db)
-
-    category_id = request.args.get('category_id', type=int)
-    transaction_type = request.args.get('type', type=str)
 
     if not category_id or not transaction_type:
         return Response.error(_("INVALID_PARAMETERS"), _("SOURCE_SUGGEST_INVALID_PARAMS"), 400, NAME)
@@ -92,15 +74,14 @@ def suggest_source():
         return Response.error(_("INTERNAL_ERROR"), _("UNEXPECTED_ERROR"), 500, NAME)
 
 
-@router.patch("/sources/<int:source_id>")
-def update(source_id: int):
-    db: Session = next(get_db())
+@router.patch("/sources/{source_id:int}")
+def update(source_id: int, payload: SourceUpdate, db: Session = Depends(get_db)):
     try:
-        data = SourceUpdate.model_validate(request.json)
+        data = SourceUpdate.model_validate(payload)
     except ValidationError as e:
         return Response.error(_("VALIDATION_ERROR"), e.errors(), 400, NAME)
     try:
-        service: IUpdateService = _get_update_service(db)
+        service = _get_service(db)
         result = service.update(source_id, data)
         if not result:
             return Response.error(_("SOURCE_NOT_FOUND"), _("NONE"), 404, NAME)
@@ -111,11 +92,10 @@ def update(source_id: int):
         return Response.error(_("INTERNAL_ERROR"), _("UNEXPECTED_ERROR"), 500, NAME)
 
 
-@router.delete("/sources/<int:id>")
-def delete(source_id: int):
-    db: Session = next(get_db())
+@router.delete("/sources/{source_id:int}")
+def delete(source_id: int, db: Session = Depends(get_db)):
     try:
-        service: IDeleteService = _get_delete_service(db)
+        service = _get_service(db)
         success = service.delete(source_id)
         if not success:
             return Response.error(_("SOURCE_NOT_FOUND"), _("NONE"), 404, NAME)

@@ -1,9 +1,13 @@
 """Authentication service handling login, register, and token operations."""
 from typing import Optional
 from sqlalchemy.orm import Session
-from flask_jwt_extended import create_access_token, create_refresh_token
 
+from services.auth.jwt_service import create_access_token, create_refresh_token
 from services.core.security_service import hash_password, verify_password
+
+# Constant hash of a random password: verifies in ~the same time as a real
+# hash so "unknown email" and "wrong password" are indistinguishable by timing.
+_DUMMY_HASH = hash_password("timing-equalizer-placeholder")
 from models import User, UserRoleEnum
 from repositories.users.user_repository import UserRepository
 from schemas.auth.auth_schema import LoginRequest, RegisterRequest, TokenResponse, RefreshResponse
@@ -38,6 +42,7 @@ class AuthService:
             password=hash_password(data.password),
         )
         created = self.repository.create(user)
+        self.db.commit()
         logger.info(f"New user registered: {data.email}")
         return UserRead.model_validate(created)
 
@@ -47,10 +52,12 @@ class AuthService:
 
         if not user:
             logger.warning(f"Login attempt with unknown email: {data.email}")
+            verify_password(data.password, _DUMMY_HASH)  # timing equalizer
             return None
 
         if not user.active:
             logger.warning(f"Login attempt for deactivated user: {data.email}")
+            verify_password(data.password, _DUMMY_HASH)  # timing equalizer
             return None
 
         if not verify_password(data.password, user.password):

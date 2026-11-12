@@ -2,83 +2,110 @@
 @use '@angular/material' as mat;
 
 // ============================================================================
-// GOOGLE FONTS — Roboto (same as Flatlogic + Material Dashboard)
+// FUENTE — Inter (texto) + Roboto Mono (cifras) vía Google Fonts
 // ============================================================================
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap');
 
 // ============================================================================
-// DESIGN SYSTEM VARIABLES — Flatlogic / Angular Material Dashboard palette
+// DESIGN TOKENS — un único origen de verdad
 // ============================================================================
 :root {
-  /* Flatlogic signature palette */
-  --color-teal:         #009688;
-  --color-teal-light:   #4db6ac;
-  --color-teal-dark:    #00796b;
-  --color-accent:       #009688;
+  /* Marca */
+  --color-accent:         #0d9488;   // teal 600
+  --color-accent-hover:   #0f766e;   // teal 700
+  --color-accent-soft:    rgba(13, 148, 136, 0.10);
 
-  /* Background */
-  --bg-page:            #ececec;
-  --bg-surface:         #ffffff;
-  --bg-surface-hover:   #f5f5f5;
+  /* Superficies */
+  --bg-page:              #f6f7f9;
+  --bg-surface:           #ffffff;
+  --bg-surface-hover:     #f2f4f6;
+  --bg-surface-muted:     #fafbfc;
 
-  /* Text */
-  --text-primary:       #333333;
-  --text-secondary:     #7a7a7a;
-  --text-light:         #aaaaaa;
+  /* Texto */
+  --text-primary:         #1a1d21;
+  --text-secondary:       #5b6470;
+  --text-light:           #9aa3ad;
 
-  /* Status colors */
-  --color-success:      #4caf50;
-  --color-success-bg:   #e8f5e9;
-  --color-danger:       #e75753;
-  --color-danger-bg:    #ffebee;
-  --color-warning:      #ff9800;
-  --color-warning-bg:   #fff3e0;
-  --color-info:         #2196f3;
-  --color-info-bg:      #e3f2fd;
-  --color-purple:       #9c27b0;
-  --color-orange:       #ff5722;
+  /* Semánticos */
+  --color-success:        #15803d;
+  --color-success-bg:     #dcfce7;
+  --color-danger:         #dc2626;
+  --color-danger-bg:      #fee2e2;
+  --color-warning:        #b45309;
+  --color-warning-bg:     #fef3c7;
+  --color-info:           #1d4ed8;
+  --color-info-bg:        #dbeafe;
+  --color-purple:         #7c3aed;
+  --color-orange:         #ea580c;
 
-  /* Sidebar */
-  --sidebar-bg:         #37474f;    /* Blue grey 800 */
-  --sidebar-width:      240px;
+  /* Compatibilidad con estilos antiguos (no borrar) */
+  --color-teal:           var(--color-accent);
+  --color-teal-light:     #14b8a6;
+  --color-teal-dark:      var(--color-accent-hover);
+  --color-error:          var(--color-danger);
+  --color-error-bg:       var(--color-danger-bg);
+  --app-border:           #e4e7eb;
+  --app-border-light:     #eef0f3;
+  --app-radius:           12px;
+  --app-surface:          var(--bg-surface);
+  --app-surface-hover:    var(--bg-surface-hover);
+  --app-surface-active:   var(--bg-surface-muted);
+  --border-color:         #e4e7eb;
+  --text-tertiary:        var(--text-light);
+  --sidebar-bg:           #101418;
+  --sidebar-width:        248px;
 
-  /* Borders & radius */
-  --border-color:       #e0e0e0;
-  --radius-card:        4px;
-  --radius-sm:          2px;
-  --radius-md:          4px;
-  --radius-lg:          8px;
-  --radius-pill:        24px;
+  /* Radios */
+  --radius-card:          12px;
+  --radius-sm:            8px;
+  --radius-md:            10px;
+  --radius-lg:            16px;
+  --radius-pill:          999px;
 
-  /* Spacing */
+  /* Espaciado (base 4px) */
   --space-xs:  4px;
   --space-sm:  8px;
   --space-md:  16px;
   --space-lg:  24px;
   --space-xl:  32px;
 
-  /* Shadows — Flatlogic uses subtle card shadows */
-  --shadow-card:    0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
-  --shadow-raised:  0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
-  --shadow-header:  0 2px 4px rgba(0,0,0,0.14);
+  /* Sombras — sutiles, una sola elevación por reposo */
+  --shadow-card:   0 1px 2px rgba(16, 24, 40, 0.05);
+  --shadow-raised: 0 4px 12px rgba(16, 24, 40, 0.08);
+  --shadow-header: 0 1px 0 #e8e8e8;
+
+  /* Tipografía */
+  --font-sans:  'Inter', 'Helvetica Neue', Arial, sans-serif;
+  --font-mono:  'Roboto Mono', 'SFMono-Regular', Consolas, monospace;
 }
 
 // ============================================================================
-// MATERIAL THEME — Teal primary (matching Flatlogic accent)
+// MATERIAL 3 THEME — teal como primaria, sin overrides de internals
 // ============================================================================
 body.theme-economy {
   @include mat.theme((
     color: (
-      primary:   mat.$cyan-palette,    // closest M3 palette to teal #009688
-      tertiary:  mat.$azure-palette,
+      primary:  mat.$cyan-palette,
+      tertiary: mat.$azure-palette,
     ),
-    typography: 'Roboto, Helvetica Neue, Arial, sans-serif',
+    typography: 'Inter, Helvetica Neue, Arial, sans-serif',
     density: -1,
   ));
+
+  // Alinear los system tokens de M3 con el teal de marca
+  --mat-sys-primary:              var(--color-accent);
+  --mat-sys-primary-hover:        var(--color-accent-hover);
+  --mat-sys-on-primary:           #ffffff;
+  --mat-sys-primary-container:    #ccfbf1;
+  --mat-sys-on-primary-container: #042f2e;
+  --mat-sys-outline-variant:      #e4e7eb;
+  --mat-sys-surface:              #ffffff;
+  --mat-sys-surface-container:    #f6f7f9;
+  --mat-sys-surface-container-low: #fafbfc;
 }
 
 // ============================================================================
-// GLOBAL RESET & BASE
+// BASE
 // ============================================================================
 html {
   color-scheme: light;
@@ -91,17 +118,42 @@ html {
 body {
   margin: 0;
   min-height: 100vh;
-  font-family: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+  font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   background-color: var(--bg-page);
   color: var(--text-primary);
-  font-size: 14px;
-  line-height: 1.5;
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+app-layout {
+  display: block;
 }
 
 // ============================================================================
-// MATERIAL ICONS
+// SCROLLBAR
+// ============================================================================
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cfd4da;
+  border-radius: 4px;
+
+  &:hover {
+    background: #b3bac2;
+  }
+}
+
+// ============================================================================
+// ICONOS
 // ============================================================================
 mat-icon {
   font-family: 'Material Symbols Outlined' !important;
@@ -114,569 +166,106 @@ mat-icon {
 }
 
 // ============================================================================
-// APP LAYOUT
+// TABLAS — cifras alineadas y escaneables (app financiera)
 // ============================================================================
-app-layout {
-  display: block;
-}
+.mat-mdc-table {
+  background: var(--bg-surface);
+  border: 1px solid var(--app-border);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  width: 100%;
 
-// ============================================================================
-// SCROLLBAR — Minimal, Flatlogic style
-// ============================================================================
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
+  .mat-mdc-header-row {
+    background: var(--bg-surface-muted);
+    border-bottom: 1px solid var(--app-border);
+  }
 
-::-webkit-scrollbar-track {
-  background: #f0f0f0;
-}
+  .mat-mdc-header-cell {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+  }
 
-::-webkit-scrollbar-thumb {
-  background: #bdbdbd;
-  border-radius: 3px;
+  .mat-mdc-cell {
+    font-size: 0.9rem;
+    color: var(--text-primary);
+  }
 
-  &:hover {
-    background: #9e9e9e;
+  .mat-mdc-row:hover .mat-mdc-cell {
+    background: var(--bg-surface-hover);
+  }
+
+  // Importes y fechas: numerales tabulares
+  .mat-mdc-cell:not(:empty) {
+    font-variant-numeric: tabular-nums;
   }
 }
 
+// Colonne numéricas habituales (por nombre de columna)
+.mat-column-price,
+.mat-column-amount,
+.mat-column-total,
+.mat-column-balance,
+.mat-column-quantity {
+  font-family: var(--font-mono);
+  font-weight: 500;
+}
+
 // ============================================================================
-// MATERIAL OVERRIDES — Cards (white widgets with subtle shadow)
+// TARJETA MATERIAL — sin hover-shadow global
 // ============================================================================
 .mat-mdc-card {
   border-radius: var(--radius-card) !important;
   box-shadow: var(--shadow-card) !important;
   background: var(--bg-surface) !important;
-  border: none !important;
-  transition: box-shadow 0.2s ease !important;
-
-  &:hover {
-    box-shadow: var(--shadow-raised) !important;
-  }
+  border: 1px solid var(--app-border) !important;
 
   .mat-mdc-card-title {
     font-size: 1rem;
-    font-weight: 500;
+    font-weight: 600;
     color: var(--text-primary);
   }
 
   .mat-mdc-card-subtitle {
-    font-size: 0.8rem;
+    font-size: 0.82rem;
     color: var(--text-secondary);
   }
 }
 
 // ============================================================================
-// MATERIAL OVERRIDES — Toolbar (flat, teal accent)
+// TOOLTIP MULTILÍNEA (usado por generic-table)
 // ============================================================================
-.mat-toolbar {
-  font-family: 'Roboto', sans-serif !important;
-}
-
-// ============================================================================
-// MATERIAL OVERRIDES — Buttons
-// ============================================================================
-.mat-mdc-raised-button,
-.mat-mdc-unelevated-button {
-  border-radius: var(--radius-sm) !important;
-  font-weight: 500 !important;
-  font-size: 0.875rem !important;
-  letter-spacing: 0.4px !important;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2) !important;
-  transition: box-shadow 0.2s ease, background 0.2s ease !important;
-
-  &:hover {
-    box-shadow: 0 4px 8px rgba(0,0,0,0.25) !important;
-  }
-}
-
-.mat-mdc-button,
-.mat-mdc-stroked-button {
-  border-radius: var(--radius-sm) !important;
-  font-weight: 500 !important;
-  font-size: 0.875rem !important;
-}
-
-.mat-mdc-icon-button {
-  border-radius: 50% !important;
-}
-
-// ============================================================================
-// MATERIAL OVERRIDES — Form Fields (Flatlogic underline style)
-// Clean bottom-border inputs with teal focus accent
-// ============================================================================
-
-// ---- Global field width ----
-.mat-mdc-form-field {
-  width: 100%;
-  font-family: 'Roboto', sans-serif;
-
-  // ---- Underline (filled) style — no filled background ----
-  .mdc-text-field--filled {
-    background-color: transparent !important;
-    border-bottom: 1px solid #d0d0d0;
-    border-radius: 0 !important;
-    padding: 0 !important;
-
-    &:not(.mdc-text-field--disabled):hover {
-      background-color: transparent !important;
-      border-bottom-color: #9e9e9e;
-    }
-
-    &.mdc-text-field--focused {
-      background-color: transparent !important;
-      border-bottom-color: var(--color-teal);
-    }
-
-    // Remove the inner ripple underline (we use border-bottom instead)
-    .mdc-line-ripple {
-      display: none !important;
-    }
-
-    // Remove MDC filled background
-    &::before {
-      display: none !important;
-    }
-  }
-
-  // ---- Outlined style ----
-  .mdc-text-field--outlined {
-    border-radius: var(--radius-md) !important;
-
-    .mdc-notched-outline__leading,
-    .mdc-notched-outline__notch,
-    .mdc-notched-outline__trailing {
-      border-color: #d0d0d0 !important;
-    }
-
-    &:not(.mdc-text-field--disabled):hover {
-      .mdc-notched-outline__leading,
-      .mdc-notched-outline__notch,
-      .mdc-notched-outline__trailing {
-        border-color: #9e9e9e !important;
-      }
-    }
-
-    &.mdc-text-field--focused {
-      .mdc-notched-outline__leading,
-      .mdc-notched-outline__notch,
-      .mdc-notched-outline__trailing {
-        border-color: var(--color-teal) !important;
-        border-width: 2px !important;
-      }
-    }
-  }
-
-  // ---- Label ----
-  .mat-mdc-floating-label,
-  .mdc-floating-label {
-    color: #9e9e9e !important;
-    font-size: 0.875rem !important;
-    font-family: 'Roboto', sans-serif !important;
-  }
-
-  &.mat-focused .mat-mdc-floating-label,
-  &.mat-focused .mdc-floating-label {
-    color: var(--color-teal) !important;
-  }
-
-  // ---- Input text ----
-  input.mat-mdc-input-element,
-  textarea.mat-mdc-input-element {
-    font-size: 0.875rem !important;
-    color: var(--text-primary) !important;
-    caret-color: var(--color-teal) !important;
-    font-family: 'Roboto', sans-serif !important;
-
-    &::placeholder {
-      color: #bdbdbd !important;
-      font-size: 0.875rem;
-    }
-  }
-
-  // ---- Helper / error text ----
-  .mat-mdc-form-field-hint,
-  .mat-mdc-form-field-error {
-    font-size: 0.72rem !important;
-    font-family: 'Roboto', sans-serif !important;
-  }
-
-  .mat-mdc-form-field-error {
-    color: var(--color-danger) !important;
-  }
-
-  // ---- Prefix / suffix icons ----
-  .mat-mdc-form-field-icon-prefix mat-icon,
-  .mat-mdc-form-field-icon-suffix mat-icon {
-    color: #9e9e9e;
-    font-size: 20px !important;
-    width: 20px !important;
-    height: 20px !important;
-  }
-
-  &.mat-focused {
-    .mat-mdc-form-field-icon-prefix mat-icon,
-    .mat-mdc-form-field-icon-suffix mat-icon {
-      color: var(--color-teal);
-    }
-  }
-}
-
-// ---- Select / dropdown ----
-.mat-mdc-select {
-  font-size: 0.875rem !important;
-  font-family: 'Roboto', sans-serif !important;
-  color: var(--text-primary) !important;
-}
-
-.mat-mdc-select-value-text {
-  font-size: 0.875rem !important;
-}
-
-.mat-mdc-select-arrow {
-  color: #9e9e9e !important;
-}
-
-.mat-mdc-select-panel {
-  border-radius: var(--radius-card) !important;
-  box-shadow: var(--shadow-raised) !important;
-  padding: 4px 0 !important;
-
-  .mat-mdc-option {
-    font-size: 0.875rem !important;
-    font-family: 'Roboto', sans-serif !important;
-    min-height: 42px !important;
-    color: var(--text-primary) !important;
-
-    &:hover:not(.mdc-list-item--disabled) {
-      background: rgba(0, 150, 136, 0.06) !important;
-    }
-
-    &.mdc-list-item--selected:not(.mat-mdc-option-multiple) {
-      background: rgba(0, 150, 136, 0.1) !important;
-      color: var(--color-teal) !important;
-
-      .mdc-list-item__primary-text {
-        color: var(--color-teal) !important;
-        font-weight: 500;
-      }
-    }
-  }
-}
-
-// ---- Checkbox ----
-.mat-mdc-checkbox {
-  .mdc-form-field label {
-    font-size: 0.875rem !important;
-    color: var(--text-primary) !important;
-    font-family: 'Roboto', sans-serif !important;
-    cursor: pointer;
-  }
-
-  // Unchecked border
-  .mdc-checkbox__background {
-    border-color: #9e9e9e !important;
-    border-radius: 2px !important;
-    transition: border-color 0.15s ease, background 0.15s ease !important;
-  }
-
-  // Checked state — teal fill
-  &.mat-mdc-checkbox-checked .mdc-checkbox__background,
-  .mdc-checkbox--selected .mdc-checkbox__background {
-    background-color: var(--color-teal) !important;
-    border-color: var(--color-teal) !important;
-  }
-
-  // Ripple
-  .mdc-checkbox__ripple {
-    color: var(--color-teal) !important;
-  }
-}
-
-// ---- Radio button ----
-.mat-mdc-radio-button {
-  .mdc-form-field label {
-    font-size: 0.875rem !important;
-    color: var(--text-primary) !important;
-    font-family: 'Roboto', sans-serif !important;
-    cursor: pointer;
-  }
-
-  // Outer ring
-  .mdc-radio__outer-circle {
-    border-color: #9e9e9e !important;
-    transition: border-color 0.15s ease !important;
-  }
-
-  // Selected state
-  &.mat-mdc-radio-checked {
-    .mdc-radio__outer-circle {
-      border-color: var(--color-teal) !important;
-    }
-
-    .mdc-radio__inner-circle {
-      border-color: var(--color-teal) !important;
-      background-color: var(--color-teal) !important;
-    }
-  }
-
-  // Ripple
-  .mdc-radio__ripple {
-    color: var(--color-teal) !important;
-  }
-}
-
-// ---- Slide toggle ----
-.mat-mdc-slide-toggle {
-  .mdc-form-field label {
-    font-size: 0.875rem !important;
-    color: var(--text-primary) !important;
-    font-family: 'Roboto', sans-serif !important;
-  }
-
-  &.mat-mdc-slide-toggle-checked {
-    .mdc-switch__track {
-      background-color: rgba(0, 150, 136, 0.5) !important;
-    }
-
-    .mdc-switch__handle {
-      background-color: var(--color-teal) !important;
-    }
-  }
-}
-
-// ---- Autocomplete panel ----
-.mat-mdc-autocomplete-panel {
-  border-radius: var(--radius-card) !important;
-  box-shadow: var(--shadow-raised) !important;
-  padding: 4px 0 !important;
-
-  .mat-mdc-option {
-    font-size: 0.875rem !important;
-    min-height: 42px !important;
-    color: var(--text-primary) !important;
-    font-family: 'Roboto', sans-serif !important;
-
-    &:hover:not(.mdc-list-item--disabled) {
-      background: rgba(0, 150, 136, 0.06) !important;
-    }
-
-    &.mat-mdc-option-active {
-      background: rgba(0, 150, 136, 0.1) !important;
-    }
-  }
-}
-
-// ---- Date picker ----
-.mat-datepicker-content {
-  border-radius: var(--radius-card) !important;
-  box-shadow: var(--shadow-raised) !important;
-
-  .mat-calendar-header {
-    background: var(--color-teal);
-    padding: 16px !important;
-    border-radius: var(--radius-card) var(--radius-card) 0 0;
-  }
-
-  .mat-calendar-controls button {
-    color: rgba(255,255,255,0.9) !important;
-  }
-
-  .mat-calendar-period-button {
-    color: #fff !important;
-    font-weight: 500 !important;
-  }
-
-  .mat-calendar-body-selected {
-    background-color: var(--color-teal) !important;
-    color: #fff !important;
-  }
-
-  .mat-calendar-body-today:not(.mat-calendar-body-selected) {
-    border-color: var(--color-teal) !important;
-    color: var(--color-teal) !important;
-  }
-
-  .mat-calendar-body-cell:hover .mat-calendar-body-cell-content:not(.mat-calendar-body-selected) {
-    background: rgba(0, 150, 136, 0.1) !important;
-  }
-}
-
-// ---- Slider ----
-.mat-mdc-slider {
-  .mdc-slider__track--active_fill {
-    background-color: var(--color-teal) !important;
-    border-color: var(--color-teal) !important;
-  }
-
-  .mdc-slider__thumb-knob {
-    background-color: var(--color-teal) !important;
-    border-color: var(--color-teal) !important;
-  }
-}
-
-// ---- Chips ----
-.mat-mdc-chip {
-  font-size: 0.78rem !important;
-  font-family: 'Roboto', sans-serif !important;
-  height: 28px !important;
-
-  &.mat-mdc-standard-chip {
-    background: #e0e0e0 !important;
-    color: var(--text-primary) !important;
-    border-radius: 16px !important;
-
-    &:hover {
-      background: #d0d0d0 !important;
-    }
-
-    &.mat-mdc-chip-selected {
-      background: var(--color-teal) !important;
-      color: #fff !important;
-    }
-  }
-}
-
-// ---- Textarea ----
-textarea.mat-mdc-input-element {
-  resize: vertical;
-  min-height: 60px;
-}
-
-
-
-// ============================================================================
-// MATERIAL OVERRIDES — Tables (Flatlogic clean table style)
-// ============================================================================
-.mat-mdc-table {
-  background: var(--bg-surface) !important;
-  box-shadow: var(--shadow-card) !important;
-  border-radius: var(--radius-card) !important;
-  overflow: hidden;
-  width: 100%;
-
-  .mat-mdc-header-row {
-    background: #fafafa;
-    border-bottom: 2px solid var(--border-color);
-  }
-
-  .mat-mdc-header-cell {
-    font-size: 0.75rem !important;
-    font-weight: 600 !important;
-    color: var(--text-secondary) !important;
-    text-transform: uppercase;
-    letter-spacing: 0.6px;
-    padding: 12px 16px !important;
-    border-bottom: none !important;
-  }
-
-  .mat-mdc-cell {
-    font-size: 0.875rem;
-    color: var(--text-primary);
-    padding: 12px 16px !important;
-    border-bottom: 1px solid #f5f5f5 !important;
-  }
-
-  .mat-mdc-row {
-    transition: background 0.15s ease;
-
-    &:last-child .mat-mdc-cell {
-      border-bottom: none !important;
-    }
-
-    &:hover {
-      background: #fafafa !important;
-    }
-  }
-}
-
-// ============================================================================
-// MATERIAL OVERRIDES — Dialog
-// ============================================================================
-.mat-mdc-dialog-container {
-  border-radius: var(--radius-lg) !important;
-  box-shadow: 0 11px 15px rgba(0,0,0,0.2), 0 9px 46px rgba(0,0,0,0.12) !important;
-
-  .mdc-dialog__surface {
-    border-radius: var(--radius-lg) !important;
-  }
-}
-
-// ============================================================================
-// MATERIAL OVERRIDES — Chips
-// ============================================================================
-.mat-mdc-chip {
-  font-size: 0.75rem !important;
-}
-
-// ============================================================================
-// MATERIAL OVERRIDES — Tooltip
-// ============================================================================
-.mat-mdc-tooltip {
-  font-size: 12px !important;
-  background: rgba(33, 33, 33, 0.85) !important;
-}
-
 .tooltip-multiline {
   white-space: pre-wrap !important;
-  word-wrap: normal !important;
-  word-break: normal !important;
-  overflow-wrap: normal !important;
   max-width: none !important;
   min-width: 300px !important;
-  line-height: 1.4 !important;
+  line-height: 1.45 !important;
   padding: 10px !important;
 }
 
 // ============================================================================
-// MATERIAL OVERRIDES — Paginator
-// ============================================================================
-.mat-mdc-paginator {
-  background: transparent !important;
-  color: var(--text-secondary) !important;
-  font-size: 0.8rem !important;
-  border-top: 1px solid var(--border-color);
-}
-
-// ============================================================================
-// MATERIAL OVERRIDES — Select / Menu panels
-// ============================================================================
-.mat-mdc-select-panel,
-.mat-mdc-menu-panel {
-  border-radius: var(--radius-card) !important;
-  box-shadow: var(--shadow-raised) !important;
-}
-
-// ============================================================================
-// WIDGET CARD — Flatlogic panel-widget style
+// WIDGET CARD — panel con cabecera
 // ============================================================================
 .widget-card {
   background: var(--bg-surface);
+  border: 1px solid var(--app-border);
   border-radius: var(--radius-card);
-  box-shadow: var(--shadow-card);
   overflow: hidden;
-  transition: box-shadow 0.2s ease;
-
-  &:hover {
-    box-shadow: var(--shadow-raised);
-  }
 
   .widget-card__header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 12px 16px;
-    border-bottom: 1px solid var(--border-color);
-    background: var(--bg-surface);
+    border-bottom: 1px solid var(--app-border);
 
     h3 {
       margin: 0;
-      font-size: 0.9rem;
-      font-weight: 500;
+      font-size: 0.85rem;
+      font-weight: 600;
       color: var(--text-secondary);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
     }
   }
 
@@ -686,117 +275,100 @@ textarea.mat-mdc-input-element {
 
   .widget-card__footer {
     padding: 8px 16px;
-    background: #fafafa;
-    border-top: 1px solid var(--border-color);
-    font-size: 0.75rem;
+    background: var(--bg-surface-muted);
+    border-top: 1px solid var(--app-border);
+    font-size: 0.78rem;
     color: var(--text-secondary);
   }
 }
 
 // ============================================================================
-// STAT / KPI CARDS — Flatlogic style with colored top-border accent
+// STAT / KPI CARDS — cifra protagonista, sin círculo de color
 // ============================================================================
 .stat-card {
   background: var(--bg-surface);
+  border: 1px solid var(--app-border);
   border-radius: var(--radius-card);
-  box-shadow: var(--shadow-card);
-  padding: var(--space-md);
+  padding: var(--space-lg) var(--space-md);
   display: flex;
-  align-items: center;
-  gap: var(--space-md);
-  transition: box-shadow 0.2s ease;
-
-  &:hover {
-    box-shadow: var(--shadow-raised);
-  }
-
-  .stat-card__icon {
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-
-    mat-icon {
-      font-size: 26px;
-      width: 26px;
-      height: 26px;
-      color: #fff;
-    }
-  }
-
-  .stat-card__content {
-    flex: 1;
-  }
+  flex-direction: column;
+  gap: 6px;
 
   .stat-card__value {
-    font-size: 1.6rem;
-    font-weight: 700;
+    font-size: 1.85rem;
+    font-weight: 650;
     color: var(--text-primary);
-    line-height: 1;
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
   }
 
   .stat-card__label {
-    font-size: 0.75rem;
+    font-size: 0.82rem;
     color: var(--text-secondary);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-top: 4px;
   }
 
-  // Color variants
-  &.stat-teal .stat-card__icon    { background: var(--color-teal); }
-  &.stat-danger .stat-card__icon  { background: var(--color-danger); }
-  &.stat-orange .stat-card__icon  { background: var(--color-warning); }
-  &.stat-purple .stat-card__icon  { background: var(--color-purple); }
-  &.stat-info .stat-card__icon    { background: var(--color-info); }
-  &.stat-success .stat-card__icon { background: var(--color-success); }
+  .stat-card__delta {
+    font-size: 0.78rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+
+    &.positive { color: var(--color-success); }
+    &.negative { color: var(--color-danger); }
+  }
+
+  &.stat-accent .stat-card__value { color: var(--color-accent); }
+  &.stat-success .stat-card__value { color: var(--color-success); }
+  &.stat-danger  .stat-card__value { color: var(--color-danger); }
 }
 
 // ============================================================================
-// NOTIFICATIONS BADGE — Flatlogic style
+// BADGE DE NOTIFICACIONES
 // ============================================================================
 .notifications-label {
-  width: 16px;
+  min-width: 16px;
   height: 16px;
   line-height: 16px;
   text-align: center;
-  border-radius: 50%;
+  border-radius: var(--radius-pill);
   position: absolute;
-  font-size: 11px;
+  font-size: 10px;
   top: 2px;
   right: 2px;
+  padding: 0 3px;
   background-color: var(--color-danger);
   color: #fff;
   font-weight: 600;
 }
 
 // ============================================================================
-// UTILITY CLASSES
+// UTILIDADES
 // ============================================================================
 .capitalize { text-transform: capitalize; }
 .text-muted  { color: var(--text-secondary); }
-.text-accent { color: var(--color-teal); }
+.text-accent { color: var(--color-accent); }
 
 .img-circle {
   border-radius: 50%;
   object-fit: cover;
 }
 
-// Page header
+.num {
+  font-variant-numeric: tabular-nums;
+}
+
+// Cabecera de página
 .page-header {
   margin-bottom: var(--space-lg);
 
   h1, h2, h3 {
     margin: 0 0 4px;
-    font-weight: 500;
+    font-weight: 600;
     color: var(--text-primary);
   }
 
   .page-subtitle {
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     color: var(--text-secondary);
   }
 }

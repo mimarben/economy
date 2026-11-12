@@ -1,3 +1,4 @@
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 from services.core.security_service import hash_password
 
@@ -9,7 +10,9 @@ load_dotenv()
 
 def seed_admin(db: Session):
 
-    admin = db.query(User).filter(User.role == UserRoleEnum.ADMIN).first()
+    admin = db.execute(
+        select(User).where(User.role == UserRoleEnum.ADMIN)
+    ).scalars().first()
 
     if admin:
         return
