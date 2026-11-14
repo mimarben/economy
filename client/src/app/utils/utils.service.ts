@@ -67,9 +67,27 @@ export class UtilsService {
 
     return null; // any other type is invalid
   }
+  // Date formats accepted from bank statements, tried in order.
+  private static readonly ISO_DATE_FORMATS = [
+    'dd/MM/yyyy',
+    'dd-MM-yyyy',
+    'dd.MM.yyyy',
+    'yyyy-MM-dd',
+    'yyyy/MM/dd',
+    'dd/MM/yy',
+    "yyyy-MM-dd'T'HH:mm:ss",
+  ];
+
   public toIsoDate(dateStr: string): string {
-    const d = parse(dateStr, 'dd/MM/yyyy', new Date());
-    return isValid(d) ? format(d, 'yyyy-MM-dd') : dateStr;
+    if (!dateStr) return dateStr;
+    for (const fmt of UtilsService.ISO_DATE_FORMATS) {
+      const d = parse(dateStr, fmt, new Date());
+      if (isValid(d)) {
+        return format(d, 'yyyy-MM-dd');
+      }
+    }
+    // Already ISO or unparseable: return as-is (backend validates and reports).
+    return dateStr;
   }
 
   public formatDateISO(date: Date | null | undefined): string {

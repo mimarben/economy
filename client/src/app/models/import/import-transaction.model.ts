@@ -13,4 +13,6 @@ export interface ImportTransaction {
   suggestedAccountId?: number | null;
   ignore_in_analysis?: boolean;
   user_id?: number | null;
+  /** Set in preview when balance[i] - balance[i-1] != amount[i] (reconciliation check). */
+  balanceMismatch?: boolean;
 }

@@ -7,6 +7,7 @@ services:
   backend:
     build:
       context: ./api
+      network: host
     image: economy-api:${BACKEND_TAG}
     ports:
       - "5001:5001"
@@ -26,6 +27,7 @@ services:
   frontend:
     build:
       context: ./client
+      network: host
     image: economy-client:${FRONTEND_TAG}
     ports:
       - "4200:4200"

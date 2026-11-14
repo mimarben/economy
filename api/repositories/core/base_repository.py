@@ -32,7 +32,14 @@ class BaseRepository(ICRUDRepository[T]):
         return self.db.execute(stmt).scalars().one_or_none()
 
     def get_all(self, page: int = 1, per_page: int = 50) -> List[T]:
-        stmt = self._base_query().offset((page - 1) * per_page).limit(per_page)
+        stmt = self._base_query()
+        # Stable, newest-first ordering: transaction tables have `date`,
+        # everything else falls back to id DESC.
+        if hasattr(self.model, 'date') and hasattr(self.model, 'id'):
+            stmt = stmt.order_by(self.model.date.desc(), self.model.id.desc())
+        elif hasattr(self.model, 'id'):
+            stmt = stmt.order_by(self.model.id.desc())
+        stmt = stmt.offset((page - 1) * per_page).limit(per_page)
         return self.db.execute(stmt).scalars().all()
 
     def get_all_unpaginated(self) -> List[T]:

@@ -70,9 +70,14 @@ def get_by_id(id: int, db: Session = Depends(get_db)):
 
 
 @router.get("/incomes")
-def list_all(db: Session = Depends(get_db)):
+def list_all(
+    page: int = Query(default=1, ge=1),
+    per_page: int = Query(default=1000, ge=1, le=5000),
+    db: Session = Depends(get_db),
+):
+    """Get incomes (newest first). Pagination params are optional."""
     service = _get_service(db)
-    results = service.get_all()
+    results = service.get_all(page=page, per_page=per_page)
     return Response.ok_data([r.model_dump() for r in results], _("INCOME_LIST"), 200, name)
 
 
@@ -99,7 +104,7 @@ def delete(id: int, db: Session = Depends(get_db)):
         success = service.delete(id)
         if not success:
             return Response.error(_("INCOME_NOT_FOUND"), _("NONE"), 404, name)
-        return esponse.ok_message(_("INCOME_DELETED"), 204, name)
+        return Response.ok_message(_("INCOME_DELETED"), 204, name)
     except Exception as e:
         return Response.error(_("DATABASE_ERROR"), str(e), 500, name)
 

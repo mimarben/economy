@@ -6,8 +6,8 @@ WORKDIR /app
 # Copiar solo requirements.txt primero
 COPY requirements.txt .
 
-# Instalar dependencias
-RUN pip install --no-cache-dir -r requirements.txt
+# Instalar dependencias (timeout/retries altos: red lenta hacia pypi)
+RUN pip install --no-cache-dir --timeout 120 --retries 10 -r requirements.txt
 
 # Usuario no privilegiado (uid/gid 1000 = usuario habitual del host,
 # necesario porque docker-compose monta ./api en /app con permisos de escritura)

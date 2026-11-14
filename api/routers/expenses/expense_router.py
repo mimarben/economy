@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 from utils.i18n import _
 
@@ -64,10 +64,14 @@ def get_expense(expense_id: int, db: Session = Depends(get_db)):
 
 
 @router.get("/expenses")
-def list_expenses(db: Session = Depends(get_db)):
-    """Get all expenses."""
+def list_expenses(
+    page: int = Query(default=1, ge=1),
+    per_page: int = Query(default=1000, ge=1, le=5000),
+    db: Session = Depends(get_db),
+):
+    """Get expenses (newest first). Pagination params are optional."""
     service = _get_service(db)
-    results = service.get_all()
+    results = service.get_all(page=page, per_page=per_page)
 
     return Response.ok_data(
         [exp.model_dump() for exp in results],

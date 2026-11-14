@@ -228,14 +228,96 @@ def test_import_transactions_atomic_fk_error(db_session, seed_data):
         incomes=[],
         auto_categorize=False
     )
-    
+
     service = ImportService(db_session)
-    
+
     # Should raise ValueError and fail transaction
     with pytest.raises(ValueError) as exc_info:
         service.import_transactions_atomic(payload)
-        
+
     assert "Expense FK error" in str(exc_info.value)
-    
+
     # Verify nothing was added
     assert len(db_session.query(Expense).all()) == 0
+
+
+def test_import_revives_soft_deleted_transaction(db_session, seed_data):
+    """A soft-deleted row holds the UNIQUE dedup slot: re-importing the same
+    statement must revive it instead of reporting it as a duplicate."""
+    from datetime import datetime
+
+    service = ImportService(db_session)
+    payload = BulkImportRequest(
+        expenses=[
+            ExpenseImportCreate(
+                name="Coffee",
+                description="Morning coffee",
+                amount=2.50,
+                date="2026-05-20T08:00:00",
+                currency="EUR",
+                user_id=seed_data["user_id"],
+                source_id=seed_data["expense_source_id"],
+                category_id=seed_data["expense_category_id"],
+                account_id=seed_data["account_id"],
+                ignore_in_analysis=False
+            )
+        ],
+        incomes=[],
+        auto_categorize=False
+    )
+
+    # First import
+    res1 = service.import_transactions_atomic(payload)
+    assert res1["inserted"] == 1
+
+    # Soft-delete the row (as BaseRepository.delete does)
+    row = db_session.query(Expense).one()
+    row.deleted_at = datetime.utcnow()
+    db_session.commit()
+
+    # Re-import the same statement → must revive, not count as duplicate
+    res2 = service.import_transactions_atomic(payload)
+    assert res2["inserted"] == 1
+    assert res2["duplicates"] == 0
+
+    revived = db_session.query(Expense).one()
+    assert revived.deleted_at is None
+    assert revived.amount == 2.50
+
+
+def test_import_identical_legitimate_transactions_both_inserted(db_session, seed_data):
+    """Two identical purchases on the same day (same amount, same description)
+    are LEGITIMATE: both must be inserted, not deduplicated away."""
+    service = ImportService(db_session)
+
+    def make_payload():
+        row = dict(
+            name="Coffee",
+            description="Morning coffee",
+            amount=2.50,
+            date="2026-05-20T08:00:00",
+            currency="EUR",
+            user_id=seed_data["user_id"],
+            source_id=seed_data["expense_source_id"],
+            category_id=seed_data["expense_category_id"],
+            account_id=seed_data["account_id"],
+            ignore_in_analysis=False,
+        )
+        return BulkImportRequest(
+            expenses=[ExpenseImportCreate(**row), ExpenseImportCreate(**row)],
+            incomes=[],
+            auto_categorize=False,
+        )
+
+    # First import: file contains the two identical occurrences
+    res1 = service.import_transactions_atomic(make_payload())
+    assert res1["inserted"] == 2
+    assert res1["duplicates"] == 0
+
+    # Re-import the same file: idempotent, everything is a duplicate
+    res2 = service.import_transactions_atomic(make_payload())
+    assert res2["inserted"] == 0
+    assert res2["duplicates"] == 2
+
+    rows = db_session.query(Expense).all()
+    assert len(rows) == 2

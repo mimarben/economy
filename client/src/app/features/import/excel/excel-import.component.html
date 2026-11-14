@@ -100,6 +100,57 @@
 }
 
 @if (!isClassifying && transactions.length > 0) {
+
+<!-- ── Review toolbar: filter by exception state, search, bulk apply ── -->
+<div class="review-toolbar">
+  <button mat-stroked-button [color]="stateFilter === 'all' ? 'primary' : ''"
+          (click)="setStateFilter('all')">
+    Todas ({{ transactions.length }})
+  </button>
+  <button mat-stroked-button [color]="stateFilter === 'nocat' ? 'warn' : ''"
+          (click)="setStateFilter('nocat')">
+    Sin categoría ({{ nocatCount }})
+  </button>
+  <button mat-stroked-button [color]="stateFilter === 'mismatch' ? 'warn' : ''"
+          (click)="setStateFilter('mismatch')">
+    Saldo ✗ ({{ mismatchCount }})
+  </button>
+  <button mat-stroked-button [color]="stateFilter === 'ignored' ? 'accent' : ''"
+          (click)="setStateFilter('ignored')">
+    Descartables ({{ ignoredCount }})
+  </button>
+
+  <mat-form-field appearance="outline" subscriptSizing="dynamic" class="search-field">
+    <mat-label>Buscar descripción</mat-label>
+    <input matInput [value]="searchTerm" (input)="applySearch($any($event.target).value)">
+  </mat-form-field>
+</div>
+
+@if (selectedCount > 0) {
+<div class="bulk-row">
+  <span class="bulk-label">Aplicar a {{ selectedCount }} seleccionadas:</span>
+  <mat-form-field appearance="outline" subscriptSizing="dynamic">
+    <mat-label>Tipo</mat-label>
+    <mat-select [(ngModel)]="bulkType">
+      <mat-option value="expense">Gastos</mat-option>
+      <mat-option value="income">Ingresos</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field appearance="outline" subscriptSizing="dynamic">
+    <mat-label>Categoría</mat-label>
+    <mat-select [(ngModel)]="bulkCategoryId">
+      @for (c of bulkType === 'expense' ? expenseCategories : incomeCategories; track c.id) {
+        <mat-option [value]="c.id">{{ c.name }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+  <button mat-flat-button color="primary" (click)="applyBulkCategory()">
+    <mat-icon>done_all</mat-icon>
+    Aplicar en bloque
+  </button>
+</div>
+}
+
 <table mat-table [dataSource]="dataSource" matSort>
 
   <!-- Checkbox -->
@@ -165,6 +216,9 @@
     <th mat-header-cell *matHeaderCellDef> Balance </th>
     <td mat-cell *matCellDef="let t">
       {{ t.balance }}
+      @if (t.balanceMismatch) {
+        <mat-icon color="warn" style="font-size:16px;vertical-align:middle" matTooltip="El saldo no cuadra con el importe (posible fila ausente o mal parseada)">warning</mat-icon>
+      }
     </td>
   </ng-container>
 
@@ -244,6 +298,8 @@
   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 
 </table>
+
+<mat-paginator [pageSize]="25" [pageSizeOptions]="[25, 50, 100, 200]" showFirstLastButtons></mat-paginator>
 <br>
 <button matFab extended (click)="confirmImport()">
   <mat-icon>content_paste_go</mat-icon>

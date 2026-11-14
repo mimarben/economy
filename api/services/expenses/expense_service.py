@@ -1,13 +1,17 @@
 """Expense service implementing CRUD operations with business logic."""
+import re
 from typing import Optional, List
 from datetime import datetime
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 from repositories.expenses.expense_repository import ExpenseRepository
 from schemas.expenses.expense_schema import ExpenseCreate, ExpenseRead, ExpenseUpdate
-from models import Expense
+from models import Expense, CategoryRule, TransactionEnum
 from services.core.base_service import BaseService
 from services.core.dedup_service import generate_dedup_hash
+from services.logs.logger_service import setup_logger
+
+logger = setup_logger("expense_service")
 
 
 class ExpenseService(BaseService[Expense, ExpenseRead, ExpenseCreate, ExpenseUpdate]):
@@ -108,6 +112,75 @@ class ExpenseService(BaseService[Expense, ExpenseRead, ExpenseCreate, ExpenseUpd
 
         self.db.commit()
         return [ExpenseRead.model_validate(obj) for obj in created_objects]
+
+    def update(self, id: int, data: ExpenseUpdate) -> Optional[ExpenseRead]:
+        """
+        Update an expense. When the user corrects the category and no active
+        rule covers the description, learn a low-priority rule so future
+        imports categorize this description automatically.
+        """
+        existing = self.repository.get_by_id(id)
+        if not existing:
+            return None
+
+        # Capture BEFORE the update: the ORM identity map means `existing` is
+        # the very object super().update() mutates, so comparing afterwards
+        # would always see the new value and never trigger learning.
+        previous_category_id = existing.category_id
+        previous_description = existing.description
+
+        result = super().update(id, data)
+
+        if result is not None:
+            update_data = data.model_dump(exclude_unset=True)
+            category_changed = (
+                "category_id" in update_data
+                and update_data["category_id"] is not None
+                and update_data["category_id"] != previous_category_id
+            )
+            if category_changed and previous_description:
+                self._learn_category_rule(
+                    description=previous_description,
+                    category_id=update_data["category_id"],
+                    transaction_type=TransactionEnum.EXPENSE,
+                )
+
+        return result
+
+    def _learn_category_rule(
+        self, description: str, category_id: int, transaction_type
+    ) -> None:
+        """Create an exact-match rule (low priority) if none covers the description."""
+        try:
+            from services.rules.categorization_service import CategorizationService
+
+            categorizer = CategorizationService(self.db)
+            already_covered = categorizer.categorize_transaction(
+                description=description,
+                transaction_type=transaction_type.value,
+            )
+            if already_covered is not None:
+                return
+
+            clean_description = description.strip()
+            rule = CategoryRule(
+                name=f"auto: {clean_description[:60]}",
+                pattern=re.escape(clean_description),
+                type=transaction_type,
+                priority=10,  # learned rules stay below manual ones
+                is_active=True,
+                category_id=category_id,
+            )
+            with self.db.begin_nested():
+                self.db.add(rule)
+                self.db.flush()
+            self.db.commit()
+            logger.info(
+                "Learned category rule for description (category_id=%s)", category_id
+            )
+        except Exception as e:
+            self.db.rollback()
+            logger.warning("Could not learn category rule: %s", e)
 
     # Domain-specific methods
     def get_by_user(self, user_id: int) -> List[ExpenseRead]:

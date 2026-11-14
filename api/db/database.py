@@ -34,7 +34,17 @@ DATABASE_URL = Config.DATABASE_URL
 from services.logs.logger_service import setup_logger
 logger = setup_logger("database")
 
-logger.info(f"Database URL: {DATABASE_URL}")
+def _mask_url_password(url: str) -> str:
+    """Mask the password in a DATABASE_URL so credentials never hit the logs."""
+    if "://" in url and "@" in url:
+        scheme, rest = url.split("://", 1)
+        if ":" in rest.split("@", 1)[0]:
+            userinfo, hostpart = rest.split("@", 1)
+            user = userinfo.split(":", 1)[0]
+            return f"{scheme}://{user}:***@{hostpart}"
+    return url
+
+logger.info(f"Database URL: {_mask_url_password(DATABASE_URL)}")
 logger.info(f"Database Engine: {Config.DB_ENGINE}")
 
 engine = create_engine(

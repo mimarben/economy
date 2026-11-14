@@ -2,6 +2,7 @@ import { Component, OnInit, AfterViewInit, ViewChild, DestroyRef, inject } from 
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { MatSort } from '@angular/material/sort';
+import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import * as XLSX from 'xlsx';
 
@@ -48,6 +49,7 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
   excelHeaders: string[] = [];
   excelRows: any[] = [];
   @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   banks: Bank[] = [];
   accounts: Account[] = [];
@@ -70,11 +72,20 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
   selectedProfile: ImportProfile | null = null;
   
   transactions: ImportTransaction[] = [];
-  
+
   dataSource: MatTableDataSource<ImportTransaction> = new MatTableDataSource<ImportTransaction>([]);
   expenseCategories: ExpenseCategoryBase[] = [];
   incomeCategories: IncomeCategoryBase[] = [];
   isClassifying = false;
+
+  // ── Preview review state (exception-first workflow) ──
+  /** Text search over descriptions (normalized, accent-insensitive). */
+  searchTerm = '';
+  /** State filter: all | nocat (no category) | mismatch (balance chain) | ignored. */
+  stateFilter: 'all' | 'nocat' | 'mismatch' | 'ignored' = 'all';
+  /** Bulk category application to the selected rows. */
+  bulkType: 'expense' | 'income' = 'expense';
+  bulkCategoryId: number | null = null;
   displayedColumns = [
     'select',
     'date',
@@ -191,6 +202,113 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     this.dataSource.sort = this.sort;
+    if (this.paginator) {
+      this.dataSource.paginator = this.paginator;
+    }
+  }
+
+  // ── Exception-first review helpers ──
+
+  get nocatCount(): number {
+    return this.transactions.filter((t) => !t.suggestedCategoryId).length;
+  }
+
+  get mismatchCount(): number {
+    return this.transactions.filter((t) => t.balanceMismatch).length;
+  }
+
+  get ignoredCount(): number {
+    return this.transactions.filter((t) => t.ignore_in_analysis).length;
+  }
+
+  get selectedCount(): number {
+    return this.transactions.filter((t) => t.selected).length;
+  }
+
+  setStateFilter(state: 'all' | 'nocat' | 'mismatch' | 'ignored'): void {
+    this.stateFilter = state;
+    this.updateDataSource();
+  }
+
+  applySearch(term: string): void {
+    this.searchTerm = term;
+    this.updateDataSource();
+  }
+
+  private filteredTransactions(): ImportTransaction[] {
+    let rows = this.transactions;
+    if (this.stateFilter === 'nocat') {
+      rows = rows.filter((t) => !t.suggestedCategoryId);
+    } else if (this.stateFilter === 'mismatch') {
+      rows = rows.filter((t) => t.balanceMismatch);
+    } else if (this.stateFilter === 'ignored') {
+      rows = rows.filter((t) => t.ignore_in_analysis);
+    }
+    if (this.searchTerm.trim()) {
+      const needle = this.utilsService.normalize(this.searchTerm.trim());
+      if (needle) {
+        rows = rows.filter((t) =>
+          this.utilsService.normalize(String(t.description ?? '')).includes(needle)
+        );
+      }
+    }
+    return rows;
+  }
+
+  /**
+   * Reconciliation check on the statement's running balance:
+   * balance[i] must equal balance[i-1] + amount[i]. Rows breaking the
+   * chain are flagged (balanceMismatch) for review instead of failing silently.
+   */
+  private validateBalanceChain(transactions: ImportTransaction[]): number {
+    let mismatches = 0;
+    let previous: number | null = null;
+    for (const t of transactions) {
+      const balance =
+        t.balance === null || t.balance === undefined || isNaN(Number(t.balance))
+          ? null
+          : Number(t.balance);
+      if (balance === null) {
+        continue; // statement without a usable balance column
+      }
+      if (previous !== null) {
+        const expected = previous + Number(t.amount);
+        if (Math.abs(expected - balance) > 0.005) {
+          t.balanceMismatch = true;
+          mismatches++;
+        }
+      }
+      previous = balance;
+    }
+    return mismatches;
+  }
+
+  /** Apply the chosen category to every SELECTED row of the chosen type. */
+  applyBulkCategory(): void {
+    if (!this.bulkCategoryId) {
+      this.toastService.warning('Selecciona una categoría para aplicar en bloque');
+      return;
+    }
+    const targets = this.transactions.filter(
+      (t) =>
+        t.selected &&
+        !t.ignore_in_analysis &&
+        (this.bulkType === 'expense' ? t.amount < 0 : t.amount >= 0)
+    );
+    if (!targets.length) {
+      this.toastService.warning(
+        `No hay filas seleccionadas de tipo "${this.bulkType}" para la categoría en bloque`
+      );
+      return;
+    }
+    for (const t of targets) {
+      t.suggestedCategoryId = this.bulkCategoryId;
+      this.suggestSourceForTransaction(t, this.bulkCategoryId);
+    }
+    this.updateDataSource();
+    this.toastService.success(
+      `Categoría aplicada a ${targets.length} transacciones seleccionadas`
+    );
   }
 
   onBankSelected(bankId: number) {
@@ -314,7 +432,12 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
       this.excelHeaders = parsed.headers;
       this.excelRows = parsed.dataRows;
       const tempTransactions: ImportTransaction[] = parsed.transactions;
-      console.log('Valid rows:', tempTransactions.length);
+      const droppedRows = parsed.dataRows.length - tempTransactions.length;
+      if (droppedRows > 0) {
+        this.toastService.warning(
+          `${droppedRows} filas sin importe válido fueron descartadas del fichero.`
+        );
+      }
 
       // Make sure rules are loaded/refreshed before local categorization.
       await this.ruleCategorizerService.refreshRules();
@@ -328,12 +451,23 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
         categorized[i].selected = tempTransactions[i].selected;
         categorized[i].ignore_in_analysis = tempTransactions[i].ignore_in_analysis;
       }
-      console.log('Categorized transactions:', categorized);
       const uncategorized = categorized.filter(t => !t.suggestedCategoryId);
       categorized
         .filter(t => t.suggestedCategoryId)
         .forEach(t => this.suggestSourceForTransaction(t, t.suggestedCategoryId!));
-      console.log('Uncategorized transactions:', uncategorized);
+      if (uncategorized.length > 0) {
+        this.toastService.warning(
+          `${uncategorized.length} transacciones sin categoría: revísalas antes de importar.`
+        );
+      }
+
+      // Reconciliation: flag rows that break the statement's balance chain.
+      const mismatches = this.validateBalanceChain(categorized);
+      if (mismatches > 0) {
+        this.toastService.warning(
+          `${mismatches} filas no cuadran con el saldo del extracto (ver filtro "Saldo ✗").`
+        );
+      }
 
       this.transactions = categorized;
       this.updateDataSource();
@@ -393,7 +527,6 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
     // If not analyzable (ignore=true), force selected to false
     // If analyzable (ignore=false), force selected to true
     transaction.selected = isAnalyzable;
-    console.log(`Transaction "${transaction.description}" analyzable: ${isAnalyzable}, selected: ${transaction.selected}, ignored: ${transaction.ignore_in_analysis}`);
     this.updateDataSource();
   }
 
@@ -470,9 +603,12 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
         t.selected = false;
       }
     });
-    this.dataSource.data = this.transactions;
+    this.dataSource.data = this.filteredTransactions();
     if (this.sort) {
       this.dataSource.sort = this.sort;
+    }
+    if (this.paginator) {
+      this.dataSource.paginator = this.paginator;
     }
   }
 
@@ -507,6 +643,7 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
 
     // Only include transactions that have a category assigned
     const validTransactions = importable.filter((t) => t.suggestedCategoryId);
+    const excludedNoCategory = importable.length - validTransactions.length;
     if (!validTransactions.length) {
       this.toastService.warning('Las transacciones marcadas no tienen categoría asignada');
       return;
@@ -542,9 +679,6 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
       user_id: t.user_id ?? this.selectedUserId,
     }));
 
-    console.log('Expense bulk draft payload:', expensesDraftPayload);
-    console.log('Income bulk draft payload:', incomesDraftPayload);
-
     const payload = {
       expenses: expensesDraftPayload,
       incomes: incomesDraftPayload
@@ -555,9 +689,15 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
         const inserted = res.response?.inserted ?? (res.response?.expenses_created ?? 0) + (res.response?.incomes_created ?? 0);
         const duplicates = res.response?.duplicates ?? 0;
 
-        this.toastService.success(
-          `¡Éxito! ${inserted} transacciones importadas. ${duplicates} duplicados ignorados.`
-        );
+        if (excludedNoCategory > 0) {
+          this.toastService.warning(
+            `Importadas ${inserted}, duplicados ${duplicates}. ATENCIÓN: ${excludedNoCategory} filas quedaron SIN importar por no tener categoría.`
+          );
+        } else {
+          this.toastService.success(
+            `¡Éxito! ${inserted} transacciones importadas. ${duplicates} duplicados ignorados.`
+          );
+        }
         this.transactions = [];
         this.excelRows = [];
       },

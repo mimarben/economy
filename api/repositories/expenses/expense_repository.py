@@ -64,6 +64,20 @@ class ExpenseRepository(BaseRepository[Expense]):
         )
         return self.db.execute(stmt).scalar_one_or_none() is not None
 
+    def get_by_dedup_including_deleted(self, account_id: int, dedup_hash: str) -> Optional[Expense]:
+        """
+        Find a transaction by dedup hash INCLUDING soft-deleted rows.
+
+        The UNIQUE (account_id, dedup_hash) constraint covers deleted rows too,
+        so a soft-deleted transaction blocks re-import forever unless we can
+        find and revive it.
+        """
+        stmt = select(Expense).where(
+            Expense.account_id == account_id,
+            Expense.dedup_hash == dedup_hash
+        )
+        return self.db.execute(stmt).scalars().one_or_none()
+
     def validate_foreign_keys(self, source_id: int, category_id: Optional[int], account_id: int, user_id: Optional[int] = None) -> tuple[bool, Optional[str]]:
         """
         Validate all foreign keys at once.

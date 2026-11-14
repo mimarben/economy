@@ -41,7 +41,8 @@ class SummaryRepository:
                     and_(
                         Expense.date >= start_date,
                         Expense.date <= end_date,
-                        Expense.deleted_at.is_(None)
+                        Expense.deleted_at.is_(None),
+                        Expense.ignore_in_analysis.is_(False)
                     )
                 ).group_by(Expense.category_id, ExpensesCategory.name)
             ).all()
@@ -62,7 +63,8 @@ class SummaryRepository:
                     and_(
                         Income.date >= start_date,
                         Income.date <= end_date,
-                        Income.deleted_at.is_(None)
+                        Income.deleted_at.is_(None),
+                        Income.ignore_in_analysis.is_(False)
                     )
                 ).group_by(Income.category_id, IncomesCategory.name)
             ).all()
@@ -122,7 +124,8 @@ class SummaryRepository:
                 and_(
                     Expense.date >= start_date,
                     Expense.date <= end_date,
-                    Expense.deleted_at.is_(None)
+                    Expense.deleted_at.is_(None),
+                    Expense.ignore_in_analysis.is_(False)
                 )
             ).group_by(func.cast(Expense.date, Date))
         ).all()
@@ -139,7 +142,8 @@ class SummaryRepository:
                 and_(
                     Income.date >= start_date,
                     Income.date <= end_date,
-                    Income.deleted_at.is_(None)
+                    Income.deleted_at.is_(None),
+                    Income.ignore_in_analysis.is_(False)
                 )
             ).group_by(func.cast(Income.date, Date))
         ).all()
@@ -188,7 +192,8 @@ class SummaryRepository:
                 and_(
                     Income.date >= start_date,
                     Income.date <= end_date,
-                    Income.deleted_at.is_(None)
+                    Income.deleted_at.is_(None),
+                    Income.ignore_in_analysis.is_(False)
                 )
             )
         ).scalar() or 0.0
@@ -199,7 +204,8 @@ class SummaryRepository:
                 and_(
                     Expense.date >= start_date,
                     Expense.date <= end_date,
-                    Expense.deleted_at.is_(None)
+                    Expense.deleted_at.is_(None),
+                    Expense.ignore_in_analysis.is_(False)
                 )
             )
         ).scalar() or 0.0
@@ -210,7 +216,8 @@ class SummaryRepository:
                 and_(
                     Expense.date >= start_date,
                     Expense.date <= end_date,
-                    Expense.deleted_at.is_(None)
+                    Expense.deleted_at.is_(None),
+                    Expense.ignore_in_analysis.is_(False)
                 )
             )
         ).scalar() or 0
@@ -220,7 +227,8 @@ class SummaryRepository:
                 and_(
                     Income.date >= start_date,
                     Income.date <= end_date,
-                    Income.deleted_at.is_(None)
+                    Income.deleted_at.is_(None),
+                    Income.ignore_in_analysis.is_(False)
                 )
             )
         ).scalar() or 0
@@ -260,7 +268,8 @@ class SummaryRepository:
                 and_(
                     Expense.date >= start_date,
                     Expense.date <= end_date,
-                    Expense.deleted_at.is_(None)
+                    Expense.deleted_at.is_(None),
+                    Expense.ignore_in_analysis.is_(False)
                 )
             ).group_by(Expense.source_id, Source.name)
         ).all()
@@ -279,7 +288,8 @@ class SummaryRepository:
                 and_(
                     Income.date >= start_date,
                     Income.date <= end_date,
-                    Income.deleted_at.is_(None)
+                    Income.deleted_at.is_(None),
+                    Income.ignore_in_analysis.is_(False)
                 )
             ).group_by(Income.source_id, Source.name)
         ).all()
@@ -311,6 +321,7 @@ class SummaryRepository:
                     Expense.date >= start_date,
                     Expense.date <= end_date,
                     Expense.deleted_at.is_(None),
+                    Expense.ignore_in_analysis.is_(False),
                     Expense.user_id.isnot(None)
                 )
             ).group_by(User.id, User.name, User.surname1)

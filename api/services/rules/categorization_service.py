@@ -13,6 +13,9 @@ from schemas.rules.category_rule_schema import (
     CategoryRuleUpdate,
 )
 from services.core.base_service import BaseService
+from services.logs.logger_service import setup_logger
+
+logger = setup_logger("categorization_service")
 
 
 class CategoryRuleService(BaseService[CategoryRule, CategoryRuleRead, CategoryRuleCreate, CategoryRuleUpdate]):
@@ -43,13 +46,13 @@ class CategoryRuleService(BaseService[CategoryRule, CategoryRuleRead, CategoryRu
         except ValueError:
             raise ValueError(f"Invalid transaction type: {transaction_type}")
 
-        if enum_type == TransactionEnum.expense:
+        if enum_type == TransactionEnum.EXPENSE:
             from models import ExpensesCategory
             return ExpensesCategory
-        elif enum_type == TransactionEnum.income:
+        elif enum_type == TransactionEnum.INCOME:
             from models import IncomesCategory
             return IncomesCategory
-        elif enum_type == TransactionEnum.investment:
+        elif enum_type == TransactionEnum.INVESTMENT:
             from models import InvestmentsCategory
             return InvestmentsCategory
 
@@ -152,7 +155,7 @@ class CategorizationService:
                     return category_id
             except Exception as e:
                 # Log error but don't crash
-                print(f"AI categorization failed: {e}")
+                logger.warning("AI categorization failed: %s", e)
 
         # Step 4: Return None if no match and no AI
         return None
@@ -190,15 +193,16 @@ class CategorizationService:
                 matched_rule = rule
                 break
 
-        if matched_rule:
-            # Independent source matching pass
-            source_id = None
-            source_rules = self.source_rule_repository.get_active_by_type(enum_type)
-            for source_rule in source_rules:
-                if source_rule.matches(description):
-                    source_id = source_rule.source_id
-                    break
+        # Step 2b: Independent source matching pass — runs whether or not a
+        # category rule matched (source rules live their own life).
+        source_id = None
+        source_rules = self.source_rule_repository.get_active_by_type(enum_type)
+        for source_rule in source_rules:
+            if source_rule.matches(description):
+                source_id = source_rule.source_id
+                break
 
+        if matched_rule:
             return {
                 "category_id": matched_rule.category_id,
                 "source_id": source_id,
@@ -210,13 +214,13 @@ class CategorizationService:
             try:
                 category_id = self.ai_service.categorize(description, transaction_type)
                 if category_id:
-                    return {"category_id": category_id, "source_id": None, "ignore_in_analysis": False}
+                    return {"category_id": category_id, "source_id": source_id, "ignore_in_analysis": False}
             except Exception as e:
                 # Log error but don't crash
-                print(f"AI categorization failed: {e}")
+                logger.warning("AI categorization failed: %s", e)
 
         # Step 4: Return None if no match and no AI
-        return {"category_id": None, "source_id": None, "ignore_in_analysis": False}
+        return {"category_id": None, "source_id": source_id, "ignore_in_analysis": False}
 
     def categorize_batch(
         self,
