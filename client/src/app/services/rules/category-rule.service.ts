@@ -113,6 +113,27 @@ export class CategoryRuleService extends BaseCrudService<CategoryRule> {
   }
 
   /**
+   * Categorize a batch of transactions with the backend rule engine
+   * (category rules + source rules + ignore flag — same logic the import uses).
+   * Returns results in the same order as the input items.
+   */
+  categorizeBatch(
+    items: { description: string; type: 'expense' | 'income' }[],
+  ): Observable<
+    {
+      description: string;
+      type: 'expense' | 'income';
+      category_id: number | null;
+      source_id: number | null;
+      ignore_in_analysis: boolean;
+    }[]
+  > {
+    return this.http
+      .post<any>(`${this.getUrl()}/categorize`, { transactions: items })
+      .pipe(map((payload) => payload?.response || []));
+  }
+
+  /**
    * Refresh the rules cache from the server.
    */
   refreshRules(): Observable<CategoryRule[]> {

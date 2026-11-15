@@ -1,7 +1,7 @@
 """Pydantic schemas for CategoryRule model."""
 
 import re
-from typing import Optional
+from typing import List, Optional
 
 from pydantic import BaseModel, field_validator
 
@@ -62,3 +62,21 @@ class CategoryRuleUpdate(BaseModel):
             except re.error as e:
                 raise ValueError(f"Invalid regex pattern: {e}")
         return v
+
+
+class CategorizeTransactionItem(BaseModel):
+    """One transaction to categorize (import preview)."""
+    description: str
+    type: TransactionEnum
+
+
+class CategorizeBatchRequest(BaseModel):
+    """Batch categorization request: same rule engine the import uses."""
+    transactions: List[CategorizeTransactionItem] = []
+
+
+class CategorizeBatchItemResult(CategorizeTransactionItem):
+    """Categorization outcome for one transaction."""
+    category_id: Optional[int] = None
+    source_id: Optional[int] = None
+    ignore_in_analysis: bool = False

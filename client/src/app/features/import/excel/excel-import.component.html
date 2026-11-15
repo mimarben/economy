@@ -1,17 +1,3 @@
-<mat-form-field>
-  <mat-label>{{"BANK.BANKS"|translate}}</mat-label>
-  <select matNativeControl required #bankSelect (change)="onBankSelected(+bankSelect.value)">
-    <option value="">{{"BANK.SELECT"|translate}}</option>
-
-    @for (bank of banks; track bank.id) {
-
-    <option [value]="bank.id">
-      {{ bank.name }}
-    </option>
-
-    }
-  </select>
-</mat-form-field>
 <mat-form-field style="margin-left: 16px; width: 240px;">
   <mat-label>Origen importación</mat-label>
   <mat-select [value]="selectedOrigin?.id" (selectionChange)="onOriginSelected($event.value)">
@@ -30,6 +16,29 @@
     }
   </mat-select>
 </mat-form-field>
+
+@if (cards.length > 0) {
+<mat-form-field style="margin-left: 16px; width: 200px;">
+  <mat-label>Tarjeta (opcional)</mat-label>
+  <mat-select [value]="selectedCard" (selectionChange)="onCardSelected($event.value)">
+    <mat-option [value]="null">Cuenta (sin tarjeta)</mat-option>
+    @for (c of cards; track c.id) {
+      <mat-option [value]="c">{{ c.name }}</mat-option>
+    }
+  </mat-select>
+</mat-form-field>
+}
+
+<mat-form-field style="margin-left: 16px; width: 220px;">
+  <mat-label>{{"BANK.BANKS"|translate}}</mat-label>
+  <mat-select [value]="selectedBank?.id" (selectionChange)="onBankSelected($event.value)">
+    <mat-option [value]="null">{{"BANK.SELECT"|translate}}</mat-option>
+    @for (bank of banks; track bank.id) {
+      <mat-option [value]="bank.id">{{ bank.name }}</mat-option>
+    }
+  </mat-select>
+</mat-form-field>
+
 @if (selectedBank) {
 <mat-form-field style="margin-left: 16px; width: 240px;">
   <mat-label>{{"ACCOUNT.ACCOUNTS"|translate}}</mat-label>
@@ -42,33 +51,15 @@
 </mat-form-field>
 }
 
-@if (accountUsers.length > 0) {
-  <mat-form-field style="margin-left: 16px; width: 200px;">
-    <mat-label>Usuario</mat-label>
-    <mat-select [value]="selectedUserId" (selectionChange)="onUserSelected($event.value)">
-      @for (u of accountUsers; track u.id) {
-        <mat-option [value]="u.id">{{ u.name }} {{ u.surname1 }}</mat-option>
-      }
-    </mat-select>
-  </mat-form-field>
-}
-
-@if (filteredCards.length > 0) {
-  <mat-form-field>
-    <mat-label>{{"CARD.CARDS"|translate}}</mat-label>
-
-    <mat-select [(ngModel)]="selectedCard">
-      <mat-option [value]="null">
-        Cuenta (sin tarjeta)
-      </mat-option>
-
-      @for (c of filteredCards; track c.id) {
-        <mat-option [value]="c">
-          {{ c.name }}
-        </mat-option>
-      }
-    </mat-select>
-  </mat-form-field>
+@if (users.length > 0) {
+<mat-form-field style="margin-left: 16px; width: 200px;">
+  <mat-label>Usuario</mat-label>
+  <mat-select [value]="selectedUserId" (selectionChange)="onUserSelected($event.value)">
+    @for (u of users; track u.id) {
+      <mat-option [value]="u.id">{{ u.name }} {{ u.surname1 }}</mat-option>
+    }
+  </mat-select>
+</mat-form-field>
 }
 <br><br>
 
@@ -82,16 +73,6 @@
 
 <input hidden #fileInput type="file" (change)="onFileChange($event)" accept=".xls,.xlsx" />
 
-<!-- @if (excelHeaders.length > 0) {
-
-  <h3>Cabeceras detectadas</h3>
-
-  <ul>
-    @for (h of excelHeaders; track h) {
-      <li>{{ h }}</li>
-    }
-  </ul>
-} -->
 @if (isClassifying) {
 <div style="display:flex; align-items:center; gap:12px; margin:24px 0">
   <mat-spinner diameter="32"></mat-spinner>
@@ -100,209 +81,13 @@
 }
 
 @if (!isClassifying && transactions.length > 0) {
-
-<!-- ── Review toolbar: filter by exception state, search, bulk apply ── -->
-<div class="review-toolbar">
-  <button mat-stroked-button [color]="stateFilter === 'all' ? 'primary' : ''"
-          (click)="setStateFilter('all')">
-    Todas ({{ transactions.length }})
-  </button>
-  <button mat-stroked-button [color]="stateFilter === 'nocat' ? 'warn' : ''"
-          (click)="setStateFilter('nocat')">
-    Sin categoría ({{ nocatCount }})
-  </button>
-  <button mat-stroked-button [color]="stateFilter === 'mismatch' ? 'warn' : ''"
-          (click)="setStateFilter('mismatch')">
-    Saldo ✗ ({{ mismatchCount }})
-  </button>
-  <button mat-stroked-button [color]="stateFilter === 'ignored' ? 'accent' : ''"
-          (click)="setStateFilter('ignored')">
-    Descartables ({{ ignoredCount }})
-  </button>
-
-  <mat-form-field appearance="outline" subscriptSizing="dynamic" class="search-field">
-    <mat-label>Buscar descripción</mat-label>
-    <input matInput [value]="searchTerm" (input)="applySearch($any($event.target).value)">
-  </mat-form-field>
-</div>
-
-@if (selectedCount > 0) {
-<div class="bulk-row">
-  <span class="bulk-label">Aplicar a {{ selectedCount }} seleccionadas:</span>
-  <mat-form-field appearance="outline" subscriptSizing="dynamic">
-    <mat-label>Tipo</mat-label>
-    <mat-select [(ngModel)]="bulkType">
-      <mat-option value="expense">Gastos</mat-option>
-      <mat-option value="income">Ingresos</mat-option>
-    </mat-select>
-  </mat-form-field>
-  <mat-form-field appearance="outline" subscriptSizing="dynamic">
-    <mat-label>Categoría</mat-label>
-    <mat-select [(ngModel)]="bulkCategoryId">
-      @for (c of bulkType === 'expense' ? expenseCategories : incomeCategories; track c.id) {
-        <mat-option [value]="c.id">{{ c.name }}</mat-option>
-      }
-    </mat-select>
-  </mat-form-field>
-  <button mat-flat-button color="primary" (click)="applyBulkCategory()">
-    <mat-icon>done_all</mat-icon>
-    Aplicar en bloque
-  </button>
-</div>
-}
-
-<table mat-table [dataSource]="dataSource" matSort>
-
-  <!-- Checkbox -->
-  <ng-container matColumnDef="select">
-    <th mat-header-cell *matHeaderCellDef> Importar
-      <mat-checkbox (change)="toggleAll($event.checked)" [checked]="isAllSelected()" [indeterminate]="isSomeSelected()">
-
-      </mat-checkbox>
-    </th>
-    <td mat-cell *matCellDef="let t">
-      <mat-checkbox 
-        [(ngModel)]="t.selected" 
-        [disabled]="t.ignore_in_analysis === true">
-      </mat-checkbox>
-    </td>
-  </ng-container>
-
-  <!-- Fecha -->
-  <ng-container matColumnDef="date">
-    <th mat-header-cell *matHeaderCellDef> Fecha </th>
-    <td mat-cell *matCellDef="let t">
-      {{ t.date }}
-    </td>
-  </ng-container>
-
-  <!-- Descripción -->
-  <ng-container matColumnDef="description">
-    <th mat-header-cell *matHeaderCellDef> Descripción </th>
-    <td mat-cell *matCellDef="let t">
-      {{ t.description }}
-    </td>
-  </ng-container>
-
-  <!-- Tipo -->
-  <ng-container matColumnDef="type">
-    <th mat-header-cell *matHeaderCellDef> Type </th>
-    <td mat-cell *matCellDef="let t">
-      {{ t.amount < 0 ? 'expense' : 'income' }}
-    </td>
-  </ng-container>
-
-  <!-- Descartable  -->
-  <ng-container matColumnDef="analysis">
-    <th mat-header-cell *matHeaderCellDef> Descartable </th>
-    <td mat-cell *matCellDef="let t">
-      <mat-checkbox 
-        [checked]="t.ignore_in_analysis" 
-        (change)="onAnalyzableChange(t, !$event.checked)">
-      </mat-checkbox>
-      <span style="margin-left: 8px;">{{ t.ignore_in_analysis ? 'Sí' : 'No' }}</span>
-    </td>
-  </ng-container>
-
-  <!-- Importe -->
-  <ng-container matColumnDef="amount">
-    <th mat-header-cell *matHeaderCellDef> Importe </th>
-    <td mat-cell *matCellDef="let t">
-      {{ t.amount }}
-    </td>
-  </ng-container>
-  <!-- Balace -->
-  <ng-container matColumnDef="balance">
-    <th mat-header-cell *matHeaderCellDef> Balance </th>
-    <td mat-cell *matCellDef="let t">
-      {{ t.balance }}
-      @if (t.balanceMismatch) {
-        <mat-icon color="warn" style="font-size:16px;vertical-align:middle" matTooltip="El saldo no cuadra con el importe (posible fila ausente o mal parseada)">warning</mat-icon>
-      }
-    </td>
-  </ng-container>
-
-  <ng-container matColumnDef="source">
-    <th mat-header-cell *matHeaderCellDef> Source </th>
-    <td mat-cell *matCellDef="let t">
-      <mat-form-field appearance="outline" style="width:180px;">
-        <mat-select [(ngModel)]="t.source_id" (selectionChange)="t.source_id = $event.value">
-          @for (s of sources; track s.id) {
-            <mat-option [value]="s.id">{{ s.name }}</mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
-    </td>
-  </ng-container>
-
-  <ng-container matColumnDef="user">
-    <th mat-header-cell *matHeaderCellDef> Usuario </th>
-    <td mat-cell *matCellDef="let t">
-      <mat-form-field appearance="outline" style="width:160px;">
-        <mat-select [(ngModel)]="t.user_id">
-          @for (u of accountUsers; track u.id) {
-            <mat-option [value]="u.id">{{ u.name }} {{ u.surname1 }}</mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
-    </td>
-  </ng-container>
-
-  <ng-container matColumnDef="account">
-    <th mat-header-cell *matHeaderCellDef> Account </th>
-    <td mat-cell *matCellDef="let t">
-      <mat-form-field appearance="outline" style="width:220px;">
-        <mat-select [(ngModel)]="t.account_id" (selectionChange)="t.account_id = $event.value">
-          <mat-option *ngFor="let account of filteredAccounts" [value]="account.id">{{ account.name }} ({{ account.iban }})</mat-option>
-        </mat-select>
-      </mat-form-field>
-    </td>
-  </ng-container>
-
-  <ng-container matColumnDef="category">
-
-    <th mat-header-cell *matHeaderCellDef>
-      Categoría
-    </th>
-
-    <td mat-cell *matCellDef="let t">
-
-      <mat-form-field appearance="outline" style="width:180px">
-
-        <mat-select [(ngModel)]="t.suggestedCategoryId" (selectionChange)="onCategoryChange(t, $event.value)">
-
-          @for (c of getCategories(t); track c.id) {
-
-          <mat-option [value]="c.id">
-            {{ c.name }}
-          </mat-option>
-
-          }
-
-        </mat-select>
-        <!-- Sugerencia de nueva categoría -->
-        @if (t.suggestedCategoryName && !t.suggestedCategoryId) {
-        <mat-hint>
-          <mat-icon style="font-size:14px;vertical-align:middle">lightbulb</mat-icon>
-          {{ t.suggestedCategoryName }}
-        </mat-hint>
-        }
-
-      </mat-form-field>
-
-    </td>
-
-  </ng-container>
-
-  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-
-</table>
-
-<mat-paginator [pageSize]="25" [pageSizeOptions]="[25, 50, 100, 200]" showFirstLastButtons></mat-paginator>
-<br>
-<button matFab extended (click)="confirmImport()">
-  <mat-icon>content_paste_go</mat-icon>
-  {{"IMPORT_DATA" | translate}}
-</button>
+  <app-import-preview
+    [transactions]="transactions"
+    [expenseCategories]="expenseCategories"
+    [incomeCategories]="incomeCategories"
+    [sources]="sources"
+    [accounts]="accounts"
+    [users]="users"
+    (importClick)="confirmImport()">
+  </app-import-preview>
 }

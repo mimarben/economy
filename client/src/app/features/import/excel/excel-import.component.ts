@@ -1,9 +1,7 @@
-import { Component, OnInit, AfterViewInit, ViewChild, DestroyRef, inject } from '@angular/core';
+import { Component, OnInit, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
-import { MatSort } from '@angular/material/sort';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatTableDataSource } from '@angular/material/table';
+import { firstValueFrom } from 'rxjs';
 import * as XLSX from 'xlsx';
 
 import { ExpenseCategoryBase } from '@expenses_models/ExpenseCategoryBase';
@@ -16,7 +14,6 @@ import { ExpenseCategoryService } from '@app/services/expenses/expense-category.
 import { IncomeCategoryBase } from '@incomes_models/IncomeCategoryBase';
 import { IncomeCategoryService } from '@incomes_services/income-category.service';
 import { UtilsService } from '@utils/utils.service';
-import { TransactionAiService } from '@services/ai/transaction-ai.service';
 import { RuleCategorizerService } from '@import_services/rule-categorizer.service';
 import { ExcelParserService } from '@import_services/excel-parser.service';
 import { ToastService } from '@core_services/toast.service';
@@ -26,78 +23,59 @@ import { ImportProfilesService, ImportOriginsService } from '@import_services/im
 import { BankService } from '@finance_services/bank.service';
 import { BankBase as Bank } from '@finance_models/BankBase';
 import { AuthService } from '@app/services/auth/auth.service';
+import { UserService } from '@app/services/users/user.service';
+import { CategoryRuleService } from '@app/services/rules/category-rule.service';
 
 import { ImportTransaction } from '@import_models/import-transaction.model';
-import { ClassifyRequest, ClassifyResult, ClassifyPayload } from '@import_models/classify-request-ai';
 import { ImportOriginBase as ImportOrigin } from '@app/models/import/import-originBase';
 import { ImportProfileBase as ImportProfile } from '@app/models/import/import-profileBase';
+import { ImportPreviewComponent } from '../preview/import-preview/import-preview.component';
 
 import { AppTranslateService } from '@utils/app-translate.service';
 import { TranslateModule } from '@ngx-translate/core';
 import { MATERIAL_IMPORTS } from '@utils/material.imports';
 import { FormsModule } from '@angular/forms';
 import { CurrencyEnum } from '@app/core/const/Currency.enum';
-import { SourceEnum } from '@app/core/const/Source.enum';
+
+/**
+ * Excel import screen (parent): destination selection (origin/profile →
+ * bank/account/card/user), file parsing, titular detection and backend
+ * categorization. The review table lives in ImportPreviewComponent.
+ */
 @Component({
   selector: 'app-excel-import',
   standalone: true,
-  imports: [CommonModule, TranslateModule, ...MATERIAL_IMPORTS, FormsModule],
+  imports: [CommonModule, TranslateModule, ...MATERIAL_IMPORTS, FormsModule, ImportPreviewComponent],
   templateUrl: './excel-import.component.html',
   styleUrl: './excel-import.component.scss',
 })
-export class ExcelImportComponent implements OnInit, AfterViewInit {
-  excelHeaders: string[] = [];
-  excelRows: any[] = [];
-  @ViewChild(MatSort) sort!: MatSort;
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-
+export class ExcelImportComponent implements OnInit {
   banks: Bank[] = [];
   accounts: Account[] = [];
   filteredAccounts: Account[] = [];
   sources: Source[] = [];
   cards: Card[] = [];
-  filteredCards: Card[] = [];
   selectedCard: Card | null = null;
   importOrigins: ImportOrigin[] = [];
   importProfiles: ImportProfile[] = [];
   filteredProfiles: ImportProfile[] = [];
   selectedOrigin: ImportOrigin | null = null;
+  users: any[] = [];
   accountUsers: any[] = [];
   selectedUserId: number | null = null;
 
   selectedBank: Bank | null = null;
-  
+
   selectedAccount: Account | null = null;
-  
+
   selectedProfile: ImportProfile | null = null;
-  
+
   transactions: ImportTransaction[] = [];
 
-  dataSource: MatTableDataSource<ImportTransaction> = new MatTableDataSource<ImportTransaction>([]);
   expenseCategories: ExpenseCategoryBase[] = [];
   incomeCategories: IncomeCategoryBase[] = [];
   isClassifying = false;
 
-  // ── Preview review state (exception-first workflow) ──
-  /** Text search over descriptions (normalized, accent-insensitive). */
-  searchTerm = '';
-  /** State filter: all | nocat (no category) | mismatch (balance chain) | ignored. */
-  stateFilter: 'all' | 'nocat' | 'mismatch' | 'ignored' = 'all';
-  /** Bulk category application to the selected rows. */
-  bulkType: 'expense' | 'income' = 'expense';
-  bulkCategoryId: number | null = null;
-  displayedColumns = [
-    'select',
-    'date',
-    'description',
-    'type',
-    'analysis',
-    'amount',
-    'balance',
-    'category',
-    'source',
-    'user',
-  ];
   private destroyRef = inject(DestroyRef);
 
   constructor(
@@ -109,14 +87,15 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
     private ruleCategorizerService: RuleCategorizerService,
     private excelParser: ExcelParserService,
     private utilsService: UtilsService,
-    private transactionAiService: TransactionAiService,
     private transactionImportService: TransactionImportService,
     private accountService: AccountService,
     private sourceService: SourceService,
     private cardService: CardService,
     private importOriginsService: ImportOriginsService,
     private importProfilesService: ImportProfilesService,
-    private authService: AuthService
+    private authService: AuthService,
+    private userService: UserService,
+    private categoryRuleService: CategoryRuleService,
   ) { }
   ngOnInit(): void {
     this.bankService.getBanks().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
@@ -149,6 +128,15 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
         this.toastService.error(
           this.translateService.translateKey('ERROR_LOAD_SOURCES'),
         );
+      },
+    });
+
+    this.userService.getUsers().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: (res) => {
+        this.users = res.response ?? [];
+      },
+      error: () => {
+        this.toastService.error('No se pudieron cargar los usuarios');
       },
     });
 
@@ -200,116 +188,7 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
     });
   }
 
-  ngAfterViewInit() {
-    this.dataSource.sort = this.sort;
-    if (this.paginator) {
-      this.dataSource.paginator = this.paginator;
-    }
-  }
-
-  // ── Exception-first review helpers ──
-
-  get nocatCount(): number {
-    return this.transactions.filter((t) => !t.suggestedCategoryId).length;
-  }
-
-  get mismatchCount(): number {
-    return this.transactions.filter((t) => t.balanceMismatch).length;
-  }
-
-  get ignoredCount(): number {
-    return this.transactions.filter((t) => t.ignore_in_analysis).length;
-  }
-
-  get selectedCount(): number {
-    return this.transactions.filter((t) => t.selected).length;
-  }
-
-  setStateFilter(state: 'all' | 'nocat' | 'mismatch' | 'ignored'): void {
-    this.stateFilter = state;
-    this.updateDataSource();
-  }
-
-  applySearch(term: string): void {
-    this.searchTerm = term;
-    this.updateDataSource();
-  }
-
-  private filteredTransactions(): ImportTransaction[] {
-    let rows = this.transactions;
-    if (this.stateFilter === 'nocat') {
-      rows = rows.filter((t) => !t.suggestedCategoryId);
-    } else if (this.stateFilter === 'mismatch') {
-      rows = rows.filter((t) => t.balanceMismatch);
-    } else if (this.stateFilter === 'ignored') {
-      rows = rows.filter((t) => t.ignore_in_analysis);
-    }
-    if (this.searchTerm.trim()) {
-      const needle = this.utilsService.normalize(this.searchTerm.trim());
-      if (needle) {
-        rows = rows.filter((t) =>
-          this.utilsService.normalize(String(t.description ?? '')).includes(needle)
-        );
-      }
-    }
-    return rows;
-  }
-
-  /**
-   * Reconciliation check on the statement's running balance:
-   * balance[i] must equal balance[i-1] + amount[i]. Rows breaking the
-   * chain are flagged (balanceMismatch) for review instead of failing silently.
-   */
-  private validateBalanceChain(transactions: ImportTransaction[]): number {
-    let mismatches = 0;
-    let previous: number | null = null;
-    for (const t of transactions) {
-      const balance =
-        t.balance === null || t.balance === undefined || isNaN(Number(t.balance))
-          ? null
-          : Number(t.balance);
-      if (balance === null) {
-        continue; // statement without a usable balance column
-      }
-      if (previous !== null) {
-        const expected = previous + Number(t.amount);
-        if (Math.abs(expected - balance) > 0.005) {
-          t.balanceMismatch = true;
-          mismatches++;
-        }
-      }
-      previous = balance;
-    }
-    return mismatches;
-  }
-
-  /** Apply the chosen category to every SELECTED row of the chosen type. */
-  applyBulkCategory(): void {
-    if (!this.bulkCategoryId) {
-      this.toastService.warning('Selecciona una categoría para aplicar en bloque');
-      return;
-    }
-    const targets = this.transactions.filter(
-      (t) =>
-        t.selected &&
-        !t.ignore_in_analysis &&
-        (this.bulkType === 'expense' ? t.amount < 0 : t.amount >= 0)
-    );
-    if (!targets.length) {
-      this.toastService.warning(
-        `No hay filas seleccionadas de tipo "${this.bulkType}" para la categoría en bloque`
-      );
-      return;
-    }
-    for (const t of targets) {
-      t.suggestedCategoryId = this.bulkCategoryId;
-      this.suggestSourceForTransaction(t, this.bulkCategoryId);
-    }
-    this.updateDataSource();
-    this.toastService.success(
-      `Categoría aplicada a ${targets.length} transacciones seleccionadas`
-    );
-  }
+  // ── Destination selection ──
 
   onBankSelected(bankId: number) {
     const id = Number(bankId);
@@ -323,8 +202,17 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
     }
     this.selectedBank = bank;
     this.filterAccountsByBank(bank.id);
+    // Keep the selected card (and its account) when the bank still matches it
+    // (e.g. the bank was auto-selected by the card and re-picked manually).
+    if (this.selectedCard) {
+      const cardAccount = this.accounts.find((a) => a.id === this.selectedCard!.account_id);
+      if (cardAccount && cardAccount.bank_id === bank.id) {
+        this.applyAccountSelection(cardAccount);
+        return;
+      }
+      this.selectedCard = null;
+    }
     this.selectedAccount = null;
-    this.selectedCard = null;
   }
 
   onOriginSelected(originId: number | null) {
@@ -350,6 +238,23 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
     this.selectedProfile = this.filteredProfiles.find((profile) => profile.id === id) ?? null;
   }
 
+  onCardSelected(card: Card | null) {
+    this.selectedCard = card;
+    if (!card?.account_id) {
+      return;
+    }
+    // A card knows its account (e.g. Pass cards settle into an ING account):
+    // auto-select bank + account from the card so the user doesn't have to.
+    const account = this.accounts.find((a) => a.id === card.account_id);
+    if (!account) {
+      console.warn('Card account not found', card.account_id);
+      return;
+    }
+    this.selectedBank = this.banks.find((b) => b.id === account.bank_id) ?? null;
+    this.filterAccountsByBank(account.bank_id);
+    this.applyAccountSelection(account);
+  }
+
   onAccountSelected(accountId: number) {
     const id = Number(accountId);
     const account = this.filteredAccounts.find((a) => a.id === id);
@@ -357,19 +262,29 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
       console.warn('Account not found for selected bank');
       return;
     }
+    // Keep the selected card only if it belongs to the chosen account.
+    if (this.selectedCard && this.selectedCard.account_id !== account.id) {
+      this.selectedCard = null;
+    }
+    this.applyAccountSelection(account);
+  }
+
+  private applyAccountSelection(account: Account) {
     this.selectedAccount = account;
-    this.filterCardsByAccount(accountId);
-    this.selectedCard = null;
     this.accountUsers = account.users || [];
     const currentUserId = this.authService.getUserId();
-    const defaultUser = this.accountUsers.find(u => u.id === currentUserId) ?? this.accountUsers[0] ?? null;
+    const defaultUser =
+      this.users.find((u) => u.id === currentUserId) ??
+      this.accountUsers.find((u) => u.id === currentUserId) ??
+      this.accountUsers[0] ??
+      this.users.find((u) => !String(u.name ?? '').toLowerCase().startsWith('admin')) ??
+      null;
     this.selectedUserId = defaultUser?.id ?? null;
     this.transactions.forEach((t) => {
       t.account_id = account.id;
       t.suggestedAccountId = account.id;
       t.user_id = this.selectedUserId;
     });
-    this.updateDataSource();
   }
 
   onUserSelected(userId: number | null) {
@@ -377,12 +292,32 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
     this.transactions.forEach((t) => {
       t.user_id = userId;
     });
-    this.updateDataSource();
   }
 
-  private filterCardsByAccount(accountId: number) {
-    this.filteredCards = this.cards.filter(c => c.account_id === accountId);
+  private filterAccountsByBank(bankId: number): void {
+    this.filteredAccounts = this.accounts.filter((a) => a.bank_id === bankId);
   }
+
+  /**
+   * Match a holder name read from the file metadata against the users table
+   * (accent-insensitive, either direction containment).
+   */
+  private matchUser(titular: string): any | null {
+    const needle = this.utilsService.normalize(titular).replace(/\s+/g, ' ').trim();
+    if (!needle) return null;
+    return (
+      this.users.find((u) => {
+        const name = this.utilsService.normalize(String(u.name ?? '')).trim();
+        const full = this.utilsService
+          .normalize(`${u.name ?? ''} ${u.surname1 ?? ''} ${u.surname2 ?? ''}`)
+          .replace(/\s+/g, ' ')
+          .trim();
+        return name.length > 2 && (needle.includes(name) || needle.includes(full) || full.includes(needle));
+      }) ?? null
+    );
+  }
+
+  // ── File parsing + categorization ──
 
   async onFileChange(event: Event) {
     if (!this.selectedProfile) {
@@ -429,8 +364,6 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
         return;
       }
 
-      this.excelHeaders = parsed.headers;
-      this.excelRows = parsed.dataRows;
       const tempTransactions: ImportTransaction[] = parsed.transactions;
       const droppedRows = parsed.dataRows.length - tempTransactions.length;
       if (droppedRows > 0) {
@@ -439,22 +372,30 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
         );
       }
 
-      // Make sure rules are loaded/refreshed before local categorization.
-      await this.ruleCategorizerService.refreshRules();
-
-      const categorized = this.ruleCategorizerService.categorize(
-        tempTransactions,
-        this.incomeCategories,
-        this.expenseCategories,
-      );
-      for (let i = 0; i < categorized.length; i++) {
-        categorized[i].selected = tempTransactions[i].selected;
-        categorized[i].ignore_in_analysis = tempTransactions[i].ignore_in_analysis;
+      // Titular detection: match the holder name from the file metadata
+      // (e.g. Pass row 3 "Nombre Apellidos") against the users table and
+      // preselect it for every row.
+      if (parsed.titularName) {
+        const titularUser = this.matchUser(parsed.titularName);
+        if (titularUser?.id) {
+          this.selectedUserId = titularUser.id;
+          tempTransactions.forEach((t) => (t.user_id = titularUser.id));
+          this.toastService.success(
+            `Titular detectado en el fichero: ${titularUser.name} ${titularUser.surname1 ?? ''}`.trim()
+          );
+        } else {
+          this.toastService.warning(
+            `Titular del fichero "${parsed.titularName}" no coincide con ningún usuario: revísalo.`
+          );
+        }
       }
+
+      // Categorize with the SAME backend engine the import uses
+      // (category rules + source rules + ignore flag in one pass), so the
+      // preview shows exactly what will be stored. Local rules remain as
+      // fallback if the endpoint is unavailable.
+      const categorized = await this.categorizeTransactions(tempTransactions);
       const uncategorized = categorized.filter(t => !t.suggestedCategoryId);
-      categorized
-        .filter(t => t.suggestedCategoryId)
-        .forEach(t => this.suggestSourceForTransaction(t, t.suggestedCategoryId!));
       if (uncategorized.length > 0) {
         this.toastService.warning(
           `${uncategorized.length} transacciones sin categoría: revísalas antes de importar.`
@@ -470,169 +411,85 @@ export class ExcelImportComponent implements OnInit, AfterViewInit {
       }
 
       this.transactions = categorized;
-      this.updateDataSource();
       this.isClassifying = false;
-
-//      const payload: ClassifyPayload = {
-//        transactions: uncategorized.map((t, index) => ({
-//          id: index,
-//          type: t.amount < 0 ? 'expense' as const : 'income' as const,
-//          description: (String(t.description)).trim(),
-//          amount: Number(+t.amount),
-//        })),
-//        rules: [] // Rules are now managed on the backend
-//      };
-//      this.isClassifying = true; // activates spinner
-//
-//      this.transactionAiService.publicclassify(payload).subscribe({
-//        next: res => {
-//          const results = res?.response ?? [];
-//          for (const classification of results) {
-//            const tx = uncategorized[classification.id];
-//            if (!tx) continue;
-//            if (classification.category?.id) {
-//              tx.suggestedCategoryId = classification.category.id;
-//            } else if (classification.category?.suggested_new_category) {
-//              tx.suggestedCategoryName = classification.category.suggested_new_category;
-//            }
-//          }
-//          this.transactions = categorized; // table is rendered here
-//          this.isClassifying = false;
-//        },
-//        error: err => {
-//          console.error('Classification error:', err);
-//          this.transactions = categorized; // still render data if AI fails
-//          this.isClassifying = false;
-//        }
-//      });
     };
 
     reader.readAsBinaryString(file);
   }
 
-  getCategories(t: ImportTransaction) {
-    if (this.excelParser.inferTransactionType(t.amount) === 'expense') {
-      return this.expenseCategories;
-    }
-    return this.incomeCategories;
-  }
+  excelHeaders: string[] = [];
+  excelRows: any[] = [];
 
-  onCategoryChange(transaction: ImportTransaction, categoryId: number) {
-    transaction.suggestedCategoryId = categoryId;
-    this.suggestSourceForTransaction(transaction, categoryId);
-  }
-
-  onAnalyzableChange(transaction: ImportTransaction, isAnalyzable: boolean): void {
-    transaction.ignore_in_analysis = !isAnalyzable;
-    // If not analyzable (ignore=true), force selected to false
-    // If analyzable (ignore=false), force selected to true
-    transaction.selected = isAnalyzable;
-    this.updateDataSource();
-  }
-
-  private suggestSourceForTransaction(transaction: ImportTransaction, categoryId: number) {
-    if (!categoryId) {
-      transaction.suggestedSourceId = null;
-      return;
-    }
-
-    const sourceByDescription = this.findSourceByDescription(transaction);
-    if (sourceByDescription?.id) {
-      transaction.suggestedSourceId = sourceByDescription.id;
-      transaction.source_id = sourceByDescription.id;
-      this.updateDataSource();
-      return;
-    }
-
-    const transactionType: SourceEnum =  transaction.amount < 0 ? SourceEnum.EXPENSE : SourceEnum.INCOME;
-
-    this.sourceService.suggestSource(categoryId, transactionType).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (res) => {
-        if (res && res.response && res.response.id) {
-          transaction.suggestedSourceId = res.response.id;
-          transaction.source_id = res.response.id;
-          this.updateDataSource();
-        } else {
-          this.applySourceFallback(transaction);
+  /**
+   * Categorize parsed transactions via the backend batch endpoint
+   * (same rule engine as the import: category + source + ignore flag).
+   * Falls back to the local rule cache when the endpoint fails.
+   */
+  private async categorizeTransactions(temp: ImportTransaction[]): Promise<ImportTransaction[]> {
+    const items = temp.map((t) => ({
+      description: String(t.description ?? ''),
+      type: t.amount < 0 ? ('expense' as const) : ('income' as const),
+    }));
+    try {
+      const results = await firstValueFrom(this.categoryRuleService.categorizeBatch(items));
+      temp.forEach((t, i) => {
+        const r = results[i];
+        if (!r) return;
+        t.suggestedCategoryId = r.category_id ?? null;
+        const match = (t.amount < 0 ? this.expenseCategories : this.incomeCategories)
+          .find((c) => c.id === r.category_id);
+        t.suggestedCategoryName = match?.name ?? null;
+        if (r.source_id) {
+          t.suggestedSourceId = r.source_id;
+          t.source_id = r.source_id;
         }
-      },
-      error: (err) => {
-        console.warn('Source suggestion endpoint not available or failed, using fallback', err);
-        this.applySourceFallback(transaction);
-      }
-    });
-  }
-
-  private findSourceByDescription(transaction: ImportTransaction): Source | null {
-    const description = this.utilsService.normalize(String(transaction.description ?? ''));
-    if (!description) return null;
-    const expectedType: SourceEnum =    transaction.amount < 0 ? SourceEnum.EXPENSE : SourceEnum.INCOME;
-    const candidates = this.sources.filter((s) => s.type === expectedType);
-    if (!candidates.length) return null;
-
-    const sortedByNameLength = [...candidates].sort(
-      (a, b) => (b.name?.length ?? 0) - (a.name?.length ?? 0)
-    );
-
-    return (
-      sortedByNameLength.find((source) => {
-        const sourceName = this.utilsService.normalize(String(source.name ?? ''));
-        return !!sourceName && description.includes(sourceName);
-      }) ?? null
-    );
-  }
-
-  private applySourceFallback(transaction: ImportTransaction) {
-    const expectedType: SourceEnum =transaction.amount < 0 ? SourceEnum.EXPENSE : SourceEnum.INCOME;
-    const sourceByType = this.sources.find((s) => s.type === expectedType);
-    const fallbackSource = sourceByType ?? this.sources[0];
-
-    transaction.suggestedSourceId = fallbackSource?.id ?? null;
-    transaction.source_id = fallbackSource?.id ?? null;
-    this.updateDataSource();
-  }
-
-  private filterAccountsByBank(bankId: number): void {
-    this.filteredAccounts = this.accounts.filter((a) => a.bank_id === bankId);
-  }
-
-  updateDataSource(): void {
-    // Ensure consistency: if ignore_in_analysis is true, selected must be false
-    this.transactions.forEach(t => {
-      if (t.ignore_in_analysis === true && t.selected === true) {
-        t.selected = false;
-      }
-    });
-    this.dataSource.data = this.filteredTransactions();
-    if (this.sort) {
-      this.dataSource.sort = this.sort;
-    }
-    if (this.paginator) {
-      this.dataSource.paginator = this.paginator;
+        t.ignore_in_analysis = !!r.ignore_in_analysis;
+        if (t.ignore_in_analysis) {
+          t.selected = false;
+        }
+      });
+      return temp;
+    } catch (err) {
+      console.warn('Backend categorization unavailable, using local rules', err);
+      await this.ruleCategorizerService.refreshRules();
+      return this.ruleCategorizerService.categorize(
+        temp,
+        this.incomeCategories,
+        this.expenseCategories,
+      );
     }
   }
 
-  toggleAll(checked: boolean) {
-    this.transactions.forEach((t) => {
-      // If transaction is not analyzable (descartable), always set selected to false
-      // If transaction is analyzable, set selected according to checked parameter
-      if (t.ignore_in_analysis === true) {
-        t.selected = false;
-      } else {
-        t.selected = checked;
+  /**
+   * Reconciliation check on the statement's running balance:
+   * balance[i] must equal balance[i-1] + amount[i]. Rows breaking the
+   * chain are flagged (balanceMismatch) for review instead of failing silently.
+   */
+  private validateBalanceChain(transactions: ImportTransaction[]): number {
+    let mismatches = 0;
+    let previous: number | null = null;
+    for (const t of transactions) {
+      const balance =
+        t.balance === null || t.balance === undefined || isNaN(Number(t.balance))
+          ? null
+          : Number(t.balance);
+      if (balance === null) {
+        continue; // statement without a usable balance column
       }
-    });
-    this.updateDataSource();
+      if (previous !== null) {
+        const expected = previous + Number(t.amount);
+        if (Math.abs(expected - balance) > 0.005) {
+          t.balanceMismatch = true;
+          mismatches++;
+        }
+      }
+      previous = balance;
+    }
+    return mismatches;
   }
-  isAllSelected(): boolean {
-    return (
-      this.transactions.length > 0 && this.transactions.every((t) => t.selected)
-    );
-  }
-  isSomeSelected(): boolean {
-    const selectedCount = this.transactions.filter((t) => t.selected).length;
-    return selectedCount > 0 && selectedCount < this.transactions.length;
-  }
+
+  // ── Import ──
+
   confirmImport() {
     // Only process transactions marked as importable (selected: true)
     const importable = this.transactions.filter((t) => t.selected);

@@ -6,8 +6,12 @@ from sqlalchemy.orm import Session
 from pydantic import ValidationError
 from utils.i18n import _
 
-from schemas.rules.category_rule_schema import CategoryRuleCreate, CategoryRuleUpdate
-from services.rules.categorization_service import CategoryRuleService
+from schemas.rules.category_rule_schema import (
+    CategoryRuleCreate,
+    CategoryRuleUpdate,
+    CategorizeBatchRequest,
+)
+from services.rules.categorization_service import CategoryRuleService, CategorizationService
 from db.database import get_db
 from services.core.response_service import Response
 
@@ -58,6 +62,22 @@ def list_all(db: Session = Depends(get_db)):
         service = _get_service(db)
         results = service.get_all()
         return Response.ok_data([r.model_dump() for r in results], _("CATEGORY_RULE_LIST"), 200, name)
+    except Exception as e:
+        return Response.error(_("DATABASE_ERROR"), str(e), 500, name)
+
+
+@router.post("/category_rules/categorize")
+def categorize_batch(payload: CategorizeBatchRequest, db: Session = Depends(get_db)):
+    """Categorize a batch of transactions with the same engine the import uses.
+
+    Applies category rules + source rules + ignore flag in one pass, so the
+    import preview shows exactly what the import will store.
+    """
+    try:
+        service = CategorizationService(db)
+        items = [t.model_dump() for t in payload.transactions]
+        results = service.categorize_batch(items)
+        return Response.ok_data(results, _("CATEGORY_RULE_LIST"), 200, name)
     except Exception as e:
         return Response.error(_("DATABASE_ERROR"), str(e), 500, name)
 

@@ -1,1 +1,213 @@
-<p>import-preview works!</p>
+<!-- ── Review toolbar: filter by exception state, search, bulk apply ── -->
+<div class="review-toolbar">
+  <button mat-stroked-button [color]="stateFilter === 'all' ? 'primary' : ''"
+          (click)="setStateFilter('all')">
+    Todas ({{ transactions.length }})
+  </button>
+  <button mat-stroked-button [color]="stateFilter === 'nocat' ? 'warn' : ''"
+          (click)="setStateFilter('nocat')">
+    Sin categoría ({{ nocatCount }})
+  </button>
+  <button mat-stroked-button [color]="stateFilter === 'mismatch' ? 'warn' : ''"
+          (click)="setStateFilter('mismatch')">
+    Saldo ✗ ({{ mismatchCount }})
+  </button>
+  <button mat-stroked-button [color]="stateFilter === 'ignored' ? 'accent' : ''"
+          (click)="setStateFilter('ignored')">
+    Descartables ({{ ignoredCount }})
+  </button>
+
+  <mat-form-field appearance="outline" subscriptSizing="dynamic" class="search-field">
+    <mat-label>Buscar descripción</mat-label>
+    <input matInput [value]="searchTerm" (input)="applySearch($any($event.target).value)">
+  </mat-form-field>
+</div>
+
+@if (selectedCount > 0) {
+<div class="bulk-row">
+  <span class="bulk-label">Aplicar a {{ selectedCount }} seleccionadas:</span>
+  <mat-form-field appearance="outline" subscriptSizing="dynamic">
+    <mat-label>Tipo</mat-label>
+    <mat-select [(ngModel)]="bulkType">
+      <mat-option value="expense">Gastos</mat-option>
+      <mat-option value="income">Ingresos</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field appearance="outline" subscriptSizing="dynamic">
+    <mat-label>Categoría</mat-label>
+    <mat-select [(ngModel)]="bulkCategoryId">
+      @for (c of bulkType === 'expense' ? expenseCategories : incomeCategories; track c.id) {
+        <mat-option [value]="c.id">{{ c.name }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+  <button mat-flat-button color="primary" (click)="applyBulkCategory()">
+    <mat-icon>done_all</mat-icon>
+    Aplicar en bloque
+  </button>
+</div>
+}
+
+<div class="table-container">
+  <table mat-table [dataSource]="dataSource" matSort>
+
+    <!-- Checkbox -->
+    <ng-container matColumnDef="select">
+      <th mat-header-cell *matHeaderCellDef class="col-select">
+        <mat-checkbox (change)="toggleAll($event.checked)" [checked]="isAllSelected()" [indeterminate]="isSomeSelected()">
+        </mat-checkbox>
+      </th>
+      <td mat-cell *matCellDef="let t" class="col-select">
+        <mat-checkbox
+          [(ngModel)]="t.selected"
+          [disabled]="t.ignore_in_analysis === true">
+        </mat-checkbox>
+      </td>
+    </ng-container>
+
+    <!-- Fecha -->
+    <ng-container matColumnDef="date">
+      <th mat-header-cell *matHeaderCellDef> Fecha </th>
+      <td mat-cell *matCellDef="let t" class="col-date">
+        {{ t.date | date:'dd/MM/yyyy' }}
+      </td>
+    </ng-container>
+
+    <!-- Descripción -->
+    <ng-container matColumnDef="description">
+      <th mat-header-cell *matHeaderCellDef> Descripción </th>
+      <td mat-cell *matCellDef="let t" class="col-desc" [title]="t.description">
+        {{ t.description }}
+      </td>
+    </ng-container>
+
+    <!-- Tipo -->
+    <ng-container matColumnDef="type">
+      <th mat-header-cell *matHeaderCellDef> Tipo </th>
+      <td mat-cell *matCellDef="let t">
+        <span class="type-chip" [class.type-expense]="t.amount < 0" [class.type-income]="t.amount >= 0">
+          {{ t.amount < 0 ? 'Gasto' : 'Ingreso' }}
+        </span>
+      </td>
+    </ng-container>
+
+    <!-- Descartable  -->
+    <ng-container matColumnDef="analysis">
+      <th mat-header-cell *matHeaderCellDef> Descartable </th>
+      <td mat-cell *matCellDef="let t" class="col-analysis">
+        <mat-checkbox
+          [checked]="t.ignore_in_analysis"
+          (change)="onAnalyzableChange(t, !$event.checked)">
+        </mat-checkbox>
+      </td>
+    </ng-container>
+
+    <!-- Importe -->
+    <ng-container matColumnDef="amount">
+      <th mat-header-cell *matHeaderCellDef class="col-amount"> Importe </th>
+      <td mat-cell *matCellDef="let t" class="col-amount" [class.amount-expense]="t.amount < 0" [class.amount-income]="t.amount >= 0">
+        {{ t.amount | number:'1.2-2' }} €
+      </td>
+    </ng-container>
+
+    <!-- Saldo -->
+    <ng-container matColumnDef="balance">
+      <th mat-header-cell *matHeaderCellDef class="col-amount"> Saldo </th>
+      <td mat-cell *matCellDef="let t" class="col-amount">
+        @if (t.balance !== null && t.balance !== undefined) {
+          {{ t.balance | number:'1.2-2' }}
+        }
+        @if (t.balanceMismatch) {
+          <mat-icon color="warn" class="warn-icon" matTooltip="El saldo no cuadra con el importe (posible fila ausente o mal parseada)">warning</mat-icon>
+        }
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="source">
+      <th mat-header-cell *matHeaderCellDef> Fuente </th>
+      <td mat-cell *matCellDef="let t">
+        <mat-form-field appearance="outline" subscriptSizing="dynamic" class="cell-field">
+          <mat-select [(ngModel)]="t.source_id" (selectionChange)="t.source_id = $event.value">
+            @for (s of sources; track s.id) {
+              <mat-option [value]="s.id">{{ s.name }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="user">
+      <th mat-header-cell *matHeaderCellDef> Usuario </th>
+      <td mat-cell *matCellDef="let t">
+        <mat-form-field appearance="outline" subscriptSizing="dynamic" class="cell-field">
+          <mat-select [(ngModel)]="t.user_id">
+            @for (u of users; track u.id) {
+              <mat-option [value]="u.id">{{ u.name }} {{ u.surname1 }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="account">
+      <th mat-header-cell *matHeaderCellDef> Cuenta </th>
+      <td mat-cell *matCellDef="let t">
+        <mat-form-field appearance="outline" subscriptSizing="dynamic" class="cell-field cell-field-wide">
+          <mat-select [(ngModel)]="t.account_id" (selectionChange)="t.account_id = $event.value">
+            @for (a of accounts; track a.id) {
+              <mat-option [value]="a.id">{{ a.name }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="category">
+
+      <th mat-header-cell *matHeaderCellDef>
+        Categoría
+      </th>
+
+      <td mat-cell *matCellDef="let t">
+
+        <mat-form-field appearance="outline" subscriptSizing="dynamic" class="cell-field">
+
+          <mat-select [(ngModel)]="t.suggestedCategoryId" (selectionChange)="onCategoryChange(t, $event.value)">
+
+            @for (c of getCategories(t); track c.id) {
+
+            <mat-option [value]="c.id">
+              {{ c.name }}
+            </mat-option>
+
+            }
+
+          </mat-select>
+          <!-- Sugerencia de nueva categoría -->
+          @if (t.suggestedCategoryName && !t.suggestedCategoryId) {
+          <mat-hint>
+            <mat-icon style="font-size:14px;vertical-align:middle">lightbulb</mat-icon>
+            {{ t.suggestedCategoryName }}
+          </mat-hint>
+          }
+
+        </mat-form-field>
+
+      </td>
+
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"
+        [class.row-nocat]="!row.suggestedCategoryId"
+        [class.row-mismatch]="row.balanceMismatch"></tr>
+
+  </table>
+</div>
+
+<mat-paginator [pageSize]="25" [pageSizeOptions]="[25, 50, 100, 200]" showFirstLastButtons></mat-paginator>
+<br>
+<button matFab extended (click)="importClick.emit()">
+  <mat-icon>content_paste_go</mat-icon>
+  {{"IMPORT_DATA" | translate}}
+</button>

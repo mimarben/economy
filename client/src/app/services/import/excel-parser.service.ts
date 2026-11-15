@@ -22,6 +22,8 @@ export interface ExcelParseResult {
   dataRows: any[];
   /** Mapped transactions (rows with a non-zero amount only). */
   transactions: ImportTransaction[];
+  /** Account/card holder name found in the metadata rows, when present. */
+  titularName: string | null;
   /** Detected column indices (-1 when not found). */
   indices: {
     date: number;
@@ -63,6 +65,31 @@ export class ExcelParserService {
   }
 
   /**
+   * Extract the account/card holder name from the metadata rows above the
+   * header (e.g. Pass statements: row 3 has label "Nombre Apellidos" and the
+   * holder's real name in the cell to its right). Returns null when absent.
+   */
+  extractTitularName(rows: any[][], headerIndex: number): string | null {
+    for (let r = 0; r < headerIndex; r++) {
+      const row = rows[r];
+      if (!Array.isArray(row)) continue;
+      for (let c = 0; c < row.length - 1; c++) {
+        const label = String(row[c] ?? '').trim();
+        if (/^nombre/i.test(label)) {
+          for (let k = c + 1; k < row.length; k++) {
+            const value = String(row[k] ?? '').trim();
+            // skip masked card numbers (**** **** ******1135) and empties
+            if (value && !/^\*+/.test(value)) {
+              return value;
+            }
+          }
+        }
+      }
+    }
+    return null;
+  }
+
+  /**
    * Parse raw sheet rows into ImportTransaction[] using the profile's column map.
    * Returns null when the date/description/amount columns cannot be detected.
    */
@@ -77,7 +104,13 @@ export class ExcelParserService {
     const headers: string[] = (rows[headerIndex] as any[]).map((h) =>
       h ? String(h).trim() : '',
     );
-    const dataRows: any[] = rows.slice(headerIndex + 1);
+    // Bank .xls exports often carry formatting on all 65k rows of the legacy
+    // sheet, so sheet_to_json returns tens of thousands of ghost empty rows.
+    // Drop rows without a single non-empty cell before mapping/counting.
+    const isEmptyRow = (row: any): boolean =>
+      !Array.isArray(row) ||
+      row.every((cell) => cell === null || cell === undefined || String(cell).trim() === '');
+    const dataRows: any[] = rows.slice(headerIndex + 1).filter((row) => !isEmptyRow(row));
 
     const dateIndex = this.findColumnIndex(headers, profile.columns['date'] ?? []);
     const descriptionIndex = this.findColumnIndex(headers, profile.columns['description'] ?? []);
@@ -98,13 +131,23 @@ export class ExcelParserService {
     });
 
     const transactions: ImportTransaction[] = validRows.map((row) => {
-      const isNotAnalyzable =
-        !!ctx.selectedCard && this.utilsService.parseAmount(row[amountIndex]) < 0;
+      // Card statements hold the REAL purchases (analyzable, tied to the card).
+      // The duplicate side of this flow — the monthly card payment charge in the
+      // bank statement ("Recibo FINANCIERA CARREFOUR") — is already flagged
+      // ignore_in_analysis by its category rule, so no auto-discard here.
+      // parseAmount() returns 0 for missing cells; without a balance column
+      // (index -1) the value must stay null or the balance-chain check in the
+      // preview flags every row as a mismatch.
+      const rawBalance = balanceIndex >= 0 ? row[balanceIndex] : undefined;
+      const balance =
+        rawBalance === null || rawBalance === undefined || String(rawBalance).trim() === ''
+          ? undefined
+          : this.utilsService.parseAmount(rawBalance);
       return {
         date: this.utilsService.toIsoDate(row[dateIndex]),
         description: row[descriptionIndex],
         amount: this.utilsService.parseAmount(row[amountIndex]),
-        balance: this.utilsService.parseAmount(row[balanceIndex]),
+        balance,
         suggestedCategoryId: null,
         suggestedCategoryName: null,
         source_id: null,
@@ -113,8 +156,8 @@ export class ExcelParserService {
         suggestedAccountId: ctx.selectedAccount?.id ?? null,
         card_id: ctx.selectedCard?.id ?? null,
         currency: CurrencyEnum.EUR,
-        ignore_in_analysis: isNotAnalyzable,
-        selected: !isNotAnalyzable,
+        ignore_in_analysis: false,
+        selected: true,
         user_id: ctx.selectedUserId ?? null,
       };
     });
@@ -123,6 +166,7 @@ export class ExcelParserService {
       headers,
       dataRows,
       transactions,
+      titularName: this.extractTitularName(rows, headerIndex),
       indices: {
         date: dateIndex,
         description: descriptionIndex,
