@@ -7,16 +7,16 @@ endif
 # === Variables por defecto ===
 BACKEND_DIR := api
 FRONTEND_DIR := client
+VERSION := $(strip $(shell cat VERSION 2>/dev/null))
+export APP_VERSION := $(VERSION)
 
 BACKEND_IMAGE ?= flask-dev
-BACKEND_TAG ?= 1.0
 BACKEND_PORT ?= 5001
-BACKEND_FULL := $(BACKEND_IMAGE):$(BACKEND_TAG)
+BACKEND_FULL := $(BACKEND_IMAGE):$(VERSION)
 
 FRONTEND_IMAGE ?= angular-dev
-FRONTEND_TAG ?= 1.0
 FRONTEND_PORT ?= 4200
-FRONTEND_FULL := $(FRONTEND_IMAGE):$(FRONTEND_TAG)
+FRONTEND_FULL := $(FRONTEND_IMAGE):$(VERSION)
 
 .PHONY: build-backend run-backend build-frontend run-frontend clean dev-up dev-down stop-backend stop-frontend
 

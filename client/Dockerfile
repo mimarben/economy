@@ -1,6 +1,6 @@
 # Client Dockerfile
 # last LTS at October 2025
-FROM node:22.21.0
+FROM node:26.12.1-bookworm-slim
 
 # Directorio de trabajo
 WORKDIR /app

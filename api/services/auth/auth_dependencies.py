@@ -26,6 +26,11 @@ def get_current_user_id(token: dict = Depends(require_access_token)) -> int:
     return int(token["sub"])
 
 
+def get_current_user_role(token: dict = Depends(require_access_token)) -> str:
+    """Role claim from the already-validated access token ('' if absent)."""
+    return token.get("role", "")
+
+
 def require_role(*roles: str):
     """Dependency factory: allow only tokens whose role claim is in `roles`."""
 

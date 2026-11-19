@@ -1,4 +1,7 @@
 {
+  "profile": {
+    "title": "Mi perfil"
+  },
   "app": {
     "title": "Mi App Bancaria",
     "footer": "© 2025 MiBanco. Todos los derechos reservados."
@@ -103,6 +106,38 @@
   },
   "investments_log": {
     "title": "Registro de Inversiones"
+  },
+  "investments_dashboard": {
+    "title": "Panel de Bolsa",
+    "subtitle": "Evolución de fondos, ETFs y acciones por ISIN",
+    "refresh": "Actualizar",
+    "kpi": {
+      "total_contributed": "Total aportado",
+      "market_value": "Valor de mercado",
+      "unrealized_pl": "P/L latente",
+      "positions": "Posiciones",
+      "without_isin": "Sin ISIN",
+      "updated": "Actualizado"
+    },
+    "col": {
+      "fund": "Fondo / ETF",
+      "type": "Tipo",
+      "units": "Unidades",
+      "contributions": "Aportaciones",
+      "contributed": "Aportado",
+      "price": "Precio",
+      "day_change": "Var. día",
+      "market_value": "Valor",
+      "unrealized_pl": "P/L latente",
+      "status": "Estado"
+    },
+    "reported_value": "Última valoración registrada a mano (sin cotización de mercado)",
+    "status": {
+      "ok": "Al día",
+      "stale": "Diferido",
+      "unavailable": "Sin datos"
+    },
+    "empty": "Añade el ISIN a tus inversiones para ver su evolución en bolsa aquí."
   },
   "summary": {
     "title": "Resumen Financiero"

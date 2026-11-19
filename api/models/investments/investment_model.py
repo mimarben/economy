@@ -17,6 +17,7 @@ class Investment(TimestampMixin, Base):
     currency = Column(SQLEnum(CurrencyEnum), nullable=False)
     amount = Column(Numeric(12, 2), nullable=False)
     dedup_hash = Column(String(64), nullable=False, index=True)
+    isin = Column(String(12), nullable=True, index=True)
     # Foreign Keys
     account_id = Column(Integer, ForeignKey('accounts.id'), nullable=False, index=True)
     category_id = Column(Integer, ForeignKey('investments_categories.id'), nullable=False, index=True)

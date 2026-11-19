@@ -1,185 +1,325 @@
-Flujo correcto completo
-1. Instalar mkcert
-  `sudo dnf install mkcert nss-tools`
+# SSL local para economy.local.app
 
-2. Cerrar apps que bloquean NSS
-  MUY importante en Fedora + Chromium + Flatpak.
-  `pkill chrome`
-  `pkill chromium`
-  `pkill code`
-  **Surfshark:**
-  flatpak ps
+Este documento explica cómo configurar HTTPS local con certificado confiable
+usando **mkcert** para que los navegadores no muestren errores de seguridad.
 
-  flatpak kill com.surfshark.Surfshark
-  Verificar:
-  `lsof | grep nssdb`
-  Debe no devolver nada.
+**Dominio correcto: `economy.local.app`**
 
-3. Resetear NSS DB (solo si está corrupta)
-rm -rf ~/.pki/nssdb
+---
 
-4. Reinstalar CA mkcert
-mkcert -uninstallmkcert -install
+## Resumen rápido (si ya falló antes)
 
-5. Verificar CA instalada
-certutil -L -d sql:$HOME/.pki/nssdb
-Debe aparecer algo parecido a:
-mkcert development CA
+```bash
+# 1. Generar certificado
+mkcert \
+  -key-file nginx/certs/economy.local.app-key.pem \
+  -cert-file nginx/certs/economy.local.app.pem \
+  economy.local.app localhost 127.0.0.1
 
-6. Configurar hosts
-sudo nano /etc/hosts
-Añadir:
-127.0.0.1 economy.app.local
-Verificar:
-ping economy.app.local
-Debe resolver a:
-127.0.0.1
+# 2. Añadir al /etc/hosts
+echo "127.0.0.1 economy.local.app" | sudo tee -a /etc/hosts
 
-7. Crear certificados CORRECTOS
-NO usar openssl.
-Eliminar certificados viejos:
-rm -f nginx/certs/*.pem
-Generar:
-mkdir -p nginx/certsmkcert \  -key-file nginx/certs/economy.app.local-key.pem \  -cert-file nginx/certs/economy.app.local.pem \  economy.app.local localhost 127.0.0.1
+# 3. Reconstruir contenedores
+docker compose down
+docker compose up -d
 
-8. Verificar certificado generado
-MUY importante:
-openssl x509 -in nginx/certs/economy.app.local.pem -text -noout
-Buscar:
-Issuer:
-Debe ser:
-mkcert development CA
-NO:
-CN=economy.app.local
+# 4. Abrir
+# https://economy.local.app/
+```
 
-9. Verificar Nginx DENTRO del contenedor
-  Muy importante.
-  docker exec -it economy_nginx nginx -t
-  Luego:
-  docker exec -it economy_nginx ls -l /etc/nginx/certs
-  Verifica que:
+---
 
+## Guía completa paso a paso
 
-existen los PEM
+### 1. Instalar mkcert
 
+mkcert crea certificados firmados por una CA local que tu navegador reconoce
+como válida. **Nunca uses `openssl req -x509 ...`**, eso genera certificados
+autofirmados que el navegador siempre rechazará.
 
-fechas correctas
+**Fedora/RHEL:**
+```bash
+sudo dnf install mkcert nss-tools
+```
 
+**Ubuntu/Debian:**
+```bash
+sudo apt install mkcert libnss3-tools
+```
 
+**Arch:**
+```bash
+sudo pacman -S mkcert nss
+```
 
-11. Verificar qué certificado sirve realmente Nginx
-ESTE es el paso clave.
-openssl s_client \  -connect economy.app.local:443 \  -servername economy.app.local
-Busca:
-issuer=
-Debe salir:
-mkcert development CA
+Verificar instalación:
+```bash
+mkcert -version
+```
 
-Si sigue saliendo self-signed
-Entonces Nginx sirve otro PEM.
-Posibles causas:
-A. Docker COPY viejo
-En Dockerfile:
-COPY nginx/certs /etc/nginx/certs
-pero la imagen no se rebuildó.
-Haz:
-docker compose down -vdocker compose build --no-cachedocker compose up
+### 2. Cerrar aplicaciones que bloquean NSS
 
-B. Volumen pisa certificados
-Ejemplo:
-volumes:  - ./nginx:/etc/nginx
-y dentro hay PEM antiguos.
+Las bases de datos NSS (Network Security Services) son donde Chrome/Chromium
+guardan los certificados de confianza. Si alguna app las tiene abiertas,
+mkcert no puede instalar la CA.
 
-C. Estás entrando por localhost
-Si el certificado es:
-economy.app.local
-pero visitas:
-https://localhost
-Chrome dirá inválido.
+**Esto es especialmente importante en Fedora + Chromium/Chrome Flatpak.**
 
-D. HSTS cacheado
-Chromium cachea agresivamente.
-Limpiar:
-chrome://net-internals/#hsts
-Delete domain security policies:
-economy.app.local
+```bash
+pkill chrome
+pkill chromium
+pkill code
+```
 
-Sobre Surfshark
-Sí, Surfshark rompe bastantes veces:
-
-
-NSS DB
-
-
-trust store
-
-
-DNS local
-
-
-certificados locales
-
-
-Especialmente Flatpak.
-Cuando falle:
+**Si usas Surfshark (Flatpak):**
+```bash
 flatpak kill com.surfshark.Surfshark
-y reiniciar Chromium suele arreglarlo.
+```
 
-NO uses esto
-Elimínalo completamente del manual:
-openssl req -x509 ...
-Eso genera self-signed y rompe todo el flujo.
+Verificar que nada bloquea NSS:
+```bash
+lsof | grep nssdb
+```
+**No debe devolver nada.** Si devuelve algo, cierra esas aplicaciones.
 
-Arquitectura recomendada final
-Frontend
-Angular compilado:
-ng build --configuration production
-Nginx sirve /dist.
+### 3. Instalar la CA raíz de mkcert
 
-Reverse proxy
-Nginx:
+Esto registra la CA de mkcert en el sistema y en los navegadores (Chrome,
+Chromium, Firefox) como una autoridad certificadora de confianza.
 
+```bash
+mkcert -install
+```
 
-SSL mkcert
+Si la CA ya estaba instalada y hay problemas, resetear:
+```bash
+mkcert -uninstall
+mkcert -install
+```
 
+Verificar que la CA está instalada:
+```bash
+certutil -L -d sql:$HOME/.pki/nssdb
+```
+Debe aparecer una línea con `mkcert development CA`.
 
-rate limit
+**Si la base NSS está corrupta:**
+```bash
+rm -rf ~/.pki/nssdb
+mkcert -install
+```
 
+### 4. Configurar /etc/hosts
 
-gzip
+El navegador necesita resolver `economy.local.app` a `127.0.0.1`.
 
+```bash
+sudo nano /etc/hosts
+```
 
-websocket proxy
+Añadir esta línea (o verificar que ya existe):
+```
+127.0.0.1 economy.local.app
+```
 
+Verificar:
+```bash
+ping -c 1 economy.local.app
+```
+Debe responder desde `127.0.0.1`.
 
-load balancing
+### 5. Generar los certificados
 
+**Importante:** el certificado debe incluir todos los nombres por los que
+se va a acceder. Aquí incluimos `economy.local.app`, `localhost` y `127.0.0.1`.
 
+```bash
+cd /ruta/al/proyecto/economy
 
-Docker
-docker-compose.ymldocker-compose.override.yml
-override para:
+# Eliminar certificados viejos si existen
+rm -f nginx/certs/economy.local.app*.pem
 
+# Crear directorio si no existe
+mkdir -p nginx/certs
 
-bind mounts
+# Generar certificado
+mkcert \
+  -key-file nginx/certs/economy.local.app-key.pem \
+  -cert-file nginx/certs/economy.local.app.pem \
+  economy.local.app localhost 127.0.0.1
+```
 
+Resultado esperado:
+```
+Created a new certificate valid for the following names 📜
+ - "economy.local.app"
+ - "localhost"
+ - "127.0.0.1"
+```
 
-hot reload
+### 6. Verificar el certificado generado
 
+```bash
+openssl x509 -in nginx/certs/economy.local.app.pem -text -noout
+```
 
-debug
+Buscar estos campos:
+- **Issuer:** debe decir `mkcert development CA` (NO `CN=economy.local.app`)
+- **Subject Alternative Name:** debe incluir `economy.local.app`, `localhost`, `127.0.0.1`
 
+Si el Issuer NO es mkcert, el certificado es autofirmado y los navegadores
+lo rechazarán. Vuelve al paso 3 y regenera.
 
+### 7. Levantar los contenedores
 
-Tu problema REAL ahora mismo
-Por la captura:
-✅ mkcert funciona
-✅ CA instalada
-✅ Chromium reconoce CA
-Así que el error viene de:
+Nginx se configura automáticamente con los archivos en `nginx/nginx.conf`
+y `nginx/certs/` mediante volúmenes de Docker (ver `docker-compose.yml`).
 
-Nginx sigue sirviendo un certificado viejo/autofirmado.
+```bash
+docker compose down
+docker compose up -d
+```
 
-El comando decisivo es:
-openssl s_client \  -connect economy.app.local:443 \  -servername economy.app.local
-Ahí se verá inmediatamente qué certificado sale realmente.****
+Si la imagen de nginx se construye con `COPY` de certificados en el
+Dockerfile (no es el caso aquí, se usan volúmenes), hay que reconstruir:
+```bash
+docker compose down -v
+docker compose build --no-cache
+docker compose up -d
+```
+
+### 8. Verificar que Nginx sirve el certificado correcto
+
+**Este es el paso clave para diagnosticar problemas:**
+
+```bash
+openssl s_client \
+  -connect economy.local.app:443 \
+  -servername economy.local.app 2>/dev/null \
+  | openssl x509 -noout -issuer -subject
+```
+
+Resultado correcto:
+```
+issuer=O=mkcert development CA, OU=..., CN=mkcert ...
+subject=O=mkcert development certificate, OU=...
+```
+
+Si aparece `issuer=CN=economy.local.app` o similar, Nginx está sirviendo
+un certificado autofirmado. Ver la sección de problemas abajo.
+
+### 9. Verificar dentro del contenedor
+
+```bash
+# Test de configuración
+docker exec -it economy_nginx nginx -t
+
+# Ver que los certificados están montados
+docker exec -it economy_nginx ls -la /etc/nginx/certs/
+```
+
+Deben existir:
+- `economy.local.app.pem`
+- `economy.local.app-key.pem`
+
+---
+
+## Solución de problemas
+
+### ERR_CERT_COMMON_NAME_INVALID
+
+**Causa:** estás accediendo por un nombre que no está en el certificado.
+
+- El dominio correcto es **`economy.local.app`** (no `economy.app.local`,
+  ni `localhost` con un certificado solo para `economy.local.app`, etc.)
+- Verifica qué nombres cubre el certificado:
+  ```bash
+  openssl x509 -in nginx/certs/economy.local.app.pem -text -noout | grep -A1 "Subject Alternative Name"
+  ```
+
+### Nginx sirve un certificado viejo o autofirmado
+
+**Causas posibles:**
+
+**A) Docker montó un volumen con certificados viejos:**
+```bash
+docker compose down
+# Verificar que nginx/certs/ tiene los PEM correctos
+ls -la nginx/certs/
+docker compose up -d
+```
+
+**B) La imagen se construyó con COPY y no se reconstruyó:**
+```bash
+docker compose down -v
+docker compose build --no-cache nginx
+docker compose up -d
+```
+
+### HSTS cacheado en Chromium/Chrome
+
+Chromium cachea agresivamente las políticas HSTS. Si antes visitaste
+el dominio con un certificado malo, puede seguir bloqueándolo.
+
+Limpiar:
+1. Abrir `chrome://net-internals/#hsts`
+2. En **Delete domain security policies**, escribir `economy.local.app`
+3. Click en **Delete**
+
+### Surfshark rompe certificados locales
+
+Surfshark (especialmente la versión Flatpak) interfiere con:
+- La base de datos NSS
+- El trust store del sistema
+- La resolución DNS local
+- Los certificados locales
+
+Cuando falle algo relacionado con SSL, probar:
+```bash
+flatpak kill com.surfshark.Surfshark
+```
+Luego reiniciar el navegador.
+
+### Certificado autofirmado (Issuer NO es mkcert)
+
+Si al verificar el certificado aparece `Issuer: CN=economy.local.app` en
+lugar de `Issuer: O=mkcert development CA`, significa que se generó con
+`openssl` en vez de `mkcert`.
+
+**Solución:** volver al paso 5 y regenerar con mkcert.
+
+**NUNCA uses:**
+```bash
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 ...
+```
+Esto siempre genera certificados autofirmados que los navegadores rechazan.
+
+---
+
+## Archivos del proyecto
+
+| Archivo | Propósito |
+|---------|-----------|
+| `nginx/nginx.conf` | Configuración de Nginx (SSL, proxy, upstreams) |
+| `nginx/certs/economy.local.app.pem` | Certificado SSL |
+| `nginx/certs/economy.local.app-key.pem` | Clave privada SSL |
+| `docker-compose.yml` | Volúmenes de nginx montan `nginx/` y `nginx/certs/` |
+
+## Comandos rápidos de diagnóstico
+
+```bash
+# ¿Qué certificado sirve nginx?
+openssl s_client -connect economy.local.app:443 -servername economy.local.app 2>/dev/null | openssl x509 -noout -issuer -subject
+
+# ¿Qué cubre el certificado?
+openssl x509 -in nginx/certs/economy.local.app.pem -text -noout | grep -A1 "Subject Alternative Name"
+
+# ¿Está la CA instalada?
+certutil -L -d sql:$HOME/.pki/nssdb
+
+# ¿Resuelve el dominio?
+ping -c 1 economy.local.app
+
+# ¿Nginx funciona?
+docker exec -it economy_nginx nginx -t
+```

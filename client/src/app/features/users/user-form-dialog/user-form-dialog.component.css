@@ -66,3 +66,25 @@ mat-dialog-actions {
   margin-top: 16px;
   gap: 8px;
 }
+
+/* Fila de regeneración de contraseña (acción de administrador) */
+.reset-password-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.temporary-password {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 13px;
+  word-break: break-all;
+}
+
+.temporary-password code {
+  font-weight: bold;
+  user-select: all;
+}

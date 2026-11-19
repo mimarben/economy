@@ -68,6 +68,13 @@ export class AuthService {
     return this.http.post<ApiResponse<unknown>>(`${this.apiUrl}/auth/register`, payload);
   }
 
+  changePassword(currentPassword: string, newPassword: string): Observable<ApiResponse<unknown>> {
+    return this.http.post<ApiResponse<unknown>>(`${this.apiUrl}/auth/change-password`, {
+      current_password: currentPassword,
+      new_password: newPassword,
+    });
+  }
+
   logout(): void {
     this.clearSessionTokens();
     this.isLoggedInSubject.next(false);
@@ -180,5 +187,20 @@ export class AuthService {
     } catch {
       return null;
     }
+  }
+
+  getUserRole(): string | null {
+    const token = localStorage.getItem('auth_token');
+    if (!token) return null;
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload.role ?? null;
+    } catch {
+      return null;
+    }
+  }
+
+  isAdmin(): boolean {
+    return this.getUserRole() === 'administrator';
   }
 }

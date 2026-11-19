@@ -338,6 +338,15 @@ msgstr "Inversión actualizada correctamente."
 msgid "LOGIN_SUCCESS"
 msgstr "Has iniciado sesión correctamente."
 
+msgid "MARKET_DATA_ERROR"
+msgstr "Error al obtener datos de mercado."
+
+msgid "MARKET_QUOTE_LIST"
+msgstr "Cotizaciones de mercado recuperadas correctamente."
+
+msgid "INVESTMENTS_DASHBOARD"
+msgstr "Panel de inversiones generado correctamente."
+
 msgid "NONE"
 msgstr "No hay más detalles disponibles."
 
@@ -499,3 +508,18 @@ msgstr "Este valor es demasiado largo."
 
 msgid "VALIDATION_TOO_SHORT"
 msgstr "Este valor es demasiado corto."
+
+msgid "USER_PASSWORD_RESET"
+msgstr "Contraseña regenerada correctamente."
+
+msgid "ROLE_CHANGE_FORBIDDEN"
+msgstr "Solo un administrador puede cambiar roles."
+
+msgid "OWN_ROLE_CHANGE_FORBIDDEN"
+msgstr "No puedes cambiar tu propio rol."
+
+msgid "LAST_ADMIN_PROTECTED"
+msgstr "No se puede degradar o desactivar al último administrador activo."
+
+msgid "PASSWORD_CHANGED"
+msgstr "Contraseña actualizada correctamente."

@@ -1,8 +1,8 @@
 """Repository for User entity following segregated interfaces."""
-from sqlalchemy import select
+from sqlalchemy import select, func
 from sqlalchemy.orm import selectinload
 from repositories.core.base_repository import BaseRepository
-from models import User
+from models import User, UserRoleEnum
 
 
 class UserRepository(BaseRepository[User]):
@@ -23,3 +23,11 @@ class UserRepository(BaseRepository[User]):
         """Find user by email."""
         stmt = self._base_query().where(User.email == email)
         return self.db.execute(stmt).scalar_one_or_none()
+
+    def count_active_admins(self) -> int:
+        """Count active administrators (used for last-admin protection)."""
+        stmt = select(func.count()).select_from(User).where(
+            User.role == UserRoleEnum.ADMIN,
+            User.active.is_(True),
+        )
+        return self.db.execute(stmt).scalar_one()

@@ -94,6 +94,20 @@
         }
     </mat-form-field>
     </div>
+    <!-- Regenerar contraseña (solo edición, acción de administrador) -->
+    @if (isEditMode) {
+      <div class="reset-password-row">
+        <button mat-stroked-button type="button" (click)="regeneratePassword()" [disabled]="isResetting">
+          <mat-icon>autorenew</mat-icon>
+          Regenerate password
+        </button>
+        @if (temporaryPassword) {
+          <span class="temporary-password">
+            New temporary password (shown only once): <code>{{ temporaryPassword }}</code>
+          </span>
+        }
+      </div>
+    }
     <!-- DNI y Active en una línea -->
     <div class="row-2">
       <mat-form-field appearance="fill">

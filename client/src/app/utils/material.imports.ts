@@ -2,7 +2,9 @@ import { Provider } from '@angular/core';
 import { MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCardModule } from '@angular/material/card';
+import { MatChipsModule } from '@angular/material/chips';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -28,6 +30,8 @@ import { environment } from '@env/environment';
 
 export const MATERIAL_IMPORTS = [
   MatButtonModule,
+  MatButtonToggleModule,
+  MatChipsModule,
   MatIconModule,
   MatMenuModule,
   MatToolbarModule,

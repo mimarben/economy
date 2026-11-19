@@ -5,9 +5,11 @@ import {
   EventEmitter,
   AfterViewInit,
   OnChanges,
+  OnDestroy,
+  SimpleChanges,
   ViewChild,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
@@ -39,7 +41,7 @@ import { SourceEnum } from '@app/core/const/Source.enum';
   templateUrl: './import-preview.component.html',
   styleUrl: './import-preview.component.scss',
 })
-export class ImportPreviewComponent implements AfterViewInit, OnChanges {
+export class ImportPreviewComponent implements AfterViewInit, OnChanges, OnDestroy {
   /** Parsed+categorized transactions (mutated in place by row edits). */
   @Input() transactions: ImportTransaction[] = [];
   @Input() expenseCategories: ExpenseCategoryBase[] = [];
@@ -73,9 +75,21 @@ export class ImportPreviewComponent implements AfterViewInit, OnChanges {
     'account',
   ];
 
+  // ── Advanced filters (panel) ──
+  advancedOpen = false;
+  dateFrom: Date | null = null;
+  dateTo: Date | null = null;
+  amountMin: number | null = null;
+  amountMax: number | null = null;
+  typeFilter: 'all' | 'expense' | 'income' = 'all';
+  accountFilterId: number | null = null;
+
+  private searchTimer: ReturnType<typeof setTimeout> | null = null;
+
   constructor(
     private excelParser: ExcelParserService,
     private utilsService: UtilsService,
+    private datePipe: DatePipe,
   ) {}
 
   ngAfterViewInit(): void {
@@ -85,11 +99,23 @@ export class ImportPreviewComponent implements AfterViewInit, OnChanges {
     }
   }
 
-  ngOnChanges(): void {
-    // New file loaded in the parent: reset review state.
+  ngOnChanges(changes: SimpleChanges): void {
+    // New file loaded in the parent: reset review state. Guarded so async
+    // inputs (categories, accounts...) arriving later don't wipe user filters.
+    if (!changes['transactions']) {
+      return;
+    }
     this.searchTerm = '';
     this.stateFilter = 'all';
+    this.advancedOpen = false;
+    this.resetAdvancedFilters();
     this.updateDataSource();
+  }
+
+  ngOnDestroy(): void {
+    if (this.searchTimer) {
+      clearTimeout(this.searchTimer);
+    }
   }
 
   // ── Exception counters ──
@@ -122,6 +148,25 @@ export class ImportPreviewComponent implements AfterViewInit, OnChanges {
     this.updateDataSource();
   }
 
+  /** Debounced search: avoids refiltering the table on every keystroke. */
+  applySearchDebounced(term: string): void {
+    if (this.searchTimer) {
+      clearTimeout(this.searchTimer);
+    }
+    this.searchTimer = setTimeout(() => {
+      this.searchTimer = null;
+      this.applySearch(term);
+    }, 250);
+  }
+
+  clearSearch(): void {
+    if (this.searchTimer) {
+      clearTimeout(this.searchTimer);
+      this.searchTimer = null;
+    }
+    this.applySearch('');
+  }
+
   private filteredTransactions(): ImportTransaction[] {
     let rows = this.transactions;
     if (this.stateFilter === 'nocat') {
@@ -130,6 +175,29 @@ export class ImportPreviewComponent implements AfterViewInit, OnChanges {
       rows = rows.filter((t) => t.balanceMismatch);
     } else if (this.stateFilter === 'ignored') {
       rows = rows.filter((t) => t.ignore_in_analysis);
+    }
+    // Advanced filters (panel)
+    if (this.typeFilter === 'expense') {
+      rows = rows.filter((t) => t.amount < 0);
+    } else if (this.typeFilter === 'income') {
+      rows = rows.filter((t) => t.amount >= 0);
+    }
+    if (this.dateFrom) {
+      const from = this.dateFrom.getTime();
+      rows = rows.filter((t) => new Date(t.date).getTime() >= from);
+    }
+    if (this.dateTo) {
+      const to = this.endOfDay(this.dateTo);
+      rows = rows.filter((t) => new Date(t.date).getTime() <= to);
+    }
+    if (this.amountMin !== null && this.amountMin !== undefined) {
+      rows = rows.filter((t) => t.amount >= (this.amountMin as number));
+    }
+    if (this.amountMax !== null && this.amountMax !== undefined) {
+      rows = rows.filter((t) => t.amount <= (this.amountMax as number));
+    }
+    if (this.accountFilterId !== null) {
+      rows = rows.filter((t) => t.account_id === this.accountFilterId);
     }
     if (this.searchTerm.trim()) {
       const needle = this.utilsService.normalize(this.searchTerm.trim());
@@ -140,6 +208,99 @@ export class ImportPreviewComponent implements AfterViewInit, OnChanges {
       }
     }
     return rows;
+  }
+
+  private endOfDay(date: Date): number {
+    const copy = new Date(date.getTime());
+    copy.setHours(23, 59, 59, 999);
+    return copy.getTime();
+  }
+
+  // ── Active filter chips ──
+
+  /** Rows currently visible after all filters (dataSource holds them all). */
+  get visibleCount(): number {
+    return this.dataSource.data.length;
+  }
+
+  get advancedFilterCount(): number {
+    let count = 0;
+    if (this.typeFilter !== 'all') count++;
+    if (this.dateFrom) count++;
+    if (this.dateTo) count++;
+    if (this.amountMin !== null && this.amountMin !== undefined) count++;
+    if (this.amountMax !== null && this.amountMax !== undefined) count++;
+    if (this.accountFilterId !== null) count++;
+    return count;
+  }
+
+  get activeFilterChips(): { label: string; clear: () => void }[] {
+    const chips: { label: string; clear: () => void }[] = [];
+    const remove = (clear: () => void) => () => {
+      clear();
+      this.updateDataSource();
+    };
+    if (this.typeFilter !== 'all') {
+      chips.push({
+        label: this.typeFilter === 'expense' ? 'Gastos' : 'Ingresos',
+        clear: remove(() => (this.typeFilter = 'all')),
+      });
+    }
+    if (this.dateFrom) {
+      chips.push({
+        label: `Desde ${this.datePipe.transform(this.dateFrom, 'dd/MM/yyyy')}`,
+        clear: remove(() => (this.dateFrom = null)),
+      });
+    }
+    if (this.dateTo) {
+      chips.push({
+        label: `Hasta ${this.datePipe.transform(this.dateTo, 'dd/MM/yyyy')}`,
+        clear: remove(() => (this.dateTo = null)),
+      });
+    }
+    if (this.amountMin !== null && this.amountMin !== undefined) {
+      chips.push({
+        label: `≥ ${this.amountMin} €`,
+        clear: remove(() => (this.amountMin = null)),
+      });
+    }
+    if (this.amountMax !== null && this.amountMax !== undefined) {
+      chips.push({
+        label: `≤ ${this.amountMax} €`,
+        clear: remove(() => (this.amountMax = null)),
+      });
+    }
+    if (this.accountFilterId !== null) {
+      const account = this.accounts.find((a) => a.id === this.accountFilterId);
+      chips.push({
+        label: account ? `Cuenta: ${account.name}` : 'Cuenta',
+        clear: remove(() => (this.accountFilterId = null)),
+      });
+    }
+    const term = this.searchTerm.trim();
+    if (term) {
+      chips.push({
+        label: `"${term}"`,
+        clear: remove(() => (this.searchTerm = '')),
+      });
+    }
+    return chips;
+  }
+
+  private resetAdvancedFilters(): void {
+    this.dateFrom = null;
+    this.dateTo = null;
+    this.amountMin = null;
+    this.amountMax = null;
+    this.typeFilter = 'all';
+    this.accountFilterId = null;
+  }
+
+  clearAllFilters(): void {
+    this.clearSearch();
+    this.stateFilter = 'all';
+    this.resetAdvancedFilters();
+    this.updateDataSource();
   }
 
   // ── Bulk category ──

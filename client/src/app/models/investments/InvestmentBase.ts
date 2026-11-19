@@ -17,6 +17,7 @@ export interface InvestmentBase {
   amount: Amount;
   date: Date;
   currency: CurrencyEnum;
+  isin?: string | null;
   account_id: AccountId;
   category_id: CategoryId;
 }

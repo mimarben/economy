@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from pydantic import ValidationError
 from utils.i18n import _
 
-from schemas.auth.auth_schema import LoginRequest, RegisterRequest
+from schemas.auth.auth_schema import ChangePasswordRequest, LoginRequest, RegisterRequest
 from services.auth.auth_service import AuthService
 from services.auth.auth_dependencies import require_access_token, require_refresh_token
 from services.auth.rate_limiter import login_rate_limiter
@@ -133,5 +133,26 @@ def me(
             200,
             name
         )
+    except Exception as e:
+        return Response.error(_("DATABASE_ERROR"), str(e), 500, name)
+
+
+@router.post("/auth/change-password")
+def change_password(
+    payload: ChangePasswordRequest,
+    token: dict = Depends(require_access_token),
+    db: Session = Depends(get_db),
+):
+    """Change own password. Requires the current password."""
+    try:
+        service = AuthService(db)
+        service.change_password(token["sub"], payload.current_password, payload.new_password)
+        return Response.ok_message(_("PASSWORD_CHANGED"), 200, name)
+    except ValueError as e:
+        if "INVALID_CREDENTIALS" in str(e):
+            return Response.error(_("AUTH_FAILED"), _("INVALID_CREDENTIALS"), 401, name)
+        if "USER_NOT_FOUND" in str(e):
+            return Response.error(_("USER_NOT_FOUND"), _("USER_NOT_FOUND"), 404, name)
+        return Response.error(_("REGISTRATION_ERROR"), str(e), 409, name)
     except Exception as e:
         return Response.error(_("DATABASE_ERROR"), str(e), 500, name)

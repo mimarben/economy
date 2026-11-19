@@ -97,3 +97,17 @@ class AuthService:
         if not user:
             return None
         return UserRead.model_validate(user)
+
+    def change_password(self, user_id: str, current_password: str, new_password: str) -> None:
+        """Change own password after verifying the current one."""
+        user = self.repository.get_by_id(int(user_id))
+        if not user:
+            raise ValueError("USER_NOT_FOUND")
+
+        if not verify_password(current_password, user.password):
+            logger.warning(f"Change password rejected for user {user.email}: wrong current password")
+            raise ValueError("INVALID_CREDENTIALS")
+
+        self.repository.update(user.id, password=hash_password(new_password))
+        self.db.commit()
+        logger.info(f"User changed own password: {user.email}")

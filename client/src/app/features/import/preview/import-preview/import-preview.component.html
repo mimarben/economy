@@ -1,26 +1,106 @@
-<!-- ── Review toolbar: filter by exception state, search, bulk apply ── -->
+<!-- ── Review toolbar: segmented state filter, search, advanced filters ── -->
 <div class="review-toolbar">
-  <button mat-stroked-button [color]="stateFilter === 'all' ? 'primary' : ''"
-          (click)="setStateFilter('all')">
-    Todas ({{ transactions.length }})
-  </button>
-  <button mat-stroked-button [color]="stateFilter === 'nocat' ? 'warn' : ''"
-          (click)="setStateFilter('nocat')">
-    Sin categoría ({{ nocatCount }})
-  </button>
-  <button mat-stroked-button [color]="stateFilter === 'mismatch' ? 'warn' : ''"
-          (click)="setStateFilter('mismatch')">
-    Saldo ✗ ({{ mismatchCount }})
-  </button>
-  <button mat-stroked-button [color]="stateFilter === 'ignored' ? 'accent' : ''"
-          (click)="setStateFilter('ignored')">
-    Descartables ({{ ignoredCount }})
-  </button>
+  <mat-button-toggle-group class="state-toggle"
+                           [value]="stateFilter"
+                           (change)="setStateFilter($event.value)"
+                           aria-label="Filtrar por estado">
+    <mat-button-toggle value="all">
+      Todas <span class="toggle-count">{{ transactions.length }}</span>
+    </mat-button-toggle>
+    <mat-button-toggle value="nocat">
+      Sin categoría <span class="toggle-count">{{ nocatCount }}</span>
+    </mat-button-toggle>
+    <mat-button-toggle value="mismatch">
+      Saldo ✗ <span class="toggle-count">{{ mismatchCount }}</span>
+    </mat-button-toggle>
+    <mat-button-toggle value="ignored">
+      Descartables <span class="toggle-count">{{ ignoredCount }}</span>
+    </mat-button-toggle>
+  </mat-button-toggle-group>
 
   <mat-form-field appearance="outline" subscriptSizing="dynamic" class="search-field">
     <mat-label>Buscar descripción</mat-label>
-    <input matInput [value]="searchTerm" (input)="applySearch($any($event.target).value)">
+    <mat-icon matIconPrefix>search</mat-icon>
+    <input matInput [value]="searchTerm" (input)="applySearchDebounced($any($event.target).value)">
+    @if (searchTerm) {
+      <button mat-icon-button matIconSuffix type="button"
+              (click)="clearSearch()" aria-label="Limpiar búsqueda">
+        <mat-icon>close</mat-icon>
+      </button>
+    }
   </mat-form-field>
+
+  <button mat-stroked-button type="button"
+          [class.active]="advancedOpen"
+          (click)="advancedOpen = !advancedOpen">
+    <mat-icon [matBadge]="advancedFilterCount || null"
+              matBadgeSize="small" matBadgeColor="primary">
+      filter_alt
+    </mat-icon>
+    Filtros
+  </button>
+</div>
+
+<!-- ── Advanced filters panel ── -->
+@if (advancedOpen) {
+<div class="filters-panel">
+  <mat-form-field appearance="outline" subscriptSizing="dynamic" class="filter-date">
+    <mat-label>Fechas</mat-label>
+    <mat-date-range-input [rangePicker]="rangePicker">
+      <input matStartDate [(ngModel)]="dateFrom" (ngModelChange)="updateDataSource()" placeholder="Desde">
+      <input matEndDate [(ngModel)]="dateTo" (ngModelChange)="updateDataSource()" placeholder="Hasta">
+    </mat-date-range-input>
+    <mat-datepicker-toggle matIconSuffix [for]="rangePicker"></mat-datepicker-toggle>
+    <mat-date-range-picker #rangePicker></mat-date-range-picker>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" subscriptSizing="dynamic">
+    <mat-label>Tipo</mat-label>
+    <mat-select [(ngModel)]="typeFilter" (selectionChange)="updateDataSource()">
+      <mat-option value="all">Todos</mat-option>
+      <mat-option value="expense">Gastos</mat-option>
+      <mat-option value="income">Ingresos</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" subscriptSizing="dynamic" class="filter-amount">
+    <mat-label>Importe mín. €</mat-label>
+    <input matInput type="number" [(ngModel)]="amountMin" (ngModelChange)="updateDataSource()">
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" subscriptSizing="dynamic" class="filter-amount">
+    <mat-label>Importe máx. €</mat-label>
+    <input matInput type="number" [(ngModel)]="amountMax" (ngModelChange)="updateDataSource()">
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" subscriptSizing="dynamic">
+    <mat-label>Cuenta</mat-label>
+    <mat-select [(ngModel)]="accountFilterId" (selectionChange)="updateDataSource()">
+      <mat-option [value]="null">Todas</mat-option>
+      @for (a of accounts; track a.id) {
+        <mat-option [value]="a.id">{{ a.name }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+</div>
+}
+
+<!-- ── Result count + active filter chips ── -->
+<div class="table-meta">
+  <span class="result-count">{{ visibleCount }} de {{ transactions.length }} transacciones</span>
+  @if (activeFilterChips.length > 0) {
+    <mat-chip-set aria-label="Filtros activos" class="active-chips">
+      @for (chip of activeFilterChips; track chip.label) {
+        <mat-chip (removed)="chip.clear()">
+          {{ chip.label }}
+          <button matChipRemove type="button" [attr.aria-label]="'Quitar filtro ' + chip.label">
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </mat-chip>
+      }
+    </mat-chip-set>
+    <button mat-button type="button" (click)="clearAllFilters()">Limpiar todo</button>
+  }
 </div>
 
 @if (selectedCount > 0) {

@@ -8,7 +8,7 @@ from schemas.auth.auth_schema import LoginRequest, RegisterRequest
 # via router imports; in isolated tests we trigger it explicitly.
 import schemas.finance.account_schema  # noqa: F401
 from services.auth.auth_service import AuthService
-from services.core.security_service import hash_password
+from services.core.security_service import hash_password, verify_password
 
 # DNIs below are valid under the check_dni letter algorithm (^\d{8}[A-Z]$ + letter).
 _VALID_DNI = "11111111H"
@@ -141,3 +141,36 @@ def test_get_current_user_found(db_session):
 
 def test_get_current_user_not_found(db_session):
     assert AuthService(db_session).get_current_user("99999") is None
+
+
+# ─────────────────────────── change_password ───────────────────────────
+
+_NEW_PASSWORD = "NewPassword2@"
+
+
+def test_change_password_success(db_session):
+    user = _seed_user(db_session)
+    AuthService(db_session).change_password(str(user.id), _PASSWORD, _NEW_PASSWORD)
+
+    db_user = db_session.get(User, user.id)
+    assert db_user.password != _NEW_PASSWORD  # stored hashed
+    assert verify_password(_NEW_PASSWORD, db_user.password)
+    assert not verify_password(_PASSWORD, db_user.password)
+
+
+def test_change_password_rejects_wrong_current_password(db_session):
+    user = _seed_user(db_session)
+
+    with pytest.raises(ValueError) as exc:
+        AuthService(db_session).change_password(str(user.id), "WrongPass1!", _NEW_PASSWORD)
+    assert "INVALID_CREDENTIALS" in str(exc.value)
+
+    # password untouched after the failed attempt
+    db_user = db_session.get(User, user.id)
+    assert verify_password(_PASSWORD, db_user.password)
+
+
+def test_change_password_unknown_user_raises(db_session):
+    with pytest.raises(ValueError) as exc:
+        AuthService(db_session).change_password("99999", _PASSWORD, _NEW_PASSWORD)
+    assert "USER_NOT_FOUND" in str(exc.value)

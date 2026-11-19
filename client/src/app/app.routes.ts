@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
+import { adminGuard } from './core/guards/admin.guard';
 import { LayoutComponent } from './layout/layout/layout.component';
 
 export const routes: Routes = [
@@ -15,7 +16,8 @@ export const routes: Routes = [
     canActivate: [authGuard], // Single guard for all children
     children: [
       { path: '', loadComponent: () => import('./features/home/home.component').then((m) => m.HomeComponent), data: { title: 'home.title' } },
-      { path: 'users', loadComponent: () => import('./features/users/users.component').then((m) => m.UsersComponent), data: { title: 'users.title' } },
+      { path: 'profile', loadComponent: () => import('./features/profile/profile.component').then((m) => m.ProfileComponent), data: { title: 'profile.title' } },
+      { path: 'users', loadComponent: () => import('./features/users/users.component').then((m) => m.UsersComponent), canActivate: [adminGuard], data: { title: 'users.title' } },
       { path: 'banks', loadComponent: () => import('./features/banks/banks.component').then((m) => m.BanksComponent), data: { title: 'banks.title' } },
       { path: 'accounts', loadComponent: () => import('./features/banks/banks-accounts/banks-accounts.component').then((m) => m.BanksAccountsComponent), data: { title: 'accounts.title' } },
       { path: 'households', loadComponent: () => import('./features/households/households.component').then((m) => m.HouseholdsComponent), data: { title: 'households.title' } },
@@ -30,6 +32,7 @@ export const routes: Routes = [
       { path: 'investments', loadComponent: () => import('./features/investments/investments.component').then((m) => m.InvestmentsComponent), data: { title: 'investments.title' } },
       { path: 'investments_categories', loadComponent: () => import('./features/investments/investments-categories/investments-categories.component').then((m) => m.InvestmentsCategoriesComponent), data: { title: 'investments_categories.title' } },
       { path: 'investments_log', loadComponent: () => import('./features/investments/investments-log/investments-log.component').then((m) => m.InvestmentsLogComponent), data: { title: 'investments_log.title' } },
+      { path: 'investments_dashboard', loadComponent: () => import('./features/investments/investments-dashboard/investments-dashboard.component').then((m) => m.InvestmentsDashboardComponent), data: { title: 'investments_dashboard.title' } },
       { path: 'financial_summary', loadComponent: () => import('./features/financial/summary-component/summary-component').then((m) => m.SummaryComponent), data: { title: 'summary.title' } },
       { path: 'excel_import', loadComponent: () => import('./features/import/excel/excel-import.component').then((m) => m.ExcelImportComponent), data: { title: 'excel_import.title' } },
       { path: 'import_origins', loadComponent: () => import('./features/import/origins/import-origins.component').then((m) => m.ImportOriginsComponent), data: { title: 'import_origins.title' } },

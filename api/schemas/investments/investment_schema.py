@@ -6,6 +6,9 @@ from pydantic import BaseModel, Field, field_validator
 from models.core.enums import CurrencyEnum
 from schemas.core.audit_schema import AuditFields
 
+# ISIN: 2 letters (country) + 9 alphanumeric (NSIN) + 1 check digit
+ISIN_PATTERN = r'^[A-Z]{2}[A-Z0-9]{9}[0-9]$'
+
 
 class InvestmentBase(BaseModel):
     """Base schema for Investment aligned with ORM model."""
@@ -15,8 +18,24 @@ class InvestmentBase(BaseModel):
     currency: CurrencyEnum = Field(...)
     amount: Decimal = Field(..., gt=0)
     dedup_hash: str = Field(..., min_length=64, max_length=64)
+    isin: Optional[str] = Field(
+        None,
+        min_length=12,
+        max_length=12,
+        pattern=ISIN_PATTERN,
+        description="ISIN of the fund/ETF/stock this investment tracks (optional)",
+    )
     account_id: int = Field(..., gt=0, json_schema_extra={"ui_type": "select", "relation": "account"})
     category_id: int = Field(..., gt=0, json_schema_extra={"ui_type": "select", "relation": "investment-category"})
+
+    @field_validator('isin', mode='before')
+    @classmethod
+    def normalize_isin(cls, v: object) -> object:
+        """Trim and uppercase so 'ie00b83yjg36 ' is stored as IE00B83YJG36."""
+        if isinstance(v, str):
+            v = v.strip().upper()
+            return v if v else None
+        return v
 
 
 class InvestmentRead(InvestmentBase, AuditFields):
@@ -53,8 +72,18 @@ class InvestmentUpdate(BaseModel):
     currency: Optional[CurrencyEnum] = Field(None)
     amount: Optional[Decimal] = Field(None, gt=0)
     dedup_hash: Optional[str] = Field(None, min_length=64, max_length=64)
+    isin: Optional[str] = Field(None, min_length=12, max_length=12, pattern=ISIN_PATTERN)
     account_id: Optional[int] = Field(None, gt=0)
     category_id: Optional[int] = Field(None, gt=0)
+
+    @field_validator('isin', mode='before')
+    @classmethod
+    def normalize_isin(cls, v: object) -> object:
+        """Trim and uppercase so 'ie00b83yjg36 ' is stored as IE00B83YJG36."""
+        if isinstance(v, str):
+            v = v.strip().upper()
+            return v if v else None
+        return v
 
 
 class InvestmentDelete(BaseModel):

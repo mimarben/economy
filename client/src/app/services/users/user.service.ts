@@ -33,4 +33,21 @@ export class UserService extends BaseCrudService<User> {
   updateUser(id: number, user: User): Observable<ApiResponse<User>> {
     return this.update(id, user);
   }
+
+  /**
+   * Admin action: generate a new temporary password for a user.
+   * The plaintext password is returned exactly once; only its hash is stored.
+   */
+  resetPassword(id: number): Observable<ApiResponse<PasswordResetResult>> {
+    return this.http.post<ApiResponse<PasswordResetResult>>(
+      `${this.getUrl()}/${id}/password/reset`,
+      {},
+      { headers: this.getHeaders() }
+    );
+  }
+}
+
+export interface PasswordResetResult {
+  user: User;
+  temporary_password: string;
 }

@@ -338,6 +338,15 @@ msgstr "Investment updated successfully."
 msgid "LOGIN_SUCCESS"
 msgstr "You have signed in successfully."
 
+msgid "MARKET_DATA_ERROR"
+msgstr "Error fetching market data."
+
+msgid "MARKET_QUOTE_LIST"
+msgstr "Market quotes retrieved successfully."
+
+msgid "INVESTMENTS_DASHBOARD"
+msgstr "Investments dashboard generated successfully."
+
 msgid "NONE"
 msgstr "No additional details are available."
 
@@ -499,3 +508,18 @@ msgstr "This value is too long."
 
 msgid "VALIDATION_TOO_SHORT"
 msgstr "This value is too short."
+
+msgid "USER_PASSWORD_RESET"
+msgstr "Password regenerated successfully."
+
+msgid "ROLE_CHANGE_FORBIDDEN"
+msgstr "Only an administrator can change roles."
+
+msgid "OWN_ROLE_CHANGE_FORBIDDEN"
+msgstr "You cannot change your own role."
+
+msgid "LAST_ADMIN_PROTECTED"
+msgstr "The last active administrator cannot be demoted or deactivated."
+
+msgid "PASSWORD_CHANGED"
+msgstr "Password changed successfully."

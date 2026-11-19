@@ -33,7 +33,7 @@
               }
             ],
             "styles": [
-              "@ngxpert/hot-toast/styles.css",
+              "src/tailwind.css",
               "src/styles.scss",
               "node_modules/material-symbols/outlined.css"
             ],
@@ -127,8 +127,8 @@
       "type": "interceptor"
     },
     "@schematics/angular:class": {
-    "type": "factory"
-  }
+      "type": "factory"
+    }
   },
   "cli": {
     "analytics": false

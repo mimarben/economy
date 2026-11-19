@@ -37,6 +37,10 @@ class Config:
     SCHEMA_INIT_STRATEGY = os.getenv("SCHEMA_INIT_STRATEGY", "create_all")
     SEED_DB_ON_STARTUP = os.getenv("SEED_DB_ON_STARTUP", "false").lower() == "true"
 
+    # Market data (Yahoo Finance) — cache TTL and request timeout
+    MARKET_DATA_TTL_MINUTES = int(os.getenv("MARKET_DATA_TTL_MINUTES", "15"))
+    MARKET_DATA_TIMEOUT_SECONDS = int(os.getenv("MARKET_DATA_TIMEOUT_SECONDS", "10"))
+
 
 class DevelopmentConfig(Config):
     DEBUG = True

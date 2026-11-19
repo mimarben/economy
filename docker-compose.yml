@@ -8,7 +8,7 @@ services:
     build:
       context: ./api
       network: host
-    image: economy-api:${BACKEND_TAG}
+    image: economy-api:${APP_VERSION:?Set APP_VERSION with the Makefile or export it manually}
     ports:
       - "5001:5001"
     env_file:
@@ -28,7 +28,7 @@ services:
     build:
       context: ./client
       network: host
-    image: economy-client:${FRONTEND_TAG}
+    image: economy-client:${APP_VERSION:?Set APP_VERSION with the Makefile or export it manually}
     ports:
       - "4200:4200"
     env_file:
@@ -37,7 +37,7 @@ services:
       - ./client:/app:rw
     working_dir: /app
     #command: npx ng serve --host 0.0.0.0 --port 4200
-    command: npx ng serve --host 0.0.0.0 --port 4200 --allowed-hosts economy.app.local
+    command: npx ng serve --host 0.0.0.0 --port 4200 --allowed-hosts economy.local.app
     depends_on:
       - backend
     networks:
@@ -74,14 +74,14 @@ services:
 
     volumes:
       - ./database/postgres:/var/lib/postgresql:Z
-      
+
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 5s
       timeout: 5s
       retries: 10
       start_period: 10s
-      
+
     networks:
       - economy-net
   nginx:

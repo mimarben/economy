@@ -1,4 +1,7 @@
 {
+  "profile": {
+    "title": "My Profile"
+  },
   "app": {
     "title": "My Banking App",
     "footer": "© 2025 MyBank. All rights reserved."
@@ -103,6 +106,38 @@
   },
   "investments_log": {
     "title": "Investments Log"
+  },
+  "investments_dashboard": {
+    "title": "Market Dashboard",
+    "subtitle": "Performance of your funds, ETFs and stocks by ISIN",
+    "refresh": "Refresh",
+    "kpi": {
+      "total_contributed": "Total contributed",
+      "market_value": "Market value",
+      "unrealized_pl": "Unrealized P/L",
+      "positions": "Positions",
+      "without_isin": "Without ISIN",
+      "updated": "Updated"
+    },
+    "col": {
+      "fund": "Fund / ETF",
+      "type": "Type",
+      "units": "Units",
+      "contributions": "Contributions",
+      "contributed": "Contributed",
+      "price": "Price",
+      "day_change": "Day change",
+      "market_value": "Value",
+      "unrealized_pl": "Unrealized P/L",
+      "status": "Status"
+    },
+    "reported_value": "Last hand-recorded valuation (no market quote)",
+    "status": {
+      "ok": "Up to date",
+      "stale": "Delayed",
+      "unavailable": "No data"
+    },
+    "empty": "Add the ISIN to your investments to see their market performance here."
   },
   "summary": {
     "title": "Financial Summary"

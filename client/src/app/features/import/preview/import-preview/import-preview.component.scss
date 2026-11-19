@@ -9,6 +9,70 @@
     margin-left: auto;
     width: 260px;
   }
+
+  /* Segmented state filter: counters inside each toggle */
+  .state-toggle {
+    .toggle-count {
+      margin-left: 6px;
+      padding: 0 6px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-variant-numeric: tabular-nums;
+      background-color: rgba(0, 0, 0, 0.08);
+      color: rgba(0, 0, 0, 0.6);
+    }
+
+    .mat-button-toggle-checked .toggle-count {
+      background-color: rgba(0, 0, 0, 0.16);
+      color: inherit;
+    }
+  }
+
+  /* Filtros button: marked while the panel is open */
+  button.active {
+    background-color: rgba(0, 0, 0, 0.06);
+  }
+}
+
+/* ── Advanced filters panel ── */
+.filters-panel {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 12px;
+  padding: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.02);
+
+  .filter-date {
+    width: 240px;
+  }
+
+  .filter-amount {
+    width: 130px;
+  }
+}
+
+/* ── Result count + active filter chips ── */
+.table-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 8px;
+
+  .result-count {
+    margin-right: auto;
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .active-chips {
+    --mdc-chip-container-height: 28px;
+  }
 }
 
 .bulk-row {

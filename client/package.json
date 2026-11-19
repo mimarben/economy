@@ -42,9 +42,10 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^21.2.1",
-    "@angular/cli": "^21.2.1",
+    "@angular/cli": "^22.3.0",
     "@angular/compiler-cli": "^21.2.1",
     "@angular/localize": "^21.2.1",
+    "@tailwindcss/postcss": "^4.3.5",
     "@types/date-fns": "^2.6.3",
     "@types/jasmine": "~6.0.0",
     "@types/lodash": "^4.17.24",
@@ -57,7 +58,9 @@
     "karma-coverage": "~2.2.1",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.2.0",
+    "postcss": "^8.5.33",
     "sass": "^1.97.3",
+    "tailwindcss": "^4.3.5",
     "typescript": "~5.9.3",
     "webpack-bundle-analyzer": "^5.2.0"
   }

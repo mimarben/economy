@@ -26,7 +26,7 @@ from .expenses import Expense, ExpensesCategory
 from .savings import Saving, SavingLog
 
 # Investments
-from .investments import Investment, InvestmentLog, InvestmentsCategory
+from .investments import Investment, InvestmentLog, InvestmentsCategory, MarketQuote
 
 # Households
 from .households import Household, HouseholdMember

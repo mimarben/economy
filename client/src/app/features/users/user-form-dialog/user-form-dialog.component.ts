@@ -24,6 +24,8 @@ export class UserFromDialogComponent {
   userForm: FormGroup;
   isEditMode = false;
   hide: boolean = true;
+  isResetting = false;
+  temporaryPassword: string | null = null;
   public roles = USER_ROLE_OPTIONS;
   constructor(
     private fb: FormBuilder,
@@ -124,6 +126,25 @@ export class UserFromDialogComponent {
 
   onCancel() {
     this.dialogRef.close();
+  }
+
+  regeneratePassword() {
+    if (!this.data?.id || this.isResetting) {
+      return;
+    }
+    this.isResetting = true;
+    this.temporaryPassword = null;
+    this.userService.resetPassword(this.data.id!).subscribe({
+      next: (response) => {
+        this.isResetting = false;
+        this.temporaryPassword = response.response?.temporary_password ?? null;
+        this.toastService.showToast(response, environment.toastType.Success, {});
+      },
+      error: (error: any) => {
+        this.isResetting = false;
+        this.toastService.showToast(error.error as ApiResponse<string>, environment.toastType.Error, {});
+      }
+    });
   }
 
 }

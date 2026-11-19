@@ -1,0 +1,154 @@
+<div class="profile-container">
+
+  <!-- DATOS DEL PERFIL -->
+  <mat-card class="profile-card">
+    <mat-card-header>
+      <mat-card-title>My profile</mat-card-title>
+      <mat-card-subtitle>
+        @if (user(); as u) {
+          {{ u.name }} {{ u.surname1 }} — Role: {{ u.role }}
+        }
+      </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      @if (loadingProfile()) {
+        <div class="loading-row">
+          <mat-spinner diameter="36"></mat-spinner>
+        </div>
+      } @else {
+        <form [formGroup]="profileForm">
+          <div class="row-2">
+            <mat-form-field appearance="fill">
+              <mat-label>Name</mat-label>
+              <input matInput formControlName="name">
+              @if (profileControls['name'].hasError('required')) {
+                <mat-error>Name is required</mat-error>
+              }
+              @if (profileControls['name'].hasError('minlength')) {
+                <mat-error>Name must be at least 2 characters</mat-error>
+              }
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+              <mat-label>Surname 1</mat-label>
+              <input matInput formControlName="surname1">
+              @if (profileControls['surname1'].hasError('required')) {
+                <mat-error>First surname is required</mat-error>
+              }
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+              <mat-label>Surname 2</mat-label>
+              <input matInput formControlName="surname2">
+            </mat-form-field>
+          </div>
+
+          <div class="row-2">
+            <mat-form-field appearance="fill">
+              <mat-label>Email</mat-label>
+              <input matInput formControlName="email">
+              @if (profileControls['email'].hasError('required')) {
+                <mat-error>Email is required</mat-error>
+              }
+              @if (profileControls['email'].hasError('email')) {
+                <mat-error>Please enter a valid email address</mat-error>
+              }
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+              <mat-label>Telephone</mat-label>
+              <input matInput formControlName="telephone">
+              @if (profileControls['telephone'].hasError('pattern')) {
+                <mat-error>Please enter a valid 9-digit phone number</mat-error>
+              }
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+              <mat-label>ID (DNI)</mat-label>
+              <input matInput formControlName="dni">
+              @if (profileControls['dni'].hasError('invalidDNI')) {
+                <mat-error>Invalid DNI</mat-error>
+              }
+            </mat-form-field>
+          </div>
+        </form>
+      }
+    </mat-card-content>
+
+    <mat-card-actions>
+      <button mat-flat-button color="primary" (click)="saveProfile()"
+              [disabled]="profileForm.invalid || loadingProfile() || savingProfile()">
+        @if (savingProfile()) {
+          <mat-spinner diameter="18"></mat-spinner>
+        } @else {
+          <mat-icon>save</mat-icon>
+        }
+        Save
+      </button>
+    </mat-card-actions>
+  </mat-card>
+
+  <!-- CAMBIO DE CONTRASEÑA -->
+  <mat-card class="profile-card">
+    <mat-card-header>
+      <mat-card-title>Change password</mat-card-title>
+      <mat-card-subtitle>Enter your current password and the new one</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="passwordForm">
+        <div class="row-2">
+          <mat-form-field appearance="fill">
+            <mat-label>Current password</mat-label>
+            <input matInput formControlName="current_password" [type]="hideCurrent() ? 'password' : 'text'">
+            <button mat-icon-button matSuffix type="button"
+                    (click)="hideCurrent.set(!hideCurrent())">
+              <mat-icon>{{ hideCurrent() ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+            @if (passwordControls['current_password'].hasError('required')) {
+              <mat-error>Current password is required</mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <div class="row-2">
+          <mat-form-field appearance="fill">
+            <mat-label>New password</mat-label>
+            <input matInput formControlName="new_password" [type]="hideNew() ? 'password' : 'text'">
+            <button mat-icon-button matSuffix type="button"
+                    (click)="hideNew.set(!hideNew())">
+              <mat-icon>{{ hideNew() ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+            @if (passwordControls['new_password'].hasError('required')) {
+              <mat-error>New password is required</mat-error>
+            }
+            @if (passwordControls['new_password'].hasError('strongPassword')) {
+              <mat-error>At least 8 characters with one uppercase letter, one lowercase letter, one number and one symbol</mat-error>
+            }
+          </mat-form-field>
+          <mat-form-field appearance="fill">
+            <mat-label>Confirm new password</mat-label>
+            <input matInput formControlName="confirm_password" [type]="hideConfirm() ? 'password' : 'text'">
+            <button mat-icon-button matSuffix type="button"
+                    (click)="hideConfirm.set(!hideConfirm())">
+              <mat-icon>{{ hideConfirm() ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+            @if (passwordForm.hasError('passwordsMismatch') && passwordControls['confirm_password'].value) {
+              <mat-error>Passwords do not match</mat-error>
+            }
+          </mat-form-field>
+        </div>
+      </form>
+    </mat-card-content>
+
+    <mat-card-actions>
+      <button mat-flat-button color="primary" (click)="changePassword()"
+              [disabled]="passwordForm.invalid || savingPassword()">
+        @if (savingPassword()) {
+          <mat-spinner diameter="18"></mat-spinner>
+        } @else {
+          <mat-icon>vpn_key</mat-icon>
+        }
+        Change password
+      </button>
+    </mat-card-actions>
+  </mat-card>
+
+</div>

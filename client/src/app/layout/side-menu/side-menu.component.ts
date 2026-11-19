@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, Output} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MATERIAL_IMPORTS } from '@app/utils/material.imports';
+import { AuthService } from '@auth_services/auth.service';
 
 interface MenuLink {
   label: string;
@@ -17,8 +18,19 @@ interface MenuSection {
 }
 
 const TOP_LINKS: MenuLink[] = [
-  { label: 'Home',   route: '/',            icon: 'home',   exact: true },
-  { label: 'Users',  route: '/users',       icon: 'person' }
+  { label: 'Home',    route: '/',            icon: 'home',   exact: true },
+  { label: 'Profile', route: '/profile',     icon: 'person' }
+];
+
+// User management section, rendered only for administrators.
+const ADMIN_SECTIONS: MenuSection[] = [
+  {
+    title: 'Administration',
+    icon: 'admin_panel_settings',
+    links: [
+      { label: 'Users', route: '/users' }
+    ]
+  }
 ];
 
 const SECTIONS: MenuSection[] = [
@@ -55,7 +67,8 @@ const SECTIONS: MenuSection[] = [
     links: [
       { label: 'Investments',          route: '/investments' },
       { label: 'Investments Category', route: '/investments_categories' },
-      { label: 'Investments Log',      route: '/investments_log' }
+      { label: 'Investments Log',      route: '/investments_log' },
+      { label: 'Investments Dashboard', route: '/investments_dashboard' }
     ]
   },
   {
@@ -121,8 +134,12 @@ export class SideMenuComponent {
   expandedSections: Record<string, boolean> = {};
 
   readonly topLinks    = TOP_LINKS;
-  readonly sections    = SECTIONS;
+  readonly sections: MenuSection[];
   readonly bottomLinks = BOTTOM_LINKS;
+
+  constructor(auth: AuthService) {
+    this.sections = auth.isAdmin() ? [...ADMIN_SECTIONS, ...SECTIONS] : SECTIONS;
+  }
 
  /* toggleSection(title: string) {
     this.expandedSections[title] = !this.expandedSections[title];

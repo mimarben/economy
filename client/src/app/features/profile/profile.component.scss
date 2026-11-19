@@ -1,0 +1,38 @@
+.profile-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 8px;
+}
+
+.profile-card {
+  mat-card-actions {
+    justify-content: flex-end;
+    gap: 8px;
+  }
+
+  button[mat-flat-button] {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+}
+
+.row-2 {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+
+  mat-form-field {
+    flex: 1;
+    min-width: 220px;
+  }
+}
+
+.loading-row {
+  display: flex;
+  justify-content: center;
+  padding: 24px;
+}
