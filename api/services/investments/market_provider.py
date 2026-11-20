@@ -8,7 +8,7 @@ this interface and appending it to the providers list in the service.
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from decimal import Decimal
-from typing import Optional
+from typing import Optional, List
 
 
 @dataclass(frozen=True)
@@ -23,6 +23,31 @@ class ProviderQuote:
     last_price: Optional[Decimal]
     previous_close: Optional[Decimal]
     source: str
+
+
+@dataclass(frozen=True)
+class InstrumentSearchResult:
+    """Instrument search result from provider search endpoint."""
+
+    isin: str
+    symbol: Optional[str]
+    name: Optional[str]
+    instrument_type: Optional[str]
+    currency: Optional[str]
+    exchange: Optional[str]
+    country: Optional[str]
+    provider: str
+
+
+class SearchProvider(ABC):
+    """Interface for instrument search providers."""
+
+    @abstractmethod
+    def search_instruments(self, query: str, limit: int = 10) -> List[InstrumentSearchResult]:
+        """Search instruments by name, ticker, or ISIN.
+
+        Returns normalized results without exposing raw JSON to models.
+        """
 
 
 class MarketDataProvider(ABC):

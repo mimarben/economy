@@ -1,1 +1,0 @@
-- [SourceRule Refactorization (Apr 27)](refactor_source_rules.md) — Separated source assignment from category matching

@@ -79,7 +79,7 @@ def delete(id: int, db: Session = Depends(get_db)):
         success = service.delete(id)
         if not success:
             return Response.error(_("INVESTMENT_NOT_FOUND"), _("NONE"), 404, name)
-        return esponse.ok_message(_("INVESTMENT_DELETED"), 204, name)
+        return Response.ok_message(_("INVESTMENT_DELETED"), 204, name)
     except Exception as e:
         return Response.error(_("DATABASE_ERROR"), str(e), 500, name)
 

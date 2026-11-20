@@ -5,16 +5,12 @@ Economy App (AI Optimized)
 Si el mensaje del usuario es exactamente "test-claude", responde exactamente "leido CLAUDE.md" y nada más.
 
 # Context Files
-- ER Diagram: `.claude/database/er.sql`
-- ER Diagram: `.claude/database/e-r.png`
+- ER Diagram: `/mnt/SRC/dev/economy/docs/003-database/er.sql`
 
 
-Version: 3.5
+Version: 3.6
 Mode: Incremental Enhancement (DO NOT REFACTOR EXISTING CODE)
-Date: April 2026
-
-0- Test instructions.
-
+Date: November 2026
 
 --------------------------------------------------
 
@@ -43,7 +39,7 @@ If conflict:
 
 Database schema:
 
-./er.sql
+docs/003-database/er.sql
 
 RULES:
 

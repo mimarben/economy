@@ -38,7 +38,7 @@
       <div *ngIf="!isLoading" class="table-container"
            [class.table-scroll]="scrollable"
            [style.max-height]="scrollable ? scrollHeight : null">
-        <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+        <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8" [ngClass]="tableClass">
           <ng-container *ngFor="let col of columns" [matColumnDef]="col.key">
             <th mat-header-cell *matHeaderCellDef mat-sort-header [disabled]="!col.sortable">
               {{ col.label }}

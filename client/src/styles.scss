@@ -12,20 +12,21 @@
 // ============================================================================
 :root {
   /* Marca */
-  --color-accent: #0d9488; // teal 600
-  --color-accent-hover: #0f766e; // teal 700
-  --color-accent-soft: rgba(13, 148, 136, 0.10);
+  --color-accent: #4f5fdb;
+  --color-accent-hover: #3e50c8;
+  --color-accent-soft: #eef0ff;
+  --color-accent-strong: #3546a7;
 
   /* Superficies */
-  --bg-page: #f6f7f9;
+  --bg-page: #f4f5fa;
   --bg-surface: #ffffff;
-  --bg-surface-hover: #f2f4f6;
-  --bg-surface-muted: #fafbfc;
+  --bg-surface-hover: #f7f8fc;
+  --bg-surface-muted: #f8f9fd;
 
   /* Texto */
-  --text-primary: #1a1d21;
-  --text-secondary: #5b6470;
-  --text-light: #9aa3ad;
+  --text-primary: #25283a;
+  --text-secondary: #687087;
+  --text-light: #969db0;
 
   /* Semánticos */
   --color-success: #15803d;
@@ -36,24 +37,24 @@
   --color-warning-bg: #fef3c7;
   --color-info: #1d4ed8;
   --color-info-bg: #dbeafe;
-  --color-purple: #7c3aed;
+  --color-purple: #7057d9;
   --color-orange: #ea580c;
 
   /* Compatibilidad con estilos antiguos (no borrar) */
-  --color-teal: var(--color-accent);
+  --color-teal: #0f9f95;
   --color-teal-light: #14b8a6;
-  --color-teal-dark: var(--color-accent-hover);
+  --color-teal-dark: #0c7d7a;
   --color-error: var(--color-danger);
   --color-error-bg: var(--color-danger-bg);
-  --app-border: #e4e7eb;
-  --app-border-light: #eef0f3;
-  --app-radius: 12px;
+  --app-border: #e5e8f0;
+  --app-border-light: #eef0f5;
+  --app-radius: 10px;
   --app-surface: var(--bg-surface);
   --app-surface-hover: var(--bg-surface-hover);
   --app-surface-active: var(--bg-surface-muted);
-  --border-color: #e4e7eb;
+  --border-color: #e4e7ef;
   --text-tertiary: var(--text-light);
-  --sidebar-bg: #101418;
+  --sidebar-bg: #ffffff;
   --sidebar-width: 248px;
 
   /* Radios */
@@ -71,9 +72,9 @@
   --space-xl: 32px;
 
   /* Sombras — sutiles, una sola elevación por reposo */
-  --shadow-card: 0 1px 2px rgba(16, 24, 40, 0.05);
-  --shadow-raised: 0 4px 12px rgba(16, 24, 40, 0.08);
-  --shadow-header: 0 1px 0 #e8e8e8;
+  --shadow-card: 0 2px 6px rgba(37, 40, 58, 0.045);
+  --shadow-raised: 0 8px 20px rgba(37, 40, 58, 0.12);
+  --shadow-header: 0 1px 0 #e7e9f1;
 
   /* Tipografía */
   --font-sans: 'Inter', 'Helvetica Neue', Arial, sans-serif;
@@ -81,26 +82,26 @@
 }
 
 // ============================================================================
-// MATERIAL 3 THEME — teal como primaria, sin overrides de internals
+// MATERIAL 3 THEME — azul como primaria, sin overrides de internals
 // ============================================================================
 body.theme-economy {
-  @include mat.theme((color: (primary: mat.$cyan-palette,
-        tertiary: mat.$azure-palette,
+  @include mat.theme((color: (primary: mat.$azure-palette,
+        tertiary: mat.$blue-palette,
       ),
       typography: 'Inter, Helvetica Neue, Arial, sans-serif',
       density: -1,
     ));
 
-  // Alinear los system tokens de M3 con el teal de marca
+  // Alinear los system tokens de M3 con el azul de marca
   --mat-sys-primary: var(--color-accent);
   --mat-sys-primary-hover: var(--color-accent-hover);
   --mat-sys-on-primary: #ffffff;
-  --mat-sys-primary-container: #ccfbf1;
-  --mat-sys-on-primary-container: #042f2e;
-  --mat-sys-outline-variant: #e4e7eb;
+  --mat-sys-primary-container: #e8ebff;
+  --mat-sys-on-primary-container: #27317a;
+  --mat-sys-outline-variant: #e4e7ef;
   --mat-sys-surface: #ffffff;
-  --mat-sys-surface-container: #f6f7f9;
-  --mat-sys-surface-container-low: #fafbfc;
+  --mat-sys-surface-container: #f5f6fb;
+  --mat-sys-surface-container-low: #fafbfe;
 }
 
 // ============================================================================

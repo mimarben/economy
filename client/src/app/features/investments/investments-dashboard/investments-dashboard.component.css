@@ -1,5 +1,7 @@
 .dashboard {
-  padding: 1rem;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
 }
 
 .page-header {
@@ -21,33 +23,24 @@
   font-size: 0.9rem;
 }
 
+.header-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
 /* KPI cards, same visual language as the home page */
 .kpi-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 1rem;
-  margin-bottom: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
 }
 
 .stat-card {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-  padding: 1rem;
-  border-radius: 10px;
-  background: rgba(63, 81, 181, 0.06);
-}
-
-.stat-card__label {
-  font-size: 0.78rem;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: rgba(0, 0, 0, 0.55);
-}
-
-.stat-card__value {
-  font-size: 1.35rem;
-  font-weight: 600;
+  min-height: 118px;
+  justify-content: space-between;
+  box-shadow: var(--shadow-card);
 }
 
 .stat-card__value--small {
@@ -59,19 +52,14 @@
   color: rgba(0, 0, 0, 0.5);
 }
 
-.stat-accent { background: rgba(63, 81, 181, 0.12); }
-.stat-warning { background: rgba(255, 152, 0, 0.14); }
-.stat-success { background: rgba(76, 175, 80, 0.14); }
-.stat-danger { background: rgba(244, 67, 54, 0.12); }
-
 .error-banner {
   display: flex;
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 1rem;
   border-radius: 8px;
-  background: rgba(244, 67, 54, 0.12);
-  color: #c62828;
+  background: var(--color-danger-bg);
+  color: var(--color-danger);
   margin-bottom: 1rem;
 }
 
@@ -81,21 +69,54 @@
   padding: 3rem 0;
 }
 
+/* Table toolbar */
+.table-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  align-items: flex-end;
+}
+
+.table-toolbar mat-form-field {
+  flex: 1;
+  min-width: 200px;
+}
+
+.table-toolbar .search-field {
+  flex: 2;
+  min-width: 300px;
+}
+
 /* Table */
 .table-container {
   overflow-x: auto;
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  background: var(--bg-surface);
+  border: 1px solid var(--app-border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
 }
 
 table {
   width: 100%;
-  min-width: 1040px;
+  min-width: 1200px;
 }
 
 .cell-numeric {
   text-align: right;
+}
+
+.cell-name {
+  width: 250px;
+}
+
+.cell-info {
+  width: 200px;
+}
+
+.cell-status {
+  width: 120px;
+  text-align: center;
 }
 
 .cell-isin {
@@ -106,11 +127,22 @@ table {
 
 .entry-name {
   display: inline-block;
-  max-width: 280px;
+  max-width: 200px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   vertical-align: bottom;
+  font-weight: 500;
+}
+
+.name-link {
+  padding: 0;
+  height: auto;
+  line-height: normal;
+}
+
+.entry-name:hover {
+  text-decoration: underline;
 }
 
 .entry-currency {
@@ -120,6 +152,14 @@ table {
 }
 
 .entry-isin {
+  display: block;
+  font-family: monospace;
+  font-size: 0.72rem;
+  color: rgba(0, 0, 0, 0.45);
+  margin-top: 0.25rem;
+}
+
+.entry-symbol {
   display: block;
   font-family: monospace;
   font-size: 0.72rem;
@@ -134,25 +174,125 @@ table {
   color: #ef6c00;
 }
 
-.type-chip,
-.status-chip {
-  display: inline-block;
+/* Category badge - reutilizado en filtros y tabla */
+.category-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   padding: 0.15rem 0.55rem;
   border-radius: 999px;
   font-size: 0.72rem;
   font-weight: 600;
   letter-spacing: 0.02em;
+  text-transform: uppercase;
+  min-width: 80px;
 }
 
-.type-chip {
-  background: rgba(33, 150, 243, 0.1);
-  color: #1565c0;
+.category-badge-default {
+  background: rgba(158, 158, 158, 0.18);
+  color: #616161;
+}
+
+/* Status badge */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
   text-transform: uppercase;
 }
 
-.status-ok { background: rgba(76, 175, 80, 0.14); color: #2e7d32; }
-.status-stale { background: rgba(255, 152, 0, 0.16); color: #ef6c00; }
-.status-unavailable { background: rgba(158, 158, 158, 0.18); color: #616161; }
+.status-badge.status-ACTIVE {
+  background: rgba(76, 175, 80, 0.14);
+  color: #2e7d32;
+}
+
+.status-badge.status-CLOSED {
+  background: rgba(158, 158, 158, 0.18);
+  color: #616161;
+}
+
+.status-badge.status-unknown {
+  background: rgba(158, 158, 158, 0.18);
+  color: #616161;
+}
+
+/* Status chips for quote_status */
+.status-ok { 
+  background: rgba(76, 175, 80, 0.14); 
+  color: #2e7d32; 
+  display: inline-flex;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+}
+
+.status-stale { 
+  background: rgba(255, 152, 0, 0.16); 
+  color: #ef6c00; 
+  display: inline-flex;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+}
+
+.status-unavailable { 
+  background: rgba(158, 158, 158, 0.18); 
+  color: #616161; 
+  display: inline-flex;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+}
+
+/* Currency badge */
+.currency-badge {
+  display: inline-block;
+  padding: 0.1rem 0.4rem;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+  font-size: 0.72rem;
+  font-family: monospace;
+}
+
+.currency-symbol {
+  font-size: 0.72rem;
+  margin-left: 0.25rem;
+  color: rgba(0, 0, 0, 0.5);
+}
+
+/* Quote info section */
+.quote-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.price-type {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.1rem 0.4rem;
+  background: rgba(33, 150, 243, 0.1);
+  color: #1565c0;
+  border-radius: 4px;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+}
+
+.quote-date {
+  font-size: 0.7rem;
+  color: rgba(0, 0, 0, 0.55);
+}
+
+.quote-source {
+  font-size: 0.68rem;
+  color: rgba(0, 0, 0, 0.45);
+  font-style: italic;
+}
 
 /* Day change */
 .change {
@@ -193,4 +333,26 @@ table {
 
 @media (prefers-reduced-motion: reduce) {
   .spin { animation: none; }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .table-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .table-toolbar mat-form-field {
+    width: 100%;
+  }
+  
+  .header-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }

@@ -37,9 +37,14 @@ class Config:
     SCHEMA_INIT_STRATEGY = os.getenv("SCHEMA_INIT_STRATEGY", "create_all")
     SEED_DB_ON_STARTUP = os.getenv("SEED_DB_ON_STARTUP", "false").lower() == "true"
 
-    # Market data (Yahoo Finance) — cache TTL and request timeout
+    # Market data (Yahoo Finance, Eulerpool) — cache TTL and request timeout
     MARKET_DATA_TTL_MINUTES = int(os.getenv("MARKET_DATA_TTL_MINUTES", "15"))
     MARKET_DATA_TIMEOUT_SECONDS = int(os.getenv("MARKET_DATA_TIMEOUT_SECONDS", "10"))
+
+    # Eulerpool API configuration
+    EULERPOOL_API_URL = os.getenv("EULERPOOL_API_URL", "https://api.eulerpool.com")
+    # API key is loaded but NEVER logged or printed (see eulerpool_market_provider.py)
+    EULERPOOL_API_KEY = os.getenv("EULERPOOL_API_KEY", "")
 
 
 class DevelopmentConfig(Config):

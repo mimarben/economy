@@ -3,7 +3,7 @@ from typing import List
 
 from sqlalchemy import case, func, select
 
-from models import Investment, InvestmentLog
+from models import Investment, InvestmentLog, Account, AccountUser
 from repositories.core.base_repository import BaseRepository
 
 
@@ -89,6 +89,68 @@ class InvestmentRepository(BaseRepository[Investment]):
                 func.coalesce(func.sum(latest_value), 0).label('reported_value'),
             )
             .where(Investment.deleted_at.is_(None), Investment.isin.isnot(None))
+            .group_by(Investment.isin)
+        )
+        return list(self.db.execute(stmt).all())
+
+    def get_grouped_by_isin_for_user(self, user_id: int) -> List[tuple]:
+        """One row per ISIN for the given user's accounts.
+
+        Filters investments by accounts linked to the user (via AccountUser).
+        Admin users (user_id=None) see all investments.
+        """
+        if user_id is None:
+            # Admin sees everything
+            return self.get_grouped_by_isin()
+
+        stmt = (
+            select(
+                Investment.isin,
+                func.sum(Investment.amount).label('total_amount'),
+                func.count(Investment.id).label('contributions'),
+                func.max(Investment.date).label('last_date'),
+            )
+            .where(
+                Investment.deleted_at.is_(None),
+                Investment.isin.isnot(None),
+                Investment.account_id == Account.id,
+                Account.id == AccountUser.account_id,
+                AccountUser.user_id == user_id,
+            )
+            .group_by(Investment.isin)
+            .order_by(func.sum(Investment.amount).desc())
+        )
+        return list(self.db.execute(stmt).all())
+
+    def get_positions_by_isin_for_user(self, user_id: int) -> List[tuple]:
+        """One row per ISIN with position data for the given user's accounts.
+
+        Filters investments by accounts linked to the user (via AccountUser).
+        Admin users (user_id=None) see all positions.
+        """
+        if user_id is None:
+            # Admin sees everything
+            return self.get_positions_by_isin()
+
+        latest_quantity = _latest_log_column(InvestmentLog.quantity)
+        latest_value = _latest_log_column(InvestmentLog.current_value)
+
+        stmt = (
+            select(
+                Investment.isin,
+                func.count(Investment.id).label('contributions'),
+                func.coalesce(func.sum(latest_quantity), 0).label('units'),
+                func.sum(case((latest_quantity.isnot(None), 1), else_=0))
+                    .label('investments_with_units'),
+                func.coalesce(func.sum(latest_value), 0).label('reported_value'),
+            )
+            .where(
+                Investment.deleted_at.is_(None),
+                Investment.isin.isnot(None),
+                Investment.account_id == Account.id,
+                Account.id == AccountUser.account_id,
+                AccountUser.user_id == user_id,
+            )
             .group_by(Investment.isin)
         )
         return list(self.db.execute(stmt).all())

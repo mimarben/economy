@@ -8,14 +8,14 @@ class CurrencyEnum(str, enum.Enum):
     BTC = "BTC"
     ETH = "ETH"
     USDC = "USDC"
-    DOGE = "DOGE",
-    LTC = "LTC",
-    XRP = "XRP",
-    XLM = "XLM",
-    ADA = "ADA",
-    DOT = "DOT",
-    SOL = "SOL",
-    SHIB = "SHIB",
+    DOGE = "DOGE"
+    LTC = "LTC"
+    XRP = "XRP"
+    XLM = "XLM"
+    ADA = "ADA"
+    DOT = "DOT"
+    SOL = "SOL"
+    SHIB = "SHIB"
     TRX = "TRX"
 
 
@@ -41,6 +41,11 @@ class ActionEnum(str, enum.Enum):
     DEPOSIT = "deposit"
     WITHDRAW = "withdraw"
     HOLD = "hold"
+    DIVIDEND = "dividend"
+    INTEREST = "interest"
+    FEE = "fee"
+    SPLIT = "split"
+    ADJUSTMENT = "adjustment"
 
 
 class UserRoleEnum(str, enum.Enum):

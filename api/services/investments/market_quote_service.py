@@ -24,6 +24,7 @@ from schemas.investments.market_quote_schema import (
 )
 from services.investments.market_provider import MarketDataProvider, ProviderQuote
 from services.investments.yahoo_market_provider import YahooMarketProvider
+from services.investments.eulerpool_market_provider import EulerpoolMarketProvider
 from services.logs.logger_service import setup_logger
 
 logger = setup_logger("market_quote_service")
@@ -41,7 +42,10 @@ class MarketQuoteService:
         self.repository = MarketQuoteRepository(db)
         self.investment_repository = InvestmentRepository(db)
         self.providers: List[MarketDataProvider] = (
-            list(providers) if providers is not None else [YahooMarketProvider()]
+            list(providers) if providers is not None else [
+                EulerpoolMarketProvider(),
+                YahooMarketProvider(),
+            ]
         )
 
     # ======================
@@ -98,12 +102,15 @@ class MarketQuoteService:
     # DASHBOARD
     # ======================
 
-    def get_dashboard(self, force_refresh: bool = False) -> DashboardResponse:
-        """Portfolio grouped by ISIN joined with its market quote and position."""
-        grouped = self.investment_repository.get_grouped_by_isin()
+    def get_dashboard(self, force_refresh: bool = False, user_id: Optional[int] = None) -> DashboardResponse:
+        """Portfolio grouped by ISIN joined with its market quote and position.
+
+        user_id: User identifier for filtering. If None (admin), shows all investments.
+        """
+        grouped = self.investment_repository.get_grouped_by_isin_for_user(user_id)
         positions = {
             row.isin: row
-            for row in self.investment_repository.get_positions_by_isin()
+            for row in self.investment_repository.get_positions_by_isin_for_user(user_id)
         }
         quotes = {
             q.isin: q

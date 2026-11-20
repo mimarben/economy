@@ -1,291 +1,5 @@
-/* =========================================================
-   TABLAS - CONFIGURACIÓN BASE
-========================================================= */
-
-.mat-mdc-table {
-  border: 1px solid var(--app-border);
-  border-radius: var(--app-radius);
-  overflow: hidden;
-  background: var(--app-surface);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-  margin: var(--space-md) 0;
-}
-
-/* =========================================================
-   HEADER - ENCABEZADO DE TABLA
-========================================================= */
-
-.mat-mdc-header-row {
-  background: var(--bg-surface-muted);
-  border-bottom: 1px solid var(--app-border);
-  position: sticky;
-  top: 0;
-  z-index: 10;
-}
-
-.mat-mdc-header-cell {
-  color: var(--text-secondary);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  padding: var(--space-md) var(--space-md) !important;
-  border-bottom: none;
-  user-select: none;
-}
-
-/* =========================================================
-   FILAS - CUERPO DE TABLA
-========================================================= */
-
-.mat-mdc-row {
-  border-bottom: 1px solid var(--app-border-light);
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  height: 56px;
-}
-
-.mat-mdc-row:hover {
-  background: var(--app-surface-hover);
-  box-shadow: inset 0 0 0 1px var(--app-border-light);
-}
-
-.mat-mdc-row:last-child {
-  border-bottom: none;
-}
-
-/* Hover sutil, sin zebra */
-.mat-mdc-row:hover {
-  background: var(--app-surface-hover);
-}
-
-/* =========================================================
-   CELDAS - CONTENIDO
-========================================================= */
-
-.mat-mdc-cell {
-  padding: var(--space-md) !important;
-  color: var(--text-primary);
-  font-size: 14px;
-  line-height: 1.5;
-  vertical-align: middle;
-}
-
-.mat-mdc-cell:first-child {
-  padding-left: var(--space-lg) !important;
-}
-
-.mat-mdc-cell:last-child {
-  padding-right: var(--space-lg) !important;
-}
-
-
-.mat-column-price,
-.mat-column-amount,
-.mat-column-total,
-.mat-column-quantity {
-  text-align: right !important;
-  font-family: var(--font-mono);
-  font-size: 13px;
-  font-weight: 500;
-}
-
-
-.mat-column-date,
-.mat-column-created,
-.mat-column-updated {
-  color: var(--text-secondary);
-  font-size: 13px;
-}
-
-/* Columnas booleanas (activo/inactivo) */
-.mat-column-active,
-.mat-column-is_active {
-  text-align: center;
-}
-
-/* =========================================================
-   PAGINADOR - FOOTER
-========================================================= */
-
-.mat-mdc-paginator {
-  border-top: 1px solid var(--app-border);
-  background: var(--app-surface-active);
-  border-radius: 0 0 var(--app-radius) var(--app-radius) !important;
-  padding: var(--space-sm) var(--space-md);
-}
-
-/* =========================================================
-   TOOLTIP - MULTILINE SUPPORT
-========================================================= */
-
-::ng-deep .tooltip-multiline {
-  white-space: pre-wrap !important;
-  word-wrap: normal !important;
-  word-break: normal !important;
-  overflow-wrap: normal !important;
-  max-width: none !important;
-  min-width: 300px !important;
-  padding: 10px !important;
-  line-height: 1.4 !important;
-}
-
-.mat-mdc-paginator-container {
-  padding: var(--space-sm) var(--space-md) !important;
-  min-height: 56px;
-  justify-content: flex-end;
-}
-
-.mat-mdc-paginator-page-size,
-.mat-mdc-paginator-range-label {
-  margin: 0 var(--space-md);
-  align-items: center;
-}
-
-/* =========================================================
-   ELEMENTOS INTERNOS
-========================================================= */
-
-
-.mat-mdc-cell .actions {
-  display: flex;
-  gap: var(--space-sm);
-  align-items: center;
-  justify-content: flex-end;
-}
-
-.mat-mdc-cell button {
-  min-width: auto;
-  height: 32px;
-  padding: 0 var(--space-sm);
-}
-
-.mat-mdc-cell button mat-icon {
-  font-size: 18px;
-  width: 18px;
-  height: 18px;
-}
-
-/* Badges y chips dentro de celdas */
-.mat-mdc-cell .mat-mdc-chip {
-  height: 24px;
-  font-size: 12px;
-  font-weight: 600;
-  border-radius: 4px;
-}
-
-.mat-mdc-cell .badge {
-  display: inline-block;
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.badge.success {
-  background: var(--color-success-bg);
-  color: var(--color-success);
-}
-
-.badge.error {
-  background: var(--color-error-bg);
-  color: var(--color-error);
-}
-
-.badge.warning {
-  background: var(--color-warning-bg);
-  color: var(--color-warning);
-}
-
-.badge.info {
-  background: var(--color-info-bg);
-  color: var(--color-info);
-}
-
-/* =========================================================
-   ESTADOS ESPECIALES
-========================================================= */
-
-
-.mat-mdc-table.empty {
-  min-height: 300px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-  color: var(--text-secondary);
-}
-
-.empty-state {
-  text-align: center;
-  padding: var(--space-xl);
-}
-
-.empty-state mat-icon {
-  font-size: 48px;
-  width: 48px;
-  height: 48px;
-  color: var(--text-tertiary);
-  margin-bottom: var(--space-md);
-}
-
-
-.mat-mdc-table.loading {
-  opacity: 0.6;
-  pointer-events: none;
-}
-
-/* =========================================================
-   RESPONSIVE - MÓVIL
-========================================================= */
-
-@media (max-width: 1024px) {
-  /* Ocultar columnas secundarias en tablets */
-  .mat-column-description,
-  .mat-column-updated {
-    display: none;
-  }
-
-  .mat-mdc-cell,
-  .mat-mdc-header-cell {
-    padding: var(--space-sm) !important;
-  }
-}
-
-@media (max-width: 768px) {
-  
-  .mat-mdc-cell,
-  .mat-mdc-header-cell {
-    padding: var(--space-sm) !important;
-    font-size: 12px;
-  }
-
-  .mat-mdc-row {
-    height: 48px;
-  }
-
-  .mat-column-price,
-  .mat-column-amount,
-  .mat-column-total,
-  .mat-column-quantity {
-    font-size: 12px;
-  }
-
-  .mat-mdc-cell button {
-    height: 28px;
-    padding: 0 4px;
-  }
-
-  
-  .mat-mdc-cell .actions {
-    flex-direction: row;
-    gap: 4px;
-  }
-}
-
 .generic-table-container {
-  padding: 20px;
+  width: 100%;
 }
 
 .header-card {
@@ -293,36 +7,103 @@
   box-shadow: var(--shadow-card);
 }
 
-.error-message {
-  display: flex;
-  align-items: center;
-  padding: 12px 16px;
-  background-color: var(--color-danger-bg);
-  border-radius: var(--radius-sm);
-  color: var(--color-danger);
-  margin-bottom: 16px;
-}
-
-.error-message mat-icon {
-  margin-right: 12px;
-}
-
 .toolbar {
   display: flex;
-  gap: 12px;
   align-items: center;
-  margin-bottom: 20px;
+  gap: 12px;
+  margin-bottom: 16px;
   flex-wrap: wrap;
 }
 
-.filter-field {
-  flex: 1;
+.filter-field,
+.search-field {
+  flex: 1 1 220px;
   min-width: 180px;
 }
 
-.search-field {
-  flex: 1;
-  min-width: 220px;
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--app-border);
+  border-radius: var(--radius-card);
+  background: var(--bg-surface);
+}
+
+.table-scroll {
+  overflow-y: auto;
+}
+
+.mat-mdc-table {
+  width: 100%;
+  border: 0;
+  box-shadow: none;
+}
+
+.mat-mdc-table.users-table {
+  min-width: 1440px;
+}
+
+.mat-mdc-header-row {
+  height: 44px;
+  background: var(--bg-surface-muted);
+}
+
+.mat-mdc-row {
+  height: 52px;
+  border-bottom: 1px solid var(--app-border-light);
+}
+
+.mat-mdc-row:hover {
+  background: var(--bg-surface-hover);
+}
+
+.mat-mdc-header-cell {
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.mat-mdc-cell,
+.mat-mdc-header-cell {
+  padding-left: 16px;
+  padding-right: 16px;
+  white-space: nowrap;
+}
+
+.users-table .mat-column-accounts {
+  width: 320px;
+  max-width: 320px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mat-mdc-table.users-table .mat-mdc-cell:not(.mat-column-actions) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mat-column-actions {
+  width: 88px;
+  min-width: 88px;
+  text-align: center;
+}
+
+.mat-mdc-paginator {
+  border: 1px solid var(--app-border);
+  border-top: 0;
+  border-radius: 0 0 var(--radius-card) var(--radius-card);
+  background: var(--bg-surface);
+}
+
+.error-message {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--color-danger-bg);
+  color: var(--color-danger);
 }
 
 .loading-indicator {
@@ -330,32 +111,31 @@
   justify-content: center;
   align-items: center;
   gap: 12px;
-  padding: 40px;
-}
-
-.table-container {
-  overflow-x: auto;
-}
-
-.table-scroll {
-  overflow-y: auto;
-  border-radius: var(--app-radius);
-}
-
-.table-scroll .mat-mdc-header-row {
-  position: sticky;
-  top: 0;
-  z-index: 10;
+  min-height: 160px;
+  color: var(--text-secondary);
 }
 
 .no-data-message {
-  text-align: center;
-  padding: 40px 20px;
-  color: rgba(0, 0, 0, 0.45);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 16px;
+  color: var(--text-light);
 }
 
-.no-data-message mat-icon {
-  font-size: 40px;
-  width: 40px;
-  height: 40px;
+@media (max-width: 768px) {
+  .toolbar {
+    align-items: stretch;
+  }
+
+  .search-field,
+  .filter-field {
+    flex-basis: 100%;
+  }
+
+  .mat-mdc-cell,
+  .mat-mdc-header-cell {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
 }

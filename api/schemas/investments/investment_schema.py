@@ -41,6 +41,7 @@ class InvestmentBase(BaseModel):
 class InvestmentRead(InvestmentBase, AuditFields):
     """Response schema for Investment."""
     id: int
+    instrument_id: Optional[int] = None
 
     class Config:
         from_attributes = True

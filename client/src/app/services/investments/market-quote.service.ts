@@ -9,7 +9,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '@env/environment';
 import { ApiResponse } from '@app/models/core/APIResponse';
-import { InvestmentsDashboard, MarketQuote } from '@investments_models/MarketQuotes';
+import { InvestmentsDashboard, MarketQuote, SearchRequest, SearchResponse } from '@investments_models/MarketQuotes';
 
 @Injectable({
   providedIn: 'root'
@@ -35,6 +35,29 @@ export class MarketQuoteService {
     return this.http.get<ApiResponse<MarketQuote[]>>(
       `${environment.apiUrl}/market/quotes`,
       { params }
+    );
+  }
+
+  /**
+   * Búsqueda universal contra /market/search del backend.
+   * Selecciona obligatoriamente cuando hay varios resultados.
+   */
+  searchInstruments(query: string, limit: number = 20): Observable<ApiResponse<SearchResponse>> {
+    const params = new HttpParams()
+      .set('query', query)
+      .set('limit', limit.toString());
+    return this.http.get<ApiResponse<SearchResponse>>(
+      `${environment.apiUrl}/market/search`,
+      { params }
+    );
+  }
+
+  /**
+   * Obtiene el detalle de un instrumento por su ISIN o identificador.
+   */
+  getInstrumentDetail(isin: string): Observable<ApiResponse<MarketQuote>> {
+    return this.http.get<ApiResponse<MarketQuote>>(
+      `${environment.apiUrl}/market/search/${encodeURIComponent(isin)}`
     );
   }
 }

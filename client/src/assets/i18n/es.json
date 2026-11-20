@@ -180,6 +180,8 @@
     },
     "LOGIN": {
       "SUBTITLE": "Aplicación para economia del hogar",
+      "WELCOME": "Bienvenido de nuevo",
+      "HINT": "Inicia sesión para gestionar tus finanzas",
       "SUBMIT": "Iniciar sesión",
       "FORGOT_PASSWORD": "¿Olvidaste tu contraseña?",
       "CREATE_ACCOUNT": "Crear cuenta",

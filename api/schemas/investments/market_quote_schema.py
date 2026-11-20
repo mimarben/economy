@@ -91,3 +91,16 @@ class DashboardResponse(BaseModel):
         None, description="Sum of unrealized_pl of entries that have one"
     )
     generated_at: datetime
+
+
+class InstrumentSearchResult(BaseModel):
+    """Instrument search result from provider search endpoint."""
+
+    isin: str
+    symbol: Optional[str] = None
+    name: Optional[str] = None
+    instrument_type: Optional[str] = None
+    currency: Optional[str] = None
+    exchange: Optional[str] = None
+    country: Optional[str] = None
+    provider: str

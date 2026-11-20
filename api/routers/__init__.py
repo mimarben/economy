@@ -23,6 +23,8 @@ from routers.investments.investment_category_router import router as investment_
 from routers.investments.investment_log_router import router as investment_log_router
 from routers.investments.investment_router import router as investment_router
 from routers.investments.market_quote_router import router as market_quote_router
+from routers.investments.instrument_router import router as instrument_router
+from routers.investments.instrument_composition_router import router as instrument_composition_router
 from routers.savings.saving_log_router import router as saving_log_router
 from routers.savings.saving_router import router as saving_router
 from routers.summaries.summary_router import router as summary_router
@@ -47,6 +49,8 @@ _protected_routers: tuple[APIRouter, ...] = (
     saving_log_router,
     investment_log_router,
     market_quote_router,
+    instrument_router,
+    instrument_composition_router,
     transactions_ai_router,
     core_router,
     import_router,

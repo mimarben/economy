@@ -1,71 +1,86 @@
 <div class="login-page">
   <mat-card class="login-card">
-
-    <mat-card-header>
-      <div class="login-header">
-
-        <div class="login-logo">
-          <img src="assets/images/money.png" alt="{{ 'AUTH.BRAND.NAME' | translate }}" />
+    <section class="login-visual" aria-hidden="true">
+      <div class="visual-brand">
+        <div class="visual-logo">
+          <img src="assets/images/money.png" alt="" />
         </div>
-        <mat-card-title>{{ 'AUTH.BRAND.NAME' | translate }}</mat-card-title>
-        <mat-card-subtitle>{{ 'AUTH.LOGIN.SUBTITLE' | translate }}</mat-card-subtitle>
-
+        <span>{{ 'AUTH.BRAND.NAME' | translate }}</span>
       </div>
-    </mat-card-header>
+      <div class="visual-copy">
+        <p>{{ 'AUTH.LOGIN.SUBTITLE' | translate }}</p>
+      </div>
+      <div class="finance-preview">
+        <div class="preview-header">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <div class="preview-chart">
+          <div class="chart-line chart-line-one"></div>
+          <div class="chart-line chart-line-two"></div>
+          <div class="chart-dot chart-dot-one"></div>
+          <div class="chart-dot chart-dot-two"></div>
+        </div>
+      </div>
+    </section>
 
-    <mat-card-content>
-      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+    <section class="login-form-panel">
+      <mat-card-header>
+        <div class="login-header">
+          <mat-card-title>{{ 'AUTH.LOGIN.WELCOME' | translate }}</mat-card-title>
+          <mat-card-subtitle>{{ 'AUTH.LOGIN.HINT' | translate }}</mat-card-subtitle>
+        </div>
+      </mat-card-header>
 
-        <!-- EMAIL -->
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>{{ 'AUTH.LOGIN.EMAIL.LABEL' | translate }}</mat-label>
-          <mat-icon matPrefix>mail</mat-icon>
-          <input matInput type="email" formControlName="email"
-            [placeholder]="'AUTH.LOGIN.EMAIL.PLACEHOLDER' | translate" autocomplete="email" />
-          <mat-error *ngIf="loginForm.get('email')?.hasError('required')">
-            {{ 'AUTH.LOGIN.EMAIL.ERROR.REQUIRED' | translate }}
-          </mat-error>
-          <mat-error *ngIf="loginForm.get('email')?.hasError('email')">
-            {{ 'AUTH.LOGIN.EMAIL.ERROR.INVALID' | translate }}
-          </mat-error>
-        </mat-form-field>
+      <mat-card-content>
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>{{ 'AUTH.LOGIN.EMAIL.LABEL' | translate }}</mat-label>
+            <mat-icon matPrefix>mail</mat-icon>
+            <input matInput type="email" formControlName="email"
+              [placeholder]="'AUTH.LOGIN.EMAIL.PLACEHOLDER' | translate" autocomplete="email" />
+            <mat-error *ngIf="loginForm.get('email')?.hasError('required')">
+              {{ 'AUTH.LOGIN.EMAIL.ERROR.REQUIRED' | translate }}
+            </mat-error>
+            <mat-error *ngIf="loginForm.get('email')?.hasError('email')">
+              {{ 'AUTH.LOGIN.EMAIL.ERROR.INVALID' | translate }}
+            </mat-error>
+          </mat-form-field>
 
-        <!-- PASSWORD -->
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>{{ 'AUTH.LOGIN.PASSWORD.LABEL' | translate }}</mat-label>
-          <mat-icon matPrefix>lock</mat-icon>
-          <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password"
-            autocomplete="current-password" />
-          <button mat-icon-button matSuffix type="button" [attr.aria-label]="'AUTH.LOGIN.PASSWORD.TOGGLE' | translate"
-            (click)="hidePassword = !hidePassword">
-            <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>{{ 'AUTH.LOGIN.PASSWORD.LABEL' | translate }}</mat-label>
+            <mat-icon matPrefix>lock</mat-icon>
+            <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password"
+              autocomplete="current-password" />
+            <button mat-icon-button matSuffix type="button" [attr.aria-label]="'AUTH.LOGIN.PASSWORD.TOGGLE' | translate"
+              (click)="hidePassword = !hidePassword">
+              <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+            <mat-error *ngIf="loginForm.get('password')?.hasError('required')">
+              {{ 'AUTH.LOGIN.PASSWORD.ERROR.REQUIRED' | translate }}
+            </mat-error>
+            <mat-error *ngIf="loginForm.get('password')?.hasError('minlength')">
+              {{ 'AUTH.LOGIN.PASSWORD.ERROR.MINLENGTH' | translate }}
+            </mat-error>
+          </mat-form-field>
+
+          <button mat-flat-button color="primary" class="login-submit" type="submit"
+            [disabled]="loginForm.invalid || isLoading">
+            <mat-progress-spinner *ngIf="isLoading" diameter="18" mode="indeterminate"></mat-progress-spinner>
+            <span *ngIf="!isLoading">{{ 'AUTH.LOGIN.SUBMIT' | translate }}</span>
           </button>
-          <mat-error *ngIf="loginForm.get('password')?.hasError('required')">
-            {{ 'AUTH.LOGIN.PASSWORD.ERROR.REQUIRED' | translate }}
-          </mat-error>
-          <mat-error *ngIf="loginForm.get('password')?.hasError('minlength')">
-            {{ 'AUTH.LOGIN.PASSWORD.ERROR.MINLENGTH' | translate }}
-          </mat-error>
-        </mat-form-field>
+        </form>
+      </mat-card-content>
 
-        <!-- LOGIN BUTTON -->
-        <button mat-flat-button color="primary" class="full-width" type="submit"
-          [disabled]="loginForm.invalid || isLoading">
-          <mat-progress-spinner *ngIf="isLoading" diameter="18" mode="indeterminate"></mat-progress-spinner>
-          <span *ngIf="!isLoading">{{ 'AUTH.LOGIN.SUBMIT' | translate }}</span>
-        </button>
-
-      </form>
-    </mat-card-content>
-
-    <mat-card-actions>
-      <a mat-button routerLink="/forgot-password">
-        {{ 'AUTH.LOGIN.FORGOT_PASSWORD' | translate }}
-      </a>
-      <a mat-button routerLink="/register">
-        {{ 'AUTH.LOGIN.CREATE_ACCOUNT' | translate }}
-      </a>
-    </mat-card-actions>
-
+      <mat-card-actions class="login-actions">
+        <a mat-button routerLink="/forgot-password">
+          {{ 'AUTH.LOGIN.FORGOT_PASSWORD' | translate }}
+        </a>
+        <a mat-button routerLink="/register">
+          {{ 'AUTH.LOGIN.CREATE_ACCOUNT' | translate }}
+        </a>
+      </mat-card-actions>
+    </section>
   </mat-card>
 </div>

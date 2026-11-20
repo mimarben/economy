@@ -26,7 +26,7 @@ from .expenses import Expense, ExpensesCategory
 from .savings import Saving, SavingLog
 
 # Investments
-from .investments import Investment, InvestmentLog, InvestmentsCategory, MarketQuote
+from .investments import Investment, InvestmentLog, InvestmentsCategory, MarketQuote, MarketQuoteHistory, Instrument, InstrumentIdentifier, InstrumentComposition, FXRate
 
 # Households
 from .households import Household, HouseholdMember
@@ -62,6 +62,12 @@ __all__ = [
     'Investment',
     'InvestmentLog',
     'InvestmentsCategory',
+    'MarketQuote',
+    'MarketQuoteHistory',
+    'Instrument',
+    'InstrumentIdentifier',
+    'InstrumentComposition',
+    'FXRate',
     'Household',
     'HouseholdMember',
     'CategoryRule',

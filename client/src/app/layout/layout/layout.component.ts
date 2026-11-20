@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { BreakpointObserver } from '@angular/cdk/layout';
 import { RouterOutlet } from '@angular/router';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -25,27 +26,40 @@ import { FooterComponent } from '../footer/footer.component';
 })
 export class LayoutComponent implements OnInit, OnDestroy {
   pageTitle = '';
+  sidenavMode: 'side' | 'over' = 'side';
+  sidenavOpened = true;
 
   private routerSubscription?: Subscription;
+  private breakpointSubscription?: Subscription;
 
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
+    private breakpointObserver: BreakpointObserver,
   ) {}
 
   ngOnInit() {
     this.setHeaderTitle(); // Set initial title
+    this.breakpointSubscription = this.breakpointObserver
+      .observe('(max-width: 600px)')
+      .subscribe(({ matches }) => {
+        this.sidenavMode = matches ? 'over' : 'side';
+        this.sidenavOpened = !matches;
+      });
+
     this.routerSubscription = this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
         this.setHeaderTitle();
+        if (this.sidenavMode === 'over') {
+          this.sidenavOpened = false;
+        }
       });
   }
 
   ngOnDestroy() {
-    if (this.routerSubscription) {
-      this.routerSubscription.unsubscribe();
-    }
+    this.routerSubscription?.unsubscribe();
+    this.breakpointSubscription?.unsubscribe();
   }
 
   setHeaderTitle() {

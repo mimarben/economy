@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, ViewChild, AfterViewInit, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ViewChild, OnChanges, SimpleChanges } from '@angular/core';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
@@ -29,7 +29,7 @@ export interface TableColumn<T> {
   templateUrl: './generic-table.component.html',
   styleUrl: './generic-table.component.css',
 })
-export class GenericTableComponent<T> implements AfterViewInit, OnChanges {
+export class GenericTableComponent<T> implements OnChanges {
   @Input() data: T[] = [];
   @Input() columns: TableColumn<T>[] = [];
   @Input() isLoading = false;
@@ -44,6 +44,7 @@ export class GenericTableComponent<T> implements AfterViewInit, OnChanges {
   @Input() showRefreshAction = true;
   @Input() scrollable = false;
   @Input() scrollHeight = '480px';
+  @Input() tableClass = '';
 
   @Output() edit = new EventEmitter<T>();
   @Output() add = new EventEmitter<void>();
@@ -53,11 +54,14 @@ export class GenericTableComponent<T> implements AfterViewInit, OnChanges {
 
   dataSource = new MatTableDataSource<T>([]);
 
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild(MatPaginator)
+  set paginator(paginator: MatPaginator | undefined) {
+    this.dataSource.paginator = paginator ?? null;
+  }
 
-  ngAfterViewInit(): void {
-    this.setupDataSource();
+  @ViewChild(MatSort)
+  set sort(sort: MatSort | undefined) {
+    this.dataSource.sort = sort ?? null;
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -68,12 +72,6 @@ export class GenericTableComponent<T> implements AfterViewInit, OnChanges {
     if (changes['filter'] && this.filter !== undefined) {
       this.dataSource.filter = this.filter.trim().toLowerCase();
     }
-  }
-
-  private setupDataSource(): void {
-    this.dataSource.data = this.data;
-    this.dataSource.paginator = this.scrollable ? null : this.paginator;
-    this.dataSource.sort = this.sort;
   }
 
   applyFilter(event: Event): void {

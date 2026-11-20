@@ -13,3 +13,4 @@ class InvestmentsCategory(TimestampMixin, Base):
 
     # Relationships
     investments = relationship('Investment', back_populates='category')
+    instruments = relationship('Instrument', back_populates='category')

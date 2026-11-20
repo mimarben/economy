@@ -1,28 +1,23 @@
-// ============================================================================
-// LAYOUT — Flatlogic Angular Material Dashboard
-// ============================================================================
-
-.container {
+.app-layout-container {
   height: 100vh;
+  width: 100%;
   display: flex;
   margin: 0;
   padding: 0;
-  background: #ececec;
+  background: var(--bg-page);
 }
 
-// ---- Sidenav panel ----
 .sidenav {
-  width: 240px;
+  width: var(--sidebar-width);
   flex-shrink: 0;
   margin: 0;
   padding: 0;
-  background: #37474f;
-  border-right: none;
-  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.18);
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--app-border);
 }
 
-// ---- Main content area ----
 .sidenav-content {
+  width: 100%;
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -30,7 +25,7 @@
   overflow: hidden;
   margin: 0;
   padding: 0;
-  background: #ececec;
+  background: var(--bg-page);
 }
 
 .layout-wrapper {
@@ -56,7 +51,10 @@
     padding: 0;
 
     .content {
-      padding: 24px;
+      width: 100%;
+      max-width: none;
+      margin: 0;
+      padding: var(--space-lg);
       min-height: 100%;
     }
   }
@@ -68,38 +66,39 @@
   }
 }
 
-// ---- Material sidenav container overrides ----
 ::ng-deep {
   .mat-sidenav-container {
-    background: #ececec !important;
+    background: var(--bg-page);
   }
 
   .mat-sidenav,
   .mdc-drawer,
   .mat-drawer {
-    border-right: none !important;
-    border-radius: 0 !important;
+    border-right: 1px solid var(--app-border);
+    border-radius: 0;
   }
 
-  // Remove the sidenav backdrop border
   .mat-sidenav-content {
-    background: #ececec !important;
+    background: var(--bg-page);
   }
 }
 
-// ---- Responsive ----
 @media (max-width: 960px) {
   .sidenav {
-    width: 200px;
+    width: 224px;
+  }
+
+  .layout-wrapper .content-wrapper .content {
+    padding: var(--space-md);
   }
 }
 
 @media (max-width: 600px) {
   .sidenav {
-    width: 240px;
+    width: 232px;
   }
 
-  .content {
-    padding: 16px !important;
+  .layout-wrapper .content-wrapper .content {
+    padding: var(--space-sm);
   }
 }

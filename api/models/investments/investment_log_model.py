@@ -14,6 +14,13 @@ class InvestmentLog(TimestampMixin, Base):
     quantity = Column(Numeric(12, 6))
     action = Column(SQLEnum(ActionEnum), nullable=False)
     note = Column(String)
+    
+    # New columns for better tracking
+    fees = Column(Numeric(18, 10), nullable=True)  # commissions, fees
+    external_ref = Column(String(255), nullable=True)  # for reconciliation with bank statements
+
+    # Timestamps (heredados de TimestampMixin)
+    # created_at, updated_at, deleted_at
 
     # Foreign Keys
     investment_id = Column(Integer, ForeignKey('investments.id'), nullable=False, index=True)

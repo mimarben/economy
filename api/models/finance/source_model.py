@@ -17,3 +17,4 @@ class Source(TimestampMixin, Base):
     incomes = relationship('Income', back_populates='source')
     expenses = relationship('Expense', back_populates='source')
     savings_logs = relationship("SavingLog", back_populates="source")
+    investments = relationship('Investment', back_populates='source')

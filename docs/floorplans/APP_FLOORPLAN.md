@@ -69,5 +69,5 @@
 | ImportService | `api/services/imports/import_service.py:35-195` |
 | Dedup hash | `api/services/core/dedup_service.py:29-46` |
 | IA desconectada | `excel-import.component.ts:342-373` (comentado), `import_service.py:33` |
-| 22 tablas + UNIQUE dedup | `.claude/database/er.sql` |
+| 22 tablas + UNIQUE dedup | `docs/003-database/er.sql` |
 | Falta transfers/batches/índice date | er.sql completo + grep (ver auditoría P0-3, P1-1, P3-1) |

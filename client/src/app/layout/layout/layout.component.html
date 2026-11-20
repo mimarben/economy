@@ -1,5 +1,10 @@
-<mat-sidenav-container class="container" autosize>
-  <mat-sidenav #sidenav mode="side" opened="true" class="sidenav">
+<mat-sidenav-container class="app-layout-container" autosize>
+  <mat-sidenav
+    #sidenav
+    [mode]="sidenavMode"
+    [opened]="sidenavOpened"
+    (openedChange)="sidenavOpened = $event"
+    class="sidenav">
     <app-side-menu></app-side-menu>
   </mat-sidenav>
 

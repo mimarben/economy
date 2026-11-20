@@ -10,23 +10,24 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 /* Enhanced toast styles for @ngxpert/hot-toast with custom icons, hiding default icons */
 
 .toast-success {
-  background: linear-gradient(135deg, #4caf50, #388e3c) !important;
-  color: #e8f5e9 !important;
-  border: 1px solid #2e7d32 !important;
-  box-shadow: 0 2px 8px rgba(46, 125, 50, 0.4) !important;
-  border-radius: 6px !important;
+  background: #ffffff !important;
+  color: var(--text-primary) !important;
+  border: 1px solid #cfe4da !important;
+  box-shadow: 0 12px 32px rgba(31, 41, 37, 0.12) !important;
+  border-radius: 10px !important;
   position: relative;
   padding-left: 40px !important;
 }
 
 .toast-success::before {
-  content: "✔️";
+  content: "check";
+  font-family: 'Material Symbols Outlined';
   position: absolute;
   left: 12px;
   top: 50%;
   transform: translateY(-50%);
   font-size: 18px;
-  color: #a5d6a7;
+  color: var(--color-success);
 }
 
 .toast-error {

@@ -32,7 +32,18 @@ export class UsersComponent implements OnInit {
     { key: 'active', label: 'Active', sortable: true, formatter: (value) => (value ? 'Yes' : 'No') },
     { key: 'telephone', label: 'Telephone', sortable: true },
     { key: 'role', label: 'Role', sortable: true },
-    { key: 'accounts', label: 'Accounts', sortable: false, formatter: (value: { id: number; name: string }[]) => value?.map(a => a.name).join(', ') || 'None' },
+    {
+      key: 'accounts',
+      label: 'Accounts',
+      sortable: false,
+      formatter: (value: { id: number; name: string }[]) => {
+        if (!value?.length) return 'None';
+        const names = value.map(account => account.name).filter(Boolean);
+        return names.length <= 2 ? names.join(', ') : `${names.slice(0, 2).join(', ')} +${names.length - 2}`;
+      },
+      tooltipFormatter: (value: { id: number; name: string }[]) =>
+        value?.map(account => account.name).filter(Boolean).join(', ') || 'None',
+    },
   ];
 
   constructor(

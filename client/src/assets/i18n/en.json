@@ -180,6 +180,8 @@
     },
     "LOGIN": {
       "SUBTITLE": "Home economy app",
+      "WELCOME": "Welcome back",
+      "HINT": "Sign in to manage your finances",
       "SUBMIT": "Login",
       "FORGOT_PASSWORD": "Forgot your password?",
       "CREATE_ACCOUNT": "Create account",

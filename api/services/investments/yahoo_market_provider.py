@@ -108,22 +108,6 @@ class YahooMarketProvider(MarketDataProvider):
                 return quote
         return None
 
-    # ======================
-    # INTERNALS
-    # ======================
-
-    def _resolve_symbol(self, isin: str) -> Optional[dict[str, Any]]:
-        """ISIN -> Yahoo symbol through the search endpoint."""
-        params = urlencode({"q": isin, "quotesCount": 5})
-        payload = self._get_json(f"{_SEARCH_URL}?{params}")
-        if not payload:
-            return None
-
-        for quote in payload.get("quotes", []):
-            if quote.get("quoteType") in _SUPPORTED_QUOTE_TYPES and quote.get("symbol"):
-                return quote
-        return None
-
     def _fetch_chart_meta(self, symbol: str) -> Optional[dict[str, Any]]:
         """Chart endpoint -> meta dict with price/close/currency."""
         params = urlencode({"range": "5d", "interval": "1d"})
