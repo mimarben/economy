@@ -205,9 +205,13 @@ class TestDashboard:
         assert second.total_contributed == Decimal("250.00")
         assert second.change_abs == Decimal("0.0000")
 
-        assert dashboard.total_contributed == Decimal("1750.00")
+        assert dashboard.total_contributed == Decimal("2749.00"), (
+            "total contributed must include investments without ISIN too"
+        )
         assert dashboard.without_isin_count == 1
         assert dashboard.without_isin_amount == Decimal("999.00")
+        assert len(dashboard.unquoted_entries) == 1
+        assert dashboard.unquoted_entries[0].total_contributed == Decimal("999.00")
 
     def test_soft_deleted_excluded(self, db_session):
         _investment(db_session, ISIN_A, "100.00", date(2026, 11, 1))

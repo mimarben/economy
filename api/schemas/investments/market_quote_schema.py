@@ -77,10 +77,35 @@ class DashboardEntry(BaseModel):
     quote_status: str = "ok"
 
 
+class UnquotedEntry(BaseModel):
+    """One investment without ISIN (managed portfolio, crypto, cash).
+
+    It cannot have a market quote, so it is valued with the hand-recorded
+    valuation (current_value) of its latest investment log.
+    """
+
+    investment_id: int
+    name: str = Field(..., description="Investment description")
+    currency: Optional[str] = None
+    total_contributed: Decimal
+    last_contribution_date: Optional[DateType] = None
+    # Position (from the latest investment log)
+    units: Optional[Decimal] = Field(None, description="Units held, None when never logged")
+    reported_value: Optional[Decimal] = Field(None, description="Last hand-recorded valuation")
+    # Valuation (manual)
+    value: Optional[Decimal] = Field(None, description="reported_value (manual valuation)")
+    unrealized_pl: Optional[Decimal] = Field(None, description="reported_value - total_contributed")
+    unrealized_pl_pct: Optional[Decimal] = None
+    last_log_date: Optional[DateType] = None
+
+
 class DashboardResponse(BaseModel):
     """Aggregated portfolio view grouped by ISIN."""
 
     entries: List[DashboardEntry] = []
+    unquoted_entries: List[UnquotedEntry] = Field(
+        default=[], description="Investments without ISIN, valued manually"
+    )
     without_isin_count: int = 0
     without_isin_amount: Decimal = Field(default=Decimal("0"))
     total_contributed: Decimal = Field(default=Decimal("0"))
@@ -89,6 +114,12 @@ class DashboardResponse(BaseModel):
     )
     total_unrealized_pl: Optional[Decimal] = Field(
         None, description="Sum of unrealized_pl of entries that have one"
+    )
+    total_reported_value: Optional[Decimal] = Field(
+        None, description="Sum of reported values of unquoted entries"
+    )
+    total_reported_pl: Optional[Decimal] = Field(
+        None, description="Sum of unrealized_pl of unquoted entries (manual valuation)"
     )
     generated_at: datetime
 

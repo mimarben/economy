@@ -1,5 +1,5 @@
 """Repository for Investment entity following segregated interfaces."""
-from typing import List
+from typing import List, Optional
 
 from sqlalchemy import case, func, select
 
@@ -91,6 +91,41 @@ class InvestmentRepository(BaseRepository[Investment]):
             .where(Investment.deleted_at.is_(None), Investment.isin.isnot(None))
             .group_by(Investment.isin)
         )
+        return list(self.db.execute(stmt).all())
+
+    def get_unquoted_positions_for_user(self, user_id: Optional[int]) -> List[tuple]:
+        """One row per investment without ISIN: (id, description, currency,
+        amount, date, units, reported_value, last_log_date).
+
+        These investments cannot have market data (managed portfolios, crypto,
+        cash), so the dashboard values them with the hand-recorded valuation
+        (current_value) of the latest log. Rows come straight from the latest
+        non-deleted log of each investment (snapshot semantics).
+        """
+        latest_quantity = _latest_log_column(InvestmentLog.quantity)
+        latest_value = _latest_log_column(InvestmentLog.current_value)
+        latest_date = _latest_log_column(InvestmentLog.date)
+
+        stmt = (
+            select(
+                Investment.id,
+                Investment.description,
+                Investment.currency,
+                Investment.amount,
+                Investment.date,
+                latest_quantity.label('units'),
+                latest_value.label('reported_value'),
+                latest_date.label('last_log_date'),
+            )
+            .where(Investment.deleted_at.is_(None), Investment.isin.is_(None))
+            .order_by(Investment.date.desc(), Investment.id.desc())
+        )
+        if user_id is not None:
+            stmt = stmt.where(
+                Investment.account_id == Account.id,
+                Account.id == AccountUser.account_id,
+                AccountUser.user_id == user_id,
+            )
         return list(self.db.execute(stmt).all())
 
     def get_grouped_by_isin_for_user(self, user_id: int) -> List[tuple]:

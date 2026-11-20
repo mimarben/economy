@@ -14,13 +14,14 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ApiResponse } from '@app/models/core/APIResponse';
-import { 
-  DashboardEntry, 
-  InvestmentsDashboard, 
-  AssetClass, 
+import {
+  DashboardEntry,
+  InvestmentsDashboard,
+  AssetClass,
   PositionStatus,
   InstrumentSearchResult,
-  SearchResponse
+  SearchResponse,
+  UnquotedEntry
 } from '@investments_models/MarketQuotes';
 import { MarketQuoteService } from '@investments_services/market-quote.service';
 
@@ -84,6 +85,34 @@ export class InvestmentsDashboardComponent implements OnInit {
   showHistoricalView = computed(() => this.showClosedPositions());
 
   entries = computed<DashboardEntry[]>(() => this.dashboard()?.entries ?? []);
+
+  // Posiciones sin ISIN (carteras gestionadas, cripto): valoración manual
+  unquotedEntries = computed<UnquotedEntry[]>(() => this.dashboard()?.unquoted_entries ?? []);
+  hasUnquoted = computed(() => this.unquotedEntries().length > 0);
+
+  readonly unquotedColumns = ['name', 'units', 'value', 'cost', 'pl', 'currency', 'updated'];
+
+  /** Valor total = valor de mercado (donde hay cotización) + valoración manual del resto. */
+  totalValuedValue = computed<number | null>(() => {
+    const data = this.dashboard();
+    if (!data) return null;
+    const market = data.total_market_value ?? null;
+    const reported = data.total_reported_value ?? null;
+    if (market === null && reported === null) return null;
+    return (market ?? 0) + (reported ?? 0);
+  });
+
+  /** P/L total = P/L de mercado + P/L de valoraciones manuales. */
+  totalValuedPl = computed<number | null>(() => {
+    const data = this.dashboard();
+    if (!data) return null;
+    const market = data.total_unrealized_pl ?? null;
+    const reported = data.total_reported_pl ?? null;
+    if (market === null && reported === null) return null;
+    return (market ?? 0) + (reported ?? 0);
+  });
+
+  totalPositions = computed(() => this.entries().length + this.unquotedEntries().length);
 
   // DataSource para la tabla con paginación y ordenación
   dataSource = signal<MatTableDataSource<DashboardEntry>>(new MatTableDataSource<DashboardEntry>([]));

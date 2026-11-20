@@ -38,6 +38,9 @@ import { SourceEnum } from '@app/core/const/Source.enum';
   selector: 'app-import-preview',
   standalone: true,
   imports: [CommonModule, TranslateModule, ...MATERIAL_IMPORTS, FormsModule],
+  // DatePipe is a @Pipe (not providedIn: 'root') — providing it here allows
+  // the constructor injection used by activeFilterChips.
+  providers: [DatePipe],
   templateUrl: './import-preview.component.html',
   styleUrl: './import-preview.component.scss',
 })

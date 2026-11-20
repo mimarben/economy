@@ -117,7 +117,9 @@
       "unrealized_pl": "P/L latente",
       "positions": "Posiciones",
       "without_isin": "Sin ISIN",
-      "updated": "Actualizado"
+      "updated": "Actualizado",
+      "manual_value": "Valoración manual",
+      "manual_value_hint": "Incluye la última valoración registrada a mano de las posiciones sin ISIN"
     },
     "col": {
       "fund": "Fondo / ETF",
@@ -137,7 +139,16 @@
       "stale": "Diferido",
       "unavailable": "Sin datos"
     },
-    "empty": "Añade el ISIN a tus inversiones para ver su evolución en bolsa aquí."
+    "empty": "Añade el ISIN a tus inversiones para ver su evolución en bolsa aquí.",
+    "unquoted": {
+      "title": "Posiciones sin ISIN",
+      "subtitle": "Carteras gestionadas, cripto y otros activos sin cotización: valoradas con el último registro manual",
+      "col": {
+        "name": "Posición",
+        "value": "Valor manual",
+        "updated": "Últ. registro"
+      }
+    }
   },
   "summary": {
     "title": "Resumen Financiero"

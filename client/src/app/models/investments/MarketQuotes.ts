@@ -57,14 +57,39 @@ export interface DashboardEntry extends Omit<MarketQuote, 'status'> {
   last_quote_source?: string | null;  // NUEVO: fuente de la última cotización
 }
 
+/** Inversión sin ISIN (cartera gestionada, cripto, efectivo): valorada a mano. */
+export interface UnquotedEntry {
+  investment_id: number;
+  name: string;
+  currency?: string | null;
+  total_contributed: number;
+  last_contribution_date?: string | null;
+  /** Units held from the latest investment log; null = never logged. */
+  units?: number | null;
+  /** Last hand-recorded valuation. */
+  reported_value?: number | null;
+  /** reported_value (manual valuation). */
+  value?: number | null;
+  /** reported_value - total_contributed. */
+  unrealized_pl?: number | null;
+  unrealized_pl_pct?: number | null;
+  last_log_date?: string | null;
+}
+
 export interface InvestmentsDashboard {
   entries: DashboardEntry[];
+  /** Investments without ISIN, valued manually (managed portfolios, crypto). */
+  unquoted_entries?: UnquotedEntry[];
   without_isin_count: number;
   without_isin_amount: number;
   total_contributed: number;
   /** Sums over entries that have a value; null when none do. */
   total_market_value?: number | null;
   total_unrealized_pl?: number | null;
+  /** Sum of hand-recorded values of unquoted entries; null when none. */
+  total_reported_value?: number | null;
+  /** Sum of unrealized_pl of unquoted entries (manual valuation). */
+  total_reported_pl?: number | null;
   generated_at: string;
 }
 

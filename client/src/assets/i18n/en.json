@@ -117,7 +117,9 @@
       "unrealized_pl": "Unrealized P/L",
       "positions": "Positions",
       "without_isin": "Without ISIN",
-      "updated": "Updated"
+      "updated": "Updated",
+      "manual_value": "Manual valuation",
+      "manual_value_hint": "Includes the last hand-recorded valuation of positions without ISIN"
     },
     "col": {
       "fund": "Fund / ETF",
@@ -137,7 +139,16 @@
       "stale": "Delayed",
       "unavailable": "No data"
     },
-    "empty": "Add the ISIN to your investments to see their market performance here."
+    "empty": "Add the ISIN to your investments to see their market performance here.",
+    "unquoted": {
+      "title": "Positions without ISIN",
+      "subtitle": "Managed portfolios, crypto and other assets without a market quote: valued with the last manual entry",
+      "col": {
+        "name": "Position",
+        "value": "Manual value",
+        "updated": "Last entry"
+      }
+    }
   },
   "summary": {
     "title": "Financial Summary"

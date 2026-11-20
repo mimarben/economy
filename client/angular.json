@@ -33,6 +33,7 @@
               }
             ],
             "styles": [
+              "@ngxpert/hot-toast/styles.css",
               "src/tailwind.css",
               "src/styles.scss",
               "node_modules/material-symbols/outlined.css"
@@ -49,7 +50,7 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "4kB",
+                  "maximumWarning": "6kB",
                   "maximumError": "8kB"
                 }
               ],

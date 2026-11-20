@@ -52,6 +52,11 @@
   color: rgba(0, 0, 0, 0.5);
 }
 
+/* Posiciones sin ISIN (valoración manual) */
+.unquoted-section { margin-top: 1.5rem; }
+.unquoted-header { padding: 0.5rem 1rem; }
+.unquoted-header h2 { margin: 0; font-size: 1.1rem; font-weight: 600; }
+
 .error-banner {
   display: flex;
   align-items: center;

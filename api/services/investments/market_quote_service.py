@@ -21,6 +21,7 @@ from schemas.investments.market_quote_schema import (
     DashboardEntry,
     DashboardResponse,
     MarketQuoteOut,
+    UnquotedEntry,
 )
 from services.investments.market_provider import MarketDataProvider, ProviderQuote
 from services.investments.yahoo_market_provider import YahooMarketProvider
@@ -175,13 +176,46 @@ class MarketQuoteService:
                 total_pl = (total_pl or Decimal("0")) + entry.unrealized_pl
 
         without_count, without_amount = self.investment_repository.get_totals_without_isin()
+
+        # Investments without ISIN (managed portfolios, crypto, cash): no
+        # market quote is possible, so they are valued with the hand-recorded
+        # valuation of their latest log.
+        unquoted_entries: List[UnquotedEntry] = []
+        total_reported_value: Optional[Decimal] = None
+        total_reported_pl: Optional[Decimal] = None
+        for row in self.investment_repository.get_unquoted_positions_for_user(user_id):
+            amount = _to_decimal(row.amount) or Decimal("0")
+            total += amount
+            reported = _to_decimal(row.reported_value)
+            pl = (reported - amount) if reported is not None else None
+            unquoted_entries.append(UnquotedEntry(
+                investment_id=row.id,
+                name=row.description,
+                currency=_currency_code(row.currency),
+                total_contributed=amount,
+                last_contribution_date=row.date,
+                units=_to_decimal(row.units),
+                reported_value=reported,
+                value=reported,
+                unrealized_pl=pl,
+                unrealized_pl_pct=_change_pct(pl, amount),
+                last_log_date=row.last_log_date,
+            ))
+            if reported is not None:
+                total_reported_value = (total_reported_value or Decimal("0")) + reported
+            if pl is not None:
+                total_reported_pl = (total_reported_pl or Decimal("0")) + pl
+
         return DashboardResponse(
             entries=entries,
+            unquoted_entries=unquoted_entries,
             without_isin_count=without_count,
             without_isin_amount=_to_decimal(without_amount) or Decimal("0"),
             total_contributed=total,
             total_market_value=total_market_value,
             total_unrealized_pl=total_pl,
+            total_reported_value=total_reported_value,
+            total_reported_pl=total_reported_pl,
             generated_at=datetime.utcnow(),
         )
 
@@ -246,6 +280,20 @@ def _to_decimal(value) -> Optional[Decimal]:
         return Decimal(str(value))
     except (InvalidOperation, ValueError):
         return None
+
+
+def _currency_code(value) -> Optional[str]:
+    """Currency as a plain string.
+
+    Handles CurrencyEnum members whose values are tuples (crypto entries),
+    so a BTC investment renders as 'BTC' and never as "('BTC',)".
+    """
+    if value is None:
+        return None
+    raw = getattr(value, "value", value)
+    if isinstance(raw, tuple):
+        raw = raw[0] if raw else None
+    return str(raw) if raw else None
 
 
 def _market_value(units: Optional[Decimal], last_price: Optional[Decimal]) -> Optional[Decimal]:
